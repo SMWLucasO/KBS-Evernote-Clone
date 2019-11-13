@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29411.108
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvernoteCloneLibrary", "EvernoteCloneLibrary\EvernoteCloneLibrary.csproj", "{BDF1243C-F007-4144-B4D3-A62A10A6ECEA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvernoteCloneLibraryTests", "EvernoteCloneLibraryTests\EvernoteCloneLibraryTests.csproj", "{28D5FB14-E1DD-4F49-ABE1-D94D701E4FA5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BDF1243C-F007-4144-B4D3-A62A10A6ECEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BDF1243C-F007-4144-B4D3-A62A10A6ECEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BDF1243C-F007-4144-B4D3-A62A10A6ECEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BDF1243C-F007-4144-B4D3-A62A10A6ECEA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28D5FB14-E1DD-4F49-ABE1-D94D701E4FA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28D5FB14-E1DD-4F49-ABE1-D94D701E4FA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28D5FB14-E1DD-4F49-ABE1-D94D701E4FA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28D5FB14-E1DD-4F49-ABE1-D94D701E4FA5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4D48BBC4-13DB-4624-8F2E-346F2D52C4E9}
+	EndGlobalSection
+EndGlobal
