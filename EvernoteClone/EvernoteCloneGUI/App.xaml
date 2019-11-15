@@ -1,9 +1,14 @@
 ﻿<Application x:Class="EvernoteCloneGUI.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:EvernoteCloneGUI"
-             StartupUri="MainWindow.xaml">
+             xmlns:local="clr-namespace:EvernoteCloneGUI">
     <Application.Resources>
-         
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary>
+                    <local:Bootstrapper x:Key="Bootstrapper"></local:Bootstrapper>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>
