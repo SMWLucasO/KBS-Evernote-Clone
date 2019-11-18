@@ -14,7 +14,30 @@ namespace EvernoteCloneLibrary.Database
     public class DataAccess
     {
 
+        /// <summary>
+        /// The Singleton accessor to this class.
+        /// The only way to access this class' object is through here.
+        /// </summary>
+        public static DataAccess Instance = new DataAccess();
+
+        /// <summary>
+        /// The ongoing connection with the database.
+        /// </summary>
         private SqlConnection _connection;
+
+
+        /// <summary>
+        /// We need a static constructor so that the C# compiler won't complain,
+        /// <see href="https://csharpindepth.com/Articles/Singleton"> as stated in this article.</see>
+        /// (Fourth version paragraph)
+        /// </summary>
+        static DataAccess() { }
+
+        /// <summary>
+        /// The DataAccess class needs to be private to block any other object from being created.
+        /// </summary>
+        private DataAccess() { }
+
 
         /// <summary>
         /// A method for querying the database.
@@ -29,13 +52,59 @@ namespace EvernoteCloneLibrary.Database
         /// <param name="Parameters"></param>
         /// <param name="ReturnType"></param>
         /// <returns></returns>
-        public T Query<T>(string QueryString, Dictionary<string, object> Parameters, Func<SqlCommand, T> ReturnType)
+        private T Query<T>(string QueryString, Dictionary<string, object> Parameters, Func<SqlCommand, T> ReturnType)
         {
             SqlConnection sqlConnection = OpenSqlConnection();
             using (SqlCommand sqlCommand = GenerateParameteredCommand(QueryString, sqlConnection, Parameters))
             {
                 return ReturnType(sqlCommand);
             }
+        }
+
+        /// <summary>
+        /// Method for SELECT queries within repositories
+        /// </summary>
+        /// <param name="Table"></param>
+        /// <param name="Conditions"></param>
+        /// <param name="Parameters"></param>
+        /// <returns></returns>
+        public SqlDataReader ExecuteAndRead(string Table, string[] Conditions, Dictionary<string, object> Parameters)
+        {
+            StringBuilder conditionBuilder = new StringBuilder();
+
+            // build the condition string: ( WHERE ... AND ... AND ... AND ... ) etc
+            // conditions array should hold strings of: key = value, key >= value ... etc
+            for (int i = 0; i < Conditions.Length; i++)
+            {
+                if (i == 0)
+                {
+                    conditionBuilder.Append("WHERE ");
+                }
+                else
+                {
+                    conditionBuilder.Append("AND ");
+                }
+
+                conditionBuilder.Append(Conditions[i]).Append(" ");
+            }
+
+            // Query the database using the specified data
+            return Query($"SELECT * FROM {Table} {conditionBuilder.ToString()}",
+                Parameters, SqlDataReaderReturnType);
+
+        }
+
+        /// <summary>
+        /// Method for INSERT/DELETE/UPDATE queries within repositories.
+        /// </summary>
+        /// <param name="Query"></param>
+        /// <param name="Parameters"></param>
+        /// <returns></returns>
+        public bool Execute(string Query, Dictionary<string, object> Parameters)
+        {
+            bool success = this.Query(Query, Parameters, RowsAffectedReturnType);
+            CloseSqlConnection();
+            return success;
         }
 
         /// <summary>
@@ -66,8 +135,9 @@ namespace EvernoteCloneLibrary.Database
         private SqlConnection OpenSqlConnection()
         {
             SqlConnection sqlConnection = new SqlConnection("Data Source=.;Initial Catalog=NoteFever_EvernoteClone;Integrated Security=True");
-
             sqlConnection.Open();
+
+            _connection = sqlConnection;
 
             return sqlConnection;
         }

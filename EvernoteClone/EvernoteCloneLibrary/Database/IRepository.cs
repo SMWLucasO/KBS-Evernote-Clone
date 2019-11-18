@@ -42,5 +42,12 @@ namespace EvernoteCloneLibrary.Database
         /// <returns></returns>
         bool Delete(T ToDelete);
 
+        /// <summary>
+        /// A helper method to generate the query parameters.
+        /// </summary>
+        /// <param name="ToExtractFrom">The model which data will be extracted from</param>
+        /// <returns></returns>
+        public Dictionary<string, object> GenerateQueryParameters(T ToExtractFrom);
+
     }
 }
