@@ -68,16 +68,20 @@
     <Compile Include="Database\DataAccess.cs" />
     <Compile Include="Database\IModel.cs" />
     <Compile Include="Database\IRepository.cs" />
-    <Compile Include="Notebook\Notebook.cs" />
-    <Compile Include="Notebook\NotebookModel.cs" />
-    <Compile Include="Notebook\NotebookRepository.cs" />
-    <Compile Include="Notebook\Notes\NoteModel.cs" />
-    <Compile Include="Notebook\Notes\NoteRepository.cs" />
-    <Compile Include="Notebook\Notes\Note.cs" />
+    <Compile Include="Files\Parsers\IParseable.cs" />
+    <Compile Include="Files\Parsers\XMLExporter.cs" />
+    <Compile Include="Files\Parsers\XMLImporter.cs" />
+    <Compile Include="Notebooks\Notebook.cs" />
+    <Compile Include="Notebooks\NotebookModel.cs" />
+    <Compile Include="Notebooks\NotebookRepository.cs" />
+    <Compile Include="Notebooks\Notes\INote.cs" />
+    <Compile Include="Notebooks\Notes\NoteModel.cs" />
+    <Compile Include="Notebooks\Notes\NoteRepository.cs" />
+    <Compile Include="Notebooks\Notes\Note.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Notebook\Location\" />
+    <Folder Include="Notebooks\Location\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
