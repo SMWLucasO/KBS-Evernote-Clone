@@ -13,6 +13,8 @@ namespace EvernoteCloneLibrary.Database
     /// </summary>
     public class DataAccess
     {
+        // TODO: Concurrency breaks the _connection, because it can be closed by one thread whilst another is
+        // sending a message. TODO: fix.
 
         /// <summary>
         /// The Singleton accessor to this class.
