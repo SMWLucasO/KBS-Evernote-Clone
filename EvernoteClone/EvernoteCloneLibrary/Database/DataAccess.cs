@@ -72,6 +72,7 @@ namespace EvernoteCloneLibrary.Database
         /// <returns></returns>
         public SqlDataReader ExecuteAndRead(string Table, string[] Conditions, Dictionary<string, object> Parameters)
         {
+
             StringBuilder conditionBuilder = new StringBuilder();
 
             // build the condition string: ( WHERE ... AND ... AND ... AND ... ) etc

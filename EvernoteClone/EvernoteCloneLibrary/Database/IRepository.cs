@@ -19,7 +19,7 @@ namespace EvernoteCloneLibrary.Database
         /// <param name="conditions"></param>
         /// <param name="Parameters"></param>
         /// <returns></returns>
-        IEnumerable<T> GetBy(string[] conditions, Dictionary<string, object> Parameters);
+        IEnumerable<T> GetBy(string[] Conditions, Dictionary<string, object> Parameters);
 
         /// <summary>
         /// A method signature used for inserting a new record into the table
