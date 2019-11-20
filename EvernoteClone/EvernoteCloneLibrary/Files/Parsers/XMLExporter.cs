@@ -21,12 +21,12 @@ namespace EvernoteCloneLibrary.Files.Parsers
         /// </summary>
         /// <param name="PathName"></param>
         /// <param name="Filename"></param>
-        /// <param name="Notebook"></param>
+        /// <param name="ParseableObject"></param>
         /// <returns></returns>
-        public static bool Export(string PathName, string Filename, Notebook Notebook)
+        public static bool Export(string FilePath, string Filename, IParseable ParseableObject)
         {
-            string fullPath = $"{PathName}/{Filename}";
-            File.WriteAllLines(fullPath, Notebook.ToXMLRepresentation());
+            string fullPath = $"{FilePath}/{Filename}";
+            File.WriteAllLines(fullPath, ParseableObject.ToXMLRepresentation());
 
             return File.Exists(fullPath);
         }

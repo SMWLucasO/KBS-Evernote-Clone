@@ -19,7 +19,7 @@ namespace EvernoteCloneLibrary.Files.Parsers
         /// <param name="FilePath"></param>
         /// <param name="Filename"></param>
         /// <returns></returns>
-        public static Notebook Import(string FilePath, string Filename)
+        public static IParseable Import(string FilePath, string Filename)
         {
             string fullPath = @$"{FilePath}/{Filename}";
 
@@ -82,7 +82,7 @@ namespace EvernoteCloneLibrary.Files.Parsers
         }
 
         /// <summary>
-        /// An ISO-8601 'T00000000Z000000' formatter. 
+        /// An ISO-8601 '00000000T000000Z' formatter. 
         /// </summary>
         /// <param name="Datetime"</param>
         /// <returns></returns>
