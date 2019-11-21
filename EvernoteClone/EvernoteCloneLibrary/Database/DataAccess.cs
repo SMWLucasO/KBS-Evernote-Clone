@@ -111,6 +111,25 @@ namespace EvernoteCloneLibrary.Database
         }
 
         /// <summary>
+        /// Return -1 if nothing was returned from the query, otherwise return the last inserted id.
+        /// </summary>
+        /// <param name="Query"></param>
+        /// <param name="Parameters"></param>
+        /// <returns></returns>
+        public int ExecuteAndReturnId(string Query, Dictionary<string, object> Parameters)
+        {
+            SqlDataReader data = this.Query($"{Query} SELECT NewID = SCOPE_IDENTITY()", Parameters, SqlDataReaderReturnType);
+            while(data.Read())
+            {
+                
+                return Convert.ToInt32(Math.Truncate(((decimal)data["NewID"])));
+            }
+            
+            CloseSqlConnection();
+            return -1;
+        }
+
+        /// <summary>
         /// Method which prepares the SqlCommand for being executed
         /// </summary>
         /// <param name="QueryString">string</param>

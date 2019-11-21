@@ -21,10 +21,30 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
         /// <returns>bool to determine if the note was inserted</returns>
         public bool Insert(NoteModel ToInsert)
         {
-            Dictionary<string, object> parameters = GenerateQueryParameters(ToInsert);
+            if (ToInsert != null)
+            {
+                if (ToInsert.CreationDate != null && ToInsert.LastUpdated != null && !(string.IsNullOrEmpty(ToInsert.Author)))
+                {
+                    if (string.IsNullOrEmpty(ToInsert.Title))
+                    {
+                        ToInsert.Title = "Nameless note";
+                    }
 
-            return DataAccess.Instance.Execute("INSERT INTO [Note] ([NotebookID], [Title], [Content], [Author], [CreationDate], [LastUpdated])"
-                    + " VALUES (@NotebookID, @Title, @Content, @Author, @CreationDate, @LastUpdated)", parameters);
+                    Dictionary<string, object> parameters = GenerateQueryParameters(ToInsert);
+
+                    int id = DataAccess.Instance.ExecuteAndReturnId("INSERT INTO [Note] ([NotebookID], [Title], [Content], [Author], [CreationDate], [LastUpdated])"
+                            + " VALUES (@NotebookID, @Title, @Content, @Author, @CreationDate, @LastUpdated)", parameters);
+                    
+                    if(id != -1)
+                    {
+                        ToInsert.Id = id;
+                    }
+
+                    return id != -1;
+                }
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -70,14 +90,21 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
         public bool Update(NoteModel ToUpdate)
         {
             // TODO: Make sure the note is actually from the author before saving it.
+            if (ToUpdate != null)
+            {
+                if (!(string.IsNullOrEmpty(ToUpdate.Author) || ToUpdate.CreationDate == null || ToUpdate.LastUpdated == null))
+                {
+                    Dictionary<string, object> parameters = GenerateQueryParameters(ToUpdate);
+                    parameters.Add("@Id", ToUpdate.Id);
 
-            Dictionary<string, object> parameters = GenerateQueryParameters(ToUpdate);
-            parameters.Add("@Id", ToUpdate.Id);
 
+                    return DataAccess.Instance.Execute("UPDATE [Note] SET [NotebookID] = @NotebookID, [Title] = @Title, [Content] = @Content, "
+                        + "[Author] = @Author, [CreationDate] = @CreationDate, [LastUpdated] = @LastUpdated WHERE Id = @Id",
+                        parameters);
+                }
+            }
 
-            return DataAccess.Instance.Execute("UPDATE [Note] SET [NotebookID] = @NotebookID, [Title] = @Title, [Content] = @Content, "
-                + "[Author] = @Author, [CreationDate] = @CreationDate, [LastUpdated] = @LastUpdated WHERE Id = @Id",
-                parameters);
+            return false;
         }
 
         /// <summary>
@@ -87,13 +114,17 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
         /// <returns></returns>
         public bool Delete(NoteModel ToDelete)
         {
-            // TODO verify that the note is actually from the one deleting it
-            Dictionary<string, object> Parameter = new Dictionary<string, object>()
+            if(ToDelete != null)
+            {
+                Dictionary<string, object> Parameter = new Dictionary<string, object>()
             {
                 { "@Id", ToDelete.Id }
             };
 
-            return DataAccess.Instance.Execute("DELETE FROM [Note] WHERE Id = @Id", Parameter);
+                return DataAccess.Instance.Execute("DELETE FROM [Note] WHERE Id = @Id", Parameter);
+            }
+
+            return false;
         }
 
 
