@@ -25,10 +25,25 @@ namespace EvernoteCloneLibrary.Files.Parsers
         /// <returns></returns>
         public static bool Export(string FilePath, string Filename, IParseable ParseableObject)
         {
-            string fullPath = $"{FilePath}/{Filename}";
-            File.WriteAllLines(fullPath, ParseableObject.ToXMLRepresentation());
+            if (!(string.IsNullOrEmpty(FilePath) || string.IsNullOrEmpty(Filename)) && ParseableObject != null)
+            {
 
-            return File.Exists(fullPath);
+                string fullPath = $"{FilePath}/{Filename}";
+                if (Path.HasExtension(fullPath))
+                {
+                    if (!(Directory.Exists(FilePath)))
+                    {
+                        Directory.CreateDirectory(FilePath);
+                    }
+
+                    File.WriteAllLines(fullPath, ParseableObject.ToXMLRepresentation());
+
+                    return File.Exists(fullPath);
+                }
+
+            }
+
+            return false;
         }
     }
 }
