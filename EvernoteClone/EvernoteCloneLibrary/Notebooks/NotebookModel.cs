@@ -12,10 +12,10 @@ namespace EvernoteCloneLibrary.Notebooks
     /// </summary>
     public class NotebookModel : IModel
     {
-        public int Id { get; set; }
+        public int Id { get; set; } = -1;
         public int UserID { get; set; }
         public int LocationID { get; set; }
-        public string Title { get; set; }
+        public virtual string Title { get; set; }
         public DateTime CreationDate { get; set; }
         public DateTime LastUpdated { get; set; }
     }

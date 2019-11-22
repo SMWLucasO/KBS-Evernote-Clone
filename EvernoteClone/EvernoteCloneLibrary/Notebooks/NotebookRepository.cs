@@ -1,4 +1,5 @@
 ﻿using EvernoteCloneLibrary.Database;
+using EvernoteCloneLibrary.Notebooks.Notes;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -57,14 +58,27 @@ namespace EvernoteCloneLibrary.Notebooks
 
             while (fetchedSqlDataReader.Read())
             {
-                generatedNotebooks.Add(new Notebook()
+                NoteRepository noteRepository = new NoteRepository();
+                Notebook notebook = new Notebook()
                 {
                     Id = (int)fetchedSqlDataReader["Id"],
                     UserID = (int)fetchedSqlDataReader["UserID"],
                     Title = (string)fetchedSqlDataReader["Title"],
                     CreationDate = (DateTime)fetchedSqlDataReader["CreationDate"],
-                    LastUpdated = (DateTime)fetchedSqlDataReader["LastUpdated"]
-                });
+                    LastUpdated = (DateTime)fetchedSqlDataReader["LastUpdated"],
+                    // Get all the notes of the notebook by the notebookid, cast it to an INote.
+                    Notes = noteRepository.GetBy(
+                        new string[] { "NotebookID = @Id" },
+                        new Dictionary<string, object>()
+                        {
+                            { "@Id", (int) fetchedSqlDataReader["Id"] }
+                        }
+                        )
+                    .Select((el) => ((INote)el)).ToList()
+                };
+                
+                // Add the generated notebook with its notes to the list to be returned.
+                generatedNotebooks.Add(notebook);
             }
 
             // We always have to close the sql connection, because it does not get closed otherwise.
@@ -107,7 +121,7 @@ namespace EvernoteCloneLibrary.Notebooks
         /// <returns></returns>
         public bool Delete(NotebookModel ToDelete)
         {
-            if(ToDelete != null)
+            if (ToDelete != null)
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>()
             {

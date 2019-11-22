@@ -7,9 +7,35 @@ using System.Threading.Tasks;
 
 namespace EvernoteCloneLibrary.Notebooks.Notes
 {
+    /// <summary>
+    /// The concrete class for notes.
+    /// </summary>
     public class Note : NoteModel, INote
     {
-        public List<string> Tags { get; internal set; }
+        public List<string> Tags { get; set; }
+
+        /// <summary>
+        /// This string should be modified when content changes, not the Content property.
+        /// The Content property is specifically for saved content.
+        /// </summary>
+        public string NewContent { get; set; }
+
+        public Note()
+        {
+            // We want to remember the old content, saving should modify this part.
+            NewContent = Content;
+        }
+
+        /// <summary>
+        /// Method for saving specific notes.
+        /// </summary>
+        /// <returns></returns>
+        public void Save()
+        {
+            // TODO update notebook last_updated component of the note.
+            Content = NewContent;
+        }
+
 
         public override string ToString() => $"{Title} by {Author}";
 
@@ -33,7 +59,7 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
                        $"<note-attributes>",
                            $"<author>{Author}</author>",
                        "</note-attributes>",
-                   $"</note>" 
+                   $"</note>"
             };
         }
     }
