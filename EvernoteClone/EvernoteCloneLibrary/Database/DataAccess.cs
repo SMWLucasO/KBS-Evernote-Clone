@@ -1,8 +1,10 @@
-﻿using System;
+﻿using EvernoteCloneLibrary.Constants;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -112,6 +114,7 @@ namespace EvernoteCloneLibrary.Database
 
         /// <summary>
         /// Return -1 if nothing was returned from the query, otherwise return the last inserted id.
+        /// Just in case, this method should only be used for INSERT repository methods.
         /// </summary>
         /// <param name="Query"></param>
         /// <param name="Parameters"></param>
@@ -119,12 +122,12 @@ namespace EvernoteCloneLibrary.Database
         public int ExecuteAndReturnId(string Query, Dictionary<string, object> Parameters)
         {
             SqlDataReader data = this.Query($"{Query} SELECT NewID = SCOPE_IDENTITY()", Parameters, SqlDataReaderReturnType);
-            while(data.Read())
+            while (data.Read())
             {
-                
+
                 return Convert.ToInt32(Math.Truncate(((decimal)data["NewID"])));
             }
-            
+
             CloseSqlConnection();
             return -1;
         }
@@ -156,7 +159,12 @@ namespace EvernoteCloneLibrary.Database
         /// <returns>SqlConnection</returns>
         private SqlConnection OpenSqlConnection()
         {
-            SqlConnection sqlConnection = new SqlConnection("Data Source=.;Initial Catalog=NoteFever_EvernoteClone;Integrated Security=True");
+
+            SqlConnection sqlConnection = new SqlConnection(Constants.Constant.TEST_MODE ?
+                Constants.Constant.TEST_CONNECTION_STRING :
+                Constants.Constant.PRODUCTION_CONNECTION_STRING
+                );
+
             sqlConnection.Open();
 
             _connection = sqlConnection;

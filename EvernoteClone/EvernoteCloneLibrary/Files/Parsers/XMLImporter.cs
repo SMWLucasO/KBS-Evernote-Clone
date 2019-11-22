@@ -21,10 +21,15 @@ namespace EvernoteCloneLibrary.Files.Parsers
         /// <returns></returns>
         public static IParseable Import(string FilePath, string Filename)
         {
+            if (!(Directory.Exists(FilePath)))
+            {
+                return null;
+            }
+
             if (!(string.IsNullOrEmpty(FilePath) || string.IsNullOrEmpty(Filename)))
             {
                 string fullPath = @$"{FilePath}/{Filename}";
-                if (Path.HasExtension(fullPath))
+                if (File.Exists(fullPath) && Path.HasExtension(fullPath))
                 {
                     // generate a notebook using the information from the file itself
                     Notebook notebook = GenerateNotebookFromFile(fullPath);

@@ -65,6 +65,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Constants\Constant.cs" />
     <Compile Include="Database\DataAccess.cs" />
     <Compile Include="Database\IModel.cs" />
     <Compile Include="Database\IRepository.cs" />
