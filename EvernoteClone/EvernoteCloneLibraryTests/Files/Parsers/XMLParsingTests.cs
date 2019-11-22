@@ -1,6 +1,8 @@
-﻿using EvernoteCloneLibrary.Files.Parsers;
+﻿using EvernoteCloneLibrary.Constants;
+using EvernoteCloneLibrary.Files.Parsers;
 using EvernoteCloneLibrary.Notebooks;
 using EvernoteCloneLibrary.Notebooks.Notes;
+using EvernoteCloneLibraryTests.TestHelpers;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -12,9 +14,6 @@ namespace EvernoteCloneLibraryTests.Files.Parsers
     [TestFixture, Order(1)]
     class XMLExporterTests
     {
-
-        const string FileLocation = "tests/local/";
-
         [Order(1)]
         [TestCase(1, "test1.enex", Author = "Lucas Ouwens", Description = "Even though there's just one note, it should still be generated.")]
         [TestCase(10, "test2.enex", Author = "Lucas Ouwens", Description = "Many notes should not cause problems for the generating of the file")]
@@ -24,9 +23,9 @@ namespace EvernoteCloneLibraryTests.Files.Parsers
         {
 
             // Arrange
-            IParseable toParse = GenerateTestableNotebook(notesToGenerate);
+            IParseable toParse = ObjectGenerator.GenerateTestableNotebook(notesToGenerate);
             // Act
-            bool actual = XMLExporter.Export(FileLocation, Filename, toParse);
+            bool actual = XMLExporter.Export(Constant.TEST_STORAGE_PATH, Filename, toParse);
             // Assert
             Assert.That(actual, Is.True);
         }
@@ -39,55 +38,21 @@ namespace EvernoteCloneLibraryTests.Files.Parsers
         public void Export_ShouldNotExport(int NotesToGenerate, string Filename)
         {
             // Arrange
-            IParseable toParse = GenerateTestableNotebook(NotesToGenerate);
+            IParseable toParse = ObjectGenerator.GenerateTestableNotebook(NotesToGenerate);
 
             // Act
-            bool actual = XMLExporter.Export(FileLocation, Filename, toParse);
+            bool actual = XMLExporter.Export(Constant.TEST_STORAGE_PATH, Filename, toParse);
 
             // Assert
             Assert.That(actual, Is.False);
         }
 
-        private static IParseable GenerateTestableNotebook(int notes)
-        {
-            if (notes == -1) return null;
-
-            List<INote> innerNotes = new List<INote>();
-            Notebook notebook = new Notebook()
-            {
-                Id = 1,
-                LocationID = 1,
-                Title = $"Notebook #{1}",
-                CreationDate = DateTime.Now.Date,
-                LastUpdated = DateTime.Now,
-            };
-
-            for (int j = 0; j < notes; j++)
-            {
-                Note note = new Note()
-                {
-                    Id = j,
-                    NotebookID = 1,
-                    Title = $"Test #{j}",
-                    Author = $"Some {j}",
-                    Content = $"ASDF {j}",
-                    CreationDate = DateTime.Now.Date,
-                    LastUpdated = DateTime.Now
-                };
-
-                innerNotes.Add(note);
-            }
-
-            notebook.Notes = innerNotes;
-
-            return notebook;
-        }
+        
     }
 
     [TestFixture, Order(2)]
     class XMLImporterTests
     {
-        const string FileLocation = "tests/local/";
 
         [Order(1)]
         [TestCase("test1.enex", 1, Author = "Lucas Ouwens", Description = "All files exported should be reloadable by the import method (1 note)")]
@@ -97,7 +62,7 @@ namespace EvernoteCloneLibraryTests.Files.Parsers
         public void Import_ShouldImport(string Filename, int expectedNotes)
         {
             // Act
-            IParseable loaded = XMLImporter.Import(FileLocation, Filename);
+            IParseable loaded = XMLImporter.Import(Constant.TEST_STORAGE_PATH, Filename);
 
             // Assert
             Assert.IsNotNull(loaded);
@@ -108,31 +73,14 @@ namespace EvernoteCloneLibraryTests.Files.Parsers
         [TestCase(null, Author = "Lucas Ouwens", Description = "If there is a null value given, then nothing should be able to get imported.")]
         [TestCase("", Author = "Lucas Ouwens", Description = "If it is an empty string, there should be nothing to import.")]
         [TestCase("FileWithoutExtension", Author = "Lucas Ouwens", Description = "A file without extension is not a file, thus it should not work.")]
+        [TestCase("File_That_Doesnt_Exist.enex", Author = "Lucas Ouwens", Description = "A file that does not exist should give back a null.")]
         public void Import_ShouldNotImport(string Filename)
         {
             // Act
-            IParseable actual = XMLImporter.Import(FileLocation, Filename);
+            IParseable actual = XMLImporter.Import(Constant.TEST_STORAGE_PATH, Filename);
 
             // Assert
             Assert.IsNull(actual);
-        }
-
-        [Order(3)]
-        [TestCase("File_That_Doesnt_Exist.enex", Author = "Lucas Ouwens", Description = "A file that does not exist should just throw an exception.")]
-        public void Import_ShouldThrowFileNotFoundException(string Filename)
-        {
-            // Act and Assert
-            Assert.Throws(typeof(FileNotFoundException), () => XMLImporter.Import(FileLocation, Filename));
-        }
-
-        [OneTimeTearDown]
-        public void ImportExport_ClearGeneratedFiles()
-        {
-            // Clean up the testing location.
-            foreach (string file in Directory.GetFiles(FileLocation))
-            {
-                File.Delete(file);
-            }
         }
     }
 }
