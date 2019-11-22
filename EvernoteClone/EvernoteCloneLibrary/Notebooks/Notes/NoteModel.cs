@@ -14,7 +14,7 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
     {
         public int Id { get; set; } = -1;
         public int NotebookID { get; set; }
-        public string Title { get; set; }
+        public virtual string Title { get; set; }
         public string Content { get; set; }
         public string Author { get; set; }
         public DateTime CreationDate { get; set; }

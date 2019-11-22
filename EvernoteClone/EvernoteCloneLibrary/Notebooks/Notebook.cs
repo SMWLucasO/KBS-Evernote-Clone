@@ -23,6 +23,8 @@ namespace EvernoteCloneLibrary.Notebooks
         {
             get
             {
+                // If we do Title = null, then it will give the default title.
+                if (_title == null) Title = null;
                 return _title;
             }
             set

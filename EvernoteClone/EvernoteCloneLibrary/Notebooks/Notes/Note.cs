@@ -14,6 +14,36 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
     {
         public List<string> Tags { get; set; }
 
+        private string _title;
+
+        /// <summary>
+        /// When an empty title is given, we give a default title.
+        /// </summary>
+        public override string Title
+        {
+            get
+            {
+                // If we do Title = null, then it will give the default title.
+                if (_title == null)
+                {
+                    Title = null;
+                }
+
+                return _title;
+            }
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    _title = "Nameless note";
+                }
+                else
+                {
+                    _title = value;
+                }
+            }
+        }
+
         /// <summary>
         /// This string should be modified when content changes, not the Content property.
         /// The Content property is specifically for saved content.
@@ -37,7 +67,18 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
         }
 
 
-        public override string ToString() => $"{Title} by {Author}";
+        /// <summary>
+        /// If the author is null, we will throw an exception.
+        /// We don't have to care about the Title, because it will automatically be renamed when null.
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            if (string.IsNullOrEmpty(Author))
+                throw new InvalidOperationException("Author must exist and cannot be empty.");
+            
+            return $"{Title} by {Author}";
+        }
 
         /// <summary>
         /// Generate the XML representation of notes
