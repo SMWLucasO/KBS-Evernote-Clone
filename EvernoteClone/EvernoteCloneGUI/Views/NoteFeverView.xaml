@@ -5,8 +5,42 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EvernoteCloneGUI.Views"
         mc:Ignorable="d"
-        Title="NoteFever" Height="450" Width="800">
+        Title="NoteFever" Height="600" Width="800">
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            
+            
+
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            
+            
+        </Grid.RowDefinitions>
+
+        <Button Content="Username" Background="#404040" Foreground="White" FontSize="16" Grid.Row="0"></Button>
+        <Button Content="New Note" Background="#0052cc" Foreground="White" FontSize="16" Grid.Row="1" Click="NewNote"></Button>
+        <Button Content="All Notes" Background="#404040" Foreground="White" FontSize="16" Grid.Row="2"></Button>
+        <TreeView Background="#404040" Foreground="White" Grid.Row="3">
+            <TreeViewItem Header="Notebooks" Foreground="White" IsExpanded="False" FontSize="14">
+                <TreeViewItem Foreground="White" Header="My Notebook" FontSize="14"></TreeViewItem>
+            </TreeViewItem>
+        </TreeView>
+        <Button Content="Shared With Me" Background="#404040" Foreground="White" FontSize="16" Grid.Row="4"></Button>
+        <Button Content="Bin" Background="#404040" Foreground="White" FontSize="16" Grid.Row="5"></Button>
+        <Button Content="Tags" Background="#404040" Foreground="White" FontSize="16" Grid.Row="6"></Button>
+        <Button Content="Search" Background="#404040" Foreground="White" FontSize="16" Grid.Row="7"></Button>
     </Grid>
+
 </Window>

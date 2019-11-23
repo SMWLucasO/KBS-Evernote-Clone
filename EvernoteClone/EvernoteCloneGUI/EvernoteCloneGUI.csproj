@@ -72,6 +72,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ViewModels\NoteFeverViewModel.cs" />
+    <Compile Include="Views\NewNoteView.xaml.cs">
+      <DependentUpon>NewNoteView.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bootstrapper.cs" />
@@ -105,6 +108,10 @@
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\NewNoteView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\NoteFeverView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
