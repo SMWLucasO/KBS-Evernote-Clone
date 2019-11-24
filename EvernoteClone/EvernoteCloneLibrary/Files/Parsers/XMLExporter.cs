@@ -16,6 +16,8 @@ namespace EvernoteCloneLibrary.Files.Parsers
         // NOTE: This class can be further abstracted by changing Notebook notebook to IParseable item
         // or something alike.
 
+        // Will cause issues with duplicate named notebooks, thus TODO: Impl. folder structure through path
+
         /// <summary>
         /// Method to export notebooks to XML form.
         /// </summary>

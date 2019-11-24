@@ -137,6 +137,7 @@ namespace EvernoteCloneLibrary.Notebooks
         /// <returns></returns>
         public bool Save(int UserID = -1)
         {
+            LastUpdated = DateTime.Now;
             bool stored = XMLExporter.Export(GetStoragePath(), $"{Title}.enex", this);
 
             if (UserID != -1)

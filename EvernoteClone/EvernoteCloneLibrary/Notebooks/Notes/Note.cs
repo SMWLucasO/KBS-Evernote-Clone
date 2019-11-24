@@ -62,8 +62,12 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
         /// <returns></returns>
         public void Save()
         {
-            // TODO update notebook last_updated component of the note.
             Content = NewContent;
+            LastUpdated = DateTime.Now;
+            if(Id == -1 || CreationDate == null)
+            {
+                CreationDate = DateTime.Now.Date;
+            }
         }
 
 
