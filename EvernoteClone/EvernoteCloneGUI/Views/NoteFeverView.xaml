@@ -4,17 +4,17 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EvernoteCloneGUI.Views"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+        xmlns:cal="http://www.caliburnproject.org"
         mc:Ignorable="d"
-        Title="NoteFever" Height="600" Width="800">
+        Title="NoteFever" Height="600" Width="1280">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition/>
             <ColumnDefinition/>
             <ColumnDefinition/>
-            
-            
-
+            <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition/>
@@ -25,8 +25,8 @@
             <RowDefinition/>
             <RowDefinition/>
             <RowDefinition/>
-            
-            
+
+
         </Grid.RowDefinitions>
 
         <Button Content="Username" Background="#404040" Foreground="White" FontSize="16" Grid.Row="0"></Button>
@@ -42,7 +42,13 @@
         <Button Content="Tags" Background="#404040" Foreground="White" FontSize="16" Grid.Row="6"></Button>
         <Button Content="Search" Background="#404040" Foreground="White" FontSize="16" Grid.Row="7"></Button>
 
-        <ContentControl Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3"
+        <StackPanel Grid.Row="0" Grid.Column="1" Grid.RowSpan="8">
+            <!-- This doesn't currently properly load in the notebooks, but it is an example. -->
+            <local:NotebookView HorizontalAlignment="Stretch" Height="100"></local:NotebookView>
+            <!-- Add all notebooks in here... (Perhaps load a 'usercontrol')-->
+        </StackPanel>
+
+        <ContentControl Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="3"
                         Grid.RowSpan="8" x:Name="ActiveItem"></ContentControl>
 
     </Grid>
