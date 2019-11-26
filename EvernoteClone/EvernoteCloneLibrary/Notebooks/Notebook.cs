@@ -18,6 +18,7 @@ namespace EvernoteCloneLibrary.Notebooks
         public List<INote> Notes { get; set; }
 
         public NotebookLocation Path { get; set; }
+            = new NotebookLocation();
 
         public string FSName { get; set; }
 
