@@ -1,0 +1,6 @@
+https://stackoverflow.com/questions/20558043/the-right-connection-string-for-remote-sql-server-for-c-sharp/20559711#20559711
+https://csharp-station.com/Tutorial/AdoDotNet/Lesson02
+https://docs.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqlconnectionstringbuilder?view=netframework-4.8
+https://mysqlconnector.net/tutorials/connect-ssh/ <----
+https://docs.microsoft.com/en-us/dotnet/api/system.data.sqlclient.sqlconnection.connectionstring?view=netframework-4.8
+https://stackoverflow.com/questions/26426152/c-sharp-ssh-tunnel-to-mysql-server

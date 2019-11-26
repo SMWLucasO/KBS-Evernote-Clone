@@ -19,7 +19,7 @@ namespace EvernoteCloneLibrary.Constants
         public const string TEST_STORAGE_PATH = "tests/local/";
 
         // Storage constants (PRODUCTION mode)
-        public const string PRODUCTION_CONNECTION_STRING = "Data Source=.;Initial Catalog=NoteFever_EvernoteClone;Integrated Security=True";
+        public const string PRODUCTION_CONNECTION_STRING = "Data Source=tcp:145.44.234.54;Initial Catalog=NoteFever_EvernoteClone;Integrated Security=True";
         public const string PRODUCTION_STORAGE_PATH = "";
 
     }
