@@ -16,7 +16,8 @@ namespace EvernoteCloneLibrary.Notebooks.Location
             get
             {
                 // Less code by calling the set method in the case where the path is null or empty.
-                if (string.IsNullOrEmpty(_path)) Path = null;
+                if (string.IsNullOrEmpty(_path))
+                    Path = null;
                 return _path;
             }
             set
