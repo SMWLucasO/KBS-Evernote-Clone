@@ -23,7 +23,7 @@
         public const string DATABASE_HOST = "127.0.0.1";
         public const int    DATABASE_PORT = 1433;
         public const string DATABASE_USERNAME = "ever";
-        public const string DATABASE_PASSWORD = "ikwilmijndata";
+        public const string DATABASE_PASSWORD = "";
         public const string DATABASE_CATALOG = "NoteFever_EvernoteClone";
         public const string DATABASE_INTEGRATED_SECURITY = "False";
     }
