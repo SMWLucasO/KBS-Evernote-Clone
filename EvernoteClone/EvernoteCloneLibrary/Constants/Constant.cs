@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace EvernoteCloneLibrary.Constants
+﻿namespace EvernoteCloneLibrary.Constants
 {
     /// <summary>
     /// All constants.
@@ -18,9 +12,19 @@ namespace EvernoteCloneLibrary.Constants
         public const string TEST_CONNECTION_STRING = "Data Source=.;Initial Catalog=NoteFever_EvernoteClone;Integrated Security=True";
         public const string TEST_STORAGE_PATH = "tests/local/";
 
-        // Storage constants (PRODUCTION mode)
-        public const string PRODUCTION_CONNECTION_STRING = "Data Source=tcp:145.44.234.54;Initial Catalog=NoteFever_EvernoteClone;Integrated Security=True";
-        public const string PRODUCTION_STORAGE_PATH = "";
+        // Storage constants (PRODUCTION mode, ssh)
+        public const bool   SSH_USE_PUBLIC_KEY = true;
+        public const string SSH_HOST = "145.44.234.54";
+        public const string SSH_USERNAME = "student";
+        public const string SSH_PASSWORD = "";
+        public const string SSH_KEY_PATH = @"C:\git\KBS-Evernote-Clone\EvernoteClone\open-ssh";
 
+        // Storage constants (PRODUCTION mode, database)
+        public const string DATABASE_HOST = "127.0.0.1";
+        public const int    DATABASE_PORT = 1433;
+        public const string DATABASE_USERNAME = "ever";
+        public const string DATABASE_PASSWORD = "ikwilmijndata";
+        public const string DATABASE_CATALOG = "NoteFever_EvernoteClone";
+        public const string DATABASE_INTEGRATED_SECURITY = "False";
     }
 }

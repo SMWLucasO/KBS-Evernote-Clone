@@ -1,5 +1,4 @@
-﻿using EvernoteCloneLibrary.Constants;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
@@ -7,6 +6,8 @@ using System.Linq;
 using System.Security;
 using System.Text;
 using System.Threading.Tasks;
+
+using EvernoteCloneLibrary.Constants;
 
 namespace EvernoteCloneLibrary.Database
 {
@@ -159,17 +160,42 @@ namespace EvernoteCloneLibrary.Database
         /// <returns>SqlConnection</returns>
         private SqlConnection OpenSqlConnection()
         {
+            if (Constant.TEST_MODE)
+            {
+                SqlConnection sqlConnection = new SqlConnection(Constant.TEST_CONNECTION_STRING);
 
-            SqlConnection sqlConnection = new SqlConnection(Constants.Constant.TEST_MODE ?
-                Constants.Constant.TEST_CONNECTION_STRING :
-                Constants.Constant.PRODUCTION_CONNECTION_STRING
-                );
+                sqlConnection.Open();
 
-            sqlConnection.Open();
+                _connection = sqlConnection;
 
-            _connection = sqlConnection;
+                return sqlConnection;
+            }
+            else
+            {
+                var (sshClient, localPort) = SshConnection.ConnectSsh(
+                    sshHostName: Constant.SSH_HOST,
+                    sshUserName: Constant.SSH_USERNAME,
+                    sshKeyFile: Constant.SSH_KEY_PATH,
+                    databaseServer: Constant.DATABASE_HOST,
+                    databasePort: Constant.DATABASE_PORT);
 
-            return sqlConnection;
+                using (sshClient)
+                {
+                    string connectionString = $"" +
+                        $"Server=tcp:{Constant.DATABASE_HOST},{localPort};" +
+                        $"Database={Constant.DATABASE_CATALOG};" +
+                        $"UID={Constant.DATABASE_USERNAME};" +
+                        $"Password={Constant.DATABASE_PASSWORD};" +
+                        $"Integrated Security={Constant.DATABASE_INTEGRATED_SECURITY}";
+
+                    using (var sqlConnection = new SqlConnection(connectionString))
+                    {
+                        sqlConnection.Open();
+                        _connection = sqlConnection;
+                        return sqlConnection;
+                    }
+                }
+            }
         }
 
         /// <summary>
