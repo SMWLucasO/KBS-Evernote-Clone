@@ -72,6 +72,9 @@
     <Compile Include="Files\Parsers\IParseable.cs" />
     <Compile Include="Files\Parsers\XMLExporter.cs" />
     <Compile Include="Files\Parsers\XMLImporter.cs" />
+    <Compile Include="Notebooks\Location\NotebookLocation.cs" />
+    <Compile Include="Notebooks\Location\NotebookLocationModel.cs" />
+    <Compile Include="Notebooks\Location\NotebookLocationRepository.cs" />
     <Compile Include="Notebooks\Notebook.cs" />
     <Compile Include="Notebooks\NotebookModel.cs" />
     <Compile Include="Notebooks\NotebookRepository.cs" />
@@ -81,9 +84,7 @@
     <Compile Include="Notebooks\Notes\Note.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Notebooks\Location\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>

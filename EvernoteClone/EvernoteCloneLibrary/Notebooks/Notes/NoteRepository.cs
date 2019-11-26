@@ -140,7 +140,7 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
                 return new Dictionary<string, object>() {
                 { "@NotebookID", ToExtractFrom.NotebookID },
                 { "@Title", ToExtractFrom.Title },
-                { "@Content",  ToExtractFrom.Content },
+                { "@Content",  Encoding.UTF8.GetBytes(ToExtractFrom.Content) },
                 { "@Author", ToExtractFrom.Author },
                 { "@CreationDate", ToExtractFrom.CreationDate.Date },
                 { "@LastUpdated", ToExtractFrom.LastUpdated }

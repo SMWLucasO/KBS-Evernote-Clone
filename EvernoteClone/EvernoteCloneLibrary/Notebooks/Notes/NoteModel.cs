@@ -13,7 +13,7 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
     public class NoteModel : IModel
     {
         public int Id { get; set; } = -1;
-        public int NotebookID { get; set; }
+        public int NotebookID { get; set; } = -1;
         public virtual string Title { get; set; }
         public string Content { get; set; }
         public string Author { get; set; }

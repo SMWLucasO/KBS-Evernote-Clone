@@ -43,6 +43,7 @@ namespace EvernoteCloneLibrary.Files.Parsers
                     return File.Exists(fullPath);
                 }
 
+
             }
 
             return false;

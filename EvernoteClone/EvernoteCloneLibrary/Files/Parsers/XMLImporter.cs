@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml.Linq;
 using System.Linq;
+using EvernoteCloneLibrary.Notebooks.Location;
 
 namespace EvernoteCloneLibrary.Files.Parsers
 {
@@ -14,43 +15,44 @@ namespace EvernoteCloneLibrary.Files.Parsers
     public static class XMLImporter
     {
         /// <summary>
-        /// Method for importing the notes and notebooks
+        /// Method for importing notebooks
         /// </summary>
         /// <param name="FilePath"></param>
-        /// <param name="Filename"></param>
         /// <returns></returns>
-        public static IParseable Import(string FilePath, string Filename)
+        public static List<Notebook> ImportNotebooks(string FilePath)
         {
-            if (!(Directory.Exists(FilePath)))
+            if (!(string.IsNullOrEmpty(FilePath)))
             {
-                return null;
-            }
-
-            if (!(string.IsNullOrEmpty(FilePath) || string.IsNullOrEmpty(Filename)))
-            {
-                string fullPath = @$"{FilePath}/{Filename}";
-                if (File.Exists(fullPath) && Path.HasExtension(fullPath))
+                List<Notebook> notebooks = new List<Notebook>();
+                if (!(Directory.Exists(FilePath)) || Directory.GetFiles(FilePath).Length == 0)
                 {
+                    return null;
+                }
+
+                foreach (string File in Directory.GetFiles(FilePath))
+                {
+                    // load the XML from the path and parse it for usage
+                    XDocument xDocument = XDocument.Load(File);
+
                     // generate a notebook using the information from the file itself
-                    Notebook notebook = GenerateNotebookFromFile(fullPath);
+                    Notebook notebook = GenerateNotebookFromFile(File, xDocument);
 
                     if (notebook != null)
                     {
-                        // load the XML from the path and parse it for usage
-                        XDocument xDocument = XDocument.Load(fullPath);
                         List<Note> data = GenerateNotesFromXML(xDocument);
 
                         // Add all the notes to the temporary notebook.
                         if (data != null)
                         {
                             notebook.Notes.AddRange(data);
-                            return notebook;
+                            notebooks.Add(notebook);
                         }
 
                     }
                 }
-
+                return notebooks;
             }
+
             return null;
         }
 
@@ -59,16 +61,35 @@ namespace EvernoteCloneLibrary.Files.Parsers
         /// </summary>
         /// <param name="FullPath"></param>
         /// <returns></returns>
-        private static Notebook GenerateNotebookFromFile(string FullPath)
+        private static Notebook GenerateNotebookFromFile(string FullPath, XDocument xDocument)
         {
-            if (FullPath != null)
+            if (FullPath != null && xDocument != null)
             {
-                return new Notebook
+                var notebookData = (from nbook in xDocument.Descendants("en-export")
+                                    select new
+                                    {
+                                        Id = int.Parse(nbook.Element("id").Value),
+                                        Title = nbook.Element("title").Value,
+                                        Path = nbook.Element("path").Value,
+                                        LocationID = int.Parse(nbook.Element("path-id").Value),
+                                    }).First();
+
+                Notebook notebook = new Notebook
                 {
-                    Title = Path.GetFileNameWithoutExtension(FullPath),
+                    // The Id of the notebook, might be -1 if it doesn't exist in a database
+                    Id = notebookData.Id,
+                    // The Title of the notebook
+                    Title = notebookData.Title,
+                    // location data
+                    Path = new NotebookLocation() { Id = notebookData.LocationID, Path = notebookData.Path },
+                    LocationID = notebookData.LocationID,
+                    // File data which applies to the notebook.
                     CreationDate = File.GetCreationTime(FullPath),
-                    LastUpdated = File.GetLastWriteTime(FullPath)
+                    LastUpdated = File.GetLastWriteTime(FullPath),
+                    FSName = Path.GetFileNameWithoutExtension(FullPath)
                 };
+
+                return notebook;
             }
             return null;
         }
