@@ -5,8 +5,26 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EvernoteCloneGUI.Views"
         mc:Ignorable="d"
-        Title="LoginView" Height="450" Width="800">
+        Title="LoginView" Height="450" Width="500">
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <Label Grid.Column="1" Grid.Row="1" Content="Username"></Label>
+        <TextBlock Grid.Column="1" Grid.Row="1" Margin="0,32.5,71,29" Grid.ColumnSpan="3"></TextBlock>
+        <Label Grid.Column="1" Grid.Row="2" Content="Password"></Label>
+        <PasswordBox Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="3" Margin="0,32,71,28.5"/>
+        <Button Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2" Content="Login" Background="#0052cc" Foreground="White" Margin="10,26.5,9.5,10"></Button>
     </Grid>
 </Window>
