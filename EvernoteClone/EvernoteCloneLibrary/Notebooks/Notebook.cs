@@ -151,44 +151,47 @@ namespace EvernoteCloneLibrary.Notebooks
         public bool Save(int UserID = -1)
         {
             LastUpdated = DateTime.Now;
-            bool stored = UpdateLocalStorage(this);
-
+            bool storedLocally = UpdateLocalStorage(this);
+            bool storedInTheCloud = false;
             if (UserID != -1)
             {
-                this.UserID = UserID;
-                NotebookRepository notebookRepository = new NotebookRepository();
-                NoteRepository noteRepository = new NoteRepository();
+                try
+                {
 
-                // If the Id is '-1', that means it is a new notebook. Thus it should be inserted instead of updated.
-                if (this.Id != -1)
-                {
-                    
-                    stored = notebookRepository.Update(this);
-                }
-                else
-                {
-                    stored = notebookRepository.Insert(this);
-                }
+                    this.UserID = UserID;
+                    NotebookRepository notebookRepository = new NotebookRepository();
+                    NoteRepository noteRepository = new NoteRepository();
 
-                foreach (Note note in this.Notes)
-                {
-                    // Set the note's notebookID to the id of this notebook, in case it was -1 before.
-                    note.NotebookID = this.Id;
-                    if (note.Id == -1)
+                    // If the Id is '-1', that means it is a new notebook. Thus it should be inserted instead of updated.
+                    if (this.Id != -1)
                     {
-                        noteRepository.Insert(note);
-
+                        storedInTheCloud = notebookRepository.Update(this);
                     }
                     else
                     {
-                        noteRepository.Update(note);
+                        storedInTheCloud = notebookRepository.Insert(this);
                     }
 
-                }
+                    foreach (Note note in this.Notes)
+                    {
+                        // Set the note's notebookID to the id of this notebook, in case it was -1 before.
+                        note.NotebookID = this.Id;
+                        if (note.Id == -1)
+                        {
+                            noteRepository.Insert(note);
 
+                        }
+                        else
+                        {
+                            noteRepository.Update(note);
+                        }
+
+                    }
+                }
+                catch (Exception) { }
             }
 
-            return stored;
+            return storedInTheCloud || storedLocally;
         }
 
 
