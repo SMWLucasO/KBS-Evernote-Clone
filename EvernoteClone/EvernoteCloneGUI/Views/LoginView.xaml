@@ -25,7 +25,7 @@
         <TextBlock Grid.Column="0" Grid.Row="1" Margin="104,32.5,104,29" Grid.ColumnSpan="4"></TextBlock>
         <Label Grid.Column="0" Grid.Row="2" Content="Password" Margin="104,0,32.5,52.5" Grid.ColumnSpan="2"></Label>
         <PasswordBox Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="4" Margin="104,32,103,28.5"/>
-        <Button Grid.Row="3" Content="Login" Background="#0052cc" Foreground="White" Margin="104,26.5,32.5,10" Grid.ColumnSpan="2"/>
-        <Button Grid.Row="3" Content="Register" Background="#0052cc" Foreground="White" Margin="33.5,26.5,103,10" Grid.Column="2" Grid.ColumnSpan="2"/>
+        <Button x:Name="Login" Grid.Row="3" Content="Login" Background="#0052cc" Foreground="White" Margin="104,26.5,32.5,10" Grid.ColumnSpan="2"/>
+        <Button x:Name="Register" Grid.Row="3" Content="Register" Background="#0052cc" Foreground="White" Margin="33.5,26.5,103,10" Grid.Column="2" Grid.ColumnSpan="2"/>
     </Grid>
 </Window>
