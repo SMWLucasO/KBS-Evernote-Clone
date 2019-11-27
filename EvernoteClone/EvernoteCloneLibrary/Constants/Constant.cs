@@ -12,6 +12,9 @@
         public const string TEST_CONNECTION_STRING = "Data Source=.;Initial Catalog=NoteFever_EvernoteClone;Integrated Security=True";
         public const string TEST_STORAGE_PATH = "tests/local/";
 
+        // Storage path for local use (PRODUCTION mode)
+        public const string PRODUCTION_STORAGE_PATH = "production/local";
+
         // Storage constants (PRODUCTION mode, ssh)
         public const bool   SSH_USE_PUBLIC_KEY = true;
         public const string SSH_HOST = "145.44.234.54";
