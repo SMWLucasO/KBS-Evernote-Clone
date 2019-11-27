@@ -5,9 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Windows;
-
-
-
+using System.Text.RegularExpressions;
 
 namespace EvernoteCloneGUI.ViewModels
 {
@@ -18,7 +16,13 @@ namespace EvernoteCloneGUI.ViewModels
         private string email;
         private string password;
         private string passwordConfirm;
-        
+
+        private static int minimumLength = 5;
+        private static int upperLength = 1;
+        private static int lowerLength = 1;
+        private static int specialChar = 1;
+        private static int numericLength = 2;
+
 
 
         #region Properties
@@ -78,6 +82,20 @@ namespace EvernoteCloneGUI.ViewModels
                     if (string.IsNullOrEmpty(Password))
                         result = "Please enter Password!";
                 }
+                if (PropertyName == "Password")
+                {
+                    try
+                    {
+                        if (ValidatePassword(Password) == false)
+                        {
+                            result = "Please enter valid password!";
+                        }
+                    }
+                    catch(Exception e)
+                    {
+                        result = "Please enter email!";
+                    }
+                }
                 if (PropertyName == "PasswordConfirm")
                 {
                     if (PasswordConfirm != null)
@@ -117,7 +135,54 @@ namespace EvernoteCloneGUI.ViewModels
 
         #endregion
 
+        #region Methods to count specifics in password
 
+        //Counts uppercase characters in password
+        private static int UpperCount(string Password)
+        {
+            return Regex.Matches(Password, "[A-Z]").Count;
+        }
+
+        //Counts lowercase characters in password
+        private static int LowerCount(string Password)
+        {
+            return Regex.Matches(Password, "[a-z]").Count;
+        }
+
+        //Counts numeric characters in password
+        private static int NumericCount(string Password)
+        {
+            return Regex.Matches(Password, "[0-9]").Count;
+        }
+
+        //Counts special characters in password
+
+        private static int SpecialCharCount(string Password)
+        {
+            return Regex.Matches(Password, @"[^0-9a-zA-Z\._]").Count;
+        }
+
+        #endregion
+
+        #region Validates password
+
+        //method to validate inserted password
+        public bool ValidatePassword(string Password)
+        {
+            if (Password.Length < minimumLength)
+                return false;
+            if (UpperCount(Password) < upperLength)
+                return false;
+            if (LowerCount(Password) < lowerLength)
+                return false;
+            if (NumericCount(Password) < numericLength)
+                return false;
+            if (SpecialCharCount(Password) < specialChar)
+                return false;
+            return true;
+        }
+
+        #endregion
 
         public void Register()
         {

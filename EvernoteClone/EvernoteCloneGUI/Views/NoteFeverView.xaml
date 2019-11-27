@@ -29,7 +29,7 @@
 
         </Grid.RowDefinitions>
 
-        <Button Content="Username" Background="#404040" Foreground="White" FontSize="16" Grid.Row="0"></Button>
+        <Button Content="Username" Background="#404040" Foreground="White" FontSize="16" Grid.Row="0" x:Name="User"></Button>
         <Button Content="New Note" Background="#0052cc" Foreground="White" FontSize="16" Grid.Row="1" x:Name="NewNote"></Button>
         <Button Content="All Notes" Background="#404040" Foreground="White" FontSize="16" Grid.Row="2"></Button>
         <TreeView Background="#404040" Foreground="White" Grid.Row="3">
