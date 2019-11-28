@@ -7,14 +7,13 @@ using System.Timers;
 
 namespace EvernoteCloneLibrary.Database
 {
-    //TODO: remove everything in this class except the ConnectSsh method!
     public class SshConnection
     {
         /// <summary>
         /// The Singleton class container.
         /// This is the variable that contains the only instance of this class.
         /// </summary>
-        private static SshConnection _instance;
+        public static SshConnection Instance = new SshConnection();
 
         /// <summary>
         /// A variable that contains a ongoing connection with the ssh server.
@@ -30,18 +29,6 @@ namespace EvernoteCloneLibrary.Database
         /// This timer is used to close the _sshClient after a certain amount of seconds
         /// </summary>
         private Timer _keepSSHAlliveTimer = new Timer();
-
-        /// <summary>
-        /// The Singleton accessor to this class.
-        /// The only way to access this class'object is through here.
-        /// </summary>
-        /// <returns></returns>
-        public static SshConnection Instance()
-        {
-            if (_instance == null)
-                _instance = new SshConnection();
-            return _instance;
-        }
 
         /// <summary>
         /// We need a static constructor so that the C# compiler won't complain,
@@ -69,19 +56,19 @@ namespace EvernoteCloneLibrary.Database
             if (!_keepSSHAlliveTimer.Enabled)
             {
                 (_sshClient, _localPort) = ConnectSsh(
-                    sshHostName: (Constant.TEST_MODE ? Constant.TEST_SSH_HOST : Constant.SSH_HOST),
-                    sshUserName: (Constant.TEST_MODE ? Constant.TEST_SSH_USERNAME : Constant.SSH_USERNAME),
-                    sshKeyFile: (Constant.TEST_MODE ?
+                    SshHostName: (Constant.TEST_MODE ? Constant.TEST_SSH_HOST : Constant.SSH_HOST),
+                    SshUserName: (Constant.TEST_MODE ? Constant.TEST_SSH_USERNAME : Constant.SSH_USERNAME),
+                    SshKeyFile: (Constant.TEST_MODE ?
                         (Constant.TEST_SSH_USE_PUBLIC_KEY ? Constant.TEST_SSH_KEY_PATH : null) :
                         (Constant.SSH_USE_PUBLIC_KEY ? Constant.SSH_KEY_PATH : null)),
-                    sshPassPhrase: (Constant.TEST_MODE ?
+                    SshPassPhrase: (Constant.TEST_MODE ?
                         (Constant.TEST_SSH_USE_PUBLIC_KEY ? Constant.TEST_SSH_KEY_PASSPHRASE : null) :
                         (Constant.SSH_USE_PUBLIC_KEY ? Constant.SSH_KEY_PASSPHRASE : null)),
-                    sshPassword: (Constant.TEST_MODE ?
+                    SshPassword: (Constant.TEST_MODE ?
                         (Constant.TEST_SSH_USE_PUBLIC_KEY ? null : Constant.TEST_SSH_PASSWORD) :
                         (Constant.SSH_USE_PUBLIC_KEY ? null : Constant.SSH_PASSWORD)),
-                    databaseServer: (Constant.TEST_MODE ? Constant.TEST_DATABASE_HOST : Constant.DATABASE_HOST),
-                    databasePort: (Constant.TEST_MODE ? Constant.TEST_DATABASE_PORT : Constant.DATABASE_PORT));
+                    DatabaseServer: (Constant.TEST_MODE ? Constant.TEST_DATABASE_HOST : Constant.DATABASE_HOST),
+                    DatabasePort: (Constant.TEST_MODE ? Constant.TEST_DATABASE_PORT : Constant.DATABASE_PORT));
             }
             else
                 _keepSSHAlliveTimer.Stop();
@@ -94,15 +81,15 @@ namespace EvernoteCloneLibrary.Database
         /// <summary>
         /// When this event is called, _sshClient is disconnected.
         /// </summary>
-        /// <param name="source"></param>
-        /// <param name="e"></param>
-        private static void OnTimedEvent(object source, ElapsedEventArgs e) => _sshClient.Disconnect();
+        /// <param name="Source"></param>
+        /// <param name="Event"></param>
+        private static void OnTimedEvent(object Source, ElapsedEventArgs Event) => _sshClient.Disconnect();
 
         /// <summary>
         /// Returns true of the _sshClient is still allive_
         /// </summary>
         /// <returns></returns>
-        public static bool IsAllive() => _sshClient.IsConnected;
+        public static bool IsAlive() => _sshClient.IsConnected;
 
         /// <summary>
         /// This function makes a connection to the ssh server and forwards a port so we can use the SqlServer
@@ -117,37 +104,37 @@ namespace EvernoteCloneLibrary.Database
         /// <param name="databaseServer"></param>
         /// <param name="databasePort"></param>
         /// <returns></returns>
-        public static (SshClient SshClient, uint Port) ConnectSsh(string sshHostName, string sshUserName, string sshPassword = null,
-            string sshKeyFile = null, string sshPassPhrase = null, int sshPort = 22, string databaseServer = "localhost", int databasePort = 3306)
+        public static (SshClient SshClient, uint Port) ConnectSsh(string SshHostName, string SshUserName, string SshPassword = null,
+            string SshKeyFile = null, string SshPassPhrase = null, int SshPort = 22, string DatabaseServer = "localhost", int DatabasePort = 3306)
         {
             // check arguments
-            if (string.IsNullOrEmpty(sshHostName))
-                throw new ArgumentException($"{nameof(sshHostName)} must be specified.", nameof(sshHostName));
-            if (string.IsNullOrEmpty(sshHostName))
-                throw new ArgumentException($"{nameof(sshUserName)} must be specified.", nameof(sshUserName));
-            if (string.IsNullOrEmpty(sshPassword) && string.IsNullOrEmpty(sshKeyFile))
-                throw new ArgumentException($"One of {nameof(sshPassword)} and {nameof(sshKeyFile)} must be specified.");
-            if (string.IsNullOrEmpty(databaseServer))
-                throw new ArgumentException($"{nameof(databaseServer)} must be specified.", nameof(databaseServer));
+            if (string.IsNullOrEmpty(SshHostName))
+                throw new ArgumentException($"{nameof(SshHostName)} must be specified.", nameof(SshHostName));
+            if (string.IsNullOrEmpty(SshHostName))
+                throw new ArgumentException($"{nameof(SshUserName)} must be specified.", nameof(SshUserName));
+            if (string.IsNullOrEmpty(SshPassword) && string.IsNullOrEmpty(SshKeyFile))
+                throw new ArgumentException($"One of {nameof(SshPassword)} and {nameof(SshKeyFile)} must be specified.");
+            if (string.IsNullOrEmpty(DatabaseServer))
+                throw new ArgumentException($"{nameof(DatabaseServer)} must be specified.", nameof(DatabaseServer));
 
             // define the authentication methods to use (in order)
             var authenticationMethods = new List<AuthenticationMethod>();
-            if (!string.IsNullOrEmpty(sshKeyFile))
+            if (!string.IsNullOrEmpty(SshKeyFile))
             {
-                authenticationMethods.Add(new PrivateKeyAuthenticationMethod(sshUserName,
-                    new PrivateKeyFile(sshKeyFile, string.IsNullOrEmpty(sshPassPhrase) ? null : sshPassPhrase)));
+                authenticationMethods.Add(new PrivateKeyAuthenticationMethod(SshUserName,
+                    new PrivateKeyFile(SshKeyFile, string.IsNullOrEmpty(SshPassPhrase) ? null : SshPassPhrase)));
             }
-            if (!string.IsNullOrEmpty(sshPassword))
+            if (!string.IsNullOrEmpty(SshPassword))
             {
-                authenticationMethods.Add(new PasswordAuthenticationMethod(sshUserName, sshPassword));
+                authenticationMethods.Add(new PasswordAuthenticationMethod(SshUserName, SshPassword));
             }
 
             // connect to the SSH server
-            var sshClient = new SshClient(new ConnectionInfo(sshHostName, sshPort, sshUserName, authenticationMethods.ToArray()));
+            var sshClient = new SshClient(new ConnectionInfo(SshHostName, SshPort, SshUserName, authenticationMethods.ToArray()));
             sshClient.Connect();
 
             // forward a local port to the database server and port, using the SSH server
-            var forwardedPort = new ForwardedPortLocal("127.0.0.1", databaseServer, (uint)databasePort);
+            var forwardedPort = new ForwardedPortLocal("127.0.0.1", DatabaseServer, (uint)DatabasePort);
             sshClient.AddForwardedPort(forwardedPort);
             forwardedPort.Start();
 

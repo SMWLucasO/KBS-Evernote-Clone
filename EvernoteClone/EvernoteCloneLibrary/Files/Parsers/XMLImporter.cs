@@ -28,7 +28,7 @@ namespace EvernoteCloneLibrary.Files.Parsers
 
             if (!(string.IsNullOrEmpty(FilePath) || string.IsNullOrEmpty(Filename)))
             {
-                string fullPath = @$"{FilePath}/{Filename}";
+                string fullPath = $"{FilePath}/{Filename}";
                 if (File.Exists(fullPath) && Path.HasExtension(fullPath))
                 {
                     // generate a notebook using the information from the file itself

@@ -160,8 +160,8 @@ namespace EvernoteCloneLibrary.Database
         /// <returns>SqlConnection</returns>
         private SqlConnection OpenSqlConnection()
         {
-            string connectionString = $"" +
-                $"Server=tcp:{(Constant.TEST_MODE ? Constant.TEST_DATABASE_HOST : Constant.DATABASE_HOST)},{SshConnection.Instance().GetSshPort()};" +
+            string connectionString = "" +
+                $"Server=tcp:{(Constant.TEST_MODE ? Constant.TEST_DATABASE_HOST : Constant.DATABASE_HOST)},{SshConnection.Instance.GetSshPort()};" +
                 $"Database={(Constant.TEST_MODE ? Constant.TEST_DATABASE_CATALOG : Constant.DATABASE_CATALOG)};" +
                 $"UID={(Constant.TEST_MODE ? Constant.TEST_DATABASE_USERNAME : Constant.DATABASE_USERNAME)};" +
                 $"Password={(Constant.TEST_MODE ? Constant.TEST_DATABASE_PASSWORD : Constant.DATABASE_PASSWORD)};" +
