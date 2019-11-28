@@ -127,9 +127,8 @@ namespace EvernoteCloneGUI.ViewModels
             string tbPassword = Password.ToString();
             string cPassword = PasswordConfirm.ToString();
 
-            MessageBox.Show(tbPassword + " - " + cPassword);
-            /*DataAccess.Instance.ExecuteAndRead();*/
+            
         }
-
+                
     }
 }
