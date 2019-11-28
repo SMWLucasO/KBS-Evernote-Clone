@@ -263,7 +263,7 @@ namespace EvernoteCloneLibrary.Notebooks
         /// Method which returns the XML representation of this class.
         /// </summary>
         /// <returns></returns>
-        public string[] ToXMLRepresentation()
+        public string[] ToXmlRepresentation()
         {
             List<string> XMLRepresentation = new List<string>()
             {
@@ -279,7 +279,7 @@ namespace EvernoteCloneLibrary.Notebooks
 
             foreach (var Note in Notes)
             {
-                XMLRepresentation.AddRange(Note.ToXMLRepresentation());
+                XMLRepresentation.AddRange(Note.ToXmlRepresentation());
             }
 
             XMLRepresentation.Add("</en-export>");
