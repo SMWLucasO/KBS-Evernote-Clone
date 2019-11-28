@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:EvernoteCloneGUI.Helpers"
         xmlns:vm="clr-namespace:EvernoteCloneGUI.ViewModels"
         mc:Ignorable="d"
-        Title="RegisterView" Height="450" Width="800">
+        Title="RegisterView" Height="450" Width="450">
     <Window.DataContext>
         <vm:RegisterViewModel></vm:RegisterViewModel>
     </Window.DataContext>
@@ -64,33 +64,41 @@
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="157*"/>
-            <ColumnDefinition Width="197*"/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
         </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
         <!-- First Name -->
-        <Label Content="First Name" HorizontalAlignment="Left" Margin="31,49,0,0" VerticalAlignment="Top"/>
-        <TextBox Text="{Binding FirstName}" Name="FirstName" HorizontalAlignment="Left" Height="18" Margin="38,75,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="122"  FontStyle="Italic" FontSize="10" Grid.ColumnSpan="2"/>
+        <Label Content="First Name" Grid.Column="0" Grid.ColumnSpan="2" Margin="73,34,38.5,20.5"/>
+        <TextBox Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding FirstName}" Name="FirstName"   FontStyle="Italic" FontSize="10" Margin="73,58,38.5,0.5"/>
 
         <!-- Last Name -->
-        <Label Content=" Last name" HorizontalAlignment="Left" Margin="37,49,0,0" VerticalAlignment="Top" Grid.Column="1"/>
-        <TextBox Text="{Binding LastName}" Name="LastName" HorizontalAlignment="Left" Height="18" Margin="44.845,75,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="122" FontStyle="Italic" FontSize="10" Grid.Column="1"/>
+        <Label Content=" Last name" Grid.Column="1" Grid.ColumnSpan="3" Margin="111,34,111,51" Grid.RowSpan="2"/>
+        <TextBox Text="{Binding LastName}" Name="LastName" FontStyle="Italic" FontSize="10" Grid.ColumnSpan="3" Margin="111,58,111,0.5" Grid.Column="1"/>
 
         <!-- E-mail -->
-        <Label Content=" E-mail" HorizontalAlignment="Left" Margin="31,119,0,0" VerticalAlignment="Top"/>
-        <TextBox Text="{Binding Path=Email, Mode=TwoWay, ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged}" Name="Email" HorizontalAlignment="Left" Height="18" Margin="38,145,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="286"  FontStyle="Italic" FontSize="10" Grid.ColumnSpan="2"/>
+        <Label Content=" E-mail" Grid.Column="0" Grid.Row="1" Margin="73,15.5,38.5,37" Grid.ColumnSpan="2"/>
+        <TextBox Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="4" Text="{Binding Path=Email, Mode=TwoWay, ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged}" Name="Email" FontStyle="Italic" FontSize="10" Margin="73,52.5,111,7"/>
 
         <!-- Password-->
-        <Label Content="Password" HorizontalAlignment="Left" Margin="31,180,0,0" VerticalAlignment="Top"/>
-        <!--<TextBox Text="{Binding Path=Password, Mode=TwoWay, ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged}" Name="Password" HorizontalAlignment="Left" Height="18" Margin="38,211,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="286"  FontStyle="Italic" FontSize="10" Grid.ColumnSpan="2"/> -->
-        <PasswordBox Name="Password" local:PasswordHelper.Attach="False" local:PasswordHelper.Password="{Binding Path=Password, Mode=TwoWay, ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged,ValidatesOnExceptions=True}" Grid.ColumnSpan="2" Margin="38,206,48,190" />
+        <Label Content="Password" Grid.Row="2" Margin="73,25,38.5,33.5" Grid.ColumnSpan="2"/>
+        <PasswordBox Grid.Row="2" Grid.ColumnSpan="4" Name="Password" local:PasswordHelper.Attach="False" local:PasswordHelper.Password="{Binding Path=Password, Mode=TwoWay, ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged,ValidatesOnExceptions=True}" Margin="73,51,111,9.5"/>
         <!-- Confirm Password-->
 
-        <Label Content=" Confirm password" HorizontalAlignment="Left" Margin="31,243,0,0" VerticalAlignment="Top"/>
+        <Label Grid.Row="3" Content="Confirm password" Margin="73,10.5,38.5,48" Grid.ColumnSpan="2" />
         <!-- <TextBox Text="{Binding Path=PasswordConfirm, Mode=TwoWay, ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged}" Name="Passwordconfirm" HorizontalAlignment="Left" Height="18" Margin="38,269,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="286"  FontStyle="Italic" FontSize="10" Grid.ColumnSpan="2"/> -->
-        <PasswordBox Name="PasswordConfirm" local:PasswordHelper.Attach="False" local:PasswordHelper.Password="{Binding Path=PasswordConfirm, Mode=TwoWay, ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged,ValidatesOnExceptions=True}" Grid.ColumnSpan="2" Margin="38,269,48,127" />
+        <PasswordBox Grid.Row="3" Grid.ColumnSpan="4" Name="PasswordConfirm" local:PasswordHelper.Attach="False" local:PasswordHelper.Password="{Binding Path=PasswordConfirm, Mode=TwoWay, ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged,ValidatesOnExceptions=True}" Margin="73,41.5,111,20"/>
 
         <!-- Register Button -->
-        <Button x:Name="Register" Background="#0052cc" Foreground="White" Content="Register" HorizontalAlignment="Left" Margin="38,334,0,0" VerticalAlignment="Top" Width="286" Height="24"  Grid.ColumnSpan="2"/>
+        <Button Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" x:Name="Register" Background="#0052cc" Foreground="White" Content="Register" HorizontalAlignment="Left" Margin="73,20,0,0" VerticalAlignment="Top" Width="261" Height="25"/>
 
 
     </Grid>
