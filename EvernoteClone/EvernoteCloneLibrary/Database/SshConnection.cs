@@ -3,6 +3,7 @@ using Renci.SshNet;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Timers;
 
 namespace EvernoteCloneLibrary.Database
 {
@@ -14,6 +15,21 @@ namespace EvernoteCloneLibrary.Database
         /// This is the variable that contains the only instance of this class.
         /// </summary>
         private static SshConnection _instance;
+
+        /// <summary>
+        /// A variable that contains a ongoing connection with the ssh server.
+        /// </summary>
+        private static SshClient _sshClient;
+
+        /// <summary>
+        /// A variable that contains the forwarded port from the ssh server (used for databaseconnection)
+        /// </summary>
+        private static uint _localPort;
+
+        /// <summary>
+        /// This timer is used to close the _sshClient after a certain amount of seconds
+        /// </summary>
+        private Timer _keepSSHAlliveTimer = new Timer();
 
         /// <summary>
         /// The Singleton accessor to this class.
@@ -28,11 +44,6 @@ namespace EvernoteCloneLibrary.Database
         }
 
         /// <summary>
-        /// The ongoing connection with the database
-        /// </summary>
-        private SqlConnection _connection;
-
-        /// <summary>
         /// We need a static constructor so that the C# compiler won't complain,
         /// <see href="https://csharpindepth.com/Articles/Singleton"> as stated in this article.</see>
         /// (Fourth version paragraph)
@@ -44,28 +55,54 @@ namespace EvernoteCloneLibrary.Database
         /// </summary>
         private SshConnection()
         {
-            var (sshClient, localPort) = SshConnection.ConnectSsh(
-                sshHostName: Constant.SSH_HOST,
-                sshUserName: Constant.SSH_USERNAME,
-                sshKeyFile: Constant.SSH_KEY_PATH,
-                databaseServer: Constant.DATABASE_HOST,
-                databasePort: Constant.DATABASE_PORT);
-
-            using (sshClient)
-            {
-                string connectionString = $"" +
-                    $"Server=tcp:{Constant.DATABASE_HOST},{localPort};" +
-                    $"Database={Constant.DATABASE_CATALOG};" +
-                    $"UID={Constant.DATABASE_USERNAME};" +
-                    $"Password={Constant.DATABASE_PASSWORD};" +
-                    $"Integrated Security={Constant.DATABASE_INTEGRATED_SECURITY}";
-
-                using (_connection = new SqlConnection(connectionString))
-                {
-                    _connection.Open();
-                }
-            }
+            _keepSSHAlliveTimer.Interval = (Constant.TEST_MODE ? Constant.TEST_SSH_KEEP_ALLIVE : Constant.SSH_KEEP_ALLIVE);
+            _keepSSHAlliveTimer.AutoReset = false;
+            _keepSSHAlliveTimer.Elapsed += OnTimedEvent;
         }
+
+        /// <summary>
+        /// Create new ssh connection if not still connected
+        /// </summary>
+        /// <returns></returns>
+        public uint GetSshPort()
+        {
+            if (!_keepSSHAlliveTimer.Enabled)
+            {
+                (_sshClient, _localPort) = ConnectSsh(
+                    sshHostName: (Constant.TEST_MODE ? Constant.TEST_SSH_HOST : Constant.SSH_HOST),
+                    sshUserName: (Constant.TEST_MODE ? Constant.TEST_SSH_USERNAME : Constant.SSH_USERNAME),
+                    sshKeyFile: (Constant.TEST_MODE ?
+                        (Constant.TEST_SSH_USE_PUBLIC_KEY ? Constant.TEST_SSH_KEY_PATH : null) :
+                        (Constant.SSH_USE_PUBLIC_KEY ? Constant.SSH_KEY_PATH : null)),
+                    sshPassPhrase: (Constant.TEST_MODE ?
+                        (Constant.TEST_SSH_USE_PUBLIC_KEY ? Constant.TEST_SSH_KEY_PASSPHRASE : null) :
+                        (Constant.SSH_USE_PUBLIC_KEY ? Constant.SSH_KEY_PASSPHRASE : null)),
+                    sshPassword: (Constant.TEST_MODE ?
+                        (Constant.TEST_SSH_USE_PUBLIC_KEY ? null : Constant.TEST_SSH_PASSWORD) :
+                        (Constant.SSH_USE_PUBLIC_KEY ? null : Constant.SSH_PASSWORD)),
+                    databaseServer: (Constant.TEST_MODE ? Constant.TEST_DATABASE_HOST : Constant.DATABASE_HOST),
+                    databasePort: (Constant.TEST_MODE ? Constant.TEST_DATABASE_PORT : Constant.DATABASE_PORT));
+            }
+            else
+                _keepSSHAlliveTimer.Stop();
+
+            _keepSSHAlliveTimer.Start();
+
+            return _localPort;
+        }
+
+        /// <summary>
+        /// When this event is called, _sshClient is disconnected.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="e"></param>
+        private static void OnTimedEvent(object source, ElapsedEventArgs e) => _sshClient.Disconnect();
+
+        /// <summary>
+        /// Returns true of the _sshClient is still allive_
+        /// </summary>
+        /// <returns></returns>
+        public static bool IsAllive() => _sshClient.IsConnected;
 
         /// <summary>
         /// This function makes a connection to the ssh server and forwards a port so we can use the SqlServer

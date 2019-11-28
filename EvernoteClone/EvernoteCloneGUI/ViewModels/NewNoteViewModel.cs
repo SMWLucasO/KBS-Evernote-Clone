@@ -53,6 +53,7 @@ namespace EvernoteCloneGUI.ViewModels
 
         public bool SaveNote()
         {
+            // TODO: check this!
             // For testing purposes.
             // Sometime in the future, we actually need to know the notebook beforehand.
             if (Constant.TEST_MODE && NoteOwner == null)

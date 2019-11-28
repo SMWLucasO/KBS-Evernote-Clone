@@ -8,6 +8,6 @@ namespace EvernoteCloneLibrary.Files.Parsers
 {
     public interface IParseable
     {
-        public string[] ToXMLRepresentation();
+        string[] ToXMLRepresentation();
     }
 }

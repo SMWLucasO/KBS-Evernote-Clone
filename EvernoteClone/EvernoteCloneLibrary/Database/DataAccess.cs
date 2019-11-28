@@ -160,52 +160,23 @@ namespace EvernoteCloneLibrary.Database
         /// <returns>SqlConnection</returns>
         private SqlConnection OpenSqlConnection()
         {
-            if (Constant.TEST_MODE)
-            {
-                SqlConnection sqlConnection = new SqlConnection(Constant.TEST_CONNECTION_STRING);
+            string connectionString = $"" +
+                $"Server=tcp:{(Constant.TEST_MODE ? Constant.TEST_DATABASE_HOST : Constant.DATABASE_HOST)},{SshConnection.Instance().GetSshPort()};" +
+                $"Database={(Constant.TEST_MODE ? Constant.TEST_DATABASE_CATALOG : Constant.DATABASE_CATALOG)};" +
+                $"UID={(Constant.TEST_MODE ? Constant.TEST_DATABASE_USERNAME : Constant.DATABASE_USERNAME)};" +
+                $"Password={(Constant.TEST_MODE ? Constant.TEST_DATABASE_PASSWORD : Constant.DATABASE_PASSWORD)};" +
+                $"Integrated Security={(Constant.TEST_MODE ? Constant.TEST_DATABASE_INTEGRATED_SECURITY : Constant.DATABASE_INTEGRATED_SECURITY)}";
 
-                sqlConnection.Open();
-
-                _connection = sqlConnection;
-
-                return sqlConnection;
-            }
-            else
-            {
-                var (sshClient, localPort) = SshConnection.ConnectSsh(
-                    sshHostName: Constant.SSH_HOST,
-                    sshUserName: Constant.SSH_USERNAME,
-                    sshKeyFile: Constant.SSH_KEY_PATH,
-                    databaseServer: Constant.DATABASE_HOST,
-                    databasePort: Constant.DATABASE_PORT);
-
-                using (sshClient)
-                {
-                    string connectionString = $"" +
-                        $"Server=tcp:{Constant.DATABASE_HOST},{localPort};" +
-                        $"Database={Constant.DATABASE_CATALOG};" +
-                        $"UID={Constant.DATABASE_USERNAME};" +
-                        $"Password={Constant.DATABASE_PASSWORD};" +
-                        $"Integrated Security={Constant.DATABASE_INTEGRATED_SECURITY}";
-
-                    using (var sqlConnection = new SqlConnection(connectionString))
-                    {
-                        sqlConnection.Open();
-                        _connection = sqlConnection;
-                        return sqlConnection;
-                    }
-                }
-            }
+            _connection = new SqlConnection(connectionString);
+            _connection.Open();
+            return _connection;
         }
 
         /// <summary>
         /// Since we don't close the connection in a method, we need to do it explicitly somewhere.
         /// Therefore, this should be done after a query is executed (and perhaps read.)
         /// </summary>
-        public void CloseSqlConnection()
-        {
-            _connection?.Close();
-        }
+        public void CloseSqlConnection() =>_connection?.Close();
 
         /// <summary>
         /// A return type for the Query method, this is used for checking if insert/update/delete
