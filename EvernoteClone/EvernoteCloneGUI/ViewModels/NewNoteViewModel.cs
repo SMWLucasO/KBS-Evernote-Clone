@@ -4,11 +4,8 @@ using EvernoteCloneLibrary.Constants;
 using EvernoteCloneLibrary.Notebooks;
 using EvernoteCloneLibrary.Notebooks.Notes;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -101,6 +98,7 @@ namespace EvernoteCloneGUI.ViewModels
         /// <returns></returns>
         public bool SaveNote()
         {
+            // TODO: check this!
             // For testing purposes.
             // Sometime in the future, we actually need to know the notebook beforehand.
             if (Constant.TEST_MODE && NoteOwner == null)
@@ -189,13 +187,27 @@ namespace EvernoteCloneGUI.ViewModels
         /// <returns></returns>
         private FlowDocument SetRTF(string xamlString)
         {
-            StringReader stringReader = new StringReader(xamlString);
-            XmlReader xmlReader = XmlReader.Create(stringReader);
-            Section sec = XamlReader.Load(xmlReader) as Section;
-            FlowDocument doc = new FlowDocument();
-            while (sec.Blocks.Count > 0)
-                doc.Blocks.Add(sec.Blocks.FirstBlock);
-            return doc;
+            if (!(string.IsNullOrEmpty(xamlString.Trim())))
+            {
+                StringReader stringReader = new StringReader(xamlString);
+                XmlReaderSettings xmlReaderSettings = new XmlReaderSettings
+                {
+                    DtdProcessing = DtdProcessing.Parse,
+                    MaxCharactersFromEntities = 1024
+                };
+
+
+                XmlReader xmlReader = XmlReader.Create(stringReader, xmlReaderSettings);
+                FlowDocument doc = new FlowDocument();
+
+                Section sec = XamlReader.Load(xmlReader) as Section;
+                while (sec.Blocks.Count > 0)
+                    doc.Blocks.Add(sec.Blocks.FirstBlock);
+
+                return doc;
+            }
+
+            return new FlowDocument();
         }
 
         /// <summary>
@@ -205,7 +217,7 @@ namespace EvernoteCloneGUI.ViewModels
         /// <param name="view"></param>
         protected override void OnViewReady(object view)
         {
-            if(_loadNote)
+            if (_loadNote)
             {
                 NewNoteView newNoteView = (NewNoteView)view;
                 newNoteView.TextEditor.Document = SetRTF(this.NewContent);

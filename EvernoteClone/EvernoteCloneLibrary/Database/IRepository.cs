@@ -47,7 +47,7 @@ namespace EvernoteCloneLibrary.Database
         /// </summary>
         /// <param name="ToExtractFrom">The model which data will be extracted from</param>
         /// <returns></returns>
-        public Dictionary<string, object> GenerateQueryParameters(T ToExtractFrom);
+        Dictionary<string, object> GenerateQueryParameters(T ToExtractFrom);
 
     }
 }
