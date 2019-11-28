@@ -1,4 +1,5 @@
 ﻿using EvernoteCloneLibrary.Database;
+using EvernoteCloneLibrary.Notebooks.Location;
 using EvernoteCloneLibrary.Notebooks.Notes;
 using System;
 using System.Collections.Generic;
@@ -59,9 +60,13 @@ namespace EvernoteCloneLibrary.Notebooks
             while (fetchedSqlDataReader.Read())
             {
                 NoteRepository noteRepository = new NoteRepository();
+                NotebookLocationRepository notebookLocationRepository = new NotebookLocationRepository();
+
                 Notebook notebook = new Notebook()
                 {
+                    
                     Id = (int)fetchedSqlDataReader["Id"],
+                    LocationID = (int)fetchedSqlDataReader["LocationID"],
                     UserID = (int)fetchedSqlDataReader["UserID"],
                     Title = (string)fetchedSqlDataReader["Title"],
                     CreationDate = (DateTime)fetchedSqlDataReader["CreationDate"],
@@ -74,9 +79,21 @@ namespace EvernoteCloneLibrary.Notebooks
                             { "@Id", (int) fetchedSqlDataReader["Id"] }
                         }
                         )
-                    .Select((el) => ((INote)el)).ToList()
+                    .Select((el) => ((INote)el)).ToList(),
+                    // Select the NotebookLocation of the notebook
+                    Path = notebookLocationRepository.GetBy(
+                            new string[] { "Id = @Id" },
+                            new Dictionary<string, object>
+                            {
+                                { "@Id", (int) fetchedSqlDataReader["LocationID"] }
+                            }
+                        ).Select((el) => new NotebookLocation()
+                        {
+                            Id = el.Id,
+                            Path = el.Path
+                        }
+                        ).First()
                 };
-                
                 // Add the generated notebook with its notes to the list to be returned.
                 generatedNotebooks.Add(notebook);
             }
@@ -102,7 +119,6 @@ namespace EvernoteCloneLibrary.Notebooks
                 {
                     ToUpdate.Title = "Nameless title";
                 }
-
 
                 Dictionary<string, object> parameters = GenerateQueryParameters(ToUpdate);
                 parameters.Add("@Id", ToUpdate.Id);

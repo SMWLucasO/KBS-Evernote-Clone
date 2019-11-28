@@ -5,8 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace EvernoteCloneGUI.ViewModels
@@ -19,7 +17,7 @@ namespace EvernoteCloneGUI.ViewModels
 
         // Notebook information for viewing things
         public List<Notebook> Notebooks { get; private set; }
-        private Note _selectedNote = null;
+        public Note SelectedNote = null;
 
         // <User object stuff here>
         // <ReplaceThis>
@@ -31,6 +29,7 @@ namespace EvernoteCloneGUI.ViewModels
         /// </summary>
         protected override void OnActivate()
         {
+            
             // TODO: IF the user is logged in (there should be a property here with the user), insert the UserID.
             // Temporary try/catch until issue is fixed with exceptions.
             try
@@ -38,10 +37,11 @@ namespace EvernoteCloneGUI.ViewModels
                 Notebooks = Notebook.Load();
                 if (Notebooks != null)
                 {
+
                     Note tempNote = (Note)Notebooks.First().Notes.First();
                     if (tempNote != null)
                     {
-                        _selectedNote = tempNote;
+                        SelectedNote = tempNote;
                     }
                 }
             }
@@ -56,12 +56,19 @@ namespace EvernoteCloneGUI.ViewModels
 
         public void LoadNoteViewIfNoteExists()
         {
-            if (_selectedNote != null)
+            
+            if (SelectedNote != null)
             {
-                ActivateItem(new NewNoteViewModel()
+
+                NewNoteViewModel newNoteViewModel = new NewNoteViewModel(true)
                 {
-                    Note = _selectedNote
-                });
+                    Note = SelectedNote
+                };
+
+                newNoteViewModel.LoadNote();
+
+                ActivateItem(newNoteViewModel);
+
             }
         }
 
@@ -77,7 +84,10 @@ namespace EvernoteCloneGUI.ViewModels
             settings.Width = 800;
             settings.SizeToContent = SizeToContent.Manual;
 
-            NewNoteViewModel newNoteViewModel = new NewNoteViewModel();
+            NewNoteViewModel newNoteViewModel = new NewNoteViewModel
+            {
+                Parent = this
+            };
             windowManager.ShowDialog(newNoteViewModel, null, settings);
         }
 
