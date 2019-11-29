@@ -297,6 +297,21 @@ namespace EvernoteCloneGUI.ViewModels
             {
                 ContextMenu contextMenu = menuItem.Parent as ContextMenu;
                 string path = GetPath(contextMenu.PlacementTarget as TreeViewItem);
+
+                // TODO show window that asks for a name
+                string newFolderName = new Random().Next().ToString();
+                NotebookLocationRepository notebookLocationRepository = new NotebookLocationRepository();
+                NotebookLocationModel notebookLocationModel = new NotebookLocationModel() { Path = path + "/" + newFolderName };
+                if (notebookLocationRepository.Insert(notebookLocationModel))
+                {
+                    LocationUserRepository locationUserRepository = new LocationUserRepository();
+                    locationUserRepository.Insert(new LocationUserModel() { LocationID = notebookLocationModel.Id, UserID = 3 }); // TODO change userid
+                }
+
+                // TODO fix refresh (for now, delete and add)
+                NotebooksTreeView.Clear();
+                foreach (TreeViewItem treeViewItem in LoadNotebooks(LoadFolders()).Items.Cast<TreeViewItem>())
+                    NotebooksTreeView.Add(treeViewItem);
             }
         }
 
@@ -307,6 +322,24 @@ namespace EvernoteCloneGUI.ViewModels
             {
                 ContextMenu contextMenu = menuItem.Parent as ContextMenu;
                 string path = GetPath(contextMenu.PlacementTarget as TreeViewItem);
+
+                // TODO show window that asks for a name
+                string newNotebookName = new Random().Next().ToString();
+
+                NotebookLocationRepository notebookLocationRepository = new NotebookLocationRepository();
+                int locationID = notebookLocationRepository.GetBy(
+                        new string[] { "Path = @Path" },
+                        new Dictionary<string, object>() { { "@Path", path } }
+                        ).Select((el) => ((NotebookLocation)el)).ToList()[0].Id;
+
+                NotebookRepository notebookRepository = new NotebookRepository();
+                NotebookModel notebookModel = new NotebookModel() { UserID = 3, LocationID = locationID, Title = newNotebookName, CreationDate = DateTime.Now.Date, LastUpdated = DateTime.Now };
+                notebookRepository.Insert(notebookModel);
+
+                // TODO fix refresh (for now, delete and add)
+                NotebooksTreeView.Clear();
+                foreach (TreeViewItem treeViewItem in LoadNotebooks(LoadFolders()).Items.Cast<TreeViewItem>())
+                    NotebooksTreeView.Add(treeViewItem);
             }
         }
 
