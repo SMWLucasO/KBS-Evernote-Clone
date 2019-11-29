@@ -77,6 +77,9 @@
     <Compile Include="Files\Parsers\IParseable.cs" />
     <Compile Include="Files\Parsers\XMLExporter.cs" />
     <Compile Include="Files\Parsers\XMLImporter.cs" />
+    <Compile Include="Notebooks\Location\LocationUser\LocationUser.cs" />
+    <Compile Include="Notebooks\Location\LocationUser\LocationUserModel.cs" />
+    <Compile Include="Notebooks\Location\LocationUser\LocationUserRepository.cs" />
     <Compile Include="Notebooks\Location\NotebookLocation.cs" />
     <Compile Include="Notebooks\Location\NotebookLocationModel.cs" />
     <Compile Include="Notebooks\Location\NotebookLocationRepository.cs" />
