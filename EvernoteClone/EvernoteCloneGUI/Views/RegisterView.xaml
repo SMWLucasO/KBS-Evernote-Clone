@@ -1,40 +1,105 @@
-﻿<Window x:Class="Register.MainWindow"
+﻿<Window x:Class="EvernoteCloneGUI.Views.RegisterView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:EvernoteCloneGUI.Views"
-        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
-        xmlns:cal="http://www.caliburnproject.org"
+        xmlns:local="clr-namespace:EvernoteCloneGUI.Helpers"
+        xmlns:vm="clr-namespace:EvernoteCloneGUI.ViewModels"
         mc:Ignorable="d"
-        Title="NoteFever | Register" Height="450" Width="379.746">
+        Title="RegisterView" Height="450" Width="450">
+    <Window.DataContext>
+        <vm:RegisterViewModel></vm:RegisterViewModel>
+    </Window.DataContext>
+    <Window.Resources>
+        <Style TargetType="TextBox" >
+            <Setter Property="Validation.ErrorTemplate" >
+                <Setter.Value>
+                    <ControlTemplate >
+                        <StackPanel Orientation="Vertical">
+                            <DockPanel>
+                                <Border BorderThickness="0" BorderBrush="Red" DockPanel.Dock="Left">
+                                    <AdornedElementPlaceholder />
+                                </Border>
+                                <TextBlock Text=""/>
+                            </DockPanel>
+                            <TextBlock Foreground="White" Background="Red" FontWeight="Bold"
+                Text="{Binding Path=ErrorContent}" />
+                        </StackPanel>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="true">
+                    <Setter Property="ToolTip" Value="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=ErrorContent}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
 
-    <Grid Margin="0,0,18,0">
+        <Style TargetType="PasswordBox" >
+            <Setter Property="Validation.ErrorTemplate" >
+                <Setter.Value>
+                    <ControlTemplate >
+                        <StackPanel Orientation="Vertical">
+                            <DockPanel>
+                                <Border BorderThickness="0" BorderBrush="Red" DockPanel.Dock="Left">
+                                    <AdornedElementPlaceholder />
+                                </Border>
+                                <TextBlock Text=""/>
+                            </DockPanel>
+                            <TextBlock Foreground="White" Background="Red" FontWeight="Bold"
+                Text="{Binding Path=ErrorContent}" />
+                        </StackPanel>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="true">
+                    <Setter Property="ToolTip" Value="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=ErrorContent}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+
+
+    </Window.Resources>
+    <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="157*"/>
-            <ColumnDefinition Width="197*"/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <TextBox Name="Tblastname" HorizontalAlignment="Left" Height="18" Margin="44.845,75,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="122" FontStyle="Italic" FontSize="10" Grid.Column="1"/>
-        <!--  TextChanged="TextBox_TextChanged" -->
-        <TextBox Name="Tbemail" HorizontalAlignment="Left" Height="18" Margin="38,145,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="286" FontStyle="Italic" FontSize="10" Grid.ColumnSpan="2"/>
-        <!-- TextChanged="TextBox_TextChanged" -->
-        <TextBox Name="Tbpassword" HorizontalAlignment="Left" Height="18" Margin="38,211,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="286" FontStyle="Italic" FontSize="10" Grid.ColumnSpan="2"/>
-        <!-- TextChanged="TextBox_TextChanged" -->
-        <Button Content="Register" HorizontalAlignment="Left" Margin="38,334,0,0" VerticalAlignment="Top" Width="286" Height="24" Grid.ColumnSpan="2"/>
-        <!--  Click="Button_Click"  -->
-        <Label Content=" First name" HorizontalAlignment="Left" Margin="31,49,0,0" VerticalAlignment="Top"/>
-        <TextBox Name="Tbfirstname" HorizontalAlignment="Left" Height="18" Margin="38,75,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="122" FontStyle="Italic" FontSize="10" Grid.ColumnSpan="2"/>
-        <!-- TextChanged="TextBox_TextChanged" -->
-        <Label Content=" Last name" HorizontalAlignment="Left" Margin="37,49,0,0" VerticalAlignment="Top" Grid.Column="1"/>
-        <Label Content=" E-mail" HorizontalAlignment="Left" Margin="31,119,0,0" VerticalAlignment="Top"/>
-        <Label Content=" Password" HorizontalAlignment="Left" Margin="31,180,0,0" VerticalAlignment="Top"/>
-        <Label Content=" Confirm password" HorizontalAlignment="Left" Margin="31,243,0,0" VerticalAlignment="Top"/>
-        <TextBox Name="Tbconfirmpass" HorizontalAlignment="Left" Height="18" Margin="38,269,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="286" FontStyle="Italic" FontSize="10" Grid.ColumnSpan="2"/>
-        <!-- TextChanged="TextBox_TextChanged" -->
-        <Label Name="ErrorlabelCP" Content=" Passwords must be identical" HorizontalAlignment="Left" Margin="10,292,0,0" VerticalAlignment="Top" Background="White" Height="25" Width="157" Grid.Column="1" Foreground="Red"/>
-        <Label Name="ErrorLabelPass" Content="May not be empty" Grid.Column="1" HorizontalAlignment="Left" Margin="54,234,0,0" VerticalAlignment="Top" Width="143" Foreground="#FFF70A0A"/>
-        <Label Name="ErrorlabelEmailGeldig" Content="Not a valid e-mail" Grid.Column="1" HorizontalAlignment="Left" Margin="54,168,0,0" VerticalAlignment="Top" Background="White" Foreground="#FFF11010"/>
-        <Label Name="Registersucces" Content="Registration successful" HorizontalAlignment="Left" Margin="132,374,0,0" VerticalAlignment="Top" Background="White" Foreground="#FF76FB08" Grid.ColumnSpan="2"/>
-    </Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <!-- First Name -->
+        <Label Content="First Name" Grid.Column="0" Grid.ColumnSpan="2" Margin="73,34,38.5,20.5"/>
+        <TextBox Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding FirstName}" Name="FirstName"   FontStyle="Italic" FontSize="10" Margin="73,58,38.5,0.5"/>
 
+        <!-- Last Name -->
+        <Label Content=" Last name" Grid.Column="1" Grid.ColumnSpan="3" Margin="111,34,111,51" Grid.RowSpan="2"/>
+        <TextBox Text="{Binding LastName}" Name="LastName" FontStyle="Italic" FontSize="10" Grid.ColumnSpan="3" Margin="111,58,111,0.5" Grid.Column="1"/>
+
+        <!-- E-mail -->
+        <Label Content=" E-mail" Grid.Column="0" Grid.Row="1" Margin="73,15.5,38.5,37" Grid.ColumnSpan="2"/>
+        <TextBox Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="4" Text="{Binding Path=Email, Mode=TwoWay, ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged}" Name="Email" FontStyle="Italic" FontSize="10" Margin="73,52.5,111,7"/>
+
+        <!-- Password-->
+        <Label Content="Password" Grid.Row="2" Margin="73,25,38.5,33.5" Grid.ColumnSpan="2"/>
+        <PasswordBox Grid.Row="2" Grid.ColumnSpan="4" Name="Password" local:PasswordHelper.Attach="False" local:PasswordHelper.Password="{Binding Path=Password, Mode=TwoWay, ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged,ValidatesOnExceptions=True}" Margin="73,51,111,9.5"/>
+        <!-- Confirm Password-->
+
+        <Label Grid.Row="3" Content="Confirm password" Margin="73,10.5,38.5,48" Grid.ColumnSpan="2" />
+        <!-- <TextBox Text="{Binding Path=PasswordConfirm, Mode=TwoWay, ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged}" Name="Passwordconfirm" HorizontalAlignment="Left" Height="18" Margin="38,269,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="286"  FontStyle="Italic" FontSize="10" Grid.ColumnSpan="2"/> -->
+        <PasswordBox Grid.Row="3" Grid.ColumnSpan="4" Name="PasswordConfirm" local:PasswordHelper.Attach="False" local:PasswordHelper.Password="{Binding Path=PasswordConfirm, Mode=TwoWay, ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged,ValidatesOnExceptions=True}" Margin="73,41.5,111,20"/>
+
+        <!-- Register Button -->
+        <Button Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" IsEnabled="True" x:Name="Register" Background="#0052cc" Foreground="White" Content="Register" HorizontalAlignment="Left" Margin="73,20,0,0" VerticalAlignment="Top" Width="261" Height="25"/>
+
+
+    </Grid>
 </Window>
