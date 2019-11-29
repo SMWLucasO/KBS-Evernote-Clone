@@ -12,14 +12,25 @@ namespace EvernoteCloneLibrary.Users
         public List<Notebook> Notebooks { get; set; }
 
 
-        public static bool Login()
+        public static bool Login(string Username, string Password)
         {
             return false;
         }
 
-        public static bool Register()
+        public static bool Register(string Username, string Password, string FirstName, string LastName)
         {
-            return false;
+            UserRepository userRepository = new UserRepository();
+            UserModel userModel = new UserModel()
+            {
+                Username = Username,
+                Password = Password,
+                FirstName = FirstName,
+                LastName = LastName,
+                CreationDate = DateTime.Now.Date
+            };
+            
+
+            return userRepository.Insert(userModel);
         }
 
 
