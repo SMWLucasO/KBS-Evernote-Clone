@@ -43,7 +43,6 @@ namespace EvernoteCloneGUI.ViewModels
                 {
 
                     Notebook tempNotebook = Notebooks.First();
-                    MessageBox.Show(tempNotebook.Notes.Count.ToString());
                     if (tempNotebook != null)
                     {
                         Note tempNote = (Note)tempNotebook.Notes.First();
