@@ -63,11 +63,6 @@ namespace EvernoteCloneGUI.ViewModels
             set { lastName = value; }
         }
 
-        public bool IsEnabled
-        {
-            get { return isEnabled; }
-            set { isEnabled = value; }
-        }
 
 
 
@@ -104,15 +99,11 @@ namespace EvernoteCloneGUI.ViewModels
                 if (PropertyName == "PasswordConfirm")
                 {
                     if (PasswordConfirm != null)
-                        if (!PasswordConfirm.ToString().Equals(Password.ToString()))
+                        if (PasswordTheSame(PasswordConfirm,Password) == false)
                             result = "Password are not equal!";
                 }
-                if (PropertyName == "Register")
-                {
-                    if (!string.IsNullOrEmpty(Email) && isValidEmail(Email) && ValidatePassword(Password) && PasswordConfirm.ToString().Equals(Password.ToString()))
-                        isEnabled = true;
-                }
 
+               
                 return result;
             }
         }
@@ -162,6 +153,17 @@ namespace EvernoteCloneGUI.ViewModels
             if (SpecialCharCount(Password) < specialChar)
                 return false;
             return true;
+        }
+
+        public bool PasswordTheSame (string password1, string password2)
+        {
+            if (password1.ToString().Equals(password2.ToString()))
+            {
+                return true;
+            } else
+            {
+                return false;
+            }
         }
 
         #endregion
@@ -222,16 +224,22 @@ namespace EvernoteCloneGUI.ViewModels
             string tbFirstName = FirstName;
             string tbLastName = LastName;
             string tbEmail = Email;
-            string tbPassword = Password.ToString();
-
-            if (User.Register(tbEmail, tbPassword, tbFirstName, tbLastName))
+            string tbPassword = Encryption(Password.ToString());
+            if (isValidEmail(Email) && ValidatePassword(Password) && PasswordTheSame(PasswordConfirm, Password))
             {
+                if (User.Register(tbEmail, tbPassword, tbFirstName, tbLastName))
+                {
 
-                MessageBox.Show("True");
-             }
+                    MessageBox.Show("True");
+                }
+                else
+                {
+                    MessageBox.Show("False");
+                }
+            }
             else
             {
-                MessageBox.Show("False");
+                MessageBox.Show("Please fill the fields with errors");
             }
 
         }
