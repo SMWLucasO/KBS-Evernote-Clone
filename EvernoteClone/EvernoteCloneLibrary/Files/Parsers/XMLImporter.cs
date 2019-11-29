@@ -39,12 +39,12 @@ namespace EvernoteCloneLibrary.Files.Parsers
 
                     if (notebook != null)
                     {
-                        List<Note> data = GenerateNotesFromXML(xDocument);
+                        List<Note> notes = GenerateNotesFromXml(xDocument);
 
                         // Add all the notes to the temporary notebook.
-                        if (data != null)
+                        if (notes != null)
                         {
-                            notebook.Notes.AddRange(data);
+                            notebook.Notes.AddRange(notes);
                             notebooks.Add(notebook);
                         }
 
@@ -99,7 +99,7 @@ namespace EvernoteCloneLibrary.Files.Parsers
         /// </summary>
         /// <param name="xDocument"></param>
         /// <returns></returns>
-        private static List<Note> GenerateNotesFromXML(XDocument xDocument)
+        private static List<Note> GenerateNotesFromXml(XDocument xDocument)
         {
             if (xDocument != null)
             {
@@ -130,7 +130,8 @@ namespace EvernoteCloneLibrary.Files.Parsers
         }
 
         /// <summary>
-        /// An ISO-8601 '00000000T000000Z' formatter. 
+        /// An ISO-8601 '00000000T000000Z' formatter.
+        /// Converts the above to an appropriate DateTime (ex: 2019-07-05 05:40:53)
         /// </summary>
         /// <param name="Datetime"</param>
         /// <returns></returns>
