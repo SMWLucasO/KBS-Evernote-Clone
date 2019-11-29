@@ -47,7 +47,7 @@ namespace EvernoteCloneLibraryTests.Files.Parsers
             Assert.That(actual, Is.False);
         }
 
-        
+
     }
 
     [TestFixture, Order(2)]
@@ -55,32 +55,36 @@ namespace EvernoteCloneLibraryTests.Files.Parsers
     {
 
         [Order(1)]
-        [TestCase("test1.enex", 1, Author = "Lucas Ouwens", Description = "All files exported should be reloadable by the import method (1 note)")]
-        [TestCase("test2.enex", 10, Author = "Lucas Ouwens", Description = "All files exported should be reloadable by the import method (10 notes)")]
-        [TestCase("test3.enex", 1000, Author = "Lucas Ouwens", Description = "All files exported should be reloadable by the import method (1000 notes)")]
-        [TestCase("test4.enex", 0, Author = "Lucas Ouwens", Description = "All files exported should be reloadable by the import method (0 notes)")]
-        public void Import_ShouldImport(string Filename, int expectedNotes)
+        [Test]
+        public void Import_ShouldImportNotebooks()
         {
             // Act
-            IParseable loaded = XMLImporter.Import(Constant.TEST_STORAGE_PATH, Filename);
+            List<Notebook> loaded = XMLImporter.ImportNotebooks(Constant.TEST_STORAGE_PATH);
 
             // Assert
             Assert.IsNotNull(loaded);
-            Assert.That(((Notebook)loaded).Notes.Count, Is.EqualTo(expectedNotes));
         }
 
         [Order(2)]
-        [TestCase(null, Author = "Lucas Ouwens", Description = "If there is a null value given, then nothing should be able to get imported.")]
-        [TestCase("", Author = "Lucas Ouwens", Description = "If it is an empty string, there should be nothing to import.")]
-        [TestCase("FileWithoutExtension", Author = "Lucas Ouwens", Description = "A file without extension is not a file, thus it should not work.")]
-        [TestCase("File_That_Doesnt_Exist.enex", Author = "Lucas Ouwens", Description = "A file that does not exist should give back a null.")]
-        public void Import_ShouldNotImport(string Filename)
+        [TestCase("Folder/That/Doesnot/Exist/")]
+        [TestCase(null)]
+        [TestCase("SomeExistingDirectory/")]
+        public void Import_ShouldNotImport_IsNull(string Path)
         {
-            // Act
-            IParseable actual = XMLImporter.Import(Constant.TEST_STORAGE_PATH, Filename);
+            // Arrange and Act
+            List<Notebook> actual = XMLImporter.ImportNotebooks(Path);
 
             // Assert
             Assert.IsNull(actual);
+        }
+
+        [OneTimeSetUp]
+        public void Generate_TestFolder()
+        {
+            if (!(Directory.Exists("SomeExistingDirectory/")))
+            {
+                Directory.CreateDirectory("SomeExistingDirectory/");
+            }
         }
     }
 }

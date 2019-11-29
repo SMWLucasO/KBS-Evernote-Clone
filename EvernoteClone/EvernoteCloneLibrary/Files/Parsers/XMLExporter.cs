@@ -38,10 +38,11 @@ namespace EvernoteCloneLibrary.Files.Parsers
                         Directory.CreateDirectory(FilePath);
                     }
 
-                    File.WriteAllLines(fullPath, ParseableObject.ToXMLRepresentation());
+                    File.WriteAllLines(fullPath, ParseableObject.ToXmlRepresentation());
 
                     return File.Exists(fullPath);
                 }
+
 
             }
 

@@ -88,7 +88,7 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
         /// Generate the XML representation of notes
         /// </summary>
         /// <returns></returns>
-        public string[] ToXMLRepresentation()
+        public string[] ToXmlRepresentation()
         {
             // TODO: add tag nodes
 

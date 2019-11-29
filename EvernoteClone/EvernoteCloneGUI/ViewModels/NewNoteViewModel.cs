@@ -1,25 +1,50 @@
 ﻿using Caliburn.Micro;
+using EvernoteCloneGUI.Views;
 using EvernoteCloneLibrary.Constants;
 using EvernoteCloneLibrary.Notebooks;
 using EvernoteCloneLibrary.Notebooks.Notes;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Markup;
+using System.Xml;
 
 namespace EvernoteCloneGUI.ViewModels
 {
     public class NewNoteViewModel : Screen
     {
 
+        private string _title = "";
+        private bool _loadNote = false;
 
         // We can use this later on to add the notification changes
-        public string Title { get; set; }
+        public string Title
+        {
+
+            get
+            {
+                return _title;
+            }
+            set
+            {
+                _title = value;
+                NotifyOfPropertyChange(() => Title);
+
+                // Dynamically set the title of the window.
+                if (!(string.IsNullOrEmpty(_title)))
+                {
+                    DisplayName = $"NoteFever | {_title}";
+                }
+                else
+                {
+                    DisplayName = $"NoteFever | Nameless note";
+                }
+            }
+        }
+
         public string NewContent
         {
             get
@@ -29,9 +54,9 @@ namespace EvernoteCloneGUI.ViewModels
             set
             {
                 Note.NewContent = value;
+                NotifyOfPropertyChange(() => NewContent);
             }
         }
-
 
         /// <summary>
         /// If this object is null, or has id '-1' it means we are generating a new note,
@@ -46,18 +71,38 @@ namespace EvernoteCloneGUI.ViewModels
 
         // TODO add all bindings
 
-        public NewNoteViewModel()
+        public NewNoteViewModel(bool loadNote = false)
         {
             DisplayName = "NoteFever | Nameless note";
+            Note.Content = "";
+            _loadNote = loadNote;
+
         }
 
+        /// <summary>
+        /// Method for loading the contents of the note object into the databound properties.
+        /// </summary>
+        public void LoadNote()
+        {
+            if (Note != null)
+            {
+                Title = Note.Title;
+                NewContent = Note.Content;
+            }
+        }
+
+
+        /// <summary>
+        /// Method for storing the note into the database.
+        /// </summary>
+        /// <returns></returns>
         public bool SaveNote()
         {
+            // TODO: check this!
             // For testing purposes.
             // Sometime in the future, we actually need to know the notebook beforehand.
             if (Constant.TEST_MODE && NoteOwner == null)
             {
-
                 NoteOwner = new Notebook()
                 {
                     Id = 71,
@@ -96,7 +141,18 @@ namespace EvernoteCloneGUI.ViewModels
             if (SaveNote())
             {
                 MessageBox.Show("Note was saved successfully!", "NoteFever | Saved.", MessageBoxButton.OK, MessageBoxImage.Information);
-                TryClose();
+                if (Parent != null)
+                {
+                    if (Parent is NoteFeverViewModel parent)
+                    {
+                        if (GetView() != null && !(_loadNote))
+                        {
+                            parent.SelectedNote = Note;
+                            parent.LoadNoteViewIfNoteExists();
+                            (GetView() as Window).Close();
+                        }
+                    }
+                }
             }
             else
             {
@@ -121,6 +177,53 @@ namespace EvernoteCloneGUI.ViewModels
                 NewContent = Encoding.Default.GetString(stream.ToArray());
             }
 
+        }
+
+        /// <summary>
+        /// Method which loads all the contents of the XaML string into the text editor.
+        /// <see cref="https://stackoverflow.com/questions/1449121/how-to-insert-xaml-into-richtextbox">Impl. from here</see>
+        /// </summary>
+        /// <param name="xamlString"></param>
+        /// <returns></returns>
+        private FlowDocument SetRTF(string xamlString)
+        {
+            if (!(string.IsNullOrEmpty(xamlString.Trim())))
+            {
+                StringReader stringReader = new StringReader(xamlString);
+                XmlReaderSettings xmlReaderSettings = new XmlReaderSettings
+                {
+                    DtdProcessing = DtdProcessing.Parse,
+                    MaxCharactersFromEntities = 1024
+                };
+
+
+                XmlReader xmlReader = XmlReader.Create(stringReader, xmlReaderSettings);
+                FlowDocument doc = new FlowDocument();
+
+                Section sec = XamlReader.Load(xmlReader) as Section;
+                while (sec.Blocks.Count > 0)
+                    doc.Blocks.Add(sec.Blocks.FirstBlock);
+
+                return doc;
+            }
+
+            return new FlowDocument();
+        }
+
+        /// <summary>
+        /// When the view is ready, and we are loading the note, this is the only way to
+        /// attach the content to the text editor.
+        /// </summary>
+        /// <param name="view"></param>
+        protected override void OnViewReady(object view)
+        {
+            if (_loadNote)
+            {
+                NewNoteView newNoteView = (NewNoteView)view;
+                newNoteView.TextEditor.Document = SetRTF(this.NewContent);
+            }
+
+            base.OnViewReady(view);
         }
 
     }
