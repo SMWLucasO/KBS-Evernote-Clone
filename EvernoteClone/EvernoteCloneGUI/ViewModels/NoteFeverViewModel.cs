@@ -104,7 +104,7 @@ namespace EvernoteCloneGUI.ViewModels
         public void NewNote()
         {
             // it will get confusing if I don't use an '==' here (It is placed for readability purposes)
-            if(SelectedNotebook.IsNotNoteOwner == false)
+            if(SelectedNotebook == null || SelectedNotebook.IsNotNoteOwner == false)
             {
                 IWindowManager windowManager = new WindowManager();
 

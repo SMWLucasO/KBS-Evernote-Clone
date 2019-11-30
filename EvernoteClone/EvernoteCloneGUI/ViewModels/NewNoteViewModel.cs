@@ -158,7 +158,7 @@ namespace EvernoteCloneGUI.ViewModels
             }
 
             // If the NoteOwner isn't null, we fetch the Id of the user it contains
-            // though NoteOwner should never occur
+            // though NoteOwner should never be null
             if (NoteOwner != null)
             {
                 return NoteOwner.Save(NoteOwner.UserID);

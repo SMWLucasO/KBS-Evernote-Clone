@@ -60,7 +60,7 @@ namespace EvernoteCloneGUI.ViewModels
 
         public Notebook Notebook { get; set; }
 
-        
+
 
         public NotebookNotesMenuViewModel()
         {
@@ -97,10 +97,6 @@ namespace EvernoteCloneGUI.ViewModels
                 NotebookNoteCount = $"{NoteElementViews.Count} note(s)";
 
             }
-
-            // TODO:
-            // if >2 characters typed: search the NoteElementViews, clear the visual part and 
-            // load the NoteElementViews which adhere to the given search-criteria
         }
 
         public void LoadNotesIntoNotebookMenu()
@@ -134,7 +130,7 @@ namespace EvernoteCloneGUI.ViewModels
                             NoteCreationDate = note.CreationDate.Date.ToString("dd-MM-yyyy") ?? "Unknown"
                         };
 
-                        if (note.Equals(noteFeverViewModel.SelectedNote) 
+                        if (note.Equals(noteFeverViewModel.SelectedNote)
                             && noteFeverViewModel.NotebookViewModel != null)
                         {
                             noteFeverViewModel.NotebookViewModel.SelectedNoteElement = noteElementView;
@@ -142,7 +138,7 @@ namespace EvernoteCloneGUI.ViewModels
 
                         noteElementViewModels.Add(noteElementView);
                     }
-                }   
+                }
             }
             return noteElementViewModels;
         }

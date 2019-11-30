@@ -251,12 +251,11 @@ namespace EvernoteCloneLibrary.Notebooks
             {
                 if (Notebook.FSName == null)
                 {
-                    return XMLExporter.Export(GetStoragePath(), $@"{Guid.NewGuid()}.enex", Notebook);
+                    Notebook.FSName = $"{Guid.NewGuid()}";
                 }
-                else
-                {
-                    return XMLExporter.Export(GetStoragePath(), $@"{Notebook.FSName}.enex", Notebook);
-                }
+
+                return XMLExporter.Export(GetStoragePath(), $@"{Notebook.FSName}.enex", Notebook);
+
             }
 
             return false;
