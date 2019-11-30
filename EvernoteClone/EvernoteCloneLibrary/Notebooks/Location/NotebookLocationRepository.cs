@@ -22,8 +22,8 @@ namespace EvernoteCloneLibrary.Notebooks.Location
             {
                 Dictionary<string, object> parameters = GenerateQueryParameters(ToInsert);
 
-                int id = DataAccess.Instance.ExecuteAndReturnId("INSERT INTO [Note] ([NotebookID], [Title], [Content], [Author], [CreationDate], [LastUpdated])"
-                        + " VALUES (@NotebookID, @Title, @Content, @Author, @CreationDate, @LastUpdated)", parameters);
+                int id = DataAccess.Instance.ExecuteAndReturnId("INSERT INTO [NotebookLocation] ([Path])"
+                        + " VALUES (@Path)", parameters);
 
                 if (id != -1)
                 {
@@ -40,7 +40,7 @@ namespace EvernoteCloneLibrary.Notebooks.Location
         /// <summary>
         /// The method for selecting NotebookLocation records which satisfy the conditions.
         /// </summary>
-        /// <param name="conditions">These parameters may NOT be user-typed, injection is possible.</param>
+        /// <param name="Conditions">These parameters may NOT be user-typed, injection is possible.</param>
         /// <param name="Parameters">Bindings for the conditions.</param>
         /// <returns>an enumerable containing all the notes selected from the database.</returns>
         public IEnumerable<NotebookLocationModel> GetBy(string[] Conditions, Dictionary<string, object> Parameters)
@@ -52,7 +52,7 @@ namespace EvernoteCloneLibrary.Notebooks.Location
 
             while (sqlDataReader.Read())
             {
-                // Generate a model for each row of the Notes table.
+                // Generate a model for each row of the NotebookLocations table.
                 generatedModels.Add(new NotebookLocation()
                 {
                     Id = (int)sqlDataReader["Id"],
@@ -101,9 +101,9 @@ namespace EvernoteCloneLibrary.Notebooks.Location
             if (ToDelete != null)
             {
                 Dictionary<string, object> Parameter = new Dictionary<string, object>()
-            {
-                { "@Id", ToDelete.Id }
-            };
+                {
+                    { "@Id", ToDelete.Id }
+                };
 
                 return DataAccess.Instance.Execute("DELETE FROM [NotebookLocation] WHERE Id = @Id", Parameter);
             }

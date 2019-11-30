@@ -8,6 +8,15 @@
         xmlns:cal="http://www.caliburnproject.org"
         mc:Ignorable="d"
         Title="NoteFever" Height="600" Width="1280">
+    <Window.Resources><!-- TODO remove! (context menus) -->
+        <ContextMenu x:Key ="FolderContext"  StaysOpen="true">
+            <MenuItem Header="Add Folder" cal:Message.Attach="[Event Click] = [AddFolder($eventArgs)]"/>
+            <MenuItem Header="Add Notebook" cal:Message.Attach="[Event Click] = [AddNotebook($eventArgs)]"/>
+        </ContextMenu>
+        <ContextMenu x:Key="NotebookContext"  StaysOpen="true">
+            <MenuItem Header="Add Note" cal:Message.Attach="[Event Click] = [AddNote($eventArgs)]"/>
+        </ContextMenu>
+    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -32,11 +41,7 @@
         <Button Content="Username" Background="#404040" Foreground="White" FontSize="16" Grid.Row="0"></Button>
         <Button Content="New Note" Background="#0052cc" Foreground="White" FontSize="16" Grid.Row="1" x:Name="NewNote"></Button>
         <Button Content="All Notes" Background="#404040" Foreground="White" FontSize="16" Grid.Row="2"></Button>
-        <TreeView Background="#404040" Foreground="White" Grid.Row="3">
-            <TreeViewItem Header="Notebooks" Foreground="White" IsExpanded="False" FontSize="14">
-                <TreeViewItem Foreground="White" Header="My Notebook" FontSize="14"></TreeViewItem>
-            </TreeViewItem>
-        </TreeView>
+        <TreeView x:Name="NotebooksTreeView" Background="#404040" Foreground="White" Grid.Row="3" ItemsSource="{Binding Path=NotebooksTreeView}"></TreeView>
         <Button Content="Shared With Me" Background="#404040" Foreground="White" FontSize="16" Grid.Row="4"></Button>
         <Button Content="Bin" Background="#404040" Foreground="White" FontSize="16" Grid.Row="5"></Button>
         <Button Content="Tags" Background="#404040" Foreground="White" FontSize="16" Grid.Row="6"></Button>

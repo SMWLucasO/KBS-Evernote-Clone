@@ -1,11 +1,20 @@
 ﻿using Caliburn.Micro;
+using EvernoteCloneGUI.Views;
 using EvernoteCloneLibrary.Notebooks;
+using EvernoteCloneLibrary.Notebooks.Location;
+using EvernoteCloneLibrary.Notebooks.Location.LocationUser;
 using EvernoteCloneLibrary.Notebooks.Notes;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Dynamic;
 using System.Linq;
+using System.Threading;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+
+// TODO add summary
 
 namespace EvernoteCloneGUI.ViewModels
 {
@@ -22,6 +31,24 @@ namespace EvernoteCloneGUI.ViewModels
         public Note SelectedNote = null;
 
         public NotebookViewModel NotebookViewModel { get; set; }
+        public ObservableCollection<TreeViewItem> NotebooksTreeView { set; get; } = new ObservableCollection<TreeViewItem>(new List<TreeViewItem> { });
+
+        public ContextMenu FolderContext = new ContextMenu();
+        public ContextMenu NotebookContext = new ContextMenu();
+
+        public NoteFeverViewModel()
+        {
+            MenuItem addFolder = new MenuItem();
+            addFolder.Header = "Add Folder";
+            addFolder.Click += AddFolder;
+
+            MenuItem addNotebook = new MenuItem();
+            addNotebook.Header = "Add Notebook";
+            addNotebook.Click += AddNotebook;
+
+            FolderContext.Items.Add(addFolder);
+            FolderContext.Items.Add(addNotebook);
+        }
 
         // <User object stuff here>
         // <ReplaceThis>
@@ -61,6 +88,9 @@ namespace EvernoteCloneGUI.ViewModels
             // Only do this when a note has been opened, otherwise the right side should still be empty.
             LoadNoteViewIfNoteExists();
 
+            // Load all folders, notebooks and add them all to the view
+            foreach (TreeViewItem treeViewItem in LoadNotebooks(LoadFolders()).Items.Cast<TreeViewItem>())
+                NotebooksTreeView.Add(treeViewItem);
 
         }
 
@@ -116,6 +146,178 @@ namespace EvernoteCloneGUI.ViewModels
                 NoteOwner = SelectedNotebook
             };
             windowManager.ShowDialog(newNoteViewModel, null, settings);
+        }
+
+        public TreeView LoadFolders()
+        {
+            // Load all LocationUser records from UserID
+            LocationUserRepository locationUserRepository = new LocationUserRepository();
+            List<LocationUser> locationUserRecords = locationUserRepository.GetBy(
+                new string[] { "UserID = @UserID" },
+                new Dictionary<string, object>() { { "@UserID", 3 } } // TODO: change this!!!!
+                ).Select((el) => ((LocationUser)el)).ToList();
+
+            NotebookLocationRepository notebookLocationRepository = new NotebookLocationRepository();
+            List<NotebookLocation> notebookLocationsFromDatabase = new List<NotebookLocation>();
+            foreach (LocationUser locationUser in locationUserRecords)
+            {
+                var _notebookLocation = notebookLocationRepository.GetBy(
+                    new string[] { "Id = @Id" },
+                    new Dictionary<string, object>() { { "@Id", locationUser.LocationID } }
+                    ).Select((el) => ((NotebookLocation)el)).ToList()[0];
+                notebookLocationsFromDatabase.Add(_notebookLocation);
+            }
+
+            TreeView treeView = new TreeView();
+            TreeViewItem currentNode = null;
+
+            foreach (string path in notebookLocationsFromDatabase.Select(notebookLocation => notebookLocation.Path))
+            {
+                currentNode = null;
+                foreach (string directory in path.Split('/'))
+                {
+                    if (currentNode == null)
+                    {
+                        if (treeView.Items.Cast<TreeViewItem>().Any(item => item.Header.ToString() == directory))
+                        {
+                            currentNode = treeView.Items.Cast<TreeViewItem>().First(item => item.Header.ToString() == directory);
+                        }
+                        else
+                        {
+                            currentNode = CreateTreeNode(directory, FolderContext);
+                            treeView.Items.Add(currentNode);
+                        }
+                    }
+                    else if (currentNode.Items.Cast<TreeViewItem>().Any(item => item.Header.ToString() == directory))
+                    {
+                        currentNode = currentNode.Items.Cast<TreeViewItem>().First(item => item.Header.ToString() == directory);
+                    }
+                    else
+                    {
+                        var newNode = CreateTreeNode(directory, FolderContext);
+                        currentNode.Items.Add(newNode);
+                        currentNode = newNode;
+                    }
+                }
+            }
+
+            return treeView;
+        }
+
+        public TreeView LoadNotebooks(TreeView treeView)
+        {
+            TreeViewItem currentNode = null;
+            List<Notebook> notebooks = Notebook.Load(3);
+            foreach (Notebook notebook in notebooks)
+            {
+                NotebookLocationRepository notebookLocationRepository = new NotebookLocationRepository();
+                string path = notebookLocationRepository.GetBy(
+                    new string[] { "Id = @Id" },
+                    new Dictionary<string, object>() { { "@Id", notebook.LocationID } }
+                    ).Select((el) => ((NotebookLocation)el)).ToList()[0].Path;
+
+                currentNode = null;
+                foreach (string directory in path.Split('/'))
+                {
+                    if (currentNode == null)
+                        currentNode = treeView.Items.Cast<TreeViewItem>().First(item => item.Header.ToString() == directory);
+                    else
+                        currentNode = currentNode.Items.Cast<TreeViewItem>().First(item => item.Header.ToString() == directory);
+                }
+
+                currentNode.Items.Add(CreateTreeNode(notebook.Title, NotebookContext));
+            }
+
+            return treeView;
+        }
+
+        private TreeViewItem CreateTreeNode(string Header, ContextMenu contextMenu)
+        {
+            TreeViewItem treeViewItem = new TreeViewItem();
+            treeViewItem.Header = Header;
+            treeViewItem.Foreground = Brushes.White;
+            treeViewItem.IsExpanded = false;
+            treeViewItem.FontSize = 14;
+            treeViewItem.ContextMenu = contextMenu;
+            return treeViewItem;
+        }
+
+        public void AddFolder(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = e.Source as MenuItem;
+            if (menuItem != null)
+            {
+                ContextMenu contextMenu = menuItem.Parent as ContextMenu;
+                string path = GetPath(contextMenu.PlacementTarget as TreeViewItem);
+
+                // TODO show window that asks for a name
+                string newFolderName = new Random().Next().ToString();
+                NotebookLocationRepository notebookLocationRepository = new NotebookLocationRepository();
+                NotebookLocationModel notebookLocationModel = new NotebookLocationModel() { Path = path + "/" + newFolderName };
+                if (notebookLocationRepository.Insert(notebookLocationModel))
+                {
+                    LocationUserRepository locationUserRepository = new LocationUserRepository();
+                    locationUserRepository.Insert(new LocationUserModel() { LocationID = notebookLocationModel.Id, UserID = 3 }); // TODO change userid
+                }
+
+                // TODO fix refresh (for now, delete and add)
+                NotebooksTreeView.Clear();
+                foreach (TreeViewItem treeViewItem in LoadNotebooks(LoadFolders()).Items.Cast<TreeViewItem>())
+                    NotebooksTreeView.Add(treeViewItem);
+            }
+        }
+
+        public void AddNotebook(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = e.Source as MenuItem;
+            if (menuItem != null)
+            {
+                ContextMenu contextMenu = menuItem.Parent as ContextMenu;
+                string path = GetPath(contextMenu.PlacementTarget as TreeViewItem);
+
+                // TODO show window that asks for a name
+                string newNotebookName = new Random().Next().ToString();
+
+                NotebookLocationRepository notebookLocationRepository = new NotebookLocationRepository();
+                int locationID = notebookLocationRepository.GetBy(
+                        new string[] { "Path = @Path" },
+                        new Dictionary<string, object>() { { "@Path", path } }
+                        ).Select((el) => ((NotebookLocation)el)).ToList()[0].Id;
+
+                NotebookRepository notebookRepository = new NotebookRepository();
+                NotebookModel notebookModel = new NotebookModel() { UserID = 3, LocationID = locationID, Title = newNotebookName, CreationDate = DateTime.Now.Date, LastUpdated = DateTime.Now };
+                notebookRepository.Insert(notebookModel);
+
+                // TODO fix refresh (for now, delete and add)
+                NotebooksTreeView.Clear();
+                foreach (TreeViewItem treeViewItem in LoadNotebooks(LoadFolders()).Items.Cast<TreeViewItem>())
+                    NotebooksTreeView.Add(treeViewItem);
+            }
+        }
+
+        public void AddNote(object sender, RoutedEventArgs e)
+        {
+            // TODO Change this!
+            MenuItem menuItem = e.Source as MenuItem;
+            if (menuItem != null)
+            {
+                ContextMenu contextMenu = menuItem.Parent as ContextMenu;
+                string path = GetPath(contextMenu.PlacementTarget as TreeViewItem);
+            }
+        }
+
+        private string GetPath(TreeViewItem treeViewItem)
+        {
+            string path = treeViewItem.Header.ToString();
+            while (treeViewItem.Parent is TreeViewItem)
+            {
+                treeViewItem = treeViewItem.Parent as TreeViewItem;
+                path = treeViewItem.Header.ToString() + "/" + path;
+            }
+
+            // TODO remove this write line, this is only to show it works
+            Console.WriteLine(path);
+            return path;
         }
 
     }
