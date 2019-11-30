@@ -151,7 +151,7 @@ namespace EvernoteCloneLibrary.Notebooks
         public bool Save(int UserID = -1)
         {
             LastUpdated = DateTime.Now;
-            bool storedLocally = UpdateLocalStorage(this);
+            bool storedLocally = false;
             bool storedInTheCloud = false;
             if (UserID != -1)
             {
@@ -190,6 +190,7 @@ namespace EvernoteCloneLibrary.Notebooks
                 }
                 catch (Exception) { }
             }
+            storedLocally = UpdateLocalStorage(this); //TODO remove this comment, for @Lucas : this has to be here, because the ID is updated when you create a new notebook (with the id you get from the database) but its not written to the local file 
 
             return storedInTheCloud || storedLocally;
         }
