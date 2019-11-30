@@ -17,6 +17,7 @@ namespace EvernoteCloneGUI.ViewModels
 
         // Notebook information for viewing things
         public List<Notebook> Notebooks { get; private set; }
+            = new List<Notebook>();
 
         public Notebook SelectedNotebook = null;
         public Note SelectedNote = null;
@@ -41,7 +42,6 @@ namespace EvernoteCloneGUI.ViewModels
                 Notebooks = Notebook.Load();
                 if (Notebooks != null)
                 {
-
                     Notebook tempNotebook = Notebooks.First();
                     if (tempNotebook != null)
                     {
