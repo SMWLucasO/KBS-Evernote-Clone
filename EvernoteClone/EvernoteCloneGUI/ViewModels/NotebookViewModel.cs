@@ -9,9 +9,10 @@ namespace EvernoteCloneGUI.ViewModels
 {
     public class NotebookViewModel : Conductor<object>.Collection.AllActive
     {
-        
+
         public NotebookNotesMenuViewModel NotebookNotesMenu { get; set; }
         public NewNoteViewModel NewNoteViewModel { get; set; }
+        public NoteElementViewModel SelectedNoteElement { get; set; }
  
         public NotebookViewModel()
         {

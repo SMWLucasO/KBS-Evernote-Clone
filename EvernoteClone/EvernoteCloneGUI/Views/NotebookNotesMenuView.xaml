@@ -48,7 +48,16 @@
                         <DataTemplate>
                             <Border BorderBrush="Black" BorderThickness="0 1 1 0" DockPanel.Dock="Top">
                                 <StackPanel>
-                                    <ContentControl Height="100" Width="250" cal:View.Model="{Binding}"/>
+                                    <Button cal:Message.Attach="[Event Click] = [LoadOnClick($eventArgs)]"
+                                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                        <Button.Template>
+                                            <ControlTemplate TargetType="{x:Type Button}">
+                                                <ContentPresenter />
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                        <ContentControl Height="100" Width="250" Cursor="Hand"
+                                                    cal:View.Model="{Binding}"/>
+                                    </Button>
                                 </StackPanel>
                             </Border>
                         </DataTemplate>

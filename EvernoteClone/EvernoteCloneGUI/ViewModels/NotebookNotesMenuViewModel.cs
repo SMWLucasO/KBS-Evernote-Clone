@@ -15,20 +15,89 @@ namespace EvernoteCloneGUI.ViewModels
     public class NotebookNotesMenuViewModel : Conductor<NoteElementViewModel>.Collection.AllActive
     {
 
-        // Examples for the text display on the view
-        public string NotebookName { get; set; } = "Nameless notebook";
-        public string NotebookNoteCount { get; set; } = "0 notes";
+        private string _notebookNoteCount = "0 note(s)";
+        private ObservableCollection<NoteElementViewModel> _noteElementViews;
+
+        // These properties need to make changes happen in the view.
+        public string NotebookName
+        {
+            get
+            {
+                return Notebook.Title;
+            }
+            set
+            {
+                Notebook.Title = value;
+                NotifyOfPropertyChange(() => NotebookName);
+            }
+        }
+
+        public string NotebookNoteCount
+        {
+            get
+            {
+                return _notebookNoteCount;
+            }
+            set
+            {
+                _notebookNoteCount = value;
+                NotifyOfPropertyChange(() => NotebookNoteCount);
+            }
+        }
+
+        public ObservableCollection<NoteElementViewModel> NoteElementViews
+        {
+            get
+            {
+                return _noteElementViews;
+            }
+            set
+            {
+                _noteElementViews = value;
+                NotifyOfPropertyChange(() => NoteElementViews);
+            }
+        }
 
         public Notebook Notebook { get; set; }
 
-        public ObservableCollection<NoteElementViewModel> NoteElementViews { get; set; }
+        
 
         public NotebookNotesMenuViewModel()
         {
         }
 
+        /// <summary>
+        /// Event that searches for notes within a notebook when more than 2 characters (which are not whitespace)
+        /// are typed into the searchbar.
+        /// </summary>
+        /// <param name="EventArgs"></param>
         public void SearchNoteInNotebook(TextChangedEventArgs EventArgs)
         {
+            if (EventArgs.Source is TextBox searchBar)
+            {
+                if (searchBar.Text.Trim().Length > 2 &&
+                    !(string.IsNullOrWhiteSpace(searchBar.Text) || string.IsNullOrEmpty(searchBar.Text)))
+                {
+                    string searchFor = searchBar.Text.Trim();
+                    NoteElementViews = GenerateNoteElementsFromNotebook(
+                            Notebook.Notes.Where(note =>
+                                ((Note)note).Title.ToLower().StartsWith(searchFor)
+                                || ((Note)note).Title.ToLower().EndsWith(searchFor)
+                                || ((Note)note).Author.ToLower().StartsWith(searchFor)
+                                || ((Note)note).Author.ToLower().EndsWith(searchFor)
+                                ).ToList()
+                        );
+
+                }
+                else
+                {
+                    NoteElementViews = GenerateNoteElementsFromNotebook(Notebook.Notes);
+                }
+
+                NotebookNoteCount = $"{NoteElementViews.Count} note(s)";
+
+            }
+
             // TODO:
             // if >2 characters typed: search the NoteElementViews, clear the visual part and 
             // load the NoteElementViews which adhere to the given search-criteria
@@ -36,34 +105,48 @@ namespace EvernoteCloneGUI.ViewModels
 
         public void LoadNotesIntoNotebookMenu()
         {
-            NoteElementViews = GenerateNoteElementsFromNotebook(Notebook);
+            NoteElementViews = GenerateNoteElementsFromNotebook(Notebook.Notes);
         }
 
         /// <summary>
         /// Method which generates the ViewModel objects to be inserted in the NotebookNotesMenuViewModel.
         /// </summary>
-        /// <param name="Notebook"></param>
+        /// <param name="Notes"></param>
         /// <returns></returns>
-        public ObservableCollection<NoteElementViewModel> GenerateNoteElementsFromNotebook(Notebook Notebook)
+        public ObservableCollection<NoteElementViewModel> GenerateNoteElementsFromNotebook(List<INote> Notes)
         {
-            ObservableCollection<NoteElementViewModel> noteElementViewModels = 
+
+            ObservableCollection<NoteElementViewModel> noteElementViewModels =
                 new ObservableCollection<NoteElementViewModel>();
 
-            if (Notebook != null)
+            if (Notes != null)
             {
-                foreach (Note note in Notebook.Notes)
+                if (Parent is NoteFeverViewModel noteFeverViewModel)
                 {
-                    noteElementViewModels.Add(new NoteElementViewModel()
+                    foreach (Note note in Notes)
                     {
-                        Note = note,
-                        Title = note.Title ?? "",
-                        NoteCreationDate = note.CreationDate.Date.ToString() ?? "Unknown"
+
+                        NoteElementViewModel noteElementView = new NoteElementViewModel()
+                        {
+                            Container = noteFeverViewModel,
+                            Note = note,
+                            Title = note.Title ?? "",
+                            NoteCreationDate = note.CreationDate.Date.ToString() ?? "Unknown"
+                        };
+
+                        if (note.Equals(noteFeverViewModel.SelectedNote) 
+                            && noteFeverViewModel.NotebookViewModel != null)
+                        {
+                            noteFeverViewModel.NotebookViewModel.SelectedNoteElement = noteElementView;
+                        }
+
+                        noteElementViewModels.Add(noteElementView);
                     }
-                    );
-                }
+                }   
             }
             return noteElementViewModels;
         }
+
 
     }
 }

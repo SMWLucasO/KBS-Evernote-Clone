@@ -33,15 +33,27 @@ namespace EvernoteCloneGUI.ViewModels
                 _title = value;
                 NotifyOfPropertyChange(() => Title);
 
-                // Dynamically set the title of the window.
-                if (!(string.IsNullOrEmpty(_title)))
+                if (!_loadNote)
                 {
-                    DisplayName = $"NoteFever | {_title}";
+                    // Dynamically set the title of the window.
+                    if (!(string.IsNullOrEmpty(_title)))
+                    {
+                        DisplayName = $"NoteFever | {_title}";
+                    }
+                    else
+                    {
+                        DisplayName = $"NoteFever | Nameless note";
+                    }
                 }
                 else
                 {
-                    DisplayName = $"NoteFever | Nameless note";
+                    if (Parent is NoteFeverViewModel container && container.NotebookViewModel != null
+                        && container.NotebookViewModel.SelectedNoteElement != null)
+                    {
+                        container.NotebookViewModel.SelectedNoteElement.Title = _title;
+                    }
                 }
+
             }
         }
 
@@ -74,7 +86,6 @@ namespace EvernoteCloneGUI.ViewModels
         public NewNoteViewModel(bool loadNote = false)
         {
             DisplayName = "NoteFever | Nameless note";
-            Note.Content = "";
             _loadNote = loadNote;
 
         }
@@ -121,7 +132,20 @@ namespace EvernoteCloneGUI.ViewModels
             Note.Save();
 
             // Add the note to the notes list
-            NoteOwner.Notes.Add(Note);
+            if (!(NoteOwner.Notes.Contains(Note)))
+            {
+                NoteOwner.Notes.Add(Note);
+            }
+
+            if (Parent != null && Parent is NoteFeverViewModel)
+            {
+                NoteFeverViewModel noteFeverViewModel = (NoteFeverViewModel)Parent;
+                if (noteFeverViewModel.NotebookViewModel != null &&
+                    noteFeverViewModel.NotebookViewModel.NotebookNotesMenu != null)
+                {
+                    noteFeverViewModel.NotebookViewModel.NotebookNotesMenu.LoadNotesIntoNotebookMenu();
+                }
+            }
 
             // If the NoteOwner isn't null, we fetch the Id of the user it contains
             // though NoteOwner should never occur
@@ -214,16 +238,49 @@ namespace EvernoteCloneGUI.ViewModels
         /// When the view is ready, and we are loading the note, this is the only way to
         /// attach the content to the text editor.
         /// </summary>
-        /// <param name="view"></param>
-        protected override void OnViewReady(object view)
+        /// <param name="View"></param>
+        protected override void OnViewReady(object View)
         {
+            if (Note.Content == null)
+            {
+                Note.Content = "";
+            }
+
             if (_loadNote)
             {
-                NewNoteView newNoteView = (NewNoteView)view;
+                NewNoteView newNoteView = (NewNoteView)View;
                 newNoteView.TextEditor.Document = SetRTF(this.NewContent);
             }
 
-            base.OnViewReady(view);
+            base.OnViewReady(View);
+        }
+
+        protected override void OnViewAttached(object View, object Context)
+        {
+            if (View is NewNoteView newNoteView)
+            {
+                SetupTextEditor(newNoteView);
+            }
+
+        }
+
+        /// <summary>
+        /// Method which loads the text into the text editor.
+        /// Beforehand it set the content to an empty string if it is currently null, since this might
+        /// cause unexpected behaviour otherwise.
+        /// </summary>
+        /// <param name="NewNoteView"></param>
+        private void SetupTextEditor(NewNoteView NewNoteView)
+        {
+            if (Note.Content == null)
+            {
+                Note.Content = "";
+            }
+
+            if (_loadNote)
+            {
+                NewNoteView.TextEditor.Document = SetRTF(this.NewContent);
+            }
         }
 
     }

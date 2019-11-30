@@ -72,6 +72,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ViewModels\NewNoteViewModel.cs" />
+    <Compile Include="ViewModels\NotebookNotesMenuViewModel.cs" />
+    <Compile Include="ViewModels\NotebookViewModel.cs" />
+    <Compile Include="ViewModels\NoteElementViewModel.cs" />
     <Compile Include="ViewModels\NoteFeverViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -110,7 +113,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\NotebookNotesMenuView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\NotebookView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\NoteElementView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

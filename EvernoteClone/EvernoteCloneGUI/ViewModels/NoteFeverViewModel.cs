@@ -75,13 +75,16 @@ namespace EvernoteCloneGUI.ViewModels
                 {
                     NewNoteViewModel = new NewNoteViewModel(true)
                     {
-                        Note = SelectedNote
+                        Note = SelectedNote,
+                        NoteOwner = SelectedNotebook,
+                        Parent = this
                     },
                     NotebookNotesMenu = new NotebookNotesMenuViewModel()
                     {
                         Notebook = SelectedNotebook,
                         NotebookName = SelectedNotebook.Title,
-                        NotebookNoteCount = $"{SelectedNotebook.Notes.Count} note(s)"
+                        NotebookNoteCount = $"{SelectedNotebook.Notes.Count} note(s)",
+                        Parent = this
                     }
                 };
 
@@ -109,7 +112,8 @@ namespace EvernoteCloneGUI.ViewModels
 
             NewNoteViewModel newNoteViewModel = new NewNoteViewModel
             {
-                Parent = this
+                Parent = this,
+                NoteOwner = SelectedNotebook
             };
             windowManager.ShowDialog(newNoteViewModel, null, settings);
         }
