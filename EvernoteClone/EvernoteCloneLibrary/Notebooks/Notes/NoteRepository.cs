@@ -69,6 +69,7 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
                     NotebookID = (int)sqlDataReader["NotebookID"],
                     Title = (string)sqlDataReader["Title"],
                     Content = (string)sqlDataReader["Content"],
+                    NewContent = (string)sqlDataReader["Content"],
                     Author = (string)sqlDataReader["Author"],
                     CreationDate = (DateTime)sqlDataReader["CreationDate"],
                     LastUpdated = (DateTime)sqlDataReader["LastUpdated"]

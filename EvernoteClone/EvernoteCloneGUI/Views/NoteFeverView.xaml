@@ -42,14 +42,9 @@
         <Button Content="Tags" Background="#404040" Foreground="White" FontSize="16" Grid.Row="6"></Button>
         <Button Content="Search" Background="#404040" Foreground="White" FontSize="16" Grid.Row="7"></Button>
 
-        <StackPanel Grid.Row="0" Grid.Column="1" Grid.RowSpan="8">
-            <!-- This doesn't currently properly load in the notebooks, but it is an example. -->
-            <local:NotebookView HorizontalAlignment="Stretch" Height="100"></local:NotebookView>
-            <!-- Add all notebooks in here... (Perhaps load a 'usercontrol')-->
-        </StackPanel>
 
-        <ContentControl Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="3"
-                        Grid.RowSpan="8" x:Name="ActiveItem"></ContentControl>
+        <ContentControl Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="4"
+                        Grid.RowSpan="8" x:Name="ActiveItem" ></ContentControl>
 
     </Grid>
 

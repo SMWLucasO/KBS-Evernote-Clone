@@ -122,15 +122,16 @@ namespace EvernoteCloneLibrary.Database
         /// <returns></returns>
         public int ExecuteAndReturnId(string Query, Dictionary<string, object> Parameters)
         {
+            int id = -1;
             SqlDataReader data = this.Query($"{Query} SELECT NewID = SCOPE_IDENTITY()", Parameters, SqlDataReaderReturnType);
             while (data.Read())
             {
-
-                return Convert.ToInt32(Math.Truncate(((decimal)data["NewID"])));
+                id = Convert.ToInt32(Math.Truncate(((decimal)data["NewID"])));
+                break;
             }
 
             CloseSqlConnection();
-            return -1;
+            return id;
         }
 
         /// <summary>

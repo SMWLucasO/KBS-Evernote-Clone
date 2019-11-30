@@ -14,7 +14,8 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
     {
         public List<string> Tags { get; set; }
 
-        private string _title;
+        private string _title = "Nameless note";
+        private string _newContent = "";
 
         /// <summary>
         /// When an empty title is given, we give a default title.
@@ -48,12 +49,21 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
         /// This string should be modified when content changes, not the Content property.
         /// The Content property is specifically for saved content.
         /// </summary>
-        public string NewContent { get; set; }
+        public string NewContent {
+            get
+            {
+                if (Content == null) Content = _newContent;
+                return _newContent;
+            }
+            set
+            {
+                _newContent = value;
+            }
+        }
 
         public Note()
         {
-            // We want to remember the old content, saving should modify this part.
-            NewContent = Content;
+           
         }
 
         /// <summary>

@@ -245,7 +245,14 @@ namespace EvernoteCloneLibrary.Notebooks
             {
                 if (obj is Notebook notebook)
                 {
-                    return notebook.Id == this.Id;
+                    if (notebook.Id != -1)
+                    {
+                        return notebook.Id == this.Id;
+                    }
+                    else
+                    {
+                        return base.Equals(obj);
+                    }
                 }
             }
 
@@ -254,7 +261,12 @@ namespace EvernoteCloneLibrary.Notebooks
 
         public override int GetHashCode()
         {
-            return Id;
+            if (Id != -1)
+            {
+                return Id;
+            }
+
+            return base.GetHashCode();
         }
 
         // END comparison methods
