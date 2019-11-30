@@ -26,8 +26,11 @@ namespace EvernoteCloneGUI.ViewModels
 
         // Notebook information for viewing things
         public List<Notebook> Notebooks { get; private set; }
+
+        public Notebook SelectedNotebook = null;
         public Note SelectedNote = null;
 
+        public NotebookViewModel NotebookViewModel { get; set; }
         public ObservableCollection<TreeViewItem> NotebooksTreeView { set; get; } = new ObservableCollection<TreeViewItem>(new List<TreeViewItem> { });
 
         public ContextMenu RootContext = new ContextMenu();
@@ -66,10 +69,15 @@ namespace EvernoteCloneGUI.ViewModels
                 if (Notebooks != null)
                 {
 
-                    Note tempNote = (Note)Notebooks.First().Notes.First();
-                    if (tempNote != null)
+                    Notebook tempNotebook = Notebooks.First();
+                    if (tempNotebook != null)
                     {
-                        SelectedNote = tempNote;
+                        Note tempNote = (Note)tempNotebook.Notes.First();
+                        if (tempNote != null)
+                        {
+                            SelectedNotebook = tempNotebook;
+                            SelectedNote = tempNote;
+                        }
                     }
                 }
             }
@@ -86,18 +94,34 @@ namespace EvernoteCloneGUI.ViewModels
 
         public void LoadNoteViewIfNoteExists()
         {
-            
-            if (SelectedNote != null)
+
+            if (SelectedNote != null && SelectedNotebook != null)
             {
 
-                NewNoteViewModel newNoteViewModel = new NewNoteViewModel(true)
+                // Create the notebook view with the required data.
+                NotebookViewModel = new NotebookViewModel()
                 {
-                    Note = SelectedNote
+                    NewNoteViewModel = new NewNoteViewModel(true)
+                    {
+                        Note = SelectedNote,
+                        NoteOwner = SelectedNotebook,
+                        Parent = this
+                    },
+                    NotebookNotesMenu = new NotebookNotesMenuViewModel()
+                    {
+                        Notebook = SelectedNotebook,
+                        NotebookName = SelectedNotebook.Title,
+                        NotebookNoteCount = $"{SelectedNotebook.Notes.Count} note(s)",
+                        Parent = this
+                    }
                 };
 
-                newNoteViewModel.LoadNote();
 
-                ActivateItem(newNoteViewModel);
+
+                NotebookViewModel.NewNoteViewModel.LoadNote();
+                NotebookViewModel.NotebookNotesMenu.LoadNotesIntoNotebookMenu();
+
+                ActivateItem(NotebookViewModel);
 
             }
         }
@@ -116,7 +140,8 @@ namespace EvernoteCloneGUI.ViewModels
 
             NewNoteViewModel newNoteViewModel = new NewNoteViewModel
             {
-                Parent = this
+                Parent = this,
+                NoteOwner = SelectedNotebook
             };
             windowManager.ShowDialog(newNoteViewModel, null, settings);
         }
