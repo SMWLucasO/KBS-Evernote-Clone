@@ -39,7 +39,7 @@ namespace EvernoteCloneLibrary.Files.Parsers
 
                     if (notebook != null)
                     {
-                        List<Note> notes = GenerateNotesFromXml(xDocument);
+                        List<Note> notes = GenerateNotesFromXml(xDocument, notebook);
 
                         // Add all the notes to the temporary notebook.
                         if (notes != null)
@@ -99,7 +99,7 @@ namespace EvernoteCloneLibrary.Files.Parsers
         /// </summary>
         /// <param name="xDocument"></param>
         /// <returns></returns>
-        private static List<Note> GenerateNotesFromXml(XDocument xDocument)
+        private static List<Note> GenerateNotesFromXml(XDocument xDocument, Notebook notebook)
         {
             if (xDocument != null)
             {
@@ -120,7 +120,8 @@ namespace EvernoteCloneLibrary.Files.Parsers
                             // fetch the author of the note
                             Author = note.Element("note-attributes").Element("author").Value,
                             // fetch all the tags of the note, there are multiple <tag></tag> elements which we want to retrieve.
-                            Tags = note.Elements("tag").Select(tag => tag.Value).ToList()
+                            Tags = note.Elements("tag").Select(tag => tag.Value).ToList(),
+                            NoteOwner = notebook
                         }).ToList();
             }
 

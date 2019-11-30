@@ -103,19 +103,58 @@ namespace EvernoteCloneGUI.ViewModels
         /// </summary>
         public void NewNote()
         {
-            IWindowManager windowManager = new WindowManager();
-
-            dynamic settings = new ExpandoObject();
-            settings.Height = 600;
-            settings.Width = 800;
-            settings.SizeToContent = SizeToContent.Manual;
-
-            NewNoteViewModel newNoteViewModel = new NewNoteViewModel
+            // it will get confusing if I don't use an '==' here (It is placed for readability purposes)
+            if(SelectedNotebook.IsNotNoteOwner == false)
             {
-                Parent = this,
-                NoteOwner = SelectedNotebook
+                IWindowManager windowManager = new WindowManager();
+
+                dynamic settings = new ExpandoObject();
+                settings.Height = 600;
+                settings.Width = 800;
+                settings.SizeToContent = SizeToContent.Manual;
+
+                NewNoteViewModel newNoteViewModel = new NewNoteViewModel
+                {
+                    Parent = this,
+                    NoteOwner = SelectedNotebook
+                };
+                windowManager.ShowDialog(newNoteViewModel, null, settings);
+            } else
+            {
+                MessageBox.Show("Cannot add new notes whilst in 'all notes' mode.", "Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        /// <summary>
+        /// Method which opens the view containing all the user's notes.
+        /// </summary>
+        public void OpenAllNotes()
+        {
+            Notebook allNotesNotebook = new Notebook()
+            {
+                Id = -1,
+                LocationID = -1,
+                UserID = -1,
+                Title = "All notes",
+                LastUpdated = DateTime.Now,
+                CreationDate = DateTime.Now.Date,
+                IsNotNoteOwner = true
             };
-            windowManager.ShowDialog(newNoteViewModel, null, settings);
+            List<INote> notes = new List<INote>();
+            foreach(Notebook notebook in Notebooks)
+            {
+                foreach(Note note in notebook.Notes)
+                {
+                    notes.Add(note);
+                }
+            }
+
+            allNotesNotebook.Notes = notes;
+
+            SelectedNotebook = allNotesNotebook;
+            SelectedNote = (Note) allNotesNotebook.Notes.First();
+
+            LoadNoteViewIfNoteExists();
         }
 
     }

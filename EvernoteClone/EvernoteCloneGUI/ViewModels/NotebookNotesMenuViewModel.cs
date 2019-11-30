@@ -131,7 +131,7 @@ namespace EvernoteCloneGUI.ViewModels
                             Container = noteFeverViewModel,
                             Note = note,
                             Title = note.Title ?? "",
-                            NoteCreationDate = note.CreationDate.Date.ToString() ?? "Unknown"
+                            NoteCreationDate = note.CreationDate.Date.ToString("dd-MM-yyyy") ?? "Unknown"
                         };
 
                         if (note.Equals(noteFeverViewModel.SelectedNote) 

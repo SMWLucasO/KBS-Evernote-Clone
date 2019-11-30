@@ -12,10 +12,13 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
     /// </summary>
     public class Note : NoteModel, INote
     {
-        public List<string> Tags { get; set; }
 
         private string _title = "Nameless note";
         private string _newContent = "";
+
+        public List<string> Tags { get; set; }
+
+        public Notebook NoteOwner { get; set; }
 
         /// <summary>
         /// When an empty title is given, we give a default title.

@@ -31,7 +31,7 @@
 
         <Button Content="Username" Background="#404040" Foreground="White" FontSize="16" Grid.Row="0"></Button>
         <Button Content="New Note" Background="#0052cc" Foreground="White" FontSize="16" Grid.Row="1" x:Name="NewNote"></Button>
-        <Button Content="All Notes" Background="#404040" Foreground="White" FontSize="16" Grid.Row="2"></Button>
+        <Button Content="All Notes" Background="#404040" Foreground="White" FontSize="16" Grid.Row="2" x:Name="OpenAllNotes"></Button>
         <TreeView Background="#404040" Foreground="White" Grid.Row="3">
             <TreeViewItem Header="Notebooks" Foreground="White" IsExpanded="False" FontSize="14">
                 <TreeViewItem Foreground="White" Header="My Notebook" FontSize="14"></TreeViewItem>
