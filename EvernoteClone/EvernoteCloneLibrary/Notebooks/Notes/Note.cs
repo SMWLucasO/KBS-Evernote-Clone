@@ -14,8 +14,8 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
     {
         public List<string> Tags { get; set; }
 
-        private string _title;
-        private string _newContent;
+        private string _title = "Nameless note";
+        private string _newContent = "";
 
         /// <summary>
         /// When an empty title is given, we give a default title.
