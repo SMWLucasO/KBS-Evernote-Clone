@@ -39,12 +39,12 @@ namespace EvernoteCloneLibrary.Files.Parsers
 
                     if (notebook != null)
                     {
-                        List<Note> data = GenerateNotesFromXML(xDocument);
+                        List<Note> notes = GenerateNotesFromXml(xDocument);
 
                         // Add all the notes to the temporary notebook.
-                        if (data != null)
+                        if (notes != null)
                         {
-                            notebook.Notes.AddRange(data);
+                            notebook.Notes.AddRange(notes);
                             notebooks.Add(notebook);
                         }
 
@@ -99,7 +99,7 @@ namespace EvernoteCloneLibrary.Files.Parsers
         /// </summary>
         /// <param name="xDocument"></param>
         /// <returns></returns>
-        private static List<Note> GenerateNotesFromXML(XDocument xDocument)
+        private static List<Note> GenerateNotesFromXml(XDocument xDocument)
         {
             if (xDocument != null)
             {
@@ -111,10 +111,8 @@ namespace EvernoteCloneLibrary.Files.Parsers
                             // Fetch the title of note
                             Title = note.Element("title").Value,
                             // fetch the content of the note
-                            Content = note.Element("content").Value
-                            .Replace("<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE en-note SYSTEM \"http://xml.evernote.com/pub/enml2.dtd\">", "")
-                            .Replace("<en-note>", "")
-                            .Replace("</en-note>", ""),
+                            Content = GetStrippedContent(note.Element("content").Value),
+                            NewContent = GetStrippedContent(note.Element("content").Value),
                             // fetch the date the note was created, needed to change it from 'T00000000Z000000' where '0' is an arbitrary value
                             CreationDate = DateTime.Parse(FormatDateTime(note.Element("created").Value)),
                             // fetch the date the note was last updated, needed to change it from 'T00000000Z000000' where '0' is an arbitrary value
@@ -129,8 +127,15 @@ namespace EvernoteCloneLibrary.Files.Parsers
             return null;
         }
 
+        private static string GetStrippedContent(string Value)
+            => Value.Replace("<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE en-note SYSTEM \"http://xml.evernote.com/pub/enml2.dtd\">", "")
+                            .Replace("<en-note>", "")
+                            .Replace("</en-note>", "");
+
+
         /// <summary>
-        /// An ISO-8601 '00000000T000000Z' formatter. 
+        /// An ISO-8601 '00000000T000000Z' formatter.
+        /// Converts the above to an appropriate DateTime (ex: 2019-07-05 05:40:53)
         /// </summary>
         /// <param name="Datetime"</param>
         /// <returns></returns>
