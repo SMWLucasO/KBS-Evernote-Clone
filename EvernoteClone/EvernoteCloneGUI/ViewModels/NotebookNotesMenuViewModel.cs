@@ -84,16 +84,30 @@ namespace EvernoteCloneGUI.ViewModels
                         // Acceptance criteria specifies that it should search for all notes that contain the piece of text 
                         // in the following data: title, author, tags, content.
                         string searchFor = searchBar.Text.ToLower().Trim();
-                        NoteElementViews = GenerateNoteElementsFromNotebook(
-                                Notebook.Notes.Where(note =>
-                                    ((Note)note).Title.ToLower().Contains(searchFor)
-                                    || ((Note)note).Author.ToLower().Contains(searchFor)
-                                    || ((Note)note).Tags.Select((tag) =>
-                                        tag.ToLower().Contains(searchFor)
-                                    ).FirstOrDefault()
-                                    || ((Note)note).Content.ToLower().Contains(searchFor)
-                                    ).ToList()
-                            );
+                        List<INote> returnedNotes = new List<INote>();
+
+                        // To stay performant, we first check the values which don't need to be iterated over.
+                        foreach (Note note in Notebook.Notes)
+                        {
+                            if (note.Content != null && note.Content.ToLower().Contains(searchFor) || note.Title != null && note.Title.ToLower().Contains(searchFor)
+                                || note.Author != null && note.Author.ToLower().Contains(searchFor))
+                            {
+                                returnedNotes.Add(note);
+                            }
+                            else if (note.Tags != null)
+                            {
+                                foreach (string tag in note.Tags)
+                                {
+                                    if (tag.ToLower().Contains(searchFor))
+                                    {
+                                        returnedNotes.Add(note);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        NoteElementViews = GenerateNoteElementsFromNotebook(returnedNotes);
                     }
                 }
                 else
