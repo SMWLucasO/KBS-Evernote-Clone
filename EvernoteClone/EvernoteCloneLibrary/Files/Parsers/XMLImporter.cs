@@ -65,31 +65,37 @@ namespace EvernoteCloneLibrary.Files.Parsers
         {
             if (FullPath != null && xDocument != null)
             {
-                var notebookData = (from nbook in xDocument.Descendants("en-export")
-                                    select new
-                                    {
-                                        Id = int.Parse(nbook.Element("id").Value),
-                                        Title = nbook.Element("title").Value,
-                                        Path = nbook.Element("path").Value,
-                                        LocationID = int.Parse(nbook.Element("path-id").Value),
-                                    }).First();
 
-                Notebook notebook = new Notebook
+                if (xDocument.Descendants("en-export") != null)
                 {
-                    // The Id of the notebook, might be -1 if it doesn't exist in a database
-                    Id = notebookData.Id,
-                    // The Title of the notebook
-                    Title = notebookData.Title,
-                    // location data
-                    Path = new NotebookLocation() { Id = notebookData.LocationID, Path = notebookData.Path },
-                    LocationID = notebookData.LocationID,
-                    // File data which applies to the notebook.
-                    CreationDate = File.GetCreationTime(FullPath),
-                    LastUpdated = File.GetLastWriteTime(FullPath),
-                    FSName = Path.GetFileNameWithoutExtension(FullPath)
-                };
+                    foreach (XElement node in xDocument.Descendants("en-export").ToList())
+                    {
+                        if (node.Element("id")?.Value != null && node.Element("title")?.Value != null
+                            && node.Element("path")?.Value != null && node.Element("path-id")?.Value != null)
+                        {
 
-                return notebook;
+                            return new Notebook
+                            {
+                                // The Id of the notebook, might be -1 if the notebook doesn't exist in the database
+                                Id = int.Parse(node.Element("id").Value),
+                                Title = node.Element("title").Value,
+                                // location data
+                                Path = new NotebookLocation()
+                                {
+                                    Id = int.Parse(node.Element("path-id").Value),
+                                    Path = node.Element("path").Value
+                                },
+                                LocationID = int.Parse(node.Element("path-id").Value),
+                                // File data which applies to the notebook.
+                                CreationDate = File.GetCreationTime(FullPath),
+                                LastUpdated = File.GetLastWriteTime(FullPath),
+                                FSName = Path.GetFileNameWithoutExtension(FullPath)
+                            };
+                        }
+
+                    }
+
+                }
             }
             return null;
         }
@@ -99,30 +105,73 @@ namespace EvernoteCloneLibrary.Files.Parsers
         /// </summary>
         /// <param name="xDocument"></param>
         /// <returns></returns>
-        private static List<Note> GenerateNotesFromXml(XDocument xDocument, Notebook notebook)
+        private static List<Note> GenerateNotesFromXml(XDocument xDocument, Notebook Notebook)
         {
             if (xDocument != null)
             {
-                return (from note in xDocument.Descendants("en-export").Descendants("note")
-                        select new Note
+                if (xDocument.Descendants("en-export") != null && xDocument.Descendants("en-export").Descendants("note") != null)
+                {
+                    List<Note> notes = new List<Note>();
+                    foreach (XElement node in xDocument.Descendants("en-export").Descendants("note"))
+                    {
+                        Note note = new Note
                         {
-                            // Fetch the Id for the import, if there is none, or it is -1: It is not in the database.
-                            Id = (note.Element("id") != null ? (int)note.Element("id") : -1),
+                            // Fetch the Id for the import, if there is none, or it is -1: This note is not in the database.
+                            Id = (node.Element("id") != null ? (int)node.Element("id") : -1),
                             // Fetch the title of note
-                            Title = note.Element("title").Value,
-                            // fetch the content of the note
-                            Content = GetStrippedContent(note.Element("content").Value),
-                            NewContent = GetStrippedContent(note.Element("content").Value),
-                            // fetch the date the note was created, needed to change it from 'T00000000Z000000' where '0' is an arbitrary value
-                            CreationDate = DateTime.Parse(FormatDateTime(note.Element("created").Value)),
-                            // fetch the date the note was last updated, needed to change it from 'T00000000Z000000' where '0' is an arbitrary value
-                            LastUpdated = DateTime.Parse(FormatDateTime(note.Element("updated").Value)),
-                            // fetch the author of the note
-                            Author = note.Element("note-attributes").Element("author").Value,
-                            // fetch all the tags of the note, there are multiple <tag></tag> elements which we want to retrieve.
-                            Tags = note.Elements("tag").Select(tag => tag.Value).ToList(),
-                            NoteOwner = notebook
-                        }).ToList();
+                            Title = node.Element("title")?.Value
+                        };
+
+                        // fetch the content of the note
+                        note.Content = note.NewContent = GetStrippedContent(node.Element("content")?.Value) ?? "";
+
+                        // fetch the date the note was created, needed to change it from 'T00000000Z000000' where '0' is an arbitrary value
+                        if (node.Element("created")?.Value != null)
+                        {
+                            note.CreationDate = DateTime.Parse(FormatDateTime(node.Element("created").Value));
+                        }
+
+                        // fetch the date the note was last updated, needed to change it from 'T00000000Z000000' where '0' is an arbitrary value
+                        if (node.Element("updated")?.Value != null)
+                        {
+                            note.LastUpdated = DateTime.Parse(FormatDateTime(node.Element("updated").Value));
+                        }
+
+                        // fetch the author of the note, the author lives in a subnode.
+                        if (node.Element("note-attributes") != null && node.Element("note-attributes").Element("author")?.Value != null)
+                        {
+                            note.Author = node.Element("note-attributes").Element("author").Value;
+                        }
+
+                        // fetch all the tags of the note.
+                        // There can be zero or more tags, therefore make sure it exists 
+                        // & if so add them all the the tags list.
+                        // If there is no tags, we will still load in an empty list to avoid nulls 
+                        List<string> tags = new List<string>();
+                        if (node.Elements("tag") != null)
+                        {
+                            foreach (string tag in node.Elements("tag").ToList())
+                            {
+                                tags.Add(tag);
+                            }
+                        }
+
+                        note.Tags = tags;
+
+                        // Set all the notebook data for the note
+                        note.NoteOwner = Notebook;
+                        note.NotebookID = Notebook.Id;
+
+                        // If all required data is existent, then we add it to the list.
+                        if (note.Author != null && note.CreationDate != null && note.LastUpdated != null
+                            && note.Tags != null && note.NoteOwner != null)
+                        {
+                            notes.Add(note);
+                        }
+                    }
+
+                    return notes;
+                }
             }
 
             return null;
