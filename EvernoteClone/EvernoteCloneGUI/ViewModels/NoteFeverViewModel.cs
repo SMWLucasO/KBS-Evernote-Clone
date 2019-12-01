@@ -40,10 +40,10 @@ namespace EvernoteCloneGUI.ViewModels
             try
             {
                 Notebooks = Notebook.Load();
-                if (Notebooks != null)
+                if (Notebooks != null && Notebooks.Count > 0)
                 {
                     Notebook tempNotebook = Notebooks.First();
-                    if (tempNotebook != null)
+                    if (tempNotebook != null && tempNotebook.Notes != null && tempNotebook.Notes.Count > 0)
                     {
                         Note tempNote = (Note)tempNotebook.Notes.First();
                         if (tempNote != null)

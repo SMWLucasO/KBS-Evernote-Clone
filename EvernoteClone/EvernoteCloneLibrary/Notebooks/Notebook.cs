@@ -71,10 +71,15 @@ namespace EvernoteCloneLibrary.Notebooks
             if (UserID != -1)
             {
                 NotebookRepository notebookRepository = new NotebookRepository();
-                List<Notebook> notebooksFromDatabase = notebookRepository.GetBy(
+                List<Notebook> notebooksFromDatabase = new List<Notebook>();
+                
+                foreach (NotebookModel model in notebookRepository.GetBy(
                     new string[] { "UserID = @UserID" },
                     new Dictionary<string, object>() { { "@UserID", UserID } }
-                   ).Select((el) => ((Notebook)el)).ToList();
+                   )) {
+                    notebooksFromDatabase.Add((Notebook)model);
+                }
+
                 // If there are notebooks in the database, we want to compare which was updated more recently.
                 if (notebooksFromDatabase != null)
                 {
