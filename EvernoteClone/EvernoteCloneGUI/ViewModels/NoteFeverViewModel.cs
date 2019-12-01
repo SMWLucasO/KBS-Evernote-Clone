@@ -31,6 +31,8 @@ namespace EvernoteCloneGUI.ViewModels
         public Notebook SelectedNotebook;
         public Note SelectedNote;
 
+        private int UserID = 3; // TODO change this!!!
+
         public NotebookViewModel NotebookViewModel { get; set; }
         public ObservableCollection<TreeViewItem> NotebooksTreeView { get; } = new ObservableCollection<TreeViewItem>(new List<TreeViewItem>());
 
@@ -154,16 +156,9 @@ namespace EvernoteCloneGUI.ViewModels
 
         private List<TreeViewItem> LoadFolders()
         {
-            // Load all LocationUser records from UserID
-            List<LocationUser> locationUserRecords = LocationUser.GetAllLocationsFromUser(3); // TODO: change this!!!!
-
-            NotebookLocationRepository notebookLocationRepository = new NotebookLocationRepository();
-            List<NotebookLocation> notebookLocationsFromDatabase = new List<NotebookLocation>();
-            foreach (LocationUser locationUser in locationUserRecords)
-                notebookLocationsFromDatabase.Add(NotebookLocation.GetNotebookLocationById(locationUser.LocationID, notebookLocationRepository));
-
+            List<NotebookLocation> notebookLocations = NotebookLocation.Load(UserID); // TODO: change UserID
             List<TreeViewItem> treeViewItems = new List<TreeViewItem>();
-            foreach (string path in notebookLocationsFromDatabase.Select(notebookLocation => notebookLocation.Path))
+            foreach (string path in notebookLocations.Select(notebookLocation => notebookLocation.Path))
             {
                 TreeViewItem currentNode = null;
                 foreach (string directory in path.Split('/'))
@@ -232,7 +227,7 @@ namespace EvernoteCloneGUI.ViewModels
 
                     // TODO show window that asks for a name
                     string newFolderName = "[F] "+new Random().Next();
-                    NotebookLocation.AddNewNotebookLocation(new NotebookLocation() { Path = path + "/" + newFolderName }, 3); // TODO: change UserID AND do something with return value
+                    NotebookLocation.AddNewNotebookLocation(new NotebookLocation() { Path = path + "/" + newFolderName }, UserID); // TODO: change UserID AND do something with return value
                 }
 
                 // TODO fix refresh (for now, delete and add)
@@ -244,7 +239,7 @@ namespace EvernoteCloneGUI.ViewModels
         {
             // TODO show window that asks for a name
             string newFolderName = "[RF] "+new Random().Next();
-            NotebookLocation.AddNewNotebookLocation(new NotebookLocation() { Path = newFolderName }, 3); // TODO: change UserID AND do something with return value
+            NotebookLocation.AddNewNotebookLocation(new NotebookLocation() { Path = newFolderName }, UserID); // TODO: change UserID AND do something with return value
 
             // TODO fix refresh (for now, delete and add)
             LoadNotebooksTreeView();
@@ -263,8 +258,8 @@ namespace EvernoteCloneGUI.ViewModels
                     string newNotebookName = "[NB] "+new Random().Next();
                     NotebookLocation notebookLocation = NotebookLocation.GetNotebookLocationByPath(path);
 
-                    Notebook notebook = new Notebook() { UserID = 3, LocationID = notebookLocation.Id, Title = newNotebookName, CreationDate = DateTime.Now.Date, LastUpdated = DateTime.Now, Path = notebookLocation };
-                    notebook.Save(3); // TODO pass good UserID
+                    Notebook notebook = new Notebook() { UserID = UserID, LocationID = notebookLocation.Id, Title = newNotebookName, CreationDate = DateTime.Now.Date, LastUpdated = DateTime.Now, Path = notebookLocation };
+                    notebook.Save(UserID); // TODO pass good UserID
                 }
 
                 // TODO fix refresh (for now, delete and add)

@@ -32,9 +32,5 @@ namespace EvernoteCloneLibrary.Users
 
             return userRepository.Insert(userModel);
         }
-
-
-
-
     }
 }

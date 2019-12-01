@@ -74,6 +74,7 @@
     <Compile Include="Database\IModel.cs" />
     <Compile Include="Database\IRepository.cs" />
     <Compile Include="Database\SshConnection.cs" />
+    <Compile Include="Extensions\ListExtensions.cs" />
     <Compile Include="Files\Parsers\IParseable.cs" />
     <Compile Include="Files\Parsers\XMLExporter.cs" />
     <Compile Include="Files\Parsers\XMLImporter.cs" />
@@ -95,7 +96,6 @@
     <Compile Include="Users\UserModel.cs" />
     <Compile Include="Users\UserRepository.cs" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
