@@ -9,7 +9,8 @@
         public const bool   TEST_MODE = true;
 
         // Storage path for local use (TEST mode)
-        public const string TEST_STORAGE_PATH = "test/local";
+        public const string TEST_NOTEBOOK_STORAGE_PATH = "test/local/notebooks";
+        public const string TEST_USERDATA_STORAGE_PATH = "test/local/userdata";
         // Storage constants (TEST mode, ssh)
         public const bool   TEST_SSH_USE_PUBLIC_KEY = false;
         public const string TEST_SSH_HOST = "127.0.0.1";
@@ -27,7 +28,8 @@
         public const string TEST_DATABASE_INTEGRATED_SECURITY = "False";
 
         // Storage path for local use (PRODUCTION mode)
-        public const string PRODUCTION_STORAGE_PATH = "production/local";
+        public const string PRODUCTION_NOTEBOOK_STORAGE_PATH = "production/local/notebooks";
+        public const string PRODUCTION_USERDATA_STORAGE_PATH = "production/local/userdata";
         // Storage constants (PRODUCTION mode, ssh)
         public const bool   SSH_USE_PUBLIC_KEY = false;
         public const string SSH_HOST = "";

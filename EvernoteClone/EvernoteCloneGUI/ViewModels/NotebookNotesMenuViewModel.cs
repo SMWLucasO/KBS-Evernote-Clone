@@ -12,6 +12,9 @@ using System.Windows.Controls;
 
 namespace EvernoteCloneGUI.ViewModels
 {
+    /// <summary>
+    /// ViewModel which handles all interaction in the note menu window.
+    /// </summary>
     public class NotebookNotesMenuViewModel : Conductor<NoteElementViewModel>.Collection.AllActive
     {
 

@@ -42,7 +42,7 @@ namespace EvernoteCloneLibraryTests.Notebooks
         public void Load_ShouldReturn(int UserID, bool ShouldJustBeFS)
         {
             // Arrange
-            List<Notebook> notebooksFromFS = XMLImporter.ImportNotebooks(Constant.TEST_STORAGE_PATH);
+            List<Notebook> notebooksFromFS = XMLImporter.ImportNotebooks(Constant.TEST_NOTEBOOK_STORAGE_PATH);
             
             // Act
             List<Notebook> actual = Notebook.Load(UserID);
@@ -82,7 +82,7 @@ namespace EvernoteCloneLibraryTests.Notebooks
         public void ImportExport_ClearGeneratedFiles()
         {
             // Clean up the testing location.
-            foreach (string file in Directory.GetFiles(Constant.TEST_STORAGE_PATH))
+            foreach (string file in Directory.GetFiles(Constant.TEST_NOTEBOOK_STORAGE_PATH))
             {
                 File.Delete(file);
             }

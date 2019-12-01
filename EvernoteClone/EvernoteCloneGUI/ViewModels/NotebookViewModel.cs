@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace EvernoteCloneGUI.ViewModels
 {
+    /// <summary>
+    /// Intermediary ViewModel which couples the NewNoteView and NotebookNotesMenu together.
+    /// </summary>
     public class NotebookViewModel : Conductor<object>.Collection.AllActive
     {
 

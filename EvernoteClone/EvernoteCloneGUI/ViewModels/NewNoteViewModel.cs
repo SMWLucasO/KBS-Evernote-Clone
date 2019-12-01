@@ -14,6 +14,9 @@ using System.Xml;
 
 namespace EvernoteCloneGUI.ViewModels
 {
+    /// <summary>
+    /// ViewModel which handles all interaction related to the NewNoteView
+    /// </summary>
     public class NewNoteViewModel : Screen
     {
 
