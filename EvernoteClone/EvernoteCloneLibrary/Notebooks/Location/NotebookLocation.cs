@@ -72,19 +72,8 @@ namespace EvernoteCloneLibrary.Notebooks.Location
                 return Load(UserID).First(notebookLocation => notebookLocation.Path == Path);
         }
 
-        public static bool AddNewNotebookLocation(NotebookLocation NotebookLocation, int UserID)
-        {
-            bool addedToCloud = false;
-            if (UserID != -1)
-            {
-                NotebookLocationRepository notebookLocationRepository = new NotebookLocationRepository();
-                if (notebookLocationRepository.Insert(NotebookLocation))
-                    addedToCloud = LocationUser.LocationUser.AddNewLocationUser(new LocationUser.LocationUser()
-                        {LocationID = NotebookLocation.Id, UserID = UserID});
-            }
-
-            return AddNotebookLocationToLocalStorage(NotebookLocation) || addedToCloud;
-        }
+        public static bool AddNewNotebookLocation(NotebookLocation NotebookLocation, int UserID) =>
+            AddNotebookLocationToLocalStorage(NotebookLocation) || AddNewNotebookLocationToDatabaseAndGetId(NotebookLocation, UserID) != 1;
 
         public static int AddNewNotebookLocationAndGetId(NotebookLocation NotebookLocation, int UserID)
         {
