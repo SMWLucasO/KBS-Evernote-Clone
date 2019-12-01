@@ -124,13 +124,18 @@ namespace EvernoteCloneGUI.ViewModels
                     LastUpdated = DateTime.Now,
                 };
 
-               
+
             }
 
             // Set some standard values for now and save
             Note.Author = "Nameless author"; // If user is logged in, this should obv. be different!
             Note.Title = Title; // We don't have to check if it is empty or null, the property in note does that already
             Note.Save();
+            if (Note.NoteOwner == null && NoteOwner != null && !(NoteOwner.IsNotNoteOwner))
+            {
+                Note.NoteOwner = NoteOwner;
+            }
+
 
             // Add the note to the notes list
             if (!(NoteOwner.Notes.Contains(Note)))
@@ -149,7 +154,7 @@ namespace EvernoteCloneGUI.ViewModels
                         noteFeverViewModel.SelectedNotebook = NoteOwner;
                     }
                 }
-                    
+
                 if (noteFeverViewModel.NotebookViewModel != null &&
                     noteFeverViewModel.NotebookViewModel.NotebookNotesMenu != null)
                 {

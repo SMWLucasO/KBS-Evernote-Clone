@@ -72,11 +72,12 @@ namespace EvernoteCloneLibrary.Notebooks
             {
                 NotebookRepository notebookRepository = new NotebookRepository();
                 List<Notebook> notebooksFromDatabase = new List<Notebook>();
-                
+
                 foreach (NotebookModel model in notebookRepository.GetBy(
                     new string[] { "UserID = @UserID" },
                     new Dictionary<string, object>() { { "@UserID", UserID } }
-                   )) {
+                   ))
+                {
                     notebooksFromDatabase.Add((Notebook)model);
                 }
 
@@ -172,8 +173,12 @@ namespace EvernoteCloneLibrary.Notebooks
                 {
                     if (note.NoteOwner != null && !(savedNotebookIDs.Contains(note.NoteOwner.Id)))
                     {
-                        storedLocally = note.NoteOwner.Save();
-                        savedNotebookIDs.Add(note.NoteOwner.Id);
+                        // should never happen, but just in case (would cause stackoverflows)
+                        if (!(note.NoteOwner.Equals(this)))
+                        {
+                            storedLocally = note.NoteOwner.Save();
+                            savedNotebookIDs.Add(note.NoteOwner.Id);
+                        }
                     }
                 }
             }
