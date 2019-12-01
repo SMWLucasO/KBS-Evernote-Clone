@@ -135,6 +135,10 @@ namespace EvernoteCloneLibrary.Notebooks
                     }
 
                 }
+                else
+                {
+                    notebooksToReturn.AddRange(notebooksFromFileSystem);
+                }
 
             }
             else
@@ -193,9 +197,11 @@ namespace EvernoteCloneLibrary.Notebooks
                         {
                             if (note.NoteOwner != null && !(savedNotebookIDs.Contains(note.NoteOwner.Id)))
                             {
-                                // You should only be allowed to edit notes if the notebook isn't the owner of the given notes.
+                                // You should only be allowed to edit (not create new) notes if the notebook isn't the owner of the given notes.
                                 if (note.NoteOwner.Id != -1)
                                 {
+                                    // Set the NotebookID just in case it was not set before.
+                                    note.NotebookID = note.NoteOwner.Id;
                                     note.NoteOwner.Save();
                                     savedNotebookIDs.Add(note.NoteOwner.Id);
                                 }
@@ -220,7 +226,6 @@ namespace EvernoteCloneLibrary.Notebooks
                             if (note.Id == -1)
                             {
                                 noteRepository.Insert(note);
-
                             }
                             else
                             {
