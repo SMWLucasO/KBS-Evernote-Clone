@@ -130,32 +130,40 @@ namespace EvernoteCloneGUI.ViewModels
         /// </summary>
         public void OpenAllNotes()
         {
-            Notebook allNotesNotebook = new Notebook()
+            if(Notebooks != null)
             {
-                Id = -1,
-                LocationID = -1,
-                UserID = -1,
-                Title = "All notes",
-                LastUpdated = DateTime.Now,
-                CreationDate = DateTime.Now.Date,
-                IsNotNoteOwner = true
-            };
-            List<INote> notes = new List<INote>();
-            foreach(Notebook notebook in Notebooks)
-            {
-                foreach(Note note in notebook.Notes)
+                Notebook allNotesNotebook = new Notebook()
                 {
-                    notes.Add(note);
+                    Id = -1,
+                    LocationID = -1,
+                    UserID = -1,
+                    Title = "All notes",
+                    LastUpdated = DateTime.Now,
+                    CreationDate = DateTime.Now.Date,
+                    IsNotNoteOwner = true
+                };
+                List<INote> notes = new List<INote>();
+                foreach (Notebook notebook in Notebooks)
+                {
+                    foreach (Note note in notebook.Notes)
+                    {
+                        notes.Add(note);
+                    }
+                }
+
+                allNotesNotebook.Notes = notes;
+
+                
+                if(allNotesNotebook.Notes.Count > 0)
+                {
+                    SelectedNotebook = allNotesNotebook;
+                    SelectedNote = (Note)allNotesNotebook.Notes.First();
+                    if (SelectedNote != null)
+                    {
+                        LoadNoteViewIfNoteExists();
+                    }
                 }
             }
-
-            allNotesNotebook.Notes = notes;
-
-            SelectedNotebook = allNotesNotebook;
-            SelectedNote = (Note) allNotesNotebook.Notes.First();
-
-            LoadNoteViewIfNoteExists();
         }
-
     }
 }
