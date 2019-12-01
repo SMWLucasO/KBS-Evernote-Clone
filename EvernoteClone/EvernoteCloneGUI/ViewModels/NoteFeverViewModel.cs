@@ -43,8 +43,8 @@ namespace EvernoteCloneGUI.ViewModels
         public ContextMenu FolderContext = new ContextMenu();
         public ContextMenu NotebookContext = new ContextMenu();
 
-        public BitmapImage FolderImage { get; } = new BitmapImage(new Uri(@"C:/Users/Administrator/Downloads/folder.png"));
-        public BitmapImage NotebookImage { get; } = new BitmapImage(new Uri(@"C:/Users/Administrator/Downloads/journal.png"));
+        public BitmapImage FolderImage { get; } = new BitmapImage(new Uri("pack://application:,,,/EvernoteCloneGUI;component/Resources/folder.png"));
+        public BitmapImage NotebookImage { get; } = new BitmapImage(new Uri("pack://application:,,,/EvernoteCloneGUI;component/Resources/journal.png"));
         //public BitmapImage NotebookImage { get; } = new BitmapImage(new Uri(@"/Resources/ok-01.png", UriKind.Relative));
 
         public MenuItem CreateMenuItem(string Header, RoutedEventHandler CustomEventHandler)
@@ -267,7 +267,7 @@ namespace EvernoteCloneGUI.ViewModels
         {
             StackPanel stackPanel = new StackPanel();
             stackPanel.Orientation = Orientation.Horizontal;
-            
+
             Image image = new Image();
             image.Height = 16;
             image.Width = 16;
