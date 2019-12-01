@@ -38,6 +38,7 @@ namespace EvernoteCloneLibrary.Notebooks.Location
         // TODO: add summary
         public static NotebookLocation GetNotebookLocationById(int Id) => 
             GetNotebookLocationById(Id, new NotebookLocationRepository());
+
         public static NotebookLocation GetNotebookLocationById(int Id, NotebookLocationRepository notebookLocationRepository)
         {
             return notebookLocationRepository.GetBy(
@@ -48,6 +49,7 @@ namespace EvernoteCloneLibrary.Notebooks.Location
 
         public static string GetNotebookLocationPathById(int Id) =>
             GetNotebookLocationPathById(Id, new NotebookLocationRepository());
+
         public static string GetNotebookLocationPathById(int Id, NotebookLocationRepository notebookLocationRepository)
         {
             return notebookLocationRepository.GetBy(

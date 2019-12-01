@@ -9,6 +9,9 @@ using System.Windows;
 
 namespace EvernoteCloneGUI.ViewModels
 {
+    /// <summary>
+    /// ViewModel which handles all interaction with the note elements in the NotebookNotesMenuView
+    /// </summary>
     public class NoteElementViewModel : PropertyChangedBase
     {
 

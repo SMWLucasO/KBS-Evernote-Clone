@@ -12,9 +12,9 @@ namespace EvernoteCloneLibrary.Users
         public List<Notebook> Notebooks { get; set; }
 
 
-        public static bool Login(string Username, string Password)
+        public static User Login(string Username, string Password)
         {
-            return false;
+            return null;
         }
 
         public static bool Register(string Username, string Password, string FirstName, string LastName)
