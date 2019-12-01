@@ -28,7 +28,7 @@
         public const string TEST_DATABASE_INTEGRATED_SECURITY = "False";
 
         // Storage path for local use (PRODUCTION mode)
-        public const string PRODUCTION_NOTEBOOK_STORAGE_PATH = "production/local";
+        public const string PRODUCTION_NOTEBOOK_STORAGE_PATH = "production/local/notebooks";
         public const string PRODUCTION_USERDATA_STORAGE_PATH = "production/local/userdata";
         // Storage constants (PRODUCTION mode, ssh)
         public const bool   SSH_USE_PUBLIC_KEY = false;

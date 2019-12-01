@@ -58,13 +58,18 @@ namespace EvernoteCloneLibrary.Notebooks.Location
             ).Select((el) => ((NotebookLocation)el)).ToList()[0].Path;
         }
 
-        public static NotebookLocation GetNotebookLocationByPath(string Path)
+        public static NotebookLocation GetNotebookLocationByPath(string Path, int UserID)
         {
-            NotebookLocationRepository notebookLocationRepository = new NotebookLocationRepository();
-            return notebookLocationRepository.GetBy(
-                new[] { "Path = @Path" },
-                new Dictionary<string, object> { { "@Path", Path } }
-            ).Select(notebookLocation => ((NotebookLocation)notebookLocation)).ToList()[0];
+            if (UserID != -1)
+            {
+                NotebookLocationRepository notebookLocationRepository = new NotebookLocationRepository();
+                return notebookLocationRepository.GetBy(
+                    new[] { "Path = @Path" },
+                    new Dictionary<string, object> { { "@Path", Path } }
+                ).Select(notebookLocation => ((NotebookLocation)notebookLocation)).ToList()[0];
+            }
+            else
+                return Load(UserID).First(notebookLocation => notebookLocation.Path == Path);
         }
 
         public static bool AddNewNotebookLocation(NotebookLocation NotebookLocation, int UserID)
@@ -178,14 +183,8 @@ namespace EvernoteCloneLibrary.Notebooks.Location
                         notebookLocations.AddIfNotPresent(notebookLocation.AddLocally());
                 }
             }
-            else
-            {
-                if(notebookLocationsFromFileSystem != null)
-                {
-                    notebookLocations.AddRange(notebookLocationsFromFileSystem);
-                }
-            }
-                
+            else if (notebookLocationsFromFileSystem != null)
+                notebookLocations.AddRange(notebookLocationsFromFileSystem);
             return notebookLocations;
         }
 

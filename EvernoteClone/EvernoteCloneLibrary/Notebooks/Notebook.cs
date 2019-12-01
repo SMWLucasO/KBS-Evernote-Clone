@@ -135,13 +135,13 @@ namespace EvernoteCloneLibrary.Notebooks
                     }
 
                 }
-                else
+                else if (notebooksFromFileSystem != null)
                 {
                     notebooksToReturn.AddRange(notebooksFromFileSystem);
                 }
 
             }
-            else
+            else if (notebooksFromFileSystem != null)
             {
                 notebooksToReturn.AddRange(notebooksFromFileSystem);
             }
