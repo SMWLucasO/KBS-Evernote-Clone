@@ -60,7 +60,7 @@ namespace EvernoteCloneGUI.ViewModels
 
         public Notebook Notebook { get; set; }
 
-        
+
 
         public NotebookNotesMenuViewModel()
         {
@@ -75,32 +75,34 @@ namespace EvernoteCloneGUI.ViewModels
         {
             if (EventArgs.Source is TextBox searchBar)
             {
-                if (searchBar.Text.Trim().Length > 2 &&
+                // Acceptance criteria specifies that the text should have at least 2 characters.
+                if (searchBar.Text.Trim().Length >= 2 &&
                     !(string.IsNullOrWhiteSpace(searchBar.Text) || string.IsNullOrEmpty(searchBar.Text)))
                 {
+                    // Acceptance criteria specifies that it should search for all notes that contain the piece of text 
+                    // in the following data: title, author, tags, content.
                     string searchFor = searchBar.Text.Trim();
                     NoteElementViews = GenerateNoteElementsFromNotebook(
                             Notebook.Notes.Where(note =>
-                                ((Note)note).Title.ToLower().StartsWith(searchFor)
-                                || ((Note)note).Title.ToLower().EndsWith(searchFor)
-                                || ((Note)note).Author.ToLower().StartsWith(searchFor)
-                                || ((Note)note).Author.ToLower().EndsWith(searchFor)
+                                ((Note)note).Title.ToLower().Contains(searchFor)
+                                || ((Note)note).Author.ToLower().Contains(searchFor)
+                                || ((Note)note).Tags.Select((tag) =>
+                                    tag.ToLower().Contains(searchFor)
+                                ).FirstOrDefault()
+                                || ((Note)note).Content.ToLower().Contains(searchFor)
                                 ).ToList()
                         );
-
                 }
                 else
                 {
+                    // We have to make sure that all notes are visible again once the searching is done.
                     NoteElementViews = GenerateNoteElementsFromNotebook(Notebook.Notes);
                 }
 
+                // Update the note count to show the current situation.
                 NotebookNoteCount = $"{NoteElementViews.Count} note(s)";
 
             }
-
-            // TODO:
-            // if >2 characters typed: search the NoteElementViews, clear the visual part and 
-            // load the NoteElementViews which adhere to the given search-criteria
         }
 
         public void LoadNotesIntoNotebookMenu()
@@ -131,10 +133,10 @@ namespace EvernoteCloneGUI.ViewModels
                             Container = noteFeverViewModel,
                             Note = note,
                             Title = note.Title ?? "",
-                            NoteCreationDate = note.CreationDate.Date.ToString() ?? "Unknown"
+                            NoteCreationDate = note.CreationDate.Date.ToString("dd-MM-yyyy") ?? "Unknown"
                         };
 
-                        if (note.Equals(noteFeverViewModel.SelectedNote) 
+                        if (note.Equals(noteFeverViewModel.SelectedNote)
                             && noteFeverViewModel.NotebookViewModel != null)
                         {
                             noteFeverViewModel.NotebookViewModel.SelectedNoteElement = noteElementView;
@@ -142,7 +144,7 @@ namespace EvernoteCloneGUI.ViewModels
 
                         noteElementViewModels.Add(noteElementView);
                     }
-                }   
+                }
             }
             return noteElementViewModels;
         }

@@ -116,15 +116,16 @@ namespace EvernoteCloneGUI.ViewModels
             {
                 NoteOwner = new Notebook()
                 {
-                    Id = 71,
-                    UserID = 3,
-                    LocationID = 1,
-                    Title = "Nameless title",
+                    Id = -1,
+                    UserID = -1,
+                    LocationID = -1,
+                    Title = "Nameless notebook",
                     CreationDate = DateTime.Now.Date,
                     LastUpdated = DateTime.Now,
                 };
-            }
 
+               
+            }
 
             // Set some standard values for now and save
             Note.Author = "Nameless author"; // If user is logged in, this should obv. be different!
@@ -137,9 +138,18 @@ namespace EvernoteCloneGUI.ViewModels
                 NoteOwner.Notes.Add(Note);
             }
 
-            if (Parent != null && Parent is NoteFeverViewModel)
+            if (Parent != null && Parent is NoteFeverViewModel noteFeverViewModel)
             {
-                NoteFeverViewModel noteFeverViewModel = (NoteFeverViewModel)Parent;
+                // Dirty test code
+                if (Constant.TEST_MODE && NoteOwner != null)
+                {
+                    if (noteFeverViewModel.SelectedNotebook == null)
+                    {
+                        noteFeverViewModel.Notebooks.Add(NoteOwner);
+                        noteFeverViewModel.SelectedNotebook = NoteOwner;
+                    }
+                }
+                    
                 if (noteFeverViewModel.NotebookViewModel != null &&
                     noteFeverViewModel.NotebookViewModel.NotebookNotesMenu != null)
                 {
@@ -148,7 +158,7 @@ namespace EvernoteCloneGUI.ViewModels
             }
 
             // If the NoteOwner isn't null, we fetch the Id of the user it contains
-            // though NoteOwner should never occur
+            // though NoteOwner should never be null
             if (NoteOwner != null)
             {
                 return NoteOwner.Save(NoteOwner.UserID);

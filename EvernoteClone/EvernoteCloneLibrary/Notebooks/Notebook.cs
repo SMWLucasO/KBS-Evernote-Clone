@@ -1,4 +1,4 @@
-﻿using EvernoteCloneLibrary.Constants;
+using EvernoteCloneLibrary.Constants;
 using EvernoteCloneLibrary.Files.Parsers;
 using EvernoteCloneLibrary.Notebooks.Location;
 using EvernoteCloneLibrary.Notebooks.Notes;
@@ -21,6 +21,8 @@ namespace EvernoteCloneLibrary.Notebooks
             = new NotebookLocation();
 
         public string FSName { get; set; }
+
+        public bool IsNotNoteOwner { get; set; }
 
         /// <summary>
         /// When an empty title is given, we give a default title.
@@ -133,6 +135,10 @@ namespace EvernoteCloneLibrary.Notebooks
                     }
 
                 }
+                else
+                {
+                    notebooksToReturn.AddRange(notebooksFromFileSystem);
+                }
 
             }
             else
@@ -151,8 +157,28 @@ namespace EvernoteCloneLibrary.Notebooks
         public bool Save(int UserID = -1)
         {
             LastUpdated = DateTime.Now;
+
+            List<int> savedNotebookIDs = new List<int>();
             bool storedLocally = false;
+
+            if (IsNotNoteOwner)
+            {
+                foreach (Note note in this.Notes)
+                {
+                    if (note.NoteOwner != null && !(savedNotebookIDs.Contains(note.NoteOwner.Id)))
+                    {
+                        storedLocally = note.NoteOwner.Save();
+                        savedNotebookIDs.Add(note.NoteOwner.Id);
+                    }
+                }
+            }
+            else
+            {
+                storedLocally = UpdateLocalStorage(this);
+            }
+            
             bool storedInTheCloud = false;
+
             if (UserID != -1)
             {
                 try
@@ -163,30 +189,52 @@ namespace EvernoteCloneLibrary.Notebooks
                     NoteRepository noteRepository = new NoteRepository();
 
                     // If the Id is '-1', that means it is a new notebook. Thus it should be inserted instead of updated.
-                    if (this.Id != -1)
+                    if (IsNotNoteOwner)
                     {
-                        storedInTheCloud = notebookRepository.Update(this);
+                        savedNotebookIDs.Clear();
+                        foreach (Note note in this.Notes)
+                        {
+                            if (note.NoteOwner != null && !(savedNotebookIDs.Contains(note.NoteOwner.Id)))
+                            {
+                                // You should only be allowed to edit (not create new) notes if the notebook isn't the owner of the given notes.
+                                if (note.NoteOwner.Id != -1)
+                                {
+                                    // Set the NotebookID just in case it was not set before.
+                                    note.NotebookID = note.NoteOwner.Id;
+                                    note.NoteOwner.Save();
+                                    savedNotebookIDs.Add(note.NoteOwner.Id);
+                                }
+                            }
+                        }
                     }
                     else
                     {
-                        storedInTheCloud = notebookRepository.Insert(this);
-                    }
-
-                    foreach (Note note in this.Notes)
-                    {
-                        // Set the note's notebookID to the id of this notebook, in case it was -1 before.
-                        note.NotebookID = this.Id;
-                        if (note.Id == -1)
+                        if (this.Id != -1)
                         {
-                            noteRepository.Insert(note);
-
+                            storedInTheCloud = notebookRepository.Update(this);
                         }
                         else
                         {
-                            noteRepository.Update(note);
+                            storedInTheCloud = notebookRepository.Insert(this);
                         }
 
+                        foreach (Note note in this.Notes)
+                        {
+                            // Set the note's notebookID to the id of this notebook, in case it was -1 before.
+                            note.NotebookID = this.Id;
+                            if (note.Id == -1)
+                            {
+                                noteRepository.Insert(note);
+                            }
+                            else
+                            {
+                                noteRepository.Update(note);
+                            }
+
+                        }
                     }
+
+
                 }
                 catch (Exception) { }
             }
@@ -208,12 +256,10 @@ namespace EvernoteCloneLibrary.Notebooks
             {
                 if (Notebook.FSName == null)
                 {
-                    return XMLExporter.Export(GetNotebookStoragePath(), $@"{Guid.NewGuid()}.enex", Notebook);
+                    Notebook.FSName = $"{Guid.NewGuid()}";
                 }
-                else
-                {
-                    return XMLExporter.Export(GetNotebookStoragePath(), $@"{Notebook.FSName}.enex", Notebook);
-                }
+                
+                return XMLExporter.Export(GetStoragePath(), $@"{Notebook.FSName}.enex", Notebook);
             }
 
             return false;

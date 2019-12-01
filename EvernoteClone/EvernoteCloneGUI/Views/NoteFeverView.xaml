@@ -1,4 +1,4 @@
-﻿<Window x:Class="EvernoteCloneGUI.Views.NoteFeverView"
+<Window x:Class="EvernoteCloneGUI.Views.NoteFeverView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -34,23 +34,19 @@
             <RowDefinition/>
             <RowDefinition/>
             <RowDefinition/>
-
-
         </Grid.RowDefinitions>
 
         <Button Content="Username" Background="#404040" Foreground="White" FontSize="16" Grid.Row="0"></Button>
         <Button Content="New Note" Background="#0052cc" Foreground="White" FontSize="16" Grid.Row="1" x:Name="NewNote"></Button>
-        <Button Content="All Notes" Background="#404040" Foreground="White" FontSize="16" Grid.Row="2"></Button>
+        <Button Content="All Notes" Background="#404040" Foreground="White" FontSize="16" Grid.Row="2" x:Name="OpenAllNotes"></Button>
         <TreeView x:Name="NotebooksTreeView" Background="#404040" Foreground="White" Grid.Row="3" ItemsSource="{Binding Path=NotebooksTreeView}"></TreeView>
         <Button Content="Shared With Me" Background="#404040" Foreground="White" FontSize="16" Grid.Row="4"></Button>
         <Button Content="Bin" Background="#404040" Foreground="White" FontSize="16" Grid.Row="5"></Button>
         <Button Content="Tags" Background="#404040" Foreground="White" FontSize="16" Grid.Row="6"></Button>
         <Button Content="Search" Background="#404040" Foreground="White" FontSize="16" Grid.Row="7"></Button>
 
-
         <ContentControl Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="4"
                         Grid.RowSpan="8" x:Name="ActiveItem" ></ContentControl>
-
     </Grid>
 
 </Window>

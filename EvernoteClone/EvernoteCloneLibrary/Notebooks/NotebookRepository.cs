@@ -94,6 +94,10 @@ namespace EvernoteCloneLibrary.Notebooks
                         }
                         ).First()
                 };
+
+                // Make the notebook known to the note
+                notebook.Notes.ForEach((el) => ((Note)el).NoteOwner = notebook);
+
                 // Add the generated notebook with its notes to the list to be returned.
                 generatedNotebooks.Add(notebook);
             }
