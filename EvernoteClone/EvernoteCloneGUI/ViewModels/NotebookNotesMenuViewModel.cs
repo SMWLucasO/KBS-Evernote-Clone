@@ -73,25 +73,28 @@ namespace EvernoteCloneGUI.ViewModels
         /// <param name="EventArgs"></param>
         public void SearchNoteInNotebook(TextChangedEventArgs EventArgs)
         {
-            if (EventArgs.Source is TextBox searchBar)
+            if (EventArgs.Source != null && EventArgs.Source is TextBox searchBar)
             {
                 // Acceptance criteria specifies that the text should have at least 2 characters.
-                if (searchBar.Text.Trim().Length >= 2 &&
+                if (searchBar != null && searchBar.Text.Trim().Length >= 2 &&
                     !(string.IsNullOrWhiteSpace(searchBar.Text) || string.IsNullOrEmpty(searchBar.Text)))
                 {
-                    // Acceptance criteria specifies that it should search for all notes that contain the piece of text 
-                    // in the following data: title, author, tags, content.
-                    string searchFor = searchBar.Text.Trim();
-                    NoteElementViews = GenerateNoteElementsFromNotebook(
-                            Notebook.Notes.Where(note =>
-                                ((Note)note).Title.ToLower().Contains(searchFor)
-                                || ((Note)note).Author.ToLower().Contains(searchFor)
-                                || ((Note)note).Tags.Select((tag) =>
-                                    tag.ToLower().Contains(searchFor)
-                                ).FirstOrDefault()
-                                || ((Note)note).Content.ToLower().Contains(searchFor)
-                                ).ToList()
-                        );
+                    if (Notebook != null && Notebook.Notes != null)
+                    {
+                        // Acceptance criteria specifies that it should search for all notes that contain the piece of text 
+                        // in the following data: title, author, tags, content.
+                        string searchFor = searchBar.Text.ToLower().Trim();
+                        NoteElementViews = GenerateNoteElementsFromNotebook(
+                                Notebook.Notes.Where(note =>
+                                    ((Note)note).Title.ToLower().Contains(searchFor)
+                                    || ((Note)note).Author.ToLower().Contains(searchFor)
+                                    || ((Note)note).Tags.Select((tag) =>
+                                        tag.ToLower().Contains(searchFor)
+                                    ).FirstOrDefault()
+                                    || ((Note)note).Content.ToLower().Contains(searchFor)
+                                    ).ToList()
+                            );
+                    }
                 }
                 else
                 {
