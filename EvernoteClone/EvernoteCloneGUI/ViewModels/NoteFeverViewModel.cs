@@ -13,7 +13,9 @@ using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 // TODO add summary
 
@@ -32,7 +34,7 @@ namespace EvernoteCloneGUI.ViewModels
         public Notebook SelectedNotebook;
         public Note SelectedNote;
 
-        private int UserID = 3; // TODO change this!!!
+        private int UserID = -1; // TODO change this!!!
 
         public NotebookViewModel NotebookViewModel { get; set; }
         public ObservableCollection<TreeViewItem> NotebooksTreeView { get; } = new ObservableCollection<TreeViewItem>(new List<TreeViewItem>());
@@ -40,6 +42,10 @@ namespace EvernoteCloneGUI.ViewModels
         public ContextMenu RootContext = new ContextMenu();
         public ContextMenu FolderContext = new ContextMenu();
         public ContextMenu NotebookContext = new ContextMenu();
+
+        public BitmapImage FolderImage { get; } = new BitmapImage(new Uri(@"C:/Users/Administrator/Downloads/folder.png"));
+        public BitmapImage NotebookImage { get; } = new BitmapImage(new Uri(@"C:/Users/Administrator/Downloads/journal.png"));
+        //public BitmapImage NotebookImage { get; } = new BitmapImage(new Uri(@"/Resources/ok-01.png", UriKind.Relative));
 
         public MenuItem CreateMenuItem(string Header, RoutedEventHandler CustomEventHandler)
         {
@@ -205,14 +211,14 @@ namespace EvernoteCloneGUI.ViewModels
                 {
                     if (currentNode == null)
                     {
-                        if (treeViewItems.Any(treeViewItem => treeViewItem.Header.ToString() == directory))
-                            currentNode = treeViewItems.First(treeViewItem => treeViewItem.Header.ToString() == directory);
+                        if (treeViewItems.Any(treeViewItem => GetHeader(treeViewItem) == directory))
+                            currentNode = treeViewItems.First(treeViewItem => GetHeader(treeViewItem) == directory);
                         else
                             treeViewItems.Add(currentNode = CreateTreeNode(directory, FolderContext));
                     }
-                    else if (currentNode.Items.Cast<TreeViewItem>().Any(item => item.Header.ToString() == directory))
+                    else if (currentNode.Items.Cast<TreeViewItem>().Any(treeViewItem => GetHeader(treeViewItem) == directory))
                     {
-                        currentNode = currentNode.Items.Cast<TreeViewItem>().First(item => item.Header.ToString() == directory);
+                        currentNode = currentNode.Items.Cast<TreeViewItem>().First(treeViewItem => GetHeader(treeViewItem) == directory);
                     }
                     else
                     {
@@ -228,16 +234,16 @@ namespace EvernoteCloneGUI.ViewModels
 
         private List<TreeViewItem> LoadNotebooks(List<TreeViewItem> treeViewItems)
         {
-            List<Notebook> notebooks = Notebook.Load(3);
+            List<Notebook> notebooks = Notebook.Load(UserID);
             foreach (Notebook notebook in notebooks)
             {
                 TreeViewItem currentNode = null;
                 foreach (string directory in notebook.Path.Path.Split('/'))
                 {
                     if (currentNode == null)
-                        currentNode = treeViewItems.First(treeViewItem => treeViewItem.Header.ToString() == directory);
+                        currentNode = treeViewItems.First(treeViewItem => GetHeader(treeViewItem) == directory);
                     else
-                        currentNode = currentNode.Items.Cast<TreeViewItem>().First(treeViewItem => treeViewItem.Header.ToString() == directory);
+                        currentNode = currentNode.Items.Cast<TreeViewItem>().First(treeViewItem => GetHeader(treeViewItem) == directory);
                 }
 
                 currentNode?.Items.Add(CreateTreeNode(notebook.Title, NotebookContext));
@@ -249,12 +255,34 @@ namespace EvernoteCloneGUI.ViewModels
         private TreeViewItem CreateTreeNode(string Header, ContextMenu ContextMenu)
         {
             TreeViewItem treeViewItem = new TreeViewItem();
-            treeViewItem.Header = Header;
+            treeViewItem.Header = CreateTreeHeader(Header, ContextMenu);
             treeViewItem.Foreground = Brushes.White;
             treeViewItem.IsExpanded = false;
             treeViewItem.FontSize = 14;
             treeViewItem.ContextMenu = ContextMenu;
             return treeViewItem;
+        }
+
+        private StackPanel CreateTreeHeader(string Header, ContextMenu ContextMenu)
+        {
+            StackPanel stackPanel = new StackPanel();
+            stackPanel.Orientation = Orientation.Horizontal;
+            
+            Image image = new Image();
+            image.Height = 16;
+            image.Width = 16;
+
+            if (ContextMenu == FolderContext || ContextMenu == RootContext)
+                image.Source = FolderImage;
+            else if (ContextMenu == NotebookContext)
+                image.Source = NotebookImage;
+            stackPanel.Children.Add(image);
+
+            TextBlock textBlock = new TextBlock();
+            textBlock.Inlines.Add(Header);
+
+            stackPanel.Children.Add(textBlock);
+            return stackPanel;
         }
 
         public void AddFolder(object sender, RoutedEventArgs e)
@@ -322,18 +350,26 @@ namespace EvernoteCloneGUI.ViewModels
 
         private string GetPath(TreeViewItem treeViewItem)
         {
-            if (treeViewItem.Header.ToString() == "My Notebooks")
+            if (GetHeader(treeViewItem) == "My Notebooks")
                 return "";
 
-            string path = treeViewItem.Header.ToString();
+            string path = GetHeader(treeViewItem);
             while (treeViewItem.Parent is TreeViewItem item)
             {
                 treeViewItem = item;
-                if (treeViewItem.Header.ToString() == "My Notebooks")
+                if (GetHeader(treeViewItem) == "My Notebooks")
                     break;
-                path = treeViewItem.Header + "/" + path;
+                path = GetHeader(treeViewItem) + "/" + path;
             }
             return path;
+        }
+
+        private string GetHeader(TreeViewItem treeViewItem)
+        {
+            if (treeViewItem.Header is StackPanel stackPanel)
+                if (stackPanel.Children[1] is TextBlock textBlock)
+                    return textBlock.Text;
+            return treeViewItem.Header.ToString();
         }
     }
 }
