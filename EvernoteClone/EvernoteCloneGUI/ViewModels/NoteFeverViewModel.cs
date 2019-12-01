@@ -32,7 +32,7 @@ namespace EvernoteCloneGUI.ViewModels
         public Notebook SelectedNotebook;
         public Note SelectedNote;
 
-        private int UserID = 3; // TODO change this!!!
+        private int UserID = -1; // TODO change this!!!
 
         public NotebookViewModel NotebookViewModel { get; set; }
         public ObservableCollection<TreeViewItem> NotebooksTreeView { get; } = new ObservableCollection<TreeViewItem>(new List<TreeViewItem>());
