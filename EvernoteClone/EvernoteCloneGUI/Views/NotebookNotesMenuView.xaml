@@ -15,7 +15,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="15"/>
             <RowDefinition Height="80" MaxHeight="80"/>
-            <RowDefinition Height="5*" MaxHeight="1"/>
+            <RowDefinition Height="5*" MaxHeight="5"/>
             <RowDefinition Height="75*"/>
         </Grid.RowDefinitions>
 
@@ -38,27 +38,22 @@
                          Grid.Row="3" Grid.Column="1" Margin="0,4,10,10"></TextBox>
             </Grid>
         </StackPanel>
-        <Separator Grid.ColumnSpan="2" Grid.Row="2" VerticalAlignment="Top"/>
         <!-- All NoteElementViews should be loaded within this component's stackpanel -->
-        <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="4"
-                      VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="3">
             <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                <ItemsControl ItemsSource="{Binding NoteElementViews}" >
+                <ItemsControl ItemsSource="{Binding NoteElementViews}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Border BorderBrush="Black" BorderThickness="0 1 1 0" DockPanel.Dock="Top">
-                                <StackPanel>
-                                    <Button cal:Message.Attach="[Event Click] = [LoadOnClick($eventArgs)]"
-                                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                        <Button.Template>
-                                            <ControlTemplate TargetType="{x:Type Button}">
-                                                <ContentPresenter />
-                                            </ControlTemplate>
-                                        </Button.Template>
-                                        <ContentControl Height="100" Width="250" Cursor="Hand"
-                                                    cal:View.Model="{Binding}"/>
-                                    </Button>
-                                </StackPanel>
+                            <Border BorderBrush="Black" BorderThickness="0 1 0 0" DockPanel.Dock="Top">
+                                <Button cal:Message.Attach="[Event Click] = [LoadOnClick($eventArgs)]"
+                                        VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="{x:Type Button}">
+                                            <ContentPresenter />
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                    <ContentControl Height="100" Width="250" Cursor="Hand" cal:View.Model="{Binding}"/>
+                                </Button>
                             </Border>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
