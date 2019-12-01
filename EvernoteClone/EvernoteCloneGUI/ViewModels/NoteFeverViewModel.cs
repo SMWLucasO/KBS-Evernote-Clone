@@ -402,5 +402,10 @@ namespace EvernoteCloneGUI.ViewModels
                     return textBlock.Text;
             return treeViewItem.Header.ToString();
         }
+
+        public void TreeView_SelectedItemChanged(RoutedPropertyChangedEventArgs<object> routedPropertyChangedEventArgs)
+        {
+            Console.WriteLine("HI");
+        }
     }
 }
