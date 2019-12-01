@@ -64,10 +64,7 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
             }
         }
 
-        public Note()
-        {
-           
-        }
+        public Note() { }
 
         /// <summary>
         /// Method for saving specific notes.
@@ -105,15 +102,15 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
         {
             // TODO: add tag nodes
 
-            return new string[] {
+            return new[] {
                    "<note>",
                        $"<title>{Title}</title>",
                        $"<id>{Id}</id>",
                        $"<content>",
                             $"<![CDATA[<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE en-note SYSTEM \"http://xml.evernote.com/pub/enml2.dtd\">",
                             $"<en-note>{Content}</en-note>]]></content>",
-                       $"<created>{CreationDate.ToString("yyyyMMdd")}T{CreationDate.ToString("HHmmss")}Z</created>",
-                       $"<updated>{LastUpdated.ToString("yyyyMMdd")}T{LastUpdated.ToString("HHmmss")}Z</updated>",
+                       $"<created>{CreationDate:yyyyMMdd}T{CreationDate:HHmmss}Z</created>",
+                       $"<updated>{LastUpdated:yyyyMMdd}T{LastUpdated:HHmmss}Z</updated>",
                        $"<note-attributes>",
                            $"<author>{Author}</author>",
                        "</note-attributes>",

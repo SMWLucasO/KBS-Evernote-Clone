@@ -25,7 +25,7 @@ namespace EvernoteCloneLibraryTests.Files.Parsers
             // Arrange
             IParseable toParse = ObjectGenerator.GenerateTestableNotebook(notesToGenerate);
             // Act
-            bool actual = XMLExporter.Export(Constant.TEST_STORAGE_PATH, Filename, toParse);
+            bool actual = XMLExporter.Export(Constant.TEST_NOTEBOOK_STORAGE_PATH, Filename, toParse);
             // Assert
             Assert.That(actual, Is.True);
         }
@@ -41,7 +41,7 @@ namespace EvernoteCloneLibraryTests.Files.Parsers
             IParseable toParse = ObjectGenerator.GenerateTestableNotebook(NotesToGenerate);
 
             // Act
-            bool actual = XMLExporter.Export(Constant.TEST_STORAGE_PATH, Filename, toParse);
+            bool actual = XMLExporter.Export(Constant.TEST_NOTEBOOK_STORAGE_PATH, Filename, toParse);
 
             // Assert
             Assert.That(actual, Is.False);
@@ -59,7 +59,7 @@ namespace EvernoteCloneLibraryTests.Files.Parsers
         public void Import_ShouldImportNotebooks()
         {
             // Act
-            List<Notebook> loaded = XMLImporter.ImportNotebooks(Constant.TEST_STORAGE_PATH);
+            List<Notebook> loaded = XMLImporter.ImportNotebooks(Constant.TEST_NOTEBOOK_STORAGE_PATH);
 
             // Assert
             Assert.IsNotNull(loaded);

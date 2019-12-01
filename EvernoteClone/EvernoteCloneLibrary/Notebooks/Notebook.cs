@@ -1,4 +1,4 @@
-﻿using EvernoteCloneLibrary.Constants;
+using EvernoteCloneLibrary.Constants;
 using EvernoteCloneLibrary.Files.Parsers;
 using EvernoteCloneLibrary.Notebooks.Location;
 using EvernoteCloneLibrary.Notebooks.Notes;
@@ -64,7 +64,7 @@ namespace EvernoteCloneLibrary.Notebooks
             List<Notebook> notebooksToReturn = new List<Notebook>();
 
             // Load all the notebooks stored in the local storage
-            List<Notebook> notebooksFromFileSystem = XMLImporter.ImportNotebooks(GetStoragePath());
+            List<Notebook> notebooksFromFileSystem = XMLImporter.ImportNotebooks(GetNotebookStoragePath());
 
             // Load all the notebooks stored in the database, if the user has a proper ID.
             // Note: Should also verify using password hash, but that is a TODO. This part will be rewritten later on.
@@ -176,8 +176,7 @@ namespace EvernoteCloneLibrary.Notebooks
             {
                 storedLocally = UpdateLocalStorage(this);
             }
-
-
+            
             bool storedInTheCloud = false;
 
             if (UserID != -1)
@@ -239,6 +238,7 @@ namespace EvernoteCloneLibrary.Notebooks
                 }
                 catch (Exception) { }
             }
+            storedLocally = UpdateLocalStorage(this); //TODO remove this comment, for @Lucas : this has to be here, because the ID is updated when you create a new notebook (with the id you get from the database) but its not written to the local file 
 
             return storedInTheCloud || storedLocally;
         }
@@ -258,9 +258,8 @@ namespace EvernoteCloneLibrary.Notebooks
                 {
                     Notebook.FSName = $"{Guid.NewGuid()}";
                 }
-
+                
                 return XMLExporter.Export(GetStoragePath(), $@"{Notebook.FSName}.enex", Notebook);
-
             }
 
             return false;
@@ -270,20 +269,16 @@ namespace EvernoteCloneLibrary.Notebooks
         /// Get the storage path for saving notes and notebooks locally.
         /// </summary>
         /// <returns></returns>
-        private static string GetStoragePath()
-        {
-            return Constant.TEST_MODE ? Constant.TEST_STORAGE_PATH : Constant.PRODUCTION_STORAGE_PATH;
-        }
+        private static string GetNotebookStoragePath() =>
+            Constant.TEST_MODE ? Constant.TEST_NOTEBOOK_STORAGE_PATH : Constant.PRODUCTION_NOTEBOOK_STORAGE_PATH;
 
         /// <summary>
         /// When there's more than 0 notes: [TheTitle] (n)
         /// Otherwise: [TheTitle]
         /// </summary>
         /// <returns></returns>
-        public override string ToString()
-        {
-            return Title + (Notes.Count > 0 ? $" ({Notes.Count})" : "");
-        }
+        public override string ToString() =>
+            Title + (Notes.Count > 0 ? $" ({Notes.Count})" : "");
 
         // Comparison methods
 
@@ -295,7 +290,7 @@ namespace EvernoteCloneLibrary.Notebooks
                 {
                     if (notebook.Id != -1)
                     {
-                        return notebook.Id == this.Id;
+                        return notebook.Id == Id;
                     }
                     else
                     {

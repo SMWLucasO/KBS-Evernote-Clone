@@ -56,6 +56,32 @@ namespace EvernoteCloneLibrary.Files.Parsers
             return null;
         }
 
+        // TODO: add summary
+        public static List<NotebookLocation> ImportNotebookLocations(string FilePath)
+        {
+            if (!(string.IsNullOrEmpty(FilePath)))
+            {
+                List<NotebookLocation> notebookLocations = new List<NotebookLocation>();
+                if (!File.Exists(FilePath))
+                {
+                    return null;
+                }
+
+                // load the XML from the path and parse it for usage
+                XDocument xDocument = XDocument.Load(FilePath);
+                foreach (XElement xElement in xDocument.Descendants("location"))
+                {
+                    notebookLocations.Add(new NotebookLocation
+                    {
+                        Id = Convert.ToInt32(xElement.Descendants().First(element => element.Name == "id").Value), 
+                        Path = xElement.Descendants().First(element => element.Name == "path").Value
+                    });
+                }
+                return notebookLocations;
+            }
+            return null;
+        }
+
         /// <summary>
         /// Helper method for generating a notebook out of existing data of the file specified by the path.
         /// </summary>
