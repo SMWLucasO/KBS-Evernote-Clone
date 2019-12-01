@@ -34,7 +34,7 @@ namespace EvernoteCloneGUI.ViewModels
         public Notebook SelectedNotebook;
         public Note SelectedNote;
 
-        private int UserID = -1; // TODO change this!!!
+        private int UserID = 3; // TODO change this!!!
 
         public NotebookViewModel NotebookViewModel { get; set; }
         public ObservableCollection<TreeViewItem> NotebooksTreeView { get; } = new ObservableCollection<TreeViewItem>(new List<TreeViewItem>());
@@ -292,25 +292,29 @@ namespace EvernoteCloneGUI.ViewModels
                 if (menuItem.Parent is ContextMenu contextMenu)
                 {
                     string path = GetPath(contextMenu.PlacementTarget as TreeViewItem);
+                    string newFolderName = GetUserInput("Create new folder", "What do you want your new folder to be called:");
 
-                    // TODO show window that asks for a name
-                    string newFolderName = "[F] "+new Random().Next();
-                    NotebookLocation.AddNewNotebookLocation(new NotebookLocation() { Path = path + "/" + newFolderName }, UserID); // TODO: change UserID AND do something with return value
+                    if (newFolderName != null)
+                    {
+                        NotebookLocation.AddNewNotebookLocation(new NotebookLocation() { Path = path + "/" + newFolderName }, UserID); // TODO: change UserID AND do something with return value
+
+                        // TODO fix refresh (for now, delete and add)
+                        LoadNotebooksTreeView();
+                    }
                 }
-
-                // TODO fix refresh (for now, delete and add)
-                LoadNotebooksTreeView();
             }
         }
 
         public void AddFolderToRoot(object sender, RoutedEventArgs e)
         {
-            // TODO show window that asks for a name
-            string newFolderName = "[RF] "+new Random().Next();
-            NotebookLocation.AddNewNotebookLocation(new NotebookLocation() { Path = newFolderName }, UserID); // TODO: change UserID AND do something with return value
+            string newFolderName = GetUserInput("Create new folder", "What do you want your new folder to be called:");
+            if (newFolderName != null)
+            {
+                NotebookLocation.AddNewNotebookLocation(new NotebookLocation() { Path = newFolderName }, UserID); // TODO maybe do something with return value?
 
-            // TODO fix refresh (for now, delete and add)
-            LoadNotebooksTreeView();
+                // TODO fix refresh (for now, delete and add)
+                LoadNotebooksTreeView();
+            }
         }
 
         public void AddNotebook(object sender, RoutedEventArgs e)
@@ -321,17 +325,18 @@ namespace EvernoteCloneGUI.ViewModels
                 if (contextMenu != null)
                 {
                     string path = GetPath(contextMenu.PlacementTarget as TreeViewItem);
+                    string newNotebookName = GetUserInput("Create new notebook", "What do you want your new notebook to be called:");
 
-                    // TODO show window that asks for a name (or notebook!!!)
-                    string newNotebookName = "[NB] "+new Random().Next();
-                    NotebookLocation notebookLocation = NotebookLocation.GetNotebookLocationByPath(path, UserID);
+                    if (newNotebookName != null)
+                    {
+                        NotebookLocation notebookLocation = NotebookLocation.GetNotebookLocationByPath(path, UserID);
+                        Notebook notebook = new Notebook() { UserID = UserID, LocationID = notebookLocation.Id, Title = newNotebookName, CreationDate = DateTime.Now.Date, LastUpdated = DateTime.Now, Path = notebookLocation };
+                        notebook.Save(UserID);
 
-                    Notebook notebook = new Notebook() { UserID = UserID, LocationID = notebookLocation.Id, Title = newNotebookName, CreationDate = DateTime.Now.Date, LastUpdated = DateTime.Now, Path = notebookLocation };
-                    notebook.Save(UserID); // TODO pass good UserID
+                        // TODO fix refresh (for now, delete and add)
+                        LoadNotebooksTreeView();
+                    }
                 }
-
-                // TODO fix refresh (for now, delete and add)
-                LoadNotebooksTreeView();
             }
         }
 
@@ -346,6 +351,32 @@ namespace EvernoteCloneGUI.ViewModels
                     string path = GetPath(contextMenu.PlacementTarget as TreeViewItem);
                 }
             }
+        }
+
+        public string GetUserInput(string DialogTitle, string DialogValueRequestText)
+        {
+            IWindowManager windowManager = new WindowManager();
+
+            ValueRequestViewModel valueRequestViewModel = new ValueRequestViewModel
+            {
+                Parent = this,
+                DialogTitle = DialogTitle,
+                DialogValueRequestText = DialogValueRequestText
+            };
+            valueRequestViewModel.Submission += HandleSubmit;
+            valueRequestViewModel.Cancellation += HandleCancel;
+
+            windowManager.ShowDialog(valueRequestViewModel);
+
+            return string.IsNullOrWhiteSpace(valueRequestViewModel.Value) ? null : valueRequestViewModel.Value.Trim();
+        }
+
+        public void HandleSubmit(ValueRequestViewModel valueRequestViewModel) =>
+            (valueRequestViewModel.GetView() as Window).Close();
+        public void HandleCancel(ValueRequestViewModel valueRequestViewModel)
+        {
+            valueRequestViewModel.Value = null;
+            (valueRequestViewModel.GetView() as Window).Close();
         }
 
         private string GetPath(TreeViewItem treeViewItem)

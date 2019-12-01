@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
+// TODO create check for '/' in Value (in case of creating folder) and trimming the result (just) before using Value (after submit, cancel or close)
 namespace EvernoteCloneGUI.ViewModels
 {
 
