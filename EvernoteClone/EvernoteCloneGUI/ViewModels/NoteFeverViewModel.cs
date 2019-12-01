@@ -296,7 +296,7 @@ namespace EvernoteCloneGUI.ViewModels
 
                     // TODO show window that asks for a name (or notebook!!!)
                     string newNotebookName = "[NB] "+new Random().Next();
-                    NotebookLocation notebookLocation = NotebookLocation.GetNotebookLocationByPath(path);
+                    NotebookLocation notebookLocation = NotebookLocation.GetNotebookLocationByPath(path, UserID);
 
                     Notebook notebook = new Notebook() { UserID = UserID, LocationID = notebookLocation.Id, Title = newNotebookName, CreationDate = DateTime.Now.Date, LastUpdated = DateTime.Now, Path = notebookLocation };
                     notebook.Save(UserID); // TODO pass good UserID

@@ -259,7 +259,7 @@ namespace EvernoteCloneLibrary.Notebooks
                     Notebook.FSName = $"{Guid.NewGuid()}";
                 }
                 
-                return XMLExporter.Export(GetStoragePath(), $@"{Notebook.FSName}.enex", Notebook);
+                return XMLExporter.Export(GetNotebookStoragePath(), $@"{Notebook.FSName}.enex", Notebook);
             }
 
             return false;
