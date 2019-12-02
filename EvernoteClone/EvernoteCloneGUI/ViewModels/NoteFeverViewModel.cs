@@ -158,7 +158,7 @@ namespace EvernoteCloneGUI.ViewModels
                     newNoteViewModel = new NewNoteViewModel(true)
                     {
                         Note = SelectedNote,
-                        NoteOwner = SelectedNotebook,
+                        NoteOwner = SelectedNote.NoteOwner,
                         Parent = this
                     };
                 }
