@@ -420,6 +420,8 @@ namespace EvernoteCloneLibrary.Notebooks
                 $"<en-export export-date=\"{DateTime.Now.ToString("yyyyMMdd")}T{DateTime.Now.ToString("HHmmss")}Z\"",
                 $" application=\"EvernoteClone/Windows\" version=\"6.x\">",
                 $"<title>{Title}</title>",
+                $"<created>{CreationDate.ToString("yyyyMMdd")}T{CreationDate.ToString("HHmmss")}Z</created>",
+                $"<updated>{LastUpdated.ToString("yyyyMMdd")}T{LastUpdated.ToString("HHmmss")}Z</updated>",
                 $"<id>{Id}</id>",
                 $"<path-id>{Path.Id}</path-id>",
                 $"<path>{Path.Path}</path>",

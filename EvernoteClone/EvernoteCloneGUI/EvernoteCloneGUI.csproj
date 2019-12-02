@@ -99,6 +99,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Helpers\PasswordHelper.cs" />
+    <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\NewNoteViewModel.cs" />
     <Compile Include="ViewModels\NotebookNotesMenuViewModel.cs" />
     <Compile Include="ViewModels\NotebookViewModel.cs" />
@@ -118,6 +119,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Views\LoginView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\NewNoteView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

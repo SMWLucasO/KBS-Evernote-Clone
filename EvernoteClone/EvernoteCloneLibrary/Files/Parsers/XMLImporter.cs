@@ -116,7 +116,8 @@ namespace EvernoteCloneLibrary.Files.Parsers
                     foreach (XElement node in xDocument.Descendants("en-export").ToList())
                     {
                         if (ValidationUtil.AreNotNull(node.Element("id")?.Value, node.Element("title")?.Value,
-                            node.Element("path")?.Value, node.Element("path-id")?.Value))
+                            node.Element("path")?.Value, node.Element("path-id")?.Value,
+                            node.Element("created")?.Value, node.Element("updated")?.Value))
                         {
                             return new Notebook
                             {
@@ -131,8 +132,8 @@ namespace EvernoteCloneLibrary.Files.Parsers
                                 },
                                 LocationID = int.Parse(node.Element("path-id").Value),
                                 // File data which applies to the notebook.
-                                CreationDate = File.GetCreationTime(FullPath),
-                                LastUpdated = File.GetLastWriteTime(FullPath),
+                                CreationDate = DateTime.Parse(FormatDateTime(node.Element("created").Value)),
+                                LastUpdated = DateTime.Parse(FormatDateTime(node.Element("updated").Value)),
                                 FSName = Path.GetFileNameWithoutExtension(FullPath)
                             };
                         }

@@ -179,9 +179,9 @@ namespace EvernoteCloneGUI.ViewModels
             if (IsValidEmail(Email) && ValidatePassword(Password) && PasswordTheSame(PasswordConfirm, Password))
             {
                 if (User.Register(tbEmail, tbPassword, tbFirstName, tbLastName))
-                    MessageBox.Show("True");
+                    MessageBox.Show("Registration succesful!");
                 else
-                    MessageBox.Show("False");
+                    MessageBox.Show("Registration failed! Please try again. (F's in chat)");
             }
             else
                 MessageBox.Show("Please fill the fields with errors");

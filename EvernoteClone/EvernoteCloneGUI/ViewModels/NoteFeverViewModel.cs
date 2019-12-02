@@ -151,6 +151,19 @@ namespace EvernoteCloneGUI.ViewModels
                 MessageBox.Show("Cannot add new notes whilst in 'all notes' mode.", "Failed", MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
+        public void User()
+        {
+            IWindowManager windowManagerUser = new WindowManager();
+
+            dynamic size = new ExpandoObject();
+            size.Height = 600;
+            size.Width = 800;
+            size.SizeToContent = SizeToContent.Manual;
+
+            RegisterView registerView = new RegisterView();
+            windowManagerUser.ShowDialog(registerView, null, size);
+        }
+
         /// <summary>
         /// Method which opens the view containing all the user's notes.
         /// </summary>
@@ -173,6 +186,8 @@ namespace EvernoteCloneGUI.ViewModels
                 foreach (Notebook notebook in Notebooks)
                     foreach (Note note in notebook.Notes.Cast<Note>())
                         notes.Add(note);
+
+                MessageBox.Show("Yeet");
 
                 allNotesNotebook.Notes = notes;
                 
@@ -439,6 +454,14 @@ namespace EvernoteCloneGUI.ViewModels
             LoadNoteViewIfNoteExists();
         }
 
+        public void Login()
+        {
+            IWindowManager windowManager = new WindowManager();     
+
+            LoginViewModel loginViewModel = new LoginViewModel();
+            windowManager.ShowDialog(loginViewModel, null);
+        }
+        
         public void SelectNotebook(string Path, string Title)
         {
             SelectedNotebook = Notebooks.First(notebook => notebook.Path.Path == Path && notebook.Title == Title);

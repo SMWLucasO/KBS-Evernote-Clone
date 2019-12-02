@@ -8,19 +8,21 @@ using System.Linq;
 
 namespace EvernoteCloneLibraryTests.Users
 {
+
     [TestFixture]
     public class UserRepositoryTest
     {
-        
-        [TestCase("yrs@hotmail.com", "Appeltje123!", "Nice", "GoodHustle")]
-        
-        public void insertNewUser(string Username, string Password, string FirstName, string LastName)
-        {
-            
-            //Arrange
 
+
+        public static List<int> StoredUserIDs
+            = new List<int>();
+
+        [TestCase("yrs@hotmail.com", "Appeltje123!", "Nice", "GoodHustle"), Order(1)]
+        public void Insert_ShouldInsert(string Username, string Password, string FirstName, string LastName)
+        {
+            //Arrange
             UserRepository userRepository = new UserRepository();
-            UserModel users = new UserModel()
+            UserModel user = new UserModel()
             {
                 Username = Username,
                 Password = Password,
@@ -31,13 +33,31 @@ namespace EvernoteCloneLibraryTests.Users
             };
 
             //Act            
-             var result = userRepository.Insert(users);
+            var result = userRepository.Insert(user);
+
+            StoredUserIDs.Add(user.Id);
 
             //Assert
-
             Assert.IsTrue(result);
+        }
+
+        // TODO: @Chono implement the tests given below:
+
+        public void GetBy_ShouldReturn()
+        {
 
         }
+
+        public void Update_ShouldReturn()
+        {
+
+        }
+
+        public void Delete_ShouldReturn()
+        {
+
+        }
+
     }
 
 }
