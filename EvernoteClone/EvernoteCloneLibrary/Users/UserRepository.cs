@@ -32,16 +32,22 @@ namespace EvernoteCloneLibrary.Users
         {
             if (ToExtractFrom != null)
             {
-                return new Dictionary<string, object>()
+                Dictionary<string, object> parameters = new Dictionary<string, object>()
                 {
                     { "@Username", ToExtractFrom.Username },
                     { "@Password", ToExtractFrom.Password },
-                    { "@FirstName", ToExtractFrom.FirstName },
-                    { "@LastName", ToExtractFrom.LastName },
                     { "@IsGoogleAccount", ToExtractFrom.IsGoogleAccount },
-                    { "@CreationDate", ToExtractFrom.CreationDate },
-                    { "@LastLogin", ToExtractFrom.LastLogin }
+                    { "@CreationDate", ToExtractFrom.CreationDate }
                 };
+
+                if (!string.IsNullOrWhiteSpace(ToExtractFrom.FirstName))
+                    parameters.Add("@FirstName", ToExtractFrom.FirstName);
+                if (!string.IsNullOrWhiteSpace(ToExtractFrom.LastName))
+                    parameters.Add("@LastName", ToExtractFrom.LastName);
+                if (ToExtractFrom.LastLogin != null)
+                    parameters.Add("@LastLogin", ToExtractFrom.LastLogin);
+
+                return parameters;
             }
             return null;
         }
@@ -90,16 +96,24 @@ namespace EvernoteCloneLibrary.Users
             if (ToInsert != null)
             {
                 if (string.IsNullOrEmpty(ToInsert.Username) || string.IsNullOrEmpty(ToInsert.Password)
-                    || ToInsert.CreationDate == null || ToInsert.LastLogin == null)
+                    || ToInsert.CreationDate == null)
                 {
                     return false;
                 }
 
                 Dictionary<string, object> Parameters = GenerateQueryParameters(ToInsert);
-
-                int id = DataAccess.Instance.ExecuteAndReturnId("INSERT INTO [User] ([Username], [Password], [FirstName], [LastName], [IsGoogleAccount]," +
-                    "[CreationDate], [LastLogin])"
-                        + " VALUES (@Username, @Password, @FirstName, @LastName, @IsGoogleAccount, @CreationDate, @LastLogin)", Parameters);
+                int id = DataAccess.Instance.ExecuteAndReturnId(
+                    "INSERT INTO [User] ([Username], [Password]," +
+                        (string.IsNullOrWhiteSpace(ToInsert.FirstName) ? "" : " [FirstName],") +
+                        (string.IsNullOrWhiteSpace(ToInsert.LastName) ? "" : " [LastName],") +
+                        " [IsGoogleAccount], [CreationDate]" +
+                        (ToInsert.LastLogin == null ? "" : ", [LastLogin]") +
+                    ") VALUES (@Username, @Password," +
+                        (string.IsNullOrWhiteSpace(ToInsert.FirstName) ? "" : " @FirstName,") +
+                        (string.IsNullOrWhiteSpace(ToInsert.LastName) ? "" : " @LastName,") +
+                        " @IsGoogleAccount, @CreationDate" +
+                        (ToInsert.LastLogin == null ? "" : ", @LastLogin") +
+                    ")", Parameters);
 
                 if (id != -1)
                 {
