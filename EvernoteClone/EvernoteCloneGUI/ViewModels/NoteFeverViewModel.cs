@@ -1,27 +1,18 @@
 ﻿using Caliburn.Micro;
-using EvernoteCloneGUI.Views;
 using EvernoteCloneLibrary.Notebooks;
 using EvernoteCloneLibrary.Notebooks.Location;
-using EvernoteCloneLibrary.Notebooks.Location.LocationUser;
 using EvernoteCloneLibrary.Notebooks.Notes;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Collections.ObjectModel;
 using System.Dynamic;
 using System.Linq;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Controls;
-using System.Windows.Media;
 
 // TODO add summary
-
 namespace EvernoteCloneGUI.ViewModels
 {
     /// <summary>
@@ -29,31 +20,27 @@ namespace EvernoteCloneGUI.ViewModels
     /// </summary>
     public class NoteFeverViewModel : Conductor<object>
     {
-
         // Notebook information for viewing things
-        public List<Notebook> Notebooks { get; private set; }
-            = new List<Notebook>();
+        public List<Notebook> Notebooks { get; private set; } = new List<Notebook>();
 
         public Notebook SelectedNotebook;
         public Note SelectedNote;
 
         private int UserID = 3; // TODO change this!!!
 
-        public NotebookViewModel NotebookViewModel { get; set; }
+        public NotebookViewModel NotebookViewModel { get; private set; }
         public ObservableCollection<TreeViewItem> NotebooksTreeView { get; } = new ObservableCollection<TreeViewItem>(new List<TreeViewItem>());
 
-        public ContextMenu RootContext = new ContextMenu();
-        public ContextMenu FolderContext = new ContextMenu();
-        public ContextMenu NotebookContext = new ContextMenu();
+        public readonly ContextMenu RootContext = new ContextMenu();
+        public readonly ContextMenu FolderContext = new ContextMenu();
+        public readonly ContextMenu NotebookContext = new ContextMenu();
 
         public BitmapImage FolderImage { get; } = new BitmapImage(new Uri("pack://application:,,,/EvernoteCloneGUI;component/Resources/folder.png"));
         public BitmapImage NotebookImage { get; } = new BitmapImage(new Uri("pack://application:,,,/EvernoteCloneGUI;component/Resources/journal.png"));
-        //public BitmapImage NotebookImage { get; } = new BitmapImage(new Uri(@"/Resources/ok-01.png", UriKind.Relative));
 
         public MenuItem CreateMenuItem(string Header, RoutedEventHandler CustomEventHandler)
         {
-            MenuItem menuItem = new MenuItem();
-            menuItem.Header = Header;
+            MenuItem menuItem = new MenuItem {Header = Header};
             menuItem.Click += CustomEventHandler;
             return menuItem;
         }
@@ -82,7 +69,6 @@ namespace EvernoteCloneGUI.ViewModels
 
             // Only do this when a note has been opened, otherwise the right side should still be empty.
             LoadNoteViewIfNoteExists();
-
         }
 
         private void LoadNotebooks(bool initialLoad = false)
@@ -107,7 +93,6 @@ namespace EvernoteCloneGUI.ViewModels
 
         public void LoadNoteViewIfNoteExists()
         {
-
             if (SelectedNotebook != null)
             {
                 NewNoteViewModel newNoteViewModel = null;
@@ -133,13 +118,10 @@ namespace EvernoteCloneGUI.ViewModels
                     }
                 };
 
-
-
                 NotebookViewModel.NewNoteViewModel?.LoadNote();
                 NotebookViewModel.NotebookNotesMenu.LoadNotesIntoNotebookMenu();
 
                 ActivateItem(NotebookViewModel);
-
             }
         }
 
@@ -164,10 +146,9 @@ namespace EvernoteCloneGUI.ViewModels
                     NoteOwner = SelectedNotebook
                 };
                 windowManager.ShowDialog(newNoteViewModel, null, settings);
-            } else
-            {
+            } 
+            else
                 MessageBox.Show("Cannot add new notes whilst in 'all notes' mode.", "Failed", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
         }
 
         /// <summary>
@@ -187,14 +168,11 @@ namespace EvernoteCloneGUI.ViewModels
                     CreationDate = DateTime.Now.Date,
                     IsNotNoteOwner = true
                 };
+                
                 List<INote> notes = new List<INote>();
                 foreach (Notebook notebook in Notebooks)
-                {
-                    foreach (Note note in notebook.Notes)
-                    {
+                    foreach (Note note in notebook.Notes.Cast<Note>())
                         notes.Add(note);
-                    }
-                }
 
                 allNotesNotebook.Notes = notes;
                 
@@ -203,9 +181,7 @@ namespace EvernoteCloneGUI.ViewModels
                     SelectedNotebook = allNotesNotebook;
                     SelectedNote = (Note)allNotesNotebook.Notes.First();
                     if (SelectedNote != null)
-                    {
                         LoadNoteViewIfNoteExists();
-                    }
                 }
             }
         }
@@ -251,7 +227,7 @@ namespace EvernoteCloneGUI.ViewModels
             return treeViewItems;
         }
 
-        private List<TreeViewItem> LoadNotebooksIntoFolderStructure(List<TreeViewItem> treeViewItems)
+        private List<TreeViewItem> LoadNotebooksIntoFolderStructure(List<TreeViewItem> TreeViewItems)
         {
             LoadNotebooks();
             foreach (Notebook notebook in Notebooks)
@@ -260,7 +236,7 @@ namespace EvernoteCloneGUI.ViewModels
                 foreach (string directory in notebook.Path.Path.Split('/'))
                 {
                     if (currentNode == null)
-                        currentNode = treeViewItems.First(treeViewItem => GetHeader(treeViewItem) == directory);
+                        currentNode = TreeViewItems.First(treeViewItem => GetHeader(treeViewItem) == directory);
                     else
                         currentNode = currentNode.Items.Cast<TreeViewItem>().First(treeViewItem => GetHeader(treeViewItem) == directory);
                 }
@@ -268,7 +244,7 @@ namespace EvernoteCloneGUI.ViewModels
                 currentNode?.Items.Add(CreateTreeNode(notebook.Title, NotebookContext));
             }
 
-            return treeViewItems;
+            return TreeViewItems;
         }
 
         private TreeViewItem CreateTreeNode(string Header, ContextMenu ContextMenu, int NotebookID = -1)
@@ -284,8 +260,7 @@ namespace EvernoteCloneGUI.ViewModels
 
         private StackPanel CreateTreeHeader(string Header, ContextMenu ContextMenu, int NotebookID = -1)
         {
-            StackPanel stackPanel = new StackPanel();
-            stackPanel.Orientation = Orientation.Horizontal;
+            StackPanel stackPanel = new StackPanel {Orientation = Orientation.Horizontal};
 
             Image image = new Image();
             image.Height = 16;
@@ -312,9 +287,9 @@ namespace EvernoteCloneGUI.ViewModels
             return stackPanel;
         }
 
-        public void AddFolder(object sender, RoutedEventArgs e)
+        public void AddFolder(object Sender, RoutedEventArgs RoutedEventArgs)
         {
-            if (e.Source is MenuItem menuItem)
+            if (RoutedEventArgs.Source is MenuItem menuItem)
             {
                 if (menuItem.Parent is ContextMenu contextMenu)
                 {
@@ -348,8 +323,7 @@ namespace EvernoteCloneGUI.ViewModels
         {
             if (e.Source is MenuItem menuItem)
             {
-                ContextMenu contextMenu = menuItem.Parent as ContextMenu;
-                if (contextMenu != null)
+                if (menuItem.Parent is ContextMenu contextMenu)
                 {
                     string path = GetPath(contextMenu.PlacementTarget as TreeViewItem);
                     string newNotebookName = GetUserInput("Create new notebook", "What do you want your new notebook to be called:");
@@ -370,7 +344,7 @@ namespace EvernoteCloneGUI.ViewModels
         public void AddNote(object sender, RoutedEventArgs e) =>
             NewNote();
 
-        public string GetUserInput(string DialogTitle, string DialogValueRequestText)
+        public string GetUserInput(string DialogTitle, string DialogValueRequestText, int MinCharacters = 2, int MaxCharacters = 64)
         {
             IWindowManager windowManager = new WindowManager();
 
@@ -384,56 +358,69 @@ namespace EvernoteCloneGUI.ViewModels
             valueRequestViewModel.Cancellation += HandleCancel;
 
             windowManager.ShowDialog(valueRequestViewModel);
+            
+            // If valueRequestViewModel.Value == null, cancel button is pressed
+            if (valueRequestViewModel.Value != null)
+            {
+                while ((valueRequestViewModel.Value = valueRequestViewModel.Value.Trim()).ToCharArray().Length >=
+                       MinCharacters
+                       && valueRequestViewModel.Value.ToCharArray().Length <= MaxCharacters)
+                {
+                    MessageBox.Show($"Text should be between {MinCharacters} and {MaxCharacters} characters long.",
+                        "NoteFever | Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    valueRequestViewModel.Value = "";
+                }
+            }
 
             return string.IsNullOrWhiteSpace(valueRequestViewModel.Value) ? null : valueRequestViewModel.Value.Trim();
         }
 
-        public void HandleSubmit(ValueRequestViewModel valueRequestViewModel) =>
-            (valueRequestViewModel.GetView() as Window).Close();
-        public void HandleCancel(ValueRequestViewModel valueRequestViewModel)
+        public void HandleSubmit(ValueRequestViewModel ValueRequestViewModel) =>
+            (ValueRequestViewModel.GetView() as Window)?.Close();
+        public void HandleCancel(ValueRequestViewModel ValueRequestViewModel)
         {
-            valueRequestViewModel.Value = null;
-            (valueRequestViewModel.GetView() as Window).Close();
+            ValueRequestViewModel.Value = null;
+            (ValueRequestViewModel.GetView() as Window)?.Close();
         }
 
-        private string GetPath(TreeViewItem treeViewItem, bool IsNotebook = false)
+        private string GetPath(TreeViewItem TreeViewItem, bool IsNotebook = false)
         {
-            if (GetHeader(treeViewItem) == "My Notebooks")
+            if (GetHeader(TreeViewItem) == "My Notebooks")
                 return "";
 
-            string path = IsNotebook ? "" : GetHeader(treeViewItem);
-            while (treeViewItem.Parent is TreeViewItem item)
+            string path = IsNotebook ? "" : GetHeader(TreeViewItem);
+            while (TreeViewItem.Parent is TreeViewItem item)
             {
-                treeViewItem = item;
-                if (GetHeader(treeViewItem) == "My Notebooks")
+                TreeViewItem = item;
+                if (GetHeader(TreeViewItem) == "My Notebooks")
                     break;
-                path = GetHeader(treeViewItem) + "/" + path;
+                path = GetHeader(TreeViewItem) + "/" + path;
             }
             return IsNotebook ? path.Substring(0, path.Length - 1) : path;
         }
 
-        private int GetNotebookID(TreeViewItem treeViewItem)
+        private int GetNotebookID(TreeViewItem TreeViewItem)
         {
-            if (treeViewItem.Header is StackPanel stackPanel)
+            if (TreeViewItem.Header is StackPanel stackPanel)
                 if (stackPanel.Children[2] is Label label)
                     return Convert.ToInt32(label.Content);
             return -1;
         }
 
-        private bool IsNotebook(TreeViewItem treeViewItem)
-            => treeViewItem.ContextMenu == NotebookContext;
+        private bool IsNotebook(TreeViewItem TreeViewItem)
+            => TreeViewItem.ContextMenu == NotebookContext;
 
-        private string GetHeader(TreeViewItem treeViewItem)
+        private string GetHeader(TreeViewItem TreeViewItem)
         {
-            if (treeViewItem.Header is StackPanel stackPanel)
+            if (TreeViewItem.Header is StackPanel stackPanel)
                 if (stackPanel.Children[1] is TextBlock textBlock)
                     return textBlock.Text;
-            return treeViewItem.Header.ToString();
+            return TreeViewItem.Header.ToString();
         }
 
-        public void TreeView_SelectedItemChanged(RoutedPropertyChangedEventArgs<object> routedPropertyChangedEventArgs)
+        public void TreeView_SelectedItemChanged(RoutedPropertyChangedEventArgs<object> RoutedPropertyChangedEventArgs)
         {
-            if (routedPropertyChangedEventArgs.NewValue is TreeViewItem treeViewItem)
+            if (RoutedPropertyChangedEventArgs.NewValue is TreeViewItem treeViewItem)
             {
                 if (!IsNotebook(treeViewItem))
                     return;

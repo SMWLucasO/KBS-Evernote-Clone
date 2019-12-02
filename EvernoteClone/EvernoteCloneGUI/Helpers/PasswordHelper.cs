@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 
+// TODO summary @Chino
 namespace EvernoteCloneGUI.Helpers
 {
     public static class PasswordHelper
@@ -23,75 +19,56 @@ namespace EvernoteCloneGUI.Helpers
             DependencyProperty.RegisterAttached("IsUpdating", typeof(bool),
             typeof(PasswordHelper));
 
-
-        public static void SetAttach(DependencyObject dp, bool value)
-        {
+        public static void SetAttach(DependencyObject dp, bool value) =>
             dp.SetValue(AttachProperty, value);
-        }
 
-        public static bool GetAttach(DependencyObject dp)
-        {
-            return (bool)dp.GetValue(AttachProperty);
-        }
+        public static bool GetAttach(DependencyObject dp) =>
+            (bool)dp.GetValue(AttachProperty);
 
-        public static string GetPassword(DependencyObject dp)
-        {
-            return (string)dp.GetValue(PasswordProperty);
-        }
+        public static string GetPassword(DependencyObject dp) =>
+            (string)dp.GetValue(PasswordProperty);
 
-        public static void SetPassword(DependencyObject dp, string value)
-        {
+        public static void SetPassword(DependencyObject dp, string value) =>
             dp.SetValue(PasswordProperty, value);
-        }
 
-        private static bool GetIsUpdating(DependencyObject dp)
-        {
-            return (bool)dp.GetValue(IsUpdatingProperty);
-        }
+        private static bool GetIsUpdating(DependencyObject dp) =>
+            (bool)dp.GetValue(IsUpdatingProperty);
 
-        private static void SetIsUpdating(DependencyObject dp, bool value)
-        {
+        private static void SetIsUpdating(DependencyObject dp, bool value) =>
             dp.SetValue(IsUpdatingProperty, value);
-        }
 
-        private static void OnPasswordPropertyChanged(DependencyObject sender,
-            DependencyPropertyChangedEventArgs e)
+        private static void OnPasswordPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
-            PasswordBox passwordBox = sender as PasswordBox;
-            passwordBox.PasswordChanged -= PasswordChanged;
-
-            if (!(bool)GetIsUpdating(passwordBox))
-            {
-                passwordBox.Password = (string)e.NewValue;
-            }
-            passwordBox.PasswordChanged += PasswordChanged;
-        }
-
-        private static void Attach(DependencyObject sender,
-            DependencyPropertyChangedEventArgs e)
-        {
-            PasswordBox passwordBox = sender as PasswordBox;
-
-            if (passwordBox == null)
-                return;
-
-            if ((bool)e.OldValue)
+            if (sender is PasswordBox passwordBox)
             {
                 passwordBox.PasswordChanged -= PasswordChanged;
-            }
 
-            if ((bool)e.NewValue)
-            {
+                if (!GetIsUpdating(passwordBox))
+                    passwordBox.Password = (string) e.NewValue;
+
                 passwordBox.PasswordChanged += PasswordChanged;
+            }
+        }
+
+        private static void Attach(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (sender is PasswordBox passwordBox)
+            {
+                if ((bool) e.OldValue)
+                    passwordBox.PasswordChanged -= PasswordChanged;
+                if ((bool) e.NewValue)
+                    passwordBox.PasswordChanged += PasswordChanged;
             }
         }
 
         private static void PasswordChanged(object sender, RoutedEventArgs e)
         {
-            PasswordBox passwordBox = sender as PasswordBox;
-            SetIsUpdating(passwordBox, true);
-            SetPassword(passwordBox, passwordBox.Password);
-            SetIsUpdating(passwordBox, false);
+            if (sender is PasswordBox passwordBox)
+            {
+                SetIsUpdating(passwordBox, true);
+                SetPassword(passwordBox, passwordBox.Password);
+                SetIsUpdating(passwordBox, false);
+            }
         }
     }
 }
