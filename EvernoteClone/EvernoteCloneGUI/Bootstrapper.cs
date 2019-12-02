@@ -30,7 +30,7 @@ namespace EvernoteCloneGUI
         {
             // The 'MainViewModel' is basically the start-location for our entire application
             // thus we start it when the application is started.
-            DisplayRootViewFor<RegisterViewModel>();
+            DisplayRootViewFor<NoteFeverViewModel>();
         }
 
     }
