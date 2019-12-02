@@ -17,6 +17,8 @@ namespace EvernoteCloneLibrary.Users
             return null;
         }
 
+
+        //Inserts user data in database
         public static bool Register(string Username, string Password, string FirstName, string LastName)
         {
             UserRepository userRepository = new UserRepository();
@@ -28,8 +30,6 @@ namespace EvernoteCloneLibrary.Users
                 LastName = LastName,
                 CreationDate = DateTime.Now.Date
             };
-            
-
             return userRepository.Insert(userModel);
         }
     }
