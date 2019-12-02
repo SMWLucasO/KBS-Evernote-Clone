@@ -64,7 +64,7 @@ namespace EvernoteCloneLibrary.Notebooks
             List<Notebook> notebooksToReturn = new List<Notebook>();
 
             // Load all the notebooks stored in the local storage
-            List<Notebook> notebooksFromFileSystem = XMLImporter.ImportNotebooks(GetStoragePath());
+            List<Notebook> notebooksFromFileSystem = XMLImporter.TryImportNotebooks(GetStoragePath());
 
             // Load all the notebooks stored in the database, if the user has a proper ID.
             // Note: Should also verify using password hash, but that is a TODO. This part will be rewritten later on.
