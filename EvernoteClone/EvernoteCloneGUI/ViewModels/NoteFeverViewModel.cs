@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using EvernoteCloneGUI.Views;
 using EvernoteCloneLibrary.Notebooks;
 using EvernoteCloneLibrary.Notebooks.Location;
 using EvernoteCloneLibrary.Notebooks.Notes;
@@ -187,8 +188,6 @@ namespace EvernoteCloneGUI.ViewModels
                 foreach (Notebook notebook in Notebooks)
                     foreach (Note note in notebook.Notes.Cast<Note>())
                         notes.Add(note);
-
-                MessageBox.Show("Yeet");
 
                 allNotesNotebook.Notes = notes;
                 

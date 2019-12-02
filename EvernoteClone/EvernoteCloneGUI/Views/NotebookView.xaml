@@ -13,8 +13,7 @@
                 <ColumnDefinition Width="75*"/>
             </Grid.ColumnDefinitions>
             <ContentControl x:Name="NotebookNotesMenu" Grid.Column="0"></ContentControl>
-            <ContentControl x:Name="NewNoteViewModel" Grid.Column="1"></ContentControl>
+            <ContentControl x:Name="NewNoteViewModel" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"></ContentControl>
         </Grid>
-
     </Grid>
 </UserControl>

@@ -180,7 +180,7 @@ namespace EvernoteCloneGUI.ViewModels
                 if (User.Register(tbEmail, tbPassword, tbFirstName, tbLastName))
                     MessageBox.Show("Registration succesful!");
                 else
-                    MessageBox.Show("Registration failed! Please try again. (F's in chat)");
+                    MessageBox.Show("Registration failed! Please try again.");
             }
             else
                 MessageBox.Show("Please fill the fields with errors");
