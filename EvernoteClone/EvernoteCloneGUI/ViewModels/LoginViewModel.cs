@@ -18,13 +18,8 @@ namespace EvernoteCloneGUI.ViewModels
         {
             IWindowManager windowManager = new WindowManager();
 
-            dynamic size = new ExpandoObject();
-            size.Height = 600;
-            size.Width = 800;
-            size.SizeToContent = SizeToContent.Manual;
-
             RegisterViewModel registerViewModel = new RegisterViewModel();
-            windowManager.ShowDialog(registerViewModel, null, size);
+            windowManager.ShowDialog(registerViewModel, null);
         }
 
     }

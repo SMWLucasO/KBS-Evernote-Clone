@@ -22,7 +22,7 @@
         </Grid.RowDefinitions>
 
         <Label Grid.Column="0" Content="Username" Grid.ColumnSpan="2" Margin="104,84,10.5,51" Grid.RowSpan="2"/>
-        <TextBlock Grid.Column="0" Grid.Row="1" Margin="104,32.5,104,29" Grid.ColumnSpan="4"></TextBlock>
+        <TextBox Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="4" Margin="104,32,103,28.5"/>
         <Label Grid.Column="0" Grid.Row="2" Content="Password" Margin="104,0,32.5,52.5" Grid.ColumnSpan="2"></Label>
         <PasswordBox Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="4" Margin="104,32,103,28.5"/>
         <Button x:Name="Login" Grid.Row="3" Content="Login" Background="#0052cc" Foreground="White" Margin="104,26.5,32.5,10" Grid.ColumnSpan="2"/>

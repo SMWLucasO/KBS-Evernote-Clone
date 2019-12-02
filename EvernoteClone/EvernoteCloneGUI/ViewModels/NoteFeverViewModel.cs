@@ -170,6 +170,19 @@ namespace EvernoteCloneGUI.ViewModels
             }
         }
 
+        public void User()
+        {
+            IWindowManager windowManagerUser = new WindowManager();
+
+            dynamic size = new ExpandoObject();
+            size.Height = 600;
+            size.Width = 800;
+            size.SizeToContent = SizeToContent.Manual;
+
+            RegisterView registerView = new RegisterView();
+            windowManagerUser.ShowDialog(registerView, null, size);
+        }
+
         /// <summary>
         /// Method which opens the view containing all the user's notes.
         /// </summary>
@@ -454,17 +467,12 @@ namespace EvernoteCloneGUI.ViewModels
             LoadNoteViewIfNoteExists();
         }
 
-        public void User()
+        public void Login()
         {
-            IWindowManager windowManager = new WindowManager();
-
-            dynamic size = new ExpandoObject();
-            size.Height = 600;
-            size.Width = 800;
-            size.SizeToContent = SizeToContent.Manual;
+            IWindowManager windowManager = new WindowManager();     
 
             LoginViewModel loginViewModel = new LoginViewModel();
-            windowManager.ShowDialog(loginViewModel, null, size);
+            windowManager.ShowDialog(loginViewModel, null);
         }
         
         public void SelectNotebook(string Path, string Title)

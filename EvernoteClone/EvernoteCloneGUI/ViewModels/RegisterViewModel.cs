@@ -107,7 +107,7 @@ namespace EvernoteCloneGUI.ViewModels
                     }
                     catch(Exception e)
                     {
-                        result = "Please enter email!";
+                        result = "";
                     }
                 }
                 if (PropertyName == "PasswordConfirm")
@@ -209,25 +209,7 @@ namespace EvernoteCloneGUI.ViewModels
         }
 
         #endregion
-        #region Validates password
-
-        //method to validate inserted password
-        public bool ValidatePassword(string Password)
-        {
-            if (Password.Length < minimumLength)
-                return false;
-            if (UpperCount(Password) < upperLength)
-                return false;
-            if (LowerCount(Password) < lowerLength)
-                return false;
-            if (NumericCount(Password) < numericLength)
-                return false;
-            if (SpecialCharCount(Password) < specialChar)
-                return false;
-            return true;
-        }
-
-        #endregion
+ 
         #region Password encrypter
 
         //Encrypt password md5
@@ -251,7 +233,6 @@ namespace EvernoteCloneGUI.ViewModels
 
         #endregion
 
-
         #region Register button
         //Register button event
         public void Register()
@@ -266,11 +247,11 @@ namespace EvernoteCloneGUI.ViewModels
                 if (User.Register(tbEmail, tbPassword, tbFirstName, tbLastName))
                 {
 
-                    MessageBox.Show("True");
+                    MessageBox.Show("Registration succesful!");
                 }
                 else
                 {
-                    MessageBox.Show("False");
+                    MessageBox.Show("Registration failed! Please try again. (F's in chat)");
                 }
             }
             else
