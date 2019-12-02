@@ -14,39 +14,43 @@ namespace EvernoteCloneLibraryTests.Files.Parsers
     [TestFixture, Order(1)]
     class XMLExporterTests
     {
-        [Order(1)]
-        [TestCase(1, "test1.enex", Author = "Lucas Ouwens", Description = "Even though there's just one note, it should still be generated.")]
-        [TestCase(10, "test2.enex", Author = "Lucas Ouwens", Description = "Many notes should not cause problems for the generating of the file")]
-        [TestCase(1000, "test3.enex", Author = "Lucas Ouwens", Description = "A gigantic amount of notes should not cause any issues.")]
-        [TestCase(0, "test4.enex", Author = "Lucas Ouwens", Description = "Even though there's no notes generated, the notebook should still be saved.")]
-        public void Export_ShouldExportNotebooks(int notesToGenerate, string Filename)
-        {
 
+        [TestCase(Constant.TEST_STORAGE_PATH + "/testcases/", "file.enex", 1)]
+        [TestCase(Constant.TEST_STORAGE_PATH + "/testcases/", "file2.enex", 3)]
+        public void Export_ShouldExport(string FilePath, string Filename, int notes)
+        {
             // Arrange
-            IParseable toParse = ObjectGenerator.GenerateTestableNotebook(notesToGenerate);
+            IParseable parseable = ObjectGenerator.GenerateTestableNotebook(notes);
+
+
             // Act
-            bool actual = XMLExporter.Export(Constant.TEST_STORAGE_PATH, Filename, toParse);
+            bool actual = XMLExporter.Export(FilePath, Filename, parseable);
+
             // Assert
             Assert.That(actual, Is.True);
         }
 
-        [Order(2)]
-        [TestCase(-1, null, Author = "Lucas Ouwens", Description = "Object to parse and filename may not be null for the export to be successful")]
-        [TestCase(-1, "Test.enex", Author = "Lucas Ouwens", Description = "Object to parse may not be null for the export to be successful")]
-        [TestCase(3, "Test", Author = "Lucas Ouwens", Description = "A file must have an extension to be exported.")]
-        [TestCase(5, "", Author = "Lucas Ouwens", Description = "A file needs to have a name to be exported")]
-        public void Export_ShouldNotExport(int NotesToGenerate, string Filename)
+        [TestCase("", "", -1)]
+        [TestCase(null, null, -1)]
+        [TestCase(null, "", -1)]
+        [TestCase("", null, -1)]
+        [TestCase(null, null, 3)]
+        [TestCase("", "", 3)]
+        [TestCase("", null, 3)]
+        [TestCase(null, "", 3)]
+        [TestCase("somepath/", "filewithoutextension", 3)]
+        public void Export_ShouldNotExport(string FilePath, string Filename, int notes)
         {
             // Arrange
-            IParseable toParse = ObjectGenerator.GenerateTestableNotebook(NotesToGenerate);
+            IParseable parseable = ObjectGenerator.GenerateTestableNotebook(notes);
+
 
             // Act
-            bool actual = XMLExporter.Export(Constant.TEST_STORAGE_PATH, Filename, toParse);
+            bool actual = XMLExporter.Export(FilePath, Filename, parseable);
 
             // Assert
             Assert.That(actual, Is.False);
         }
-
 
     }
 
@@ -59,10 +63,11 @@ namespace EvernoteCloneLibraryTests.Files.Parsers
         public void Import_ShouldImportNotebooks()
         {
             // Act
-            List<Notebook> loaded = XMLImporter.ImportNotebooks(Constant.TEST_STORAGE_PATH);
+            List<Notebook> loaded = XMLImporter.ImportNotebooks(Constant.TEST_STORAGE_PATH + "/testcases/");
 
             // Assert
             Assert.IsNotNull(loaded);
+            Assert.IsTrue(loaded.Count > 0);
         }
 
         [Order(2)]
@@ -86,5 +91,15 @@ namespace EvernoteCloneLibraryTests.Files.Parsers
                 Directory.CreateDirectory("SomeExistingDirectory/");
             }
         }
+
+        [OneTimeTearDown]
+        public void Remove_TestCaseFolder()
+        {
+            if(Directory.Exists(Constant.TEST_STORAGE_PATH + "/testcases/"))
+            {
+                Directory.Delete(Constant.TEST_STORAGE_PATH + "/testcases/", true);
+            }
+        }
+
     }
 }
