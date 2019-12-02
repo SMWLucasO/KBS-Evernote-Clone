@@ -63,7 +63,7 @@ namespace EvernoteCloneLibraryTests.Files.Parsers
         public void Import_ShouldImportNotebooks()
         {
             // Act
-            List<Notebook> loaded = XMLImporter.ImportNotebooks(Constant.TEST_STORAGE_PATH + "/testcases/");
+            List<Notebook> loaded = XMLImporter.TryImportNotebooks(Constant.TEST_STORAGE_PATH + "/testcases/");
 
             // Assert
             Assert.IsNotNull(loaded);
@@ -77,7 +77,7 @@ namespace EvernoteCloneLibraryTests.Files.Parsers
         public void Import_ShouldNotImport_IsNull(string Path)
         {
             // Arrange and Act
-            List<Notebook> actual = XMLImporter.ImportNotebooks(Path);
+            List<Notebook> actual = XMLImporter.TryImportNotebooks(Path);
 
             // Assert
             Assert.IsNull(actual);
