@@ -30,8 +30,6 @@ namespace EvernoteCloneLibrary.Users
                 LastName = LastName,
                 CreationDate = DateTime.Now.Date
             };
-            
-
             return userRepository.Insert(userModel);
         }
 

@@ -230,6 +230,7 @@ namespace EvernoteCloneGUI.ViewModels
             string tbLastName = LastName;
             string tbEmail = Email;
             string tbPassword = Encryption(Password.ToString());
+
             if (isValidEmail(Email) && ValidatePassword(Password) && PasswordTheSame(PasswordConfirm, Password))
             {
                 if (User.Register(tbEmail, tbPassword, tbFirstName, tbLastName))
