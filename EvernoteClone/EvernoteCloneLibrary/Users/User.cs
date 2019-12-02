@@ -17,6 +17,8 @@ namespace EvernoteCloneLibrary.Users
             return false;
         }
 
+
+        //Inserts user data in database
         public static bool Register(string Username, string Password, string FirstName, string LastName)
         {
             UserRepository userRepository = new UserRepository();

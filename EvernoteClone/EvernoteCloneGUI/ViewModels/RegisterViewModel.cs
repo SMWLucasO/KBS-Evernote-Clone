@@ -155,6 +155,7 @@ namespace EvernoteCloneGUI.ViewModels
             return true;
         }
 
+        // Checks if password are the same
         public bool PasswordTheSame (string password1, string password2)
         {
             if (password1.ToString().Equals(password2.ToString()))
@@ -198,6 +199,8 @@ namespace EvernoteCloneGUI.ViewModels
         #endregion
 
         #region Password encrypter
+
+        //Encrypt password md5
         public string Encryption(String password)
         {
             MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
@@ -219,6 +222,8 @@ namespace EvernoteCloneGUI.ViewModels
         #endregion
 
 
+        #region Register button
+        //Register button event
         public void Register()
         {
             string tbFirstName = FirstName;
@@ -243,6 +248,6 @@ namespace EvernoteCloneGUI.ViewModels
             }
 
         }
-
+        #endregion
     }
 }

@@ -11,6 +11,8 @@ namespace EvernoteCloneLibrary.Users
 {
     class UserRepository : IRepository<UserModel>
     {
+
+        //Deletes user
         public bool Delete(UserModel ToDelete)
         {
             if (ToDelete != null)
@@ -24,6 +26,8 @@ namespace EvernoteCloneLibrary.Users
             return false;
         }
 
+
+        //Gets data from database
         public Dictionary<string, object> GenerateQueryParameters(UserModel ToExtractFrom)
         {
             if (ToExtractFrom != null)
@@ -42,6 +46,7 @@ namespace EvernoteCloneLibrary.Users
             return null;
         }
 
+        //Fetch data
         public IEnumerable<UserModel> GetBy(string[] Conditions, Dictionary<string, object> Parameters)
         {
             List<User> usersList = new List<User>();
@@ -78,6 +83,7 @@ namespace EvernoteCloneLibrary.Users
             return usersList.AsEnumerable();
         }
 
+        // Insert data in database
         public bool Insert(UserModel ToInsert)
         {
 
@@ -106,6 +112,7 @@ namespace EvernoteCloneLibrary.Users
             return false;
         }
 
+        //Update user
         public bool Update(UserModel ToUpdate)
         {
             if (ToUpdate != null)
