@@ -117,10 +117,13 @@ namespace EvernoteCloneLibrary.Notebooks
                         foreach (Notebook fsNotebook in notebooksFromFileSystem.Where(notebook => !notebooksToReturn.Contains(notebook)))
                         {
                             notebooksToReturn.Add(fsNotebook);
-                            
+
                             // forceInsert won't be used, because if you delete a notebook on a other client, you will upload it again since you force it to insert, even if the Id is not -1
                             // fsNotebook.Save(UserID, true);
-                            
+
+                            // Check if the path-id of notebook is not -1 (is it is, update it, since it will cause an error with the server)
+                            fsNotebook.UpdatePathId(UserID);
+
                             // Insert 'new' notebook, force insert
                             fsNotebook.Save(UserID);
                         }
@@ -171,6 +174,21 @@ namespace EvernoteCloneLibrary.Notebooks
             return notebooksToReturn;
         }
 
+        public void UpdatePathId(int UserID)
+        {
+            if (UserID != -1)
+            {
+                if (Path.Id == -1)
+                    Path = NotebookLocation.GetNotebookLocationByPath(Path.Path, UserID);
+                else
+                {
+                    NotebookLocation notebookLocation = NotebookLocation.GetNotebookLocationByPath(Path.Path, UserID);
+                    if (Path.Id != notebookLocation.Id)
+                        Path = notebookLocation;
+                }
+            }
+        }
+
         public static List<Notebook> GetAllNotebooksFromDatabase(int UserID)
         {
             NotebookRepository notebookRepository = new NotebookRepository();
@@ -217,8 +235,9 @@ namespace EvernoteCloneLibrary.Notebooks
         /// Save all the notebooks belonging to the specified user.
         /// </summary>
         /// <param name="UserID"></param>
+        /// <param name="ForceInsert"></param>
         /// <returns></returns>
-        public bool Save(int UserID = -1, bool forceInsert = false)
+        public bool Save(int UserID = -1, bool ForceInsert = false)
         {
             // TODO revisit this method for check
             LastUpdated = DateTime.Now;
@@ -274,7 +293,7 @@ namespace EvernoteCloneLibrary.Notebooks
                     }
                     else
                     {
-                        if (this.Id != -1 && !forceInsert)
+                        if (Id != -1 && !ForceInsert)
                         {
                             storedInTheCloud = notebookRepository.Update(this);
                             if (!storedInTheCloud) // the note is (probably) removed on another client TODO: do something with the bin here!

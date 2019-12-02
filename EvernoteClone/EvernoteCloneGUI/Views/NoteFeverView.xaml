@@ -66,7 +66,7 @@
         </StackPanel>
 
         <ContentControl Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="4"
-                        Grid.RowSpan="8" x:Name="ActiveItem" Margin="0.4,0,-0.4,0.4"></ContentControl>
+                        Grid.RowSpan="9" x:Name="ActiveItem" Margin="0.4,0,-0.4,0.4"></ContentControl>
 
     </Grid>
 

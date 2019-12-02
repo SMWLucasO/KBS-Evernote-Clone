@@ -71,14 +71,14 @@ namespace EvernoteCloneGUI.ViewModels
             FolderContext.Items.Add(CreateMenuItem("Add Notebook", AddNotebook));
             NotebookContext.Items.Add(CreateMenuItem("Add Note", AddNote));
 
+            // Load all folders, notebooks and add them all to the view
+            LoadNotebooksTreeView();
+
             // Load Notebooks
             LoadNotebooks(true);
 
             // Only do this when a note has been opened, otherwise the right side should still be empty.
             LoadNoteViewIfNoteExists();
-
-            // Load all folders, notebooks and add them all to the view
-            LoadNotebooksTreeView();
 
         }
 
