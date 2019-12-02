@@ -9,14 +9,10 @@ using System.Threading.Tasks;
 namespace EvernoteCloneLibrary.Files.Parsers
 {
     /// <summary>
-    /// 
+    /// Class for exporting parseable objects to their XML representation.
     /// </summary>
     public static class XMLExporter
     {
-        // NOTE: This class can be further abstracted by changing Notebook notebook to IParseable item
-        // or something alike.
-
-        // Will cause issues with duplicate named notebooks, thus TODO: Impl. folder structure through path @Lucas is this fixed? Or no?
 
         /// <summary>
         /// Method to export notebooks to XML form.
@@ -27,27 +23,80 @@ namespace EvernoteCloneLibrary.Files.Parsers
         /// <returns></returns>
         public static bool Export(string FilePath, string FileName, IParseable ParseableObject)
         {
-            if (!(string.IsNullOrEmpty(FilePath) || string.IsNullOrEmpty(FileName)) && ParseableObject != null)
+            if (ValidateExportParameters(FilePath, FileName, ParseableObject))
             {
-
                 string fullPath = $"{FilePath}/{FileName}";
-                if (Path.HasExtension(fullPath))
+
+                if (TryGeneratePath(FilePath))
                 {
-                    if (!(Directory.Exists(FilePath)))
-                    {
-                        Directory.CreateDirectory(FilePath);
-                    }
-
                     File.WriteAllLines(fullPath, ParseableObject.ToXmlRepresentation());
-
-                    return File.Exists(fullPath);
                 }
 
-
+                return ValidateFileExists(fullPath);
             }
-
             return false;
         }
+
+        #region Validation
+        /// <summary>
+        /// Validate if the input parameters aren't null (or empty)
+        /// </summary>
+        /// <param name="FilePath"></param>
+        /// <param name="Filename"></param>
+        /// <param name="ParseableObject"></param>
+        /// <returns></returns>
+        private static bool ValidateExportParameters(string FilePath, string Filename, IParseable ParseableObject)
+        {
+            return (!(string.IsNullOrEmpty(FilePath) || string.IsNullOrEmpty(Filename)) && ParseableObject != null);
+        }
+
+        /// <summary>
+        /// Validator method for if the file exists.
+        /// </summary>
+        /// <param name="FullPath"></param>
+        /// <returns></returns>
+        private static bool ValidateFileExists(string FullPath)
+        {
+            return File.Exists(FullPath) && Path.HasExtension(FullPath);
+        }
+
+        #endregion
+
+        #region Export path generation
+
+        /// <summary>
+        /// Try to generate the path. If it errors, return false.
+        /// </summary>
+        /// <param name="FilePath"></param>
+        /// <returns></returns>
+        private static bool TryGeneratePath(string FilePath)
+        {
+            try
+            {
+                return GeneratePath(FilePath);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Generate the path if it does not exist, return a bool indicating whether the path was generated.
+        /// </summary>
+        /// <param name="FilePath"></param>
+        /// <returns></returns>
+        private static bool GeneratePath(string FilePath)
+        {
+            if (!(Directory.Exists(FilePath)))
+            {
+                Directory.CreateDirectory(FilePath);
+            }
+
+            return Directory.Exists(FilePath);
+        }
+
+        #endregion
 
         public static bool Export(string FilePath, string FileName, string[] content)
         {
@@ -69,7 +118,6 @@ namespace EvernoteCloneLibrary.Files.Parsers
 
 
             }
-
             return false;
         }
     }

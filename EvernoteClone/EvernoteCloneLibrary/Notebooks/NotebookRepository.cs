@@ -65,7 +65,6 @@ namespace EvernoteCloneLibrary.Notebooks
 
                 Notebook notebook = new Notebook()
                 {
-                    
                     Id = (int)fetchedSqlDataReader["Id"],
                     LocationID = (int)fetchedSqlDataReader["LocationID"],
                     UserID = (int)fetchedSqlDataReader["UserID"],
@@ -73,28 +72,33 @@ namespace EvernoteCloneLibrary.Notebooks
                     CreationDate = (DateTime)fetchedSqlDataReader["CreationDate"],
                     LastUpdated = (DateTime)fetchedSqlDataReader["LastUpdated"],
                     // Get all the notes of the notebook by the notebookid, cast it to an INote.
-                    Notes = noteRepository.GetBy(
-                        new string[] { "NotebookID = @Id" },
-                        new Dictionary<string, object>()
-                        {
-                            { "@Id", (int) fetchedSqlDataReader["Id"] }
-                        }
-                        )
-                    .Select((el) => ((INote)el)).ToList(),
-                    // Select the NotebookLocation of the notebook
-                    Path = notebookLocationRepository.GetBy(
+                    Notes = new List<INote>(),
+                };
+
+                foreach (NoteModel model in noteRepository.GetBy(
+                            new string[] { "NotebookID = @Id" },
+                            new Dictionary<string, object>() {
+                                { "@Id", (int) fetchedSqlDataReader["Id"] }
+                            }))
+                {
+                    notebook.Notes.Add((INote)model);
+                }
+
+                foreach (NotebookLocationModel model in notebookLocationRepository.GetBy(
                             new string[] { "Id = @Id" },
-                            new Dictionary<string, object>
-                            {
+                            new Dictionary<string, object>() {
                                 { "@Id", (int) fetchedSqlDataReader["LocationID"] }
                             }
-                        ).Select((el) => new NotebookLocation()
-                        {
-                            Id = el.Id,
-                            Path = el.Path
-                        }
-                        ).First()
-                };
+                        ))
+                {
+                    notebook.Path = new NotebookLocation()
+                    {
+                        Id = model.Id,
+                        Path = model.Path
+                    };
+
+                    break;
+                }
 
                 // Make the notebook known to the note
                 notebook.Notes.ForEach((el) => ((Note)el).NoteOwner = notebook);

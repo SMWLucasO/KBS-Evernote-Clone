@@ -65,17 +65,22 @@ namespace EvernoteCloneLibrary.Notebooks
             List<Notebook> notebooksToReturn = new List<Notebook>();
 
             // Load all the notebooks stored in the local storage
-            List<Notebook> notebooksFromFileSystem = XMLImporter.ImportNotebooks(GetNotebookStoragePath());
+            List<Notebook> notebooksFromFileSystem = XMLImporter.TryImportNotebooks(GetNotebookStoragePath());
 
             // Load all the notebooks stored in the database, if the user has a proper ID.
             // Note: Should also verify using password hash, but that is a TODO. This part will be rewritten later on.
             if (UserID != -1)
             {
                 NotebookRepository notebookRepository = new NotebookRepository();
-                List<Notebook> notebooksFromDatabase = notebookRepository.GetBy(
-                    new string[] { "UserID = @UserID" },
-                    new Dictionary<string, object>() { { "@UserID", UserID } }
-                   ).Select((el) => ((Notebook)el)).ToList();
+                List<Notebook> notebooksFromDatabase = new List<Notebook>();
+
+                foreach (NotebookModel model in notebookRepository.GetBy(
+                    new[] { "UserID = @UserID" },
+                    new Dictionary<string, object> { { "@UserID", UserID } }))
+                {
+                    notebooksFromDatabase.Add((Notebook)model);
+                }
+
                 // If there are notebooks in the database, we want to compare which was updated more recently.
                 if (notebooksFromDatabase.Count > 0)
                 {
@@ -251,8 +256,12 @@ namespace EvernoteCloneLibrary.Notebooks
                 {
                     if (note.NoteOwner != null && !(savedNotebookIDs.Contains(note.NoteOwner.Id)))
                     {
-                        storedLocally = note.NoteOwner.Save();
-                        savedNotebookIDs.Add(note.NoteOwner.Id);
+                        // should never happen, but just in case (would cause stackoverflows)
+                        if (!(note.NoteOwner.Equals(this)))
+                        {
+                            storedLocally = note.NoteOwner.Save();
+                            savedNotebookIDs.Add(note.NoteOwner.Id);
+                        }
                     }
                 }
             }
@@ -404,7 +413,7 @@ namespace EvernoteCloneLibrary.Notebooks
         /// <returns></returns>
         public string[] ToXmlRepresentation()
         {
-            List<string> XMLRepresentation = new List<string>()
+            List<string> xmlRepresentation = new List<string>()
             {
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
                 "<!DOCTYPE en-export SYSTEM \"http://xml.evernote.com/pub/evernote-export2.dtd\">",
@@ -416,14 +425,14 @@ namespace EvernoteCloneLibrary.Notebooks
                 $"<path>{Path.Path}</path>",
             };
 
-            foreach (var Note in Notes)
+            foreach (var note in Notes)
             {
-                XMLRepresentation.AddRange(Note.ToXmlRepresentation());
+                xmlRepresentation.AddRange(note.ToXmlRepresentation());
             }
 
-            XMLRepresentation.Add("</en-export>");
+            xmlRepresentation.Add("</en-export>");
 
-            return XMLRepresentation.ToArray();
+            return xmlRepresentation.ToArray();
         }
     }
 }

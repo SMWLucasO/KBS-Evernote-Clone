@@ -82,7 +82,6 @@ namespace EvernoteCloneLibrary.Notebooks.Location
                     Dictionary<string, object> parameters = GenerateQueryParameters(ToUpdate);
                     parameters.Add("@Id", ToUpdate.Id);
 
-
                     return DataAccess.Instance.Execute("UPDATE [NotebookLocation] SET [Path] = @Path WHERE Id = @Id",
                         parameters);
                 }

@@ -95,6 +95,7 @@
     <Compile Include="Users\User.cs" />
     <Compile Include="Users\UserModel.cs" />
     <Compile Include="Users\UserRepository.cs" />
+    <Compile Include="Utils\ValidationUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

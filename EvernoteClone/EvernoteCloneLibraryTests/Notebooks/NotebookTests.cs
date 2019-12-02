@@ -49,8 +49,7 @@ namespace EvernoteCloneLibraryTests.Notebooks
             // Assert
             if (ShouldJustBeFS)
             {
-                CollectionAssert.AreEquivalent(notebooksFromFS, actual);
-
+                Assert.That(actual.Count, Is.EqualTo(notebooksFromFS.Count));
             }
             else
             {
