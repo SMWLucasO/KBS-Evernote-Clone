@@ -7,8 +7,10 @@
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:cal="http://www.caliburnproject.org"
         mc:Ignorable="d"
-        Title="NoteFever" Height="600" Width="1280">
-    <Window.Resources><!-- TODO remove! (context menus) -->
+        Title="NoteFever" Height="795" Width="1280"
+        Icon="Images/logotransparentv2.png">
+    <Window.Resources>
+        <!-- TODO remove! (context menus) -->
         <ContextMenu x:Key ="FolderContext"  StaysOpen="true">
             <MenuItem Header="Add Folder" cal:Message.Attach="[Event Click] = [AddFolder($eventArgs)]"/>
             <MenuItem Header="Add Notebook" cal:Message.Attach="[Event Click] = [AddNotebook($eventArgs)]"/>
@@ -18,43 +20,53 @@
         </ContextMenu>
     </Window.Resources>
     <Grid>
+       
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="255*"/>
+            <ColumnDefinition Width="254*"/>
+            <ColumnDefinition Width="255*"/>
+            <ColumnDefinition Width="254*"/>
+            <ColumnDefinition Width="255*"/>
         </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
 
+        <Grid.RowDefinitions>
+            <RowDefinition Height="120"/>
+            <RowDefinition Height="70"/>
+            <RowDefinition Height="70"/>
+            <RowDefinition Height="70"/>
+            <RowDefinition Height="150"/>
+            <RowDefinition Height="70"/>
+            <RowDefinition Height="70"/>
+            <RowDefinition Height="70"/>
+            <RowDefinition Height="70"/>
 
         </Grid.RowDefinitions>
 
-        <Button Content="Username" Background="#404040" Foreground="White" FontSize="16" Grid.Row="0"></Button>
-        <Button Content="New Note" Background="#0052cc" Foreground="White" FontSize="16" Grid.Row="1" x:Name="NewNote"></Button>
-        <Button Content="All Notes" Background="#404040" Foreground="White" FontSize="16" Grid.Row="2"></Button>
-        <TreeView x:Name="NotebooksTreeView" Background="#404040" Foreground="White" Grid.Row="3" ItemsSource="{Binding Path=NotebooksTreeView}"></TreeView>
-        <Button Content="Shared With Me" Background="#404040" Foreground="White" FontSize="16" Grid.Row="4"></Button>
-        <Button Content="Bin" Background="#404040" Foreground="White" FontSize="16" Grid.Row="5"></Button>
-        <Button Content="Tags" Background="#404040" Foreground="White" FontSize="16" Grid.Row="6"></Button>
-        <Button Content="Search" Background="#404040" Foreground="White" FontSize="16" Grid.Row="7"></Button>
+        <Grid.Effect>
+            <DropShadowEffect BlurRadius="20"/>
+        </Grid.Effect>
+        
+        <Grid Grid.Row="0" Background="#ffffff" Margin="0,0,0.5,0">
+            <TextBlock Margin="25,0,0,0" Text="NoteFever" Foreground="#0052cc" FontSize="28" VerticalAlignment="Center" FontFamily="Lato" FontWeight="Light"></TextBlock>
+            <Image Margin="0,0,25,0" Source="Images/logotransparentv2.png" Width="64" Height="95" HorizontalAlignment="Right" Stretch="Fill"/>
+        </Grid>
+        <Button FontFamily="Lato" FontWeight="Light" Content="Username" Background="#404040" Foreground="White" FontSize="16" Grid.Row="1" Grid.ColumnSpan="1" ></Button>
+        <Button FontFamily="Lato" FontWeight="Light" Content="New Note" Background="#0052cc" Foreground="White" FontSize="16" x:Name="NewNote"  Grid.Row="2" Grid.ColumnSpan="1"  Grid.RowSpan="1"/>
+        <Button FontFamily="Lato" FontWeight="Light" Content="All Notes" Background="#404040" Foreground="White" FontSize="16" Grid.Row="3" Grid.ColumnSpan="1" Grid.RowSpan="1"></Button>
+        <TreeView FontFamily="Lato" FontWeight="ExtraLight" x:Name="NotebooksTreeView" Background="#404040" Foreground="White" Grid.Row="4" ItemsSource="{Binding Path=NotebooksTreeView}" Grid.ColumnSpan="1" Grid.RowSpan="1"></TreeView>
+        <Button FontFamily="Lato" FontWeight="Light" Content="Shared With Me" Background="#404040" Foreground="White" FontSize="16" Grid.Row="5" Grid.ColumnSpan="1" ></Button>
+        <Button FontFamily="Lato" FontWeight="Light" Content="Bin" Background="#404040" Foreground="White" FontSize="16" Grid.Row="6" Grid.ColumnSpan="1" ></Button>
+        <Button FontFamily="Lato" FontWeight="Light" Content="Tags" Background="#404040" Foreground="White" FontSize="16" Grid.Row="7" Grid.ColumnSpan="1" Grid.RowSpan="1"></Button>
+        <Button FontFamily="Lato" FontWeight="Light" Content="Search" Background="#404040" Foreground="White" FontSize="16" Grid.Row="8" Grid.ColumnSpan="1"  Grid.RowSpan="1"></Button>
 
-        <StackPanel Grid.Row="0" Grid.Column="1" Grid.RowSpan="8">
+        <StackPanel Grid.Row="0" Grid.Column="1" Grid.RowSpan="8" Grid.ColumnSpan="3" Margin="217,0,254.8,0.4">
             <!-- This doesn't currently properly load in the notebooks, but it is an example. -->
             <local:NotebookView HorizontalAlignment="Stretch" Height="100"></local:NotebookView>
             <!-- Add all notebooks in here... (Perhaps load a 'usercontrol')-->
         </StackPanel>
 
-        <ContentControl Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="3"
-                        Grid.RowSpan="8" x:Name="ActiveItem"></ContentControl>
+        <ContentControl Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="3"
+                        Grid.RowSpan="8" x:Name="ActiveItem" Margin="0.4,0,-0.4,0.4"></ContentControl>
 
     </Grid>
 
