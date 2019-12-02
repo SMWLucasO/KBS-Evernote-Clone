@@ -188,8 +188,6 @@ namespace EvernoteCloneGUI.ViewModels
                     foreach (Note note in notebook.Notes.Cast<Note>())
                         notes.Add(note);
 
-                MessageBox.Show("Yeet");
-
                 allNotesNotebook.Notes = notes;
                 
                 if(allNotesNotebook.Notes.Count > 0)
