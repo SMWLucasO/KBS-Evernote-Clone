@@ -110,8 +110,8 @@ namespace EvernoteCloneLibrary.Files.Parsers
                     Path = new NotebookLocation() { Id = notebookData.LocationID, Path = notebookData.Path },
                     LocationID = notebookData.LocationID,
                     // File data which applies to the notebook.
-                    CreationDate = File.GetCreationTime(FullPath),
-                    LastUpdated = File.GetLastWriteTime(FullPath),
+                    CreationDate = File.GetCreationTime(FullPath), // TODO shouldn't this be the data from the database?
+                    LastUpdated = File.GetLastWriteTime(FullPath), // TODO shouldn't this be the data from the database?
                     FSName = Path.GetFileNameWithoutExtension(FullPath)
                 };
 

@@ -6,8 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using EvernoteCloneLibrary.Extensions;
 
 namespace EvernoteCloneLibrary.Notebooks
 {
@@ -60,7 +62,6 @@ namespace EvernoteCloneLibrary.Notebooks
         /// <returns></returns>
         public static List<Notebook> Load(int UserID = -1)
         {
-
             List<Notebook> notebooksToReturn = new List<Notebook>();
 
             // Load all the notebooks stored in the local storage
@@ -76,7 +77,7 @@ namespace EvernoteCloneLibrary.Notebooks
                     new Dictionary<string, object>() { { "@UserID", UserID } }
                    ).Select((el) => ((Notebook)el)).ToList();
                 // If there are notebooks in the database, we want to compare which was updated more recently.
-                if (notebooksFromDatabase != null)
+                if (notebooksFromDatabase.Count > 0)
                 {
                     if (notebooksFromDatabase.Count > 0 && (notebooksFromFileSystem != null && notebooksFromFileSystem.Count > 0))
                     {
@@ -104,6 +105,24 @@ namespace EvernoteCloneLibrary.Notebooks
                                     }
                                 }
                             }
+                        }
+
+                        foreach (Notebook dbNotebook in notebooksFromDatabase.Where(notebook => !notebooksToReturn.Contains(notebook)))
+                        {
+                            notebooksToReturn.Add(dbNotebook);
+                            // Add notebook locally if user ever goes offline and still wants to use this application
+                            UpdateLocalStorage(dbNotebook);
+                        }
+
+                        foreach (Notebook fsNotebook in notebooksFromFileSystem.Where(notebook => !notebooksToReturn.Contains(notebook)))
+                        {
+                            notebooksToReturn.Add(fsNotebook);
+                            
+                            // forceInsert won't be used, because if you delete a notebook on a other client, you will upload it again since you force it to insert, even if the Id is not -1
+                            // fsNotebook.Save(UserID, true);
+                            
+                            // Insert 'new' notebook, force insert
+                            fsNotebook.Save(UserID);
                         }
                     }
                     else
@@ -137,6 +156,9 @@ namespace EvernoteCloneLibrary.Notebooks
                 }
                 else if (notebooksFromFileSystem != null)
                 {
+                    // Update the records in the database 
+                    foreach (Notebook notebook in notebooksFromFileSystem)
+                        notebook.Save(UserID);
                     notebooksToReturn.AddRange(notebooksFromFileSystem);
                 }
 
@@ -149,21 +171,64 @@ namespace EvernoteCloneLibrary.Notebooks
             return notebooksToReturn;
         }
 
+        public static List<Notebook> GetAllNotebooksFromDatabase(int UserID)
+        {
+            NotebookRepository notebookRepository = new NotebookRepository();
+            return notebookRepository.GetBy(
+                new string[] { "UserID = @UserID" },
+                new Dictionary<string, object>() { { "@UserID", UserID } }
+            ).Select((el) => ((Notebook)el)).ToList();
+        }
+
+        private static void LoadNotebook(Notebook FSNotebook, Notebook DBNotebook, List<Notebook> ListToAddTo, int UserID)
+        {
+            // If they both have the same Id, we load the last updated one.
+            if (DBNotebook.Id == FSNotebook.Id)
+                ListToAddTo.AddIfNotPresent(FSNotebook);
+            else if (DBNotebook.Path.Equals(FSNotebook.Path))
+                ListToAddTo.AddIfNotPresent(FSNotebook.Update(DBNotebook.Id));
+            else if (DBNotebook.Path.Path == FSNotebook.Path.Path && DBNotebook.Title == FSNotebook.Title)
+                ListToAddTo.AddIfNotPresent(FSNotebook.Update(DBNotebook.Id, UserID));
+        }
+
+        private Notebook Update(int NewID, int UserID = -1)
+        {
+            Id = NewID;
+            
+            // If Path.Id equals -1 (and Id != -1, and thus the notebook is also stored in the database), update this to the database version
+            if (Path.Id == -1 && Id != -1)
+                Path = NotebookLocation.GetNotebookLocationByPath(Path.Path, UserID);
+            
+            XMLExporter.Export(GetNotebookStoragePath(), FSName, this);
+            return this;
+        }
+
+        public static int AddNewNotebookToDatabaseAndGetId(Notebook Notebook, int UserID)
+        {
+            if (UserID != -1)
+            {
+                NotebookRepository notebookRepository = new NotebookRepository();
+                notebookRepository.Insert(Notebook);
+            }
+            return Notebook.Id;
+        }
+
         /// <summary>
         /// Save all the notebooks belonging to the specified user.
         /// </summary>
         /// <param name="UserID"></param>
         /// <returns></returns>
-        public bool Save(int UserID = -1)
+        public bool Save(int UserID = -1, bool forceInsert = false)
         {
+            // TODO revisit this method for check
             LastUpdated = DateTime.Now;
 
             List<int> savedNotebookIDs = new List<int>();
-            bool storedLocally = false;
+            bool storedLocally;
 
             if (IsNotNoteOwner)
             {
-                foreach (Note note in this.Notes)
+                foreach (Note note in Notes)
                 {
                     if (note.NoteOwner != null && !(savedNotebookIDs.Contains(note.NoteOwner.Id)))
                     {
@@ -209,9 +274,14 @@ namespace EvernoteCloneLibrary.Notebooks
                     }
                     else
                     {
-                        if (this.Id != -1)
+                        if (this.Id != -1 && !forceInsert)
                         {
                             storedInTheCloud = notebookRepository.Update(this);
+                            if (!storedInTheCloud) // the note is (probably) removed on another client TODO: do something with the bin here!
+                            {
+                                if (!Title.EndsWith(" (notebook is removed)"))
+                                    Title += " (notebook is removed)";
+                            }
                         }
                         else
                         {
@@ -238,7 +308,7 @@ namespace EvernoteCloneLibrary.Notebooks
                 }
                 catch (Exception) { }
             }
-            storedLocally = UpdateLocalStorage(this); //TODO remove this comment, for @Lucas : this has to be here, because the ID is updated when you create a new notebook (with the id you get from the database) but its not written to the local file 
+            storedLocally = UpdateLocalStorage(this); 
 
             return storedInTheCloud || storedLocally;
         }
@@ -289,13 +359,8 @@ namespace EvernoteCloneLibrary.Notebooks
                 if (obj is Notebook notebook)
                 {
                     if (notebook.Id != -1)
-                    {
                         return notebook.Id == Id;
-                    }
-                    else
-                    {
-                        return base.Equals(obj);
-                    }
+                    return notebook.Path.Path == Path.Path && notebook.Title == Title;
                 }
             }
 

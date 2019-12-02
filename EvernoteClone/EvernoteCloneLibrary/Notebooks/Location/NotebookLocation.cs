@@ -68,8 +68,7 @@ namespace EvernoteCloneLibrary.Notebooks.Location
                     new Dictionary<string, object> { { "@Path", Path } }
                 ).Select(notebookLocation => ((NotebookLocation)notebookLocation)).ToList()[0];
             }
-            else
-                return Load(UserID).First(notebookLocation => notebookLocation.Path == Path);
+            return Load(UserID).First(notebookLocation => notebookLocation.Path == Path);
         }
 
         public static bool AddNewNotebookLocation(NotebookLocation NotebookLocation, int UserID) =>
@@ -154,7 +153,7 @@ namespace EvernoteCloneLibrary.Notebooks.Location
                     foreach (NotebookLocation dbNotebookLocation in notebookLocationsFromDatabase)
                         foreach (NotebookLocation fsNotebookLocation in notebookLocationsFromFileSystem)
                             LoadNotebookLocation(fsNotebookLocation, dbNotebookLocation, notebookLocations);
-                    foreach (NotebookLocation fsNotebookLocation in notebookLocationsFromFileSystem)
+                    foreach (NotebookLocation fsNotebookLocation in notebookLocationsFromFileSystem) // TODO check if second foreach is redundant
                         foreach (NotebookLocation dbNotebookLocation in notebookLocationsFromDatabase)
                             LoadNotebookLocation(fsNotebookLocation, dbNotebookLocation, notebookLocations);
                 }

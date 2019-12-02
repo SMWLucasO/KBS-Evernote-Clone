@@ -71,24 +71,8 @@ namespace EvernoteCloneGUI.ViewModels
             FolderContext.Items.Add(CreateMenuItem("Add Notebook", AddNotebook));
             NotebookContext.Items.Add(CreateMenuItem("Add Note", AddNote));
 
-            // TODO: IF the user is logged in (there should be a property here with the user), insert the UserID.
-            // Temporary try/catch until issue is fixed with exceptions.
-            try
-            {
-                Notebooks = Notebook.Load();
-                Notebook tempNotebook = Notebooks?.First();
-                Note tempNote = (Note) tempNotebook?.Notes.First();
-                if (tempNote != null)
-                {
-                    SelectedNotebook = tempNotebook;
-                    SelectedNote = tempNote;
-                }
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
-
+            // Load Notebooks
+            LoadNotebooks(true);
 
             // Only do this when a note has been opened, otherwise the right side should still be empty.
             LoadNoteViewIfNoteExists();
@@ -96,6 +80,26 @@ namespace EvernoteCloneGUI.ViewModels
             // Load all folders, notebooks and add them all to the view
             LoadNotebooksTreeView();
 
+        }
+
+        private void LoadNotebooks(bool initialLoad = false)
+        {
+            // TODO: IF the user is logged in (there should be a property here with the user), insert the UserID.
+            Notebooks = Notebook.Load(UserID);
+
+            if (Notebooks.Count > 0)
+            {
+                Notebook tempNotebook = Notebooks.First();
+                Note tempNote = null;
+
+                if (tempNotebook.Notes.Count > 0)
+                    tempNote = (Note)tempNotebook.Notes.First();
+
+                if (tempNotebook != null && initialLoad && SelectedNotebook == null)
+                    SelectedNotebook = tempNotebook;
+                if (tempNote != null && initialLoad && SelectedNote == null)
+                    SelectedNote = tempNote;
+            }
         }
 
         public void LoadNoteViewIfNoteExists()
@@ -195,7 +199,7 @@ namespace EvernoteCloneGUI.ViewModels
         {
             NotebooksTreeView.Clear();
             TreeViewItem rootTreeViewItem = CreateTreeNode("My Notebooks", RootContext);
-            foreach (TreeViewItem treeViewItem in LoadNotebooks(LoadFolders()))
+            foreach (TreeViewItem treeViewItem in LoadNotebooksIntoFolderStructure(LoadFolders()))
                 rootTreeViewItem.Items.Add(treeViewItem);
             NotebooksTreeView.Add(rootTreeViewItem);
         }
@@ -232,10 +236,10 @@ namespace EvernoteCloneGUI.ViewModels
             return treeViewItems;
         }
 
-        private List<TreeViewItem> LoadNotebooks(List<TreeViewItem> treeViewItems)
+        private List<TreeViewItem> LoadNotebooksIntoFolderStructure(List<TreeViewItem> treeViewItems)
         {
-            List<Notebook> notebooks = Notebook.Load(UserID);
-            foreach (Notebook notebook in notebooks)
+            LoadNotebooks();
+            foreach (Notebook notebook in Notebooks)
             {
                 TreeViewItem currentNode = null;
                 foreach (string directory in notebook.Path.Path.Split('/'))
@@ -252,10 +256,10 @@ namespace EvernoteCloneGUI.ViewModels
             return treeViewItems;
         }
 
-        private TreeViewItem CreateTreeNode(string Header, ContextMenu ContextMenu)
+        private TreeViewItem CreateTreeNode(string Header, ContextMenu ContextMenu, int NotebookID = -1)
         {
             TreeViewItem treeViewItem = new TreeViewItem();
-            treeViewItem.Header = CreateTreeHeader(Header, ContextMenu);
+            treeViewItem.Header = CreateTreeHeader(Header, ContextMenu, NotebookID);
             treeViewItem.Foreground = Brushes.White;
             treeViewItem.IsExpanded = false;
             treeViewItem.FontSize = 14;
@@ -263,7 +267,7 @@ namespace EvernoteCloneGUI.ViewModels
             return treeViewItem;
         }
 
-        private StackPanel CreateTreeHeader(string Header, ContextMenu ContextMenu)
+        private StackPanel CreateTreeHeader(string Header, ContextMenu ContextMenu, int NotebookID = -1)
         {
             StackPanel stackPanel = new StackPanel();
             stackPanel.Orientation = Orientation.Horizontal;
@@ -280,8 +284,16 @@ namespace EvernoteCloneGUI.ViewModels
 
             TextBlock textBlock = new TextBlock();
             textBlock.Inlines.Add(Header);
-
             stackPanel.Children.Add(textBlock);
+
+            if (ContextMenu == NotebookContext)
+            {
+                Label label = new Label();
+                label.Content = NotebookID + "";
+                label.Visibility = Visibility.Collapsed;
+                stackPanel.Children.Add(label);
+            }
+
             return stackPanel;
         }
 
@@ -340,18 +352,8 @@ namespace EvernoteCloneGUI.ViewModels
             }
         }
 
-        public void AddNote(object sender, RoutedEventArgs e)
-        {
-            // TODO Change this!
-            if (e.Source is MenuItem menuItem)
-            {
-                ContextMenu contextMenu = menuItem.Parent as ContextMenu;
-                if (contextMenu != null)
-                {
-                    string path = GetPath(contextMenu.PlacementTarget as TreeViewItem);
-                }
-            }
-        }
+        public void AddNote(object sender, RoutedEventArgs e) =>
+            NewNote();
 
         public string GetUserInput(string DialogTitle, string DialogValueRequestText)
         {
@@ -379,12 +381,12 @@ namespace EvernoteCloneGUI.ViewModels
             (valueRequestViewModel.GetView() as Window).Close();
         }
 
-        private string GetPath(TreeViewItem treeViewItem)
+        private string GetPath(TreeViewItem treeViewItem, bool IsNotebook = false)
         {
             if (GetHeader(treeViewItem) == "My Notebooks")
                 return "";
 
-            string path = GetHeader(treeViewItem);
+            string path = IsNotebook ? "" : GetHeader(treeViewItem);
             while (treeViewItem.Parent is TreeViewItem item)
             {
                 treeViewItem = item;
@@ -392,8 +394,19 @@ namespace EvernoteCloneGUI.ViewModels
                     break;
                 path = GetHeader(treeViewItem) + "/" + path;
             }
-            return path;
+            return IsNotebook ? path.Substring(0, path.Length - 1) : path;
         }
+
+        private int GetNotebookID(TreeViewItem treeViewItem)
+        {
+            if (treeViewItem.Header is StackPanel stackPanel)
+                if (stackPanel.Children[2] is Label label)
+                    return Convert.ToInt32(label.Content);
+            return -1;
+        }
+
+        private bool IsNotebook(TreeViewItem treeViewItem)
+            => treeViewItem.ContextMenu == NotebookContext;
 
         private string GetHeader(TreeViewItem treeViewItem)
         {
@@ -405,7 +418,29 @@ namespace EvernoteCloneGUI.ViewModels
 
         public void TreeView_SelectedItemChanged(RoutedPropertyChangedEventArgs<object> routedPropertyChangedEventArgs)
         {
-            Console.WriteLine("HI");
+            if (routedPropertyChangedEventArgs.NewValue is TreeViewItem treeViewItem)
+            {
+                if (!IsNotebook(treeViewItem))
+                    return;
+
+                int notebookID = GetNotebookID(treeViewItem);
+                if (notebookID != -1)
+                    SelectNotebook(notebookID);
+                else
+                    SelectNotebook(GetPath(treeViewItem, true), GetHeader(treeViewItem));
+            }
+        }
+
+        public void SelectNotebook(int NotebookID)
+        {
+            SelectedNotebook = Notebooks.First(notebook => notebook.Id == NotebookID);
+            LoadNoteViewIfNoteExists();
+        }
+
+        public void SelectNotebook(string Path, string Title)
+        {
+            SelectedNotebook = Notebooks.First(notebook => notebook.Path.Path == Path && notebook.Title == Title);
+            LoadNoteViewIfNoteExists();
         }
     }
 }
