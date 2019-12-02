@@ -271,29 +271,31 @@ namespace EvernoteCloneGUI.ViewModels
             
             // Clear the NotebooksTreeView and add the folder and notebook structure (also save the currently selected folder, and select it again)
             if (SelectedTreeViewItem != null)
-            {
-                string path, notebookTitle = "";
-                bool isNotebook = IsNotebook(SelectedTreeViewItem);
-                if (isNotebook)
-                {
-                    notebookTitle = GetHeader(SelectedTreeViewItem);
-                    path = GetPath(SelectedTreeViewItem, true);
-                }
-                else
-                    path = GetPath(SelectedTreeViewItem);
-
-                SelectPath(ref rootTreeViewItem, path, notebookTitle);
-            }
+                SelectPath(ref rootTreeViewItem, GetPath(SelectedTreeViewItem)+"/"+GetHeader(SelectedTreeViewItem));
 
             NotebooksTreeView.Clear();
             NotebooksTreeView.Add(rootTreeViewItem);
         }
 
-        private void SelectPath(ref TreeViewItem rootTreeViewItem, string path, string notebookTitle)
+        private void SelectPath(ref TreeViewItem RootTreeViewItem, string Path)
         {
-            if (string.IsNullOrWhiteSpace(notebookTitle))
+            RootTreeViewItem.IsExpanded = true;
+            TreeViewItem currentNode = null;
+            
+            foreach (string directory in Path.Split('/'))
             {
-                string[] splittedPath = path.Split('/');
+                if (currentNode != null)
+                    currentNode.IsExpanded = true;
+                
+                if (currentNode == null)
+                {
+                    if (RootTreeViewItem.Items.Cast<TreeViewItem>().Any(treeViewItem => GetHeader(treeViewItem) == directory))
+                        currentNode = RootTreeViewItem.Items.Cast<TreeViewItem>().First(treeViewItem => GetHeader(treeViewItem) == directory);
+                    else
+                        break;
+                }
+                else if (currentNode.Items.Cast<TreeViewItem>().Any(treeViewItem => GetHeader(treeViewItem) == directory))
+                    currentNode = currentNode.Items.Cast<TreeViewItem>().First(treeViewItem => GetHeader(treeViewItem) == directory);
             }
         }
 
