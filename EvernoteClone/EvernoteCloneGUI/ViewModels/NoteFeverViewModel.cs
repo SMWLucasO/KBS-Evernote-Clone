@@ -95,7 +95,7 @@ namespace EvernoteCloneGUI.ViewModels
                 if (tempNotebook.Notes.Count > 0)
                     tempNote = (Note)tempNotebook.Notes.First();
 
-                if (tempNotebook != null && initialLoad && SelectedNotebook == null)
+                if (initialLoad && SelectedNotebook == null)
                     SelectedNotebook = tempNotebook;
                 if (tempNote != null && initialLoad && SelectedNote == null)
                     SelectedNote = tempNote;
@@ -105,18 +105,22 @@ namespace EvernoteCloneGUI.ViewModels
         public void LoadNoteViewIfNoteExists()
         {
 
-            if (SelectedNote != null && SelectedNotebook != null)
+            if (SelectedNotebook != null)
             {
-
-                // Create the notebook view with the required data.
-                NotebookViewModel = new NotebookViewModel()
+                NewNoteViewModel newNoteViewModel = null;
+                if (SelectedNote != null)
                 {
-                    NewNoteViewModel = new NewNoteViewModel(true)
+                    newNoteViewModel = new NewNoteViewModel(true)
                     {
                         Note = SelectedNote,
                         NoteOwner = SelectedNotebook,
                         Parent = this
-                    },
+                    };
+                }
+                // Create the notebook view with the required data.
+                NotebookViewModel = new NotebookViewModel()
+                {
+                    NewNoteViewModel = newNoteViewModel,
                     NotebookNotesMenu = new NotebookNotesMenuViewModel()
                     {
                         Notebook = SelectedNotebook,
@@ -128,7 +132,7 @@ namespace EvernoteCloneGUI.ViewModels
 
 
 
-                NotebookViewModel.NewNoteViewModel.LoadNote();
+                NotebookViewModel.NewNoteViewModel?.LoadNote();
                 NotebookViewModel.NotebookNotesMenu.LoadNotesIntoNotebookMenu();
 
                 ActivateItem(NotebookViewModel);
