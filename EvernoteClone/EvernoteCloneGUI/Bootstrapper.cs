@@ -1,10 +1,5 @@
 ﻿using Caliburn.Micro;
 using EvernoteCloneGUI.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace EvernoteCloneGUI
@@ -15,11 +10,8 @@ namespace EvernoteCloneGUI
     /// </summary>
     public class Bootstrapper : BootstrapperBase
     {
-
-        public Bootstrapper()
-        {
+        public Bootstrapper() =>
             Initialize();
-        }
 
         /// <summary>
         /// An event called on the startup of the application.
@@ -30,8 +22,7 @@ namespace EvernoteCloneGUI
         {
             // The 'MainViewModel' is basically the start-location for our entire application
             // thus we start it when the application is started.
-            DisplayRootViewFor<NoteFeverViewModel>();
+            DisplayRootViewFor<RegisterViewModel>();
         }
-
     }
 }

@@ -1,15 +1,9 @@
 ﻿using Caliburn.Micro;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 
 // TODO create check for '/' in Value (in case of creating folder) and trimming the result (just) before using Value (after submit, cancel or close)
 namespace EvernoteCloneGUI.ViewModels
 {
-
     /// <summary>
     /// ViewModel which handles interaction with the ValueRequestView, a dialog which requests a piece of data.
     /// </summary>
@@ -20,7 +14,6 @@ namespace EvernoteCloneGUI.ViewModels
         /// </summary>
         /// <param name="ViewModel"></param>
         public delegate void DialogResultHandler(ValueRequestViewModel ViewModel);
-
 
         /// <summary>
         /// When the submit button gets clicked, this event will get called.
@@ -51,20 +44,14 @@ namespace EvernoteCloneGUI.ViewModels
         /// Event which gets called when the 'submit' button gets clicked.
         /// </summary>
         /// <param name="EventArgs"></param>
-        public void OnSubmit(EventArgs EventArgs)
-        {
+        public void OnSubmit(EventArgs EventArgs) =>
             Submission?.Invoke(this);
-        }
 
         /// <summary>
         /// Event which gets called when the 'cancel' button gets clicked.
         /// </summary>
         /// <param name="EventArgs"></param>
-        public void OnCancel(EventArgs EventArgs)
-        {
-            Cancellation?.Invoke(this);     
-        }
-
-
+        public void OnCancel(EventArgs EventArgs) =>
+            Cancellation?.Invoke(this);
     }
 }
