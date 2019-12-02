@@ -11,11 +11,10 @@ using EvernoteCloneLibrary.Utils;
 namespace EvernoteCloneLibrary.Files.Parsers
 {
     /// <summary>
-    /// The class responsible for importing 
+    /// The class responsible for importing  the local xml files
     /// </summary>
     public static class XMLImporter
     {
-
         /// <summary>
         /// Method for importing notebooks, returns null if there is no directory found that matches the FilePath.
         /// </summary>
@@ -23,12 +22,8 @@ namespace EvernoteCloneLibrary.Files.Parsers
         /// <returns></returns>
         public static List<Notebook> TryImportNotebooks(string FilePath)
         {
-            try
-            {
-                return ImportNotebooks(FilePath);
-            } catch(DirectoryNotFoundException) { }
-
-            return null;
+            try { return ImportNotebooks(FilePath); }
+            catch(DirectoryNotFoundException) { return null; }
         }
 
         /// <summary>
@@ -42,9 +37,7 @@ namespace EvernoteCloneLibrary.Files.Parsers
             {
                 List<Notebook> notebooks = new List<Notebook>();
                 if (!(ValidateFolderExistsNotEmpty(FilePath)))
-                {
                     return null;
-                }
 
                 foreach (string File in Directory.GetFiles(FilePath))
                 {
@@ -64,7 +57,6 @@ namespace EvernoteCloneLibrary.Files.Parsers
                             notebook.Notes.AddRange(notes);
                             notebooks.Add(notebook);
                         }
-
                     }
                 }
                 return notebooks;
@@ -80,9 +72,7 @@ namespace EvernoteCloneLibrary.Files.Parsers
             {
                 List<NotebookLocation> notebookLocations = new List<NotebookLocation>();
                 if (!File.Exists(FilePath))
-                {
                     return null;
-                }
 
                 // load the XML from the path and parse it for usage
                 XDocument xDocument = XDocument.Load(FilePath);
@@ -99,8 +89,7 @@ namespace EvernoteCloneLibrary.Files.Parsers
             return null;
         }
 
-        #region Methods for generating objects from XML
-
+        #region Methods for generating objects from Xml
         /// <summary>
         /// Helper method for generating a notebook out of existing data of the file specified by the path.
         /// </summary>
@@ -110,36 +99,32 @@ namespace EvernoteCloneLibrary.Files.Parsers
         {
             if (FullPath != null && xDocument != null)
             {
-
-                if (xDocument.Descendants("en-export") != null)
+                foreach (XElement node in xDocument.Descendants("en-export").ToList())
                 {
-                    foreach (XElement node in xDocument.Descendants("en-export").ToList())
+                    if (ValidationUtil.AreNotNull(node.Element("id")?.Value, node.Element("title")?.Value,
+                        node.Element("path")?.Value, node.Element("path-id")?.Value,
+                        node.Element("created")?.Value, node.Element("updated")?.Value))
                     {
-                        if (ValidationUtil.AreNotNull(node.Element("id")?.Value, node.Element("title")?.Value,
-                            node.Element("path")?.Value, node.Element("path-id")?.Value,
-                            node.Element("created")?.Value, node.Element("updated")?.Value))
+                        return new Notebook
                         {
-                            return new Notebook
+                            // The Id of the notebook, might be -1 if the notebook doesn't exist in the database
+                            Id = int.Parse(node.Element("id")?.Value ?? throw new ArgumentNullException()),
+                            Title = node.Element("title")?.Value,
+                            
+                            // location data
+                            Path = new NotebookLocation()
                             {
-                                // The Id of the notebook, might be -1 if the notebook doesn't exist in the database
-                                Id = int.Parse(node.Element("id").Value),
-                                Title = node.Element("title").Value,
-                                // location data
-                                Path = new NotebookLocation()
-                                {
-                                    Id = int.Parse(node.Element("path-id").Value),
-                                    Path = node.Element("path").Value
-                                },
-                                LocationID = int.Parse(node.Element("path-id").Value),
-                                // File data which applies to the notebook.
-                                CreationDate = DateTime.Parse(FormatDateTime(node.Element("created").Value)),
-                                LastUpdated = DateTime.Parse(FormatDateTime(node.Element("updated").Value)),
-                                FSName = Path.GetFileNameWithoutExtension(FullPath)
-                            };
-                        }
-
+                                Id = int.Parse(node.Element("path-id")?.Value ?? throw new ArgumentNullException()),
+                                Path = node.Element("path")?.Value
+                            },
+                            LocationID = int.Parse(node.Element("path-id")?.Value ?? throw new ArgumentNullException()),
+                            
+                            // File data which applies to the notebook.
+                            CreationDate = DateTime.Parse(FormatDateTime(node.Element("created")?.Value)),
+                            LastUpdated = DateTime.Parse(FormatDateTime(node.Element("updated")?.Value)),
+                            FSName = Path.GetFileNameWithoutExtension(FullPath)
+                        };
                     }
-
                 }
             }
             return null;
@@ -148,27 +133,26 @@ namespace EvernoteCloneLibrary.Files.Parsers
         /// <summary>
         /// Helper method which generates Note objects with the available information.
         /// </summary>
-        /// <param name="xDocument"></param>
+        /// <param name="XDocument"></param>
         /// <returns></returns>
-        private static List<Note> GenerateNotesFromXml(XDocument xDocument, Notebook Notebook)
+        private static List<Note> GenerateNotesFromXml(XDocument XDocument, Notebook Notebook)
         {
-
-            if (ValidationUtil.AreNotNull(xDocument, xDocument.Descendants("en-export"),
-                xDocument.Descendants("en-export").Descendants("note")))
+            if (ValidationUtil.AreNotNull(XDocument, XDocument.Descendants("en-export"),
+                XDocument.Descendants("en-export").Descendants("note")))
             {
                 List<Note> notes = new List<Note>();
-                foreach (XElement node in xDocument.Descendants("en-export").Descendants("note"))
+                foreach (XElement node in XDocument.Descendants("en-export").Descendants("note"))
                 {
-
                     // If all required data is existent, then we (eventually) add it to the list.
                     if (ValidationUtil.AreNotNull(node.Element("created")?.Value, node.Element("updated")?.Value, node.Element("note-attributes"),
-                        node.Element("note-attributes").Element("author")?.Value, node.Element("id")?.Value, node.Element("title")?.Value,
+                        node.Element("note-attributes")?.Element("author")?.Value, node.Element("id")?.Value, node.Element("title")?.Value,
                         Notebook))
                     {
                         Note note = new Note
                         {
                             // Fetch the Id for the import, if there is none, or it is -1: This note is not in the database.
-                            Id = (node.Element("id") != null ? int.Parse(node.Element("id").Value) : -1),
+                            Id = (node.Element("id") != null ? int.Parse(node.Element("id")?.Value ?? throw new ArgumentNullException()) : -1),
+                            
                             // Fetch the title of note
                             Title = node.Element("title")?.Value
                         };
@@ -177,27 +161,22 @@ namespace EvernoteCloneLibrary.Files.Parsers
                         note.Content = note.NewContent = GetStrippedContent(node.Element("content")?.Value) ?? "";
                         
                         // fetch the date the note was created, needed to change it from 'T00000000Z000000' where '0' is an arbitrary value
-                        note.CreationDate = DateTime.Parse(FormatDateTime(node.Element("created").Value));
+                        note.CreationDate = DateTime.Parse(FormatDateTime(node.Element("created")?.Value));
                         
                         // fetch the date the note was last updated, needed to change it from 'T00000000Z000000' where '0' is an arbitrary value
-                        note.LastUpdated = DateTime.Parse(FormatDateTime(node.Element("updated").Value));
+                        note.LastUpdated = DateTime.Parse(FormatDateTime(node.Element("updated")?.Value));
 
-                        // fetch the author of the note, the author lives in a subnode.
-                        note.Author = node.Element("note-attributes").Element("author").Value;
+                        // fetch the author of the note, the author lives in a sub node.
+                        note.Author = node.Element("note-attributes")?.Element("author")?.Value;
 
                         // fetch all the tags of the note.
                         // There can be zero or more tags, therefore make sure it exists 
                         // & if so add them all the the tags list.
                         // If there is no tags, we will still load in an empty list to avoid nulls 
                         List<string> tags = new List<string>();
-                        if (node.Elements("tag") != null)
-                        {
-                            foreach (string tag in node.Elements("tag").ToList())
-                            {
-                                tags.Add(tag);
-                            }
-                        }
-
+                        
+                        foreach (string tag in node.Elements("tag").ToList())
+                            tags.Add(tag);
                         note.Tags = tags;
 
                         // Set all the notebook data for the note
@@ -205,65 +184,50 @@ namespace EvernoteCloneLibrary.Files.Parsers
                         note.NotebookID = Notebook.Id;
 
                         if (ValidationUtil.IsNotNull(note.Tags))
-                        {
                             notes.Add(note);
-                        }
-                        
                     }
-
                 }
-
                 return notes;
             }
-
             return null;
         }
-
         #endregion
-
         #region Validation methods
-        private static bool ValidateFolderExistsNotEmpty(string FilePath)
-        {
-            return Directory.Exists(FilePath) && Directory.GetFiles(FilePath).Length > 0;
-        }
-
+        private static bool ValidateFolderExistsNotEmpty(string FilePath) =>
+            Directory.Exists(FilePath) && Directory.GetFiles(FilePath).Length > 0;
         #endregion
-
         #region Helper methods
         private static string GetStrippedContent(string Value)
             => Value.Replace("<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE en-note SYSTEM \"http://xml.evernote.com/pub/enml2.dtd\">", "")
                             .Replace("<en-note>", "")
                             .Replace("</en-note>", "");
 
-
         /// <summary>
         /// An ISO-8601 '00000000T000000Z' formatter.
         /// Converts the above to an appropriate DateTime (ex: 2019-07-05 05:40:53)
         /// </summary>
-        /// <param name="Datetime"</param>
+        /// <param name="DateTime"></param>
         /// <returns></returns>
-        private static string FormatDateTime(string Datetime)
+        private static string FormatDateTime(string DateTime)
         {
-            if (Datetime != null)
+            if (DateTime != null)
             {
-                if (Datetime.Length >= 16)
+                if (DateTime.Length >= 16)
                 {
-                    string year = Datetime.Substring(0, 4);
-                    string month = Datetime.Substring(4, 2);
-                    string day = Datetime.Substring(6, 2);
-                    string hour = Datetime.Substring(9, 2);
-                    string minute = Datetime.Substring(11, 2);
-                    string second = Datetime.Substring(13, 2);
+                    string year = DateTime.Substring(0, 4);
+                    string month = DateTime.Substring(4, 2);
+                    string day = DateTime.Substring(6, 2);
+                    string hour = DateTime.Substring(9, 2);
+                    string minute = DateTime.Substring(11, 2);
+                    string second = DateTime.Substring(13, 2);
 
                     return (year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second);
                 }
 
-                return DateTime.Now.ToString();
+                return System.DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
             }
             return null;
         }
-
         #endregion
-
     }
 }

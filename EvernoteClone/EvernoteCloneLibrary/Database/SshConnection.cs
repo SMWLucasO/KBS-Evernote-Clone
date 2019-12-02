@@ -2,7 +2,6 @@
 using Renci.SshNet;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Timers;
 
 namespace EvernoteCloneLibrary.Database
@@ -13,7 +12,7 @@ namespace EvernoteCloneLibrary.Database
         /// The Singleton class container.
         /// This is the variable that contains the only instance of this class.
         /// </summary>
-        public static SshConnection Instance = new SshConnection();
+        public static readonly SshConnection Instance = new SshConnection();
 
         /// <summary>
         /// A variable that contains a ongoing connection with the ssh server.
@@ -28,7 +27,7 @@ namespace EvernoteCloneLibrary.Database
         /// <summary>
         /// This timer is used to close the _sshClient after a certain amount of seconds
         /// </summary>
-        private Timer _keepSSHAlliveTimer = new Timer();
+        private readonly Timer _keepSshAliveTimer = new Timer();
 
         /// <summary>
         /// We need a static constructor so that the C# compiler won't complain,
@@ -42,9 +41,9 @@ namespace EvernoteCloneLibrary.Database
         /// </summary>
         private SshConnection()
         {
-            _keepSSHAlliveTimer.Interval = (Constant.TEST_MODE ? Constant.TEST_SSH_KEEP_ALLIVE : Constant.SSH_KEEP_ALLIVE);
-            _keepSSHAlliveTimer.AutoReset = false;
-            _keepSSHAlliveTimer.Elapsed += OnTimedEvent;
+            _keepSshAliveTimer.Interval = (Constant.TEST_MODE ? Constant.TEST_SSH_KEEP_ALLIVE : Constant.SSH_KEEP_ALLIVE);
+            _keepSshAliveTimer.AutoReset = false;
+            _keepSshAliveTimer.Elapsed += OnTimedEvent;
         }
 
         /// <summary>
@@ -53,7 +52,7 @@ namespace EvernoteCloneLibrary.Database
         /// <returns></returns>
         public uint GetSshPort()
         {
-            if (!_keepSSHAlliveTimer.Enabled)
+            if (!_keepSshAliveTimer.Enabled)
             {
                 (_sshClient, _localPort) = ConnectSsh(
                     SshHostName: (Constant.TEST_MODE ? Constant.TEST_SSH_HOST : Constant.SSH_HOST),
@@ -71,9 +70,8 @@ namespace EvernoteCloneLibrary.Database
                     DatabasePort: (Constant.TEST_MODE ? Constant.TEST_DATABASE_PORT : Constant.DATABASE_PORT));
             }
             else
-                _keepSSHAlliveTimer.Stop();
-
-            _keepSSHAlliveTimer.Start();
+                _keepSshAliveTimer.Stop();
+            _keepSshAliveTimer.Start();
 
             return _localPort;
         }
@@ -83,26 +81,28 @@ namespace EvernoteCloneLibrary.Database
         /// </summary>
         /// <param name="Source"></param>
         /// <param name="Event"></param>
-        private static void OnTimedEvent(object Source, ElapsedEventArgs Event) => _sshClient.Disconnect();
+        private static void OnTimedEvent(object Source, ElapsedEventArgs Event) => 
+            _sshClient.Disconnect();
 
         /// <summary>
         /// Returns true of the _sshClient is still allive_
         /// </summary>
         /// <returns></returns>
-        public static bool IsAlive() => _sshClient.IsConnected;
+        public static bool IsAlive() => 
+            _sshClient.IsConnected;
 
         /// <summary>
         /// This function makes a connection to the ssh server and forwards a port so we can use the SqlServer
         /// <see href="https://mysqlconnector.net/tutorials/connect-ssh/">This function is copied from here</see>
         /// </summary>
-        /// <param name="sshHostName"></param>
-        /// <param name="sshUserName"></param>
-        /// <param name="sshPassword"></param>
-        /// <param name="sshKeyFile"></param>
-        /// <param name="sshPassPhrase"></param>
-        /// <param name="sshPort"></param>
-        /// <param name="databaseServer"></param>
-        /// <param name="databasePort"></param>
+        /// <param name="SshHostName"></param>
+        /// <param name="SshUserName"></param>
+        /// <param name="SshPassword"></param>
+        /// <param name="SshKeyFile"></param>
+        /// <param name="SshPassPhrase"></param>
+        /// <param name="SshPort"></param>
+        /// <param name="DatabaseServer"></param>
+        /// <param name="DatabasePort"></param>
         /// <returns></returns>
         public static (SshClient SshClient, uint Port) ConnectSsh(string SshHostName, string SshUserName, string SshPassword = null,
             string SshKeyFile = null, string SshPassPhrase = null, int SshPort = 22, string DatabaseServer = "localhost", int DatabasePort = 3306)
@@ -120,14 +120,10 @@ namespace EvernoteCloneLibrary.Database
             // define the authentication methods to use (in order)
             var authenticationMethods = new List<AuthenticationMethod>();
             if (!string.IsNullOrEmpty(SshKeyFile))
-            {
                 authenticationMethods.Add(new PrivateKeyAuthenticationMethod(SshUserName,
                     new PrivateKeyFile(SshKeyFile, string.IsNullOrEmpty(SshPassPhrase) ? null : SshPassPhrase)));
-            }
             if (!string.IsNullOrEmpty(SshPassword))
-            {
                 authenticationMethods.Add(new PasswordAuthenticationMethod(SshUserName, SshPassword));
-            }
 
             // connect to the SSH server
             var sshClient = new SshClient(new ConnectionInfo(SshHostName, SshPort, SshUserName, authenticationMethods.ToArray()));
@@ -139,6 +135,6 @@ namespace EvernoteCloneLibrary.Database
             forwardedPort.Start();
 
             return (sshClient, forwardedPort.BoundPort);
-        }
+        } 
     }
 }

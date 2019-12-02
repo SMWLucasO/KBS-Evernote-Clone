@@ -1,10 +1,7 @@
 ﻿using EvernoteCloneLibrary.Database;
-using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EvernoteCloneLibrary.Notebooks.Location.LocationUser
 {
@@ -23,7 +20,6 @@ namespace EvernoteCloneLibrary.Notebooks.Location.LocationUser
 
                 return DataAccess.Instance.Execute("INSERT INTO [LocationUser] ([LocationID], [UserID]) VALUES (@LocationID, @UserID)", parameters);
             }
-
             return false;
         }
 
@@ -45,8 +41,8 @@ namespace EvernoteCloneLibrary.Notebooks.Location.LocationUser
                 // Generate a model for each row of the LocationUser table.
                 generatedModels.Add(new LocationUser()
                 { 
-                    LocationID = (int)sqlDataReader["LocationID"],
-                    UserID = (int)sqlDataReader["UserID"]
+                    LocationId = (int)sqlDataReader["LocationID"],
+                    UserId = (int)sqlDataReader["UserID"]
                 });
             }
 
@@ -73,13 +69,13 @@ namespace EvernoteCloneLibrary.Notebooks.Location.LocationUser
         {
             if (ToDelete != null)
             {
-                Dictionary<string, object> Parameters = new Dictionary<string, object>()
+                Dictionary<string, object> parameters = new Dictionary<string, object>()
                 {
-                    { "@LocationID", ToDelete.LocationID },
-                    { "@UserID", ToDelete.UserID }
+                    { "@LocationID", ToDelete.LocationId },
+                    { "@UserID", ToDelete.UserId }
                 };
 
-                return DataAccess.Instance.Execute("DELETE FROM [LocationUser] WHERE LocationID = @LocationID AND UserID = @UserID", Parameters);
+                return DataAccess.Instance.Execute("DELETE FROM [LocationUser] WHERE LocationID = @LocationID AND UserID = @UserID", parameters);
             }
 
             return false;
@@ -95,8 +91,8 @@ namespace EvernoteCloneLibrary.Notebooks.Location.LocationUser
             if (ToExtractFrom != null)
             {
                 return new Dictionary<string, object>() {
-                    { "@LocationID", ToExtractFrom.LocationID },
-                    { "@UserID", ToExtractFrom.UserID }
+                    { "@LocationID", ToExtractFrom.LocationId },
+                    { "@UserID", ToExtractFrom.UserId }
                 };
             }
 

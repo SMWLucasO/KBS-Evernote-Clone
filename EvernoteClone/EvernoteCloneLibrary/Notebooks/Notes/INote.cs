@@ -1,9 +1,4 @@
 ﻿using EvernoteCloneLibrary.Files.Parsers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EvernoteCloneLibrary.Notebooks.Notes
 {

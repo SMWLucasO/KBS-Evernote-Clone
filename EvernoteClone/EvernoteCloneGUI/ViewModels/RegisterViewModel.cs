@@ -22,7 +22,6 @@ namespace EvernoteCloneGUI.ViewModels
         private string email;
         private string password;
         private string passwordConfirm;
-        private bool isEnabled;
         private static int minimumLength = 5;
         private static int upperLength = 1;
         private static int lowerLength = 1;

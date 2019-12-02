@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Security;
 using System.Text;
-using System.Threading.Tasks;
-
 using EvernoteCloneLibrary.Constants;
 
 namespace EvernoteCloneLibrary.Database
@@ -23,13 +18,12 @@ namespace EvernoteCloneLibrary.Database
         /// The Singleton accessor to this class.
         /// The only way to access this class' object is through here.
         /// </summary>
-        public static DataAccess Instance = new DataAccess();
+        public static readonly DataAccess Instance = new DataAccess();
 
         /// <summary>
         /// The ongoing connection with the database.
         /// </summary>
         private SqlConnection _connection;
-
 
         /// <summary>
         /// We need a static constructor so that the C# compiler won't complain,
@@ -42,7 +36,6 @@ namespace EvernoteCloneLibrary.Database
         /// The DataAccess class needs to be private to block any other object from being created.
         /// </summary>
         private DataAccess() { }
-
 
         /// <summary>
         /// A method for querying the database.
@@ -60,10 +53,9 @@ namespace EvernoteCloneLibrary.Database
         private T Query<T>(string QueryString, Dictionary<string, object> Parameters, Func<SqlCommand, T> ReturnType)
         {
             SqlConnection sqlConnection = OpenSqlConnection();
+            
             using (SqlCommand sqlCommand = GenerateParameteredCommand(QueryString, sqlConnection, Parameters))
-            {
                 return ReturnType(sqlCommand);
-            }
         }
 
         /// <summary>
@@ -75,7 +67,6 @@ namespace EvernoteCloneLibrary.Database
         /// <returns></returns>
         public SqlDataReader ExecuteAndRead(string Table, string[] Conditions, Dictionary<string, object> Parameters)
         {
-
             StringBuilder conditionBuilder = new StringBuilder();
 
             // build the condition string: ( WHERE ... AND ... AND ... AND ... ) etc
@@ -83,21 +74,15 @@ namespace EvernoteCloneLibrary.Database
             for (int i = 0; i < Conditions.Length; i++)
             {
                 if (i == 0)
-                {
                     conditionBuilder.Append("WHERE ");
-                }
                 else
-                {
                     conditionBuilder.Append("AND ");
-                }
-
                 conditionBuilder.Append(Conditions[i]).Append(" ");
             }
 
             // Query the database using the specified data
-            return Query($"SELECT * FROM {Table} {conditionBuilder.ToString()}",
+            return Query($"SELECT * FROM {Table} {conditionBuilder}",
                 Parameters, SqlDataReaderReturnType);
-
         }
 
         /// <summary>
@@ -124,11 +109,9 @@ namespace EvernoteCloneLibrary.Database
         {
             int id = -1;
             SqlDataReader data = this.Query($"{Query} SELECT NewID = SCOPE_IDENTITY()", Parameters, SqlDataReaderReturnType);
-            while (data.Read())
-            {
+            
+            if (data.Read())
                 id = Convert.ToInt32(Math.Truncate(((decimal)data["NewID"])));
-                break;
-            }
 
             CloseSqlConnection();
             return id;
@@ -144,13 +127,10 @@ namespace EvernoteCloneLibrary.Database
         private SqlCommand GenerateParameteredCommand(string QueryString, SqlConnection Connection, Dictionary<string, object> Parameters)
         {
             SqlCommand command = new SqlCommand(QueryString, Connection);
+            
             if (Parameters != null)
-            {
                 foreach (string key in Parameters.Keys)
-                {
                     command.Parameters.AddWithValue(key, Parameters[key]);
-                }
-            }
 
             return command;
         }
@@ -177,19 +157,20 @@ namespace EvernoteCloneLibrary.Database
         /// Since we don't close the connection in a method, we need to do it explicitly somewhere.
         /// Therefore, this should be done after a query is executed (and perhaps read.)
         /// </summary>
-        public void CloseSqlConnection() =>_connection?.Close();
+        public void CloseSqlConnection() =>
+            _connection?.Close();
 
         /// <summary>
         /// A return type for the Query method, this is used for checking if insert/update/delete
         /// queries were successful.
         /// </summary>
-        public static Func<SqlCommand, bool> RowsAffectedReturnType = sqlCommand
+        private static readonly Func<SqlCommand, bool> RowsAffectedReturnType = sqlCommand
             => sqlCommand.ExecuteNonQuery() >= 1;
 
         /// <summary>
         /// A return type for the Query method, this is used for retrieving selected data.
         /// </summary>
-        public static Func<SqlCommand, SqlDataReader> SqlDataReaderReturnType = sqlCommand
+        private static readonly Func<SqlCommand, SqlDataReader> SqlDataReaderReturnType = sqlCommand
             => sqlCommand.ExecuteReader();
 
     }

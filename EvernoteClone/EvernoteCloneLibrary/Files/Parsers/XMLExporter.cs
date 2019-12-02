@@ -1,10 +1,5 @@
-﻿using EvernoteCloneLibrary.Notebooks;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EvernoteCloneLibrary.Files.Parsers
 {
@@ -13,12 +8,11 @@ namespace EvernoteCloneLibrary.Files.Parsers
     /// </summary>
     public static class XMLExporter
     {
-
         /// <summary>
         /// Method to export notebooks to XML form.
         /// </summary>
-        /// <param name="PathName"></param>
-        /// <param name="Filename"></param>
+        /// <param name="FilePath"></param>
+        /// <param name="FileName"></param>
         /// <param name="ParseableObject"></param>
         /// <returns></returns>
         public static bool Export(string FilePath, string FileName, IParseable ParseableObject)
@@ -28,10 +22,7 @@ namespace EvernoteCloneLibrary.Files.Parsers
                 string fullPath = $"{FilePath}/{FileName}";
 
                 if (TryGeneratePath(FilePath))
-                {
                     File.WriteAllLines(fullPath, ParseableObject.ToXmlRepresentation());
-                }
-
                 return ValidateFileExists(fullPath);
             }
             return false;
@@ -45,25 +36,18 @@ namespace EvernoteCloneLibrary.Files.Parsers
         /// <param name="Filename"></param>
         /// <param name="ParseableObject"></param>
         /// <returns></returns>
-        private static bool ValidateExportParameters(string FilePath, string Filename, IParseable ParseableObject)
-        {
-            return (!(string.IsNullOrEmpty(FilePath) || string.IsNullOrEmpty(Filename)) && ParseableObject != null);
-        }
+        private static bool ValidateExportParameters(string FilePath, string Filename, IParseable ParseableObject) => 
+            (!(string.IsNullOrEmpty(FilePath) || string.IsNullOrEmpty(Filename)) && ParseableObject != null);
 
         /// <summary>
         /// Validator method for if the file exists.
         /// </summary>
         /// <param name="FullPath"></param>
         /// <returns></returns>
-        private static bool ValidateFileExists(string FullPath)
-        {
-            return File.Exists(FullPath) && Path.HasExtension(FullPath);
-        }
-
+        private static bool ValidateFileExists(string FullPath) =>
+            File.Exists(FullPath) && Path.HasExtension(FullPath);
         #endregion
-
         #region Export path generation
-
         /// <summary>
         /// Try to generate the path. If it errors, return false.
         /// </summary>
@@ -71,14 +55,8 @@ namespace EvernoteCloneLibrary.Files.Parsers
         /// <returns></returns>
         private static bool TryGeneratePath(string FilePath)
         {
-            try
-            {
-                return GeneratePath(FilePath);
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            try { return GeneratePath(FilePath); }
+            catch (Exception) { return false; }
         }
 
         /// <summary>
@@ -89,34 +67,24 @@ namespace EvernoteCloneLibrary.Files.Parsers
         private static bool GeneratePath(string FilePath)
         {
             if (!(Directory.Exists(FilePath)))
-            {
                 Directory.CreateDirectory(FilePath);
-            }
-
             return Directory.Exists(FilePath);
         }
-
         #endregion
 
         public static bool Export(string FilePath, string FileName, string[] content)
         {
             if (!(string.IsNullOrEmpty(FilePath) || string.IsNullOrEmpty(FileName)))
             {
-
                 string fullPath = $"{FilePath}/{FileName}";
                 if (Path.HasExtension(fullPath))
                 {
                     if (!(Directory.Exists(FilePath)))
-                    {
                         Directory.CreateDirectory(FilePath);
-                    }
-
                     File.WriteAllLines(fullPath, content);
 
                     return File.Exists(fullPath);
                 }
-
-
             }
             return false;
         }

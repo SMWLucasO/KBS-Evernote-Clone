@@ -1,9 +1,6 @@
 ﻿using EvernoteCloneLibrary.Notebooks;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EvernoteCloneLibrary.Users
 {
@@ -11,11 +8,8 @@ namespace EvernoteCloneLibrary.Users
     {
         public List<Notebook> Notebooks { get; set; }
 
-
-        public static User Login(string Username, string Password)
-        {
-            return null;
-        }
+        public static User Login(string Username, string Password) =>
+            null;
 
 
         //Inserts user data in database

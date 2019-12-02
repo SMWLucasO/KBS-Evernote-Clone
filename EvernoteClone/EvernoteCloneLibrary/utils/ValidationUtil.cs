@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EvernoteCloneLibrary.Utils
 {
@@ -11,7 +7,6 @@ namespace EvernoteCloneLibrary.Utils
     /// </summary>
     public static class ValidationUtil
     {
-
         /// <summary>
         /// Method to validate multiple objects with a specified validator
         /// </summary>
@@ -20,11 +15,9 @@ namespace EvernoteCloneLibrary.Utils
         private static bool ValidateMultiple(Func<object, bool> Validator, params object[] Objects)
         {
             bool result = false;
+            
             foreach (object obj in Objects)
-            {
                 result = Validator?.Invoke(obj) ?? false;
-            }
-
             return result;
         }
 
@@ -33,20 +26,16 @@ namespace EvernoteCloneLibrary.Utils
         /// </summary>
         /// <param name="Objects"></param>
         /// <returns></returns>
-        public static bool AreNotNull(params object[] Objects)
-        {
-            return ValidateMultiple((obj) => obj != null, Objects);
-        }
+        public static bool AreNotNull(params object[] Objects) =>
+            ValidateMultiple((obj) => obj != null, Objects);
 
         /// <summary>
         /// Method which validates where or not an array of strings is empty or null
         /// </summary>
         /// <param name="Strings"></param>
         /// <returns></returns>
-        public static bool AreNullOrEmpty(params string[] Strings)
-        {
-            return ValidateMultiple((obj) => string.IsNullOrEmpty((string)obj), Strings);
-        }
+        public static bool AreNullOrEmpty(params string[] Strings) =>
+            ValidateMultiple((obj) => string.IsNullOrEmpty((string)obj), Strings);
 
         /// <summary>
         /// Check whether an object is null or not
@@ -55,6 +44,5 @@ namespace EvernoteCloneLibrary.Utils
         /// <returns></returns>
         public static bool IsNotNull(object Object)
             => Object != null;
-
     }
 }

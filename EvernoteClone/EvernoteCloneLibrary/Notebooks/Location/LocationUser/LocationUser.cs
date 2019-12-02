@@ -15,10 +15,7 @@ namespace EvernoteCloneLibrary.Notebooks.Location.LocationUser
             ).Select((el) => ((LocationUser)el)).ToList();
         }
 
-        public static bool AddNewLocationUser(LocationUser locationUser)
-        {
-            LocationUserRepository locationUserRepository = new LocationUserRepository();
-            return locationUserRepository.Insert(locationUser);
-        }
+        public static bool AddNewLocationUser(LocationUser locationUser) =>
+            new LocationUserRepository().Insert(locationUser);
     }
 }

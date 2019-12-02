@@ -5,8 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EvernoteCloneLibrary.Notebooks
 {
@@ -15,7 +13,6 @@ namespace EvernoteCloneLibrary.Notebooks
     /// </summary>
     public class NotebookRepository : IRepository<NotebookModel>
     {
-
         /// <summary>
         /// The method for inserting a Notebook record, where the class members are columns and the class member values are column values.
         /// </summary>
@@ -26,10 +23,7 @@ namespace EvernoteCloneLibrary.Notebooks
             if (ToInsert != null)
             {
                 if (string.IsNullOrEmpty(ToInsert.Title))
-                {
                     ToInsert.Title = "Nameless notebook";
-                }
-
                 Dictionary<string, object> Parameters = GenerateQueryParameters(ToInsert);
 
                 int id = DataAccess.Instance.ExecuteAndReturnId(
@@ -37,20 +31,16 @@ namespace EvernoteCloneLibrary.Notebooks
                         + " VALUES (@UserID, @LocationID, @Title, @CreationDate, @LastUpdated)", Parameters);
 
                 if (id != -1)
-                {
                     ToInsert.Id = id;
-                }
-
                 return id != -1;
             }
-
             return false;
         }
 
         /// <summary>
         /// The method for selecting Notebook records which satisfy the conditions.
         /// </summary>
-        /// <param name="conditions">These parameters may NOT be user-typed, injection is possible.</param>
+        /// <param name="Conditions">These parameters may NOT be user-typed, injection is possible.</param>
         /// <param name="Parameters">Bindings for the conditions.</param>
         /// <returns>an enumerable containing all the notebooks selected from the database.</returns>
         public IEnumerable<NotebookModel> GetBy(string[] Conditions, Dictionary<string, object> Parameters)
@@ -125,9 +115,7 @@ namespace EvernoteCloneLibrary.Notebooks
             if (ToUpdate != null)
             {
                 if (string.IsNullOrEmpty(ToUpdate.Title))
-                {
                     ToUpdate.Title = "Nameless title";
-                }
 
                 Dictionary<string, object> parameters = GenerateQueryParameters(ToUpdate);
                 parameters.Add("@Id", ToUpdate.Id);
@@ -135,7 +123,6 @@ namespace EvernoteCloneLibrary.Notebooks
                 return DataAccess.Instance.Execute("UPDATE [Notebook] SET [UserID] = @UserID, [LocationID] = @LocationID, "
                     + "[Title] = @Title, [CreationDate] = @CreationDate, [LastUpdated] = @LastUpdated WHERE Id = @Id", parameters);
             }
-
             return false;
         }
 
@@ -149,13 +136,12 @@ namespace EvernoteCloneLibrary.Notebooks
             if (ToDelete != null)
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>()
-            {
-                { "@Id", ToDelete.Id }
-            };
+                {
+                    { "@Id", ToDelete.Id }
+                };
 
                 return DataAccess.Instance.Execute("DELETE FROM [Notebook] WHERE Id = @Id", parameters);
             }
-
             return false;
         }
 
@@ -177,7 +163,6 @@ namespace EvernoteCloneLibrary.Notebooks
                     { "@LastUpdated", ToExtractFrom.LastUpdated }
                 };
             }
-
             return null;
         }
     }

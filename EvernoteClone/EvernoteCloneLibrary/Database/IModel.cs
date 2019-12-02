@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace EvernoteCloneLibrary.Database
+﻿namespace EvernoteCloneLibrary.Database
 {
-    public interface IModel
-    {
-        // ...
-    }
+    public interface IModel { }
 }

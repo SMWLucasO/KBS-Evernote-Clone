@@ -1,16 +1,12 @@
 ﻿using EvernoteCloneLibrary.Database;
-using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EvernoteCloneLibrary.Notebooks.Location
 {
     public class NotebookLocationRepository : IRepository<NotebookLocationModel>
     {
-
         /// <summary>
         /// The method for inserting a NotebookLocation record, where the class members are columns and the class member values are column values.
         /// </summary>
@@ -26,14 +22,9 @@ namespace EvernoteCloneLibrary.Notebooks.Location
                         + " VALUES (@Path)", parameters);
 
                 if (id != -1)
-                {
                     ToInsert.Id = id;
-                }
-
                 return id != -1;
             }
-
-
             return false;
         }
 
@@ -86,7 +77,6 @@ namespace EvernoteCloneLibrary.Notebooks.Location
                         parameters);
                 }
             }
-
             return false;
         }
 
@@ -106,11 +96,9 @@ namespace EvernoteCloneLibrary.Notebooks.Location
 
                 return DataAccess.Instance.Execute("DELETE FROM [NotebookLocation] WHERE Id = @Id", Parameter);
             }
-
             return false;
         }
-
-
+        
         /// <summary>
         /// A helper method to generate the query parameters.
         /// </summary>
@@ -124,9 +112,7 @@ namespace EvernoteCloneLibrary.Notebooks.Location
                     { "@Path", ToExtractFrom.Path },
                 };
             }
-
             return null;
         }
-
     }
 }

@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EvernoteCloneLibrary.Notebooks.Notes
 {
@@ -13,7 +11,6 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
     /// </summary>
     public class NoteRepository : IRepository<NoteModel>
     {
-
         /// <summary>
         /// The method for inserting a Note record, where the class members are columns and the class member values are column values.
         /// </summary>
@@ -26,9 +23,7 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
                 if (CheckIfDataIsCorrect(ToInsert))
                 {
                     if (string.IsNullOrEmpty(ToInsert.Title))
-                    {
                         ToInsert.Title = "Nameless note";
-                    }
 
                     Dictionary<string, object> parameters = GenerateQueryParameters(ToInsert);
 
@@ -36,27 +31,20 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
                             + " VALUES (@NotebookID, @Title, @Content, @Author, @CreationDate, @LastUpdated)", parameters);
                     
                     if(id != -1)
-                    {
                         ToInsert.Id = id;
-                    }
-
                     return id != -1;
                 }
             }
-
             return false;
         }
 
-        private static bool CheckIfDataIsCorrect(NoteModel ToInsert)
-        {
-            return ToInsert.CreationDate != null && ToInsert.LastUpdated != null && !(string.IsNullOrEmpty(ToInsert.Author));
-        }
-
+        private static bool CheckIfDataIsCorrect(NoteModel NoteModel) =>
+            !(string.IsNullOrEmpty(NoteModel.Author));
 
         /// <summary>
         /// The method for selecting Note records which satisfy the conditions.
         /// </summary>
-        /// <param name="conditions">These parameters may NOT be user-typed, injection is possible.</param>
+        /// <param name="Conditions">These parameters may NOT be user-typed, injection is possible.</param>
         /// <param name="Parameters">Bindings for the conditions.</param>
         /// <returns>an enumerable containing all the notes selected from the database.</returns>
         public IEnumerable<NoteModel> GetBy(string[] Conditions, Dictionary<string, object> Parameters)
@@ -99,24 +87,17 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
             // TODO: Make sure the note is actually from the author before saving it.
             if (ToUpdate != null)
             {
-                if (CheckIfDataExists(ToUpdate))
+                if (CheckIfDataIsCorrect(ToUpdate))
                 {
                     Dictionary<string, object> parameters = GenerateQueryParameters(ToUpdate);
                     parameters.Add("@Id", ToUpdate.Id);
-
 
                     return DataAccess.Instance.Execute("UPDATE [Note] SET [NotebookID] = @NotebookID, [Title] = @Title, [Content] = @Content, "
                         + "[Author] = @Author, [CreationDate] = @CreationDate, [LastUpdated] = @LastUpdated WHERE Id = @Id",
                         parameters);
                 }
             }
-
             return false;
-        }
-
-        private static bool CheckIfDataExists(NoteModel ToUpdate)
-        {
-            return !(string.IsNullOrEmpty(ToUpdate.Author) || ToUpdate.CreationDate == null || ToUpdate.LastUpdated == null);
         }
 
         /// <summary>
@@ -128,17 +109,15 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
         {
             if(ToDelete != null)
             {
-                Dictionary<string, object> Parameter = new Dictionary<string, object>()
-            {
-                { "@Id", ToDelete.Id }
-            };
+                Dictionary<string, object> Parameter = new Dictionary<string, object>
+                {
+                    { "@Id", ToDelete.Id }
+                };
 
                 return DataAccess.Instance.Execute("DELETE FROM [Note] WHERE Id = @Id", Parameter);
             }
-
             return false;
         }
-
 
         /// <summary>
         /// A helper method to generate the query parameters.
@@ -149,18 +128,16 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
         {
             if (ToExtractFrom != null)
             {
-                return new Dictionary<string, object>() {
-                { "@NotebookID", ToExtractFrom.NotebookID },
-                { "@Title", ToExtractFrom.Title },
-                { "@Content",  ToExtractFrom.Content },
-                { "@Author", ToExtractFrom.Author },
-                { "@CreationDate", ToExtractFrom.CreationDate.Date },
-                { "@LastUpdated", ToExtractFrom.LastUpdated }
-            };
+                return new Dictionary<string, object> {
+                    { "@NotebookID", ToExtractFrom.NotebookID },
+                    { "@Title", ToExtractFrom.Title },
+                    { "@Content",  ToExtractFrom.Content },
+                    { "@Author", ToExtractFrom.Author },
+                    { "@CreationDate", ToExtractFrom.CreationDate.Date },
+                    { "@LastUpdated", ToExtractFrom.LastUpdated }
+                };
             }
-
             return null;
         }
-
     }
 }

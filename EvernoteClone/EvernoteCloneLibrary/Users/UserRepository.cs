@@ -4,14 +4,12 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
+// TODO change comments to summary @Chino or @Mart
 namespace EvernoteCloneLibrary.Users
 {
     public class UserRepository : IRepository<UserModel>
     {
-
         //Deletes user
         public bool Delete(UserModel ToDelete)
         {
@@ -25,8 +23,7 @@ namespace EvernoteCloneLibrary.Users
             }
             return false;
         }
-
-
+        
         //Gets data from database
         public Dictionary<string, object> GenerateQueryParameters(UserModel ToExtractFrom)
         {
@@ -92,37 +89,30 @@ namespace EvernoteCloneLibrary.Users
         // Insert data in database
         public bool Insert(UserModel ToInsert)
         {
-
             if (ToInsert != null)
             {
-                if (string.IsNullOrEmpty(ToInsert.Username) || string.IsNullOrEmpty(ToInsert.Password)
-                    || ToInsert.CreationDate == null)
-                {
+                if (string.IsNullOrEmpty(ToInsert.Username) || string.IsNullOrEmpty(ToInsert.Password) || ToInsert.CreationDate == null)
                     return false;
-                }
 
                 Dictionary<string, object> Parameters = GenerateQueryParameters(ToInsert);
+                
                 int id = DataAccess.Instance.ExecuteAndReturnId(
                     "INSERT INTO [User] ([Username], [Password]," +
                         (string.IsNullOrWhiteSpace(ToInsert.FirstName) ? "" : " [FirstName],") +
                         (string.IsNullOrWhiteSpace(ToInsert.LastName) ? "" : " [LastName],") +
                         " [IsGoogleAccount], [CreationDate]" +
                         (ToInsert.LastLogin == null ? "" : ", [LastLogin]") +
-                    ") VALUES (@Username, @Password," +
+                        ") VALUES (@Username, @Password," +
                         (string.IsNullOrWhiteSpace(ToInsert.FirstName) ? "" : " @FirstName,") +
                         (string.IsNullOrWhiteSpace(ToInsert.LastName) ? "" : " @LastName,") +
                         " @IsGoogleAccount, @CreationDate" +
                         (ToInsert.LastLogin == null ? "" : ", @LastLogin") +
-                    ")", Parameters);
+                        ")", Parameters);
 
                 if (id != -1)
-                {
                     ToInsert.Id = id;
-                }
-
                 return id != -1;
             }
-
             return false;
         }
 
@@ -132,16 +122,13 @@ namespace EvernoteCloneLibrary.Users
             if (ToUpdate != null)
             {
                 if (string.IsNullOrEmpty(ToUpdate.FirstName) || string.IsNullOrEmpty(ToUpdate.LastName) || string.IsNullOrEmpty(ToUpdate.Password) || string.IsNullOrEmpty(ToUpdate.Username))
-                {
                     return false;
-                }
 
                 Dictionary<string, object> parameters = GenerateQueryParameters(ToUpdate);
                 parameters.Add("@Id", ToUpdate.Id);
 
                 return DataAccess.Instance.Execute("UPDATE [User] SET [FirstName] = @FirstName, [LastName] = @LastName, "
                     + "[Username] = @Username, [Password] = @Password WHERE Id = @Id", parameters);
-
             }
             return false;
         }

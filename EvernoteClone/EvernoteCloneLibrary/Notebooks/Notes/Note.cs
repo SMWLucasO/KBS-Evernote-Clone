@@ -1,9 +1,5 @@
-﻿using EvernoteCloneLibrary.Files.Parsers;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EvernoteCloneLibrary.Notebooks.Notes
 {
@@ -12,7 +8,6 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
     /// </summary>
     public class Note : NoteModel, INote
     {
-
         private string _title = "Nameless note";
         private string _newContent = "";
 
@@ -29,23 +24,10 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
             {
                 // If we do Title = null, then it will give the default title.
                 if (_title == null)
-                {
                     Title = null;
-                }
-
                 return _title;
             }
-            set
-            {
-                if (string.IsNullOrEmpty(value))
-                {
-                    _title = "Nameless note";
-                }
-                else
-                {
-                    _title = value;
-                }
-            }
+            set => _title = string.IsNullOrEmpty(value) ? "Nameless note" : value;
         }
 
         /// <summary>
@@ -55,13 +37,11 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
         public string NewContent {
             get
             {
-                if (Content == null) Content = _newContent;
+                if (Content == null) 
+                    Content = _newContent;
                 return _newContent;
             }
-            set
-            {
-                _newContent = value;
-            }
+            set => _newContent = value;
         }
 
         public Note() { }
@@ -74,13 +54,11 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
         {
             Content = NewContent;
             LastUpdated = DateTime.Now;
-            if(Id == -1 || CreationDate == null)
-            {
+            
+            if(Id == -1)
                 CreationDate = DateTime.Now.Date;
-            }
         }
-
-
+        
         /// <summary>
         /// If the author is null, we will throw an exception.
         /// We don't have to care about the Title, because it will automatically be renamed when null.
@@ -88,9 +66,8 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
         /// <returns></returns>
         public override string ToString()
         {
-            if (string.IsNullOrEmpty(Author))
+            if (string.IsNullOrWhiteSpace(Author))
                 throw new InvalidOperationException("Author must exist and cannot be empty.");
-            
             return $"{Title} by {Author}";
         }
 
@@ -101,7 +78,6 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
         public string[] ToXmlRepresentation()
         {
             // TODO: add tag nodes
-
             return new[] {
                    "<note>",
                        $"<title>{Title}</title>",
