@@ -270,12 +270,23 @@ namespace EvernoteCloneGUI.ViewModels
                 rootTreeViewItem.Items.Add(treeViewItem);
             
             // Clear the NotebooksTreeView and add the folder and notebook structure (also save the currently selected folder, and select it again)
-            string path = "";
-            string notebookTitle = "";
+            string path, notebookTitle = "";
             bool isNotebook = IsNotebook(SelectedTreeViewItem);
+            if (isNotebook)
+            {
+                notebookTitle = GetHeader(SelectedTreeViewItem);
+                path = GetPath(SelectedTreeViewItem, true);
+            }
+            else
+                path = GetPath(SelectedTreeViewItem);
 
             NotebooksTreeView.Clear();
             NotebooksTreeView.Add(rootTreeViewItem);
+        }
+
+        private void SelectPath(ref TreeViewItem rootTreeViewItem, string path, string notebookTitle = null)
+        {
+            
         }
 
         private List<TreeViewItem> LoadFolders()
@@ -445,9 +456,9 @@ namespace EvernoteCloneGUI.ViewModels
             // If valueRequestViewModel.Value == null, cancel button is pressed
             if (valueRequestViewModel.Value != null)
             {
-                while ((valueRequestViewModel.Value = valueRequestViewModel.Value.Trim()).Length >=
+                while (!((valueRequestViewModel.Value = valueRequestViewModel.Value.Trim()).Length >=
                        MinCharacters
-                       && valueRequestViewModel.Value.Length <= MaxCharacters)
+                       && valueRequestViewModel.Value.Length <= MaxCharacters))
                 {
                     MessageBox.Show($"Text should be between {MinCharacters} and {MaxCharacters} characters long.",
                         "NoteFever | Error", MessageBoxButton.OK, MessageBoxImage.Error);
