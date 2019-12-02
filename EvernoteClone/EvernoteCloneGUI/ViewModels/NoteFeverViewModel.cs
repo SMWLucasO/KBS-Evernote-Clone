@@ -269,19 +269,22 @@ namespace EvernoteCloneGUI.ViewModels
             foreach (TreeViewItem treeViewItem in LoadNotebooksIntoFolderStructure(LoadFolders()))
                 rootTreeViewItem.Items.Add(treeViewItem);
             
-            /*
             // Clear the NotebooksTreeView and add the folder and notebook structure (also save the currently selected folder, and select it again)
-            string path, notebookTitle = "";
-            bool isNotebook = IsNotebook(SelectedTreeViewItem);
-            if (isNotebook)
+            if (SelectedTreeViewItem != null)
             {
-                notebookTitle = GetHeader(SelectedTreeViewItem);
-                path = GetPath(SelectedTreeViewItem, true);
+                string path, notebookTitle = "";
+                bool isNotebook = IsNotebook(SelectedTreeViewItem);
+                if (isNotebook)
+                {
+                    notebookTitle = GetHeader(SelectedTreeViewItem);
+                    path = GetPath(SelectedTreeViewItem, true);
+                }
+                else
+                    path = GetPath(SelectedTreeViewItem);
+
+                SelectPath(ref rootTreeViewItem, path, notebookTitle);
             }
-            else
-                path = GetPath(SelectedTreeViewItem);
-            SelectPath(ref rootTreeViewItem, path, notebookTitle);
-*/
+
             NotebooksTreeView.Clear();
             NotebooksTreeView.Add(rootTreeViewItem);
         }
