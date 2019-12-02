@@ -47,12 +47,19 @@ namespace EvernoteCloneGUI.ViewModels
                 else
                     SwitchNoteView();
             }
+            else
+                SwitchNoteView();
+            
         }
 
         private void SwitchNoteView()
         {
-            Container.SelectedNote = Note;
-            Container.LoadNoteViewIfNoteExists();
+            if(Container != null)
+            {
+                Container.SelectedNote = Note;
+                Container.LoadNoteViewIfNoteExists();
+            }
+            
         }
     }
 }
