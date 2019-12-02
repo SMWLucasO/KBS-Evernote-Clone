@@ -454,6 +454,19 @@ namespace EvernoteCloneGUI.ViewModels
             LoadNoteViewIfNoteExists();
         }
 
+        public void User()
+        {
+            IWindowManager windowManager = new WindowManager();
+
+            dynamic size = new ExpandoObject();
+            size.Height = 600;
+            size.Width = 800;
+            size.SizeToContent = SizeToContent.Manual;
+
+            LoginViewModel loginViewModel = new LoginViewModel();
+            windowManager.ShowDialog(loginViewModel, null, size);
+        }
+        
         public void SelectNotebook(string Path, string Title)
         {
             SelectedNotebook = Notebooks.First(notebook => notebook.Path.Path == Path && notebook.Title == Title);

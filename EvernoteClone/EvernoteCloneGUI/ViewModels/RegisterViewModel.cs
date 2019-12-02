@@ -96,6 +96,20 @@ namespace EvernoteCloneGUI.ViewModels
                         result = "";
                     }
                 }
+                if (PropertyName == "Password")
+                {
+                    try
+                    {
+                        if (ValidatePassword(Password) == false)
+                        {
+                            result = "Please enter valid password!";
+                        }
+                    }
+                    catch(Exception e)
+                    {
+                        result = "Please enter email!";
+                    }
+                }
                 if (PropertyName == "PasswordConfirm")
                 {
                     if (PasswordConfirm != null)
@@ -136,7 +150,6 @@ namespace EvernoteCloneGUI.ViewModels
         }
 
         #endregion
-
         #region Validates password
 
         //method to validate inserted password
@@ -168,7 +181,6 @@ namespace EvernoteCloneGUI.ViewModels
         }
 
         #endregion
-
         #region Methods to count specifics in password
 
         //Counts uppercase characters in password
@@ -197,7 +209,25 @@ namespace EvernoteCloneGUI.ViewModels
         }
 
         #endregion
+        #region Validates password
 
+        //method to validate inserted password
+        public bool ValidatePassword(string Password)
+        {
+            if (Password.Length < minimumLength)
+                return false;
+            if (UpperCount(Password) < upperLength)
+                return false;
+            if (LowerCount(Password) < lowerLength)
+                return false;
+            if (NumericCount(Password) < numericLength)
+                return false;
+            if (SpecialCharCount(Password) < specialChar)
+                return false;
+            return true;
+        }
+
+        #endregion
         #region Password encrypter
 
         //Encrypt password md5
