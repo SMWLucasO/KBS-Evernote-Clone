@@ -1,4 +1,5 @@
 ﻿using EvernoteCloneLibrary.Database;
+using EvernoteCloneLibrary.Notebooks.Location;
 using EvernoteCloneLibrary.Notebooks.Notes;
 using System;
 using System.Collections.Generic;
@@ -31,7 +32,8 @@ namespace EvernoteCloneLibrary.Notebooks
 
                 Dictionary<string, object> Parameters = GenerateQueryParameters(ToInsert);
 
-                int id = DataAccess.Instance.ExecuteAndReturnId("INSERT INTO [Notebook] ([UserID], [LocationID], [Title], [CreationDate], [LastUpdated])"
+                int id = DataAccess.Instance.ExecuteAndReturnId(
+                    "INSERT INTO [Notebook] ([UserID], [LocationID], [Title], [CreationDate], [LastUpdated])"
                         + " VALUES (@UserID, @LocationID, @Title, @CreationDate, @LastUpdated)", Parameters);
 
                 if (id != -1)
@@ -59,24 +61,48 @@ namespace EvernoteCloneLibrary.Notebooks
             while (fetchedSqlDataReader.Read())
             {
                 NoteRepository noteRepository = new NoteRepository();
+                NotebookLocationRepository notebookLocationRepository = new NotebookLocationRepository();
+
                 Notebook notebook = new Notebook()
                 {
                     Id = (int)fetchedSqlDataReader["Id"],
+                    LocationID = (int)fetchedSqlDataReader["LocationID"],
                     UserID = (int)fetchedSqlDataReader["UserID"],
                     Title = (string)fetchedSqlDataReader["Title"],
                     CreationDate = (DateTime)fetchedSqlDataReader["CreationDate"],
                     LastUpdated = (DateTime)fetchedSqlDataReader["LastUpdated"],
                     // Get all the notes of the notebook by the notebookid, cast it to an INote.
-                    Notes = noteRepository.GetBy(
-                        new string[] { "NotebookID = @Id" },
-                        new Dictionary<string, object>()
-                        {
-                            { "@Id", (int) fetchedSqlDataReader["Id"] }
-                        }
-                        )
-                    .Select((el) => ((INote)el)).ToList()
+                    Notes = new List<INote>(),
                 };
-                
+
+                foreach (NoteModel model in noteRepository.GetBy(
+                            new string[] { "NotebookID = @Id" },
+                            new Dictionary<string, object>() {
+                                { "@Id", (int) fetchedSqlDataReader["Id"] }
+                            }))
+                {
+                    notebook.Notes.Add((INote)model);
+                }
+
+                foreach (NotebookLocationModel model in notebookLocationRepository.GetBy(
+                            new string[] { "Id = @Id" },
+                            new Dictionary<string, object>() {
+                                { "@Id", (int) fetchedSqlDataReader["LocationID"] }
+                            }
+                        ))
+                {
+                    notebook.Path = new NotebookLocation()
+                    {
+                        Id = model.Id,
+                        Path = model.Path
+                    };
+
+                    break;
+                }
+
+                // Make the notebook known to the note
+                notebook.Notes.ForEach((el) => ((Note)el).NoteOwner = notebook);
+
                 // Add the generated notebook with its notes to the list to be returned.
                 generatedNotebooks.Add(notebook);
             }
@@ -102,7 +128,6 @@ namespace EvernoteCloneLibrary.Notebooks
                 {
                     ToUpdate.Title = "Nameless title";
                 }
-
 
                 Dictionary<string, object> parameters = GenerateQueryParameters(ToUpdate);
                 parameters.Add("@Id", ToUpdate.Id);

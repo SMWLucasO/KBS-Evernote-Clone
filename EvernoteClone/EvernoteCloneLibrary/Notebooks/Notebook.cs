@@ -1,12 +1,15 @@
-﻿using EvernoteCloneLibrary.Constants;
+using EvernoteCloneLibrary.Constants;
 using EvernoteCloneLibrary.Files.Parsers;
+using EvernoteCloneLibrary.Notebooks.Location;
 using EvernoteCloneLibrary.Notebooks.Notes;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using EvernoteCloneLibrary.Extensions;
 
 namespace EvernoteCloneLibrary.Notebooks
 {
@@ -15,6 +18,13 @@ namespace EvernoteCloneLibrary.Notebooks
         private string _title = null;
 
         public List<INote> Notes { get; set; }
+
+        public NotebookLocation Path { get; set; }
+            = new NotebookLocation();
+
+        public string FSName { get; set; }
+
+        public bool IsNotNoteOwner { get; set; }
 
         /// <summary>
         /// When an empty title is given, we give a default title.
@@ -52,34 +62,29 @@ namespace EvernoteCloneLibrary.Notebooks
         /// <returns></returns>
         public static List<Notebook> Load(int UserID = -1)
         {
-
             List<Notebook> notebooksToReturn = new List<Notebook>();
 
             // Load all the notebooks stored in the local storage
-            List<Notebook> notebooksFromFileSystem = new List<Notebook>();
-            foreach (string file in Directory.GetFiles(GetStoragePath()))
-            {
-                Notebook fsNotebook = (Notebook)XMLImporter.Import(GetStoragePath(), file);
-                if (fsNotebook != null)
-                {
-                    notebooksFromFileSystem.Add(fsNotebook);
-                }
-            }
+            List<Notebook> notebooksFromFileSystem = XMLImporter.TryImportNotebooks(GetNotebookStoragePath());
 
             // Load all the notebooks stored in the database, if the user has a proper ID.
             // Note: Should also verify using password hash, but that is a TODO. This part will be rewritten later on.
             if (UserID != -1)
             {
-                NotebookRepository repository = new NotebookRepository();
-                List<Notebook> notebooksFromDatabase = repository.GetBy(
-                    new string[] { "UserID = @UserID" },
-                    new Dictionary<string, object>() { { "@UserID", UserID } }
-                   ).Select((el) => ((Notebook)el)).ToList();
+                NotebookRepository notebookRepository = new NotebookRepository();
+                List<Notebook> notebooksFromDatabase = new List<Notebook>();
+
+                foreach (NotebookModel model in notebookRepository.GetBy(
+                    new[] { "UserID = @UserID" },
+                    new Dictionary<string, object> { { "@UserID", UserID } }))
+                {
+                    notebooksFromDatabase.Add((Notebook)model);
+                }
 
                 // If there are notebooks in the database, we want to compare which was updated more recently.
-                if (notebooksFromDatabase != null)
+                if (notebooksFromDatabase.Count > 0)
                 {
-                    if (notebooksFromDatabase.Count > 0 && notebooksFromFileSystem.Count > 0)
+                    if (notebooksFromDatabase.Count > 0 && (notebooksFromFileSystem != null && notebooksFromFileSystem.Count > 0))
                     {
                         foreach (Notebook dbNotebook in notebooksFromDatabase)
                         {
@@ -93,36 +98,80 @@ namespace EvernoteCloneLibrary.Notebooks
                                         notebooksToReturn.Add(fsNotebook);
 
                                         // Update the database with the newer version.
-                                        repository.Update(fsNotebook);
+                                        fsNotebook.Save(UserID);
                                     }
                                     else
                                     {
+                                        dbNotebook.FSName = fsNotebook.FSName;
                                         notebooksToReturn.Add(dbNotebook);
 
                                         // Update the local storage with the newer version
-                                        XMLExporter.Export(GetStoragePath(), $"{dbNotebook.Title}.enex", dbNotebook);
+                                        UpdateLocalStorage(dbNotebook);
                                     }
                                 }
                             }
                         }
+
+                        foreach (Notebook dbNotebook in notebooksFromDatabase.Where(notebook => !notebooksToReturn.Contains(notebook)))
+                        {
+                            notebooksToReturn.Add(dbNotebook);
+                            // Add notebook locally if user ever goes offline and still wants to use this application
+                            UpdateLocalStorage(dbNotebook);
+                        }
+
+                        foreach (Notebook fsNotebook in notebooksFromFileSystem.Where(notebook => !notebooksToReturn.Contains(notebook)))
+                        {
+                            notebooksToReturn.Add(fsNotebook);
+
+                            // forceInsert won't be used, because if you delete a notebook on a other client, you will upload it again since you force it to insert, even if the Id is not -1
+                            // fsNotebook.Save(UserID, true);
+
+                            // Check if the path-id of notebook is not -1 (is it is, update it, since it will cause an error with the server)
+                            fsNotebook.UpdatePathId(UserID);
+
+                            // Insert 'new' notebook, force insert
+                            fsNotebook.Save(UserID);
+                        }
                     }
                     else
                     {
-                        if (notebooksFromDatabase.Count == 0)
+
+                        if (notebooksFromFileSystem != null && (notebooksFromDatabase == null || notebooksFromDatabase.Count == 0))
                         {
                             notebooksToReturn.AddRange(notebooksFromFileSystem);
+                            if (UserID != -1)
+                            {
+                                // Update the records in the database 
+                                foreach (Notebook notebook in notebooksFromFileSystem)
+                                {
+                                    notebook.Save(UserID);
+                                }
+                            }
                         }
-                        else if (notebooksFromFileSystem.Count == 0)
+                        else if (notebooksFromDatabase != null && (notebooksFromFileSystem == null || notebooksFromFileSystem.Count == 0))
                         {
                             notebooksToReturn.AddRange(notebooksFromDatabase);
-                        }
 
+                            // Store the notebooks locally in case the user is ever offline and wants to edit text
+                            foreach (Notebook notebook in notebooksFromDatabase)
+                            {
+                                notebook.UserID = UserID;
+                                UpdateLocalStorage(notebook);
+                            }
+                        }
                     }
 
                 }
+                else if (notebooksFromFileSystem != null)
+                {
+                    // Update the records in the database 
+                    foreach (Notebook notebook in notebooksFromFileSystem)
+                        notebook.Save(UserID);
+                    notebooksToReturn.AddRange(notebooksFromFileSystem);
+                }
 
             }
-            else
+            else if (notebooksFromFileSystem != null)
             {
                 notebooksToReturn.AddRange(notebooksFromFileSystem);
             }
@@ -130,93 +179,262 @@ namespace EvernoteCloneLibrary.Notebooks
             return notebooksToReturn;
         }
 
+        public void UpdatePathId(int UserID)
+        {
+            if (UserID != -1)
+            {
+                if (Path.Id == -1)
+                    Path = NotebookLocation.GetNotebookLocationByPath(Path.Path, UserID);
+                else
+                {
+                    NotebookLocation notebookLocation = NotebookLocation.GetNotebookLocationByPath(Path.Path, UserID);
+                    if (Path.Id != notebookLocation.Id)
+                        Path = notebookLocation;
+                }
+            }
+        }
+
+        public static List<Notebook> GetAllNotebooksFromDatabase(int UserID)
+        {
+            NotebookRepository notebookRepository = new NotebookRepository();
+            return notebookRepository.GetBy(
+                new string[] { "UserID = @UserID" },
+                new Dictionary<string, object>() { { "@UserID", UserID } }
+            ).Select((el) => ((Notebook)el)).ToList();
+        }
+
+        private static void LoadNotebook(Notebook FSNotebook, Notebook DBNotebook, List<Notebook> ListToAddTo, int UserID)
+        {
+            // If they both have the same Id, we load the last updated one.
+            if (DBNotebook.Id == FSNotebook.Id)
+                ListToAddTo.AddIfNotPresent(FSNotebook);
+            else if (DBNotebook.Path.Equals(FSNotebook.Path))
+                ListToAddTo.AddIfNotPresent(FSNotebook.Update(DBNotebook.Id));
+            else if (DBNotebook.Path.Path == FSNotebook.Path.Path && DBNotebook.Title == FSNotebook.Title)
+                ListToAddTo.AddIfNotPresent(FSNotebook.Update(DBNotebook.Id, UserID));
+        }
+
+        private Notebook Update(int NewID, int UserID = -1)
+        {
+            Id = NewID;
+            
+            // If Path.Id equals -1 (and Id != -1, and thus the notebook is also stored in the database), update this to the database version
+            if (Path.Id == -1 && Id != -1)
+                Path = NotebookLocation.GetNotebookLocationByPath(Path.Path, UserID);
+            
+            XMLExporter.Export(GetNotebookStoragePath(), FSName, this);
+            return this;
+        }
+
+        public static int AddNewNotebookToDatabaseAndGetId(Notebook Notebook, int UserID)
+        {
+            if (UserID != -1)
+            {
+                NotebookRepository notebookRepository = new NotebookRepository();
+                notebookRepository.Insert(Notebook);
+            }
+            return Notebook.Id;
+        }
+
         /// <summary>
         /// Save all the notebooks belonging to the specified user.
         /// </summary>
         /// <param name="UserID"></param>
+        /// <param name="ForceInsert"></param>
         /// <returns></returns>
-        public bool Save(int UserID = -1)
+        public bool Save(int UserID = -1, bool ForceInsert = false)
         {
+            // TODO revisit this method for check
             LastUpdated = DateTime.Now;
-            bool stored = XMLExporter.Export(GetStoragePath(), $"{Title}.enex", this);
+
+            List<int> savedNotebookIDs = new List<int>();
+            bool storedLocally;
+
+            if (IsNotNoteOwner)
+            {
+                foreach (Note note in Notes)
+                {
+                    if (note.NoteOwner != null && !(savedNotebookIDs.Contains(note.NoteOwner.Id)))
+                    {
+                        // should never happen, but just in case (would cause stackoverflows)
+                        if (!(note.NoteOwner.Equals(this)))
+                        {
+                            storedLocally = note.NoteOwner.Save();
+                            savedNotebookIDs.Add(note.NoteOwner.Id);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                storedLocally = UpdateLocalStorage(this);
+            }
+            
+            bool storedInTheCloud = false;
 
             if (UserID != -1)
             {
-                this.UserID = UserID;
-                NotebookRepository notebookRepository = new NotebookRepository();
-                NoteRepository noteRepository = new NoteRepository();
+                try
+                {
 
-                // If the Id is '-1', that means it is a new notebook. Thus it should be inserted instead of updated.
-                if (this.Id != -1)
-                {
-                    stored = notebookRepository.Update(this);
-                }
-                else
-                {
-                    stored = notebookRepository.Insert(this);
-                }
+                    this.UserID = UserID;
+                    NotebookRepository notebookRepository = new NotebookRepository();
+                    NoteRepository noteRepository = new NoteRepository();
 
-                foreach (Note note in this.Notes)
-                {
-                    // Set the note's notebookID to the id of this notebook, in case it was -1 before.
-                    note.NotebookID = this.Id;
-                    if (note.Id == -1)
+                    // If the Id is '-1', that means it is a new notebook. Thus it should be inserted instead of updated.
+                    if (IsNotNoteOwner)
                     {
-                        noteRepository.Insert(note);
+                        savedNotebookIDs.Clear();
+                        foreach (Note note in this.Notes)
+                        {
+                            if (note.NoteOwner != null && !(savedNotebookIDs.Contains(note.NoteOwner.Id)))
+                            {
+                                // You should only be allowed to edit (not create new) notes if the notebook isn't the owner of the given notes.
+                                if (note.NoteOwner.Id != -1)
+                                {
+                                    // Set the NotebookID just in case it was not set before.
+                                    note.NotebookID = note.NoteOwner.Id;
+                                    note.NoteOwner.Save();
+                                    savedNotebookIDs.Add(note.NoteOwner.Id);
+                                }
+                            }
+                        }
                     }
                     else
                     {
-                        noteRepository.Update(note);
+                        if (Id != -1 && !ForceInsert)
+                        {
+                            storedInTheCloud = notebookRepository.Update(this);
+                            if (!storedInTheCloud) // the note is (probably) removed on another client TODO: do something with the bin here!
+                            {
+                                if (!Title.EndsWith(" (notebook is removed)"))
+                                    Title += " (notebook is removed)";
+                            }
+                        }
+                        else
+                        {
+                            storedInTheCloud = notebookRepository.Insert(this);
+                        }
+
+                        foreach (Note note in this.Notes)
+                        {
+                            // Set the note's notebookID to the id of this notebook, in case it was -1 before.
+                            note.NotebookID = this.Id;
+                            if (note.Id == -1)
+                            {
+                                noteRepository.Insert(note);
+                            }
+                            else
+                            {
+                                noteRepository.Update(note);
+                            }
+
+                        }
                     }
 
-                }
 
+                }
+                catch (Exception) { }
+            }
+            storedLocally = UpdateLocalStorage(this); 
+
+            return storedInTheCloud || storedLocally;
+        }
+
+
+        /// <summary>
+        /// A method for updating the local storage of notebooks.
+        /// Generates the filenames & exports the contents of the notebook.
+        /// </summary>
+        /// <param name="Notebook"></param>
+        /// <returns></returns>
+        private static bool UpdateLocalStorage(Notebook Notebook)
+        {
+            if (Notebook != null)
+            {
+                if (Notebook.FSName == null)
+                {
+                    Notebook.FSName = $"{Guid.NewGuid()}";
+                }
+                
+                return XMLExporter.Export(GetNotebookStoragePath(), $@"{Notebook.FSName}.enex", Notebook);
             }
 
-            return stored;
+            return false;
         }
 
         /// <summary>
         /// Get the storage path for saving notes and notebooks locally.
         /// </summary>
         /// <returns></returns>
-        private static string GetStoragePath()
-        {
-            return Constant.TEST_MODE ? Constant.TEST_STORAGE_PATH : Constant.PRODUCTION_STORAGE_PATH;
-        }
+        private static string GetNotebookStoragePath() =>
+            Constant.TEST_MODE ? Constant.TEST_NOTEBOOK_STORAGE_PATH : Constant.PRODUCTION_NOTEBOOK_STORAGE_PATH;
 
         /// <summary>
         /// When there's more than 0 notes: [TheTitle] (n)
         /// Otherwise: [TheTitle]
         /// </summary>
         /// <returns></returns>
-        public override string ToString()
+        public override string ToString() =>
+            Title + (Notes.Count > 0 ? $" ({Notes.Count})" : "");
+
+        // Comparison methods
+
+        public override bool Equals(object obj)
         {
-            return Title + (Notes.Count > 0 ? $" ({Notes.Count})" : "");
+            if (obj != null)
+            {
+                if (obj is Notebook notebook)
+                {
+                    if (notebook.Id != -1)
+                        return notebook.Id == Id;
+                    return notebook.Path.Path == Path.Path && notebook.Title == Title;
+                }
+            }
+
+            return false;
         }
+
+        public override int GetHashCode()
+        {
+            if (Id != -1)
+            {
+                return Id;
+            }
+
+            return base.GetHashCode();
+        }
+
+        // END comparison methods
 
         /// <summary>
         /// Method which returns the XML representation of this class.
         /// </summary>
         /// <returns></returns>
-        public string[] ToXMLRepresentation()
+        public string[] ToXmlRepresentation()
         {
-            List<string> XMLRepresentation = new List<string>()
+            List<string> xmlRepresentation = new List<string>()
             {
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
                 "<!DOCTYPE en-export SYSTEM \"http://xml.evernote.com/pub/evernote-export2.dtd\">",
                 $"<en-export export-date=\"{DateTime.Now.ToString("yyyyMMdd")}T{DateTime.Now.ToString("HHmmss")}Z\"",
-                " application=\"EvernoteClone/Windows\" version=\"6.x\">",
+                $" application=\"EvernoteClone/Windows\" version=\"6.x\">",
+                $"<title>{Title}</title>",
+                $"<created>{CreationDate.ToString("yyyyMMdd")}T{CreationDate.ToString("HHmmss")}Z</created>",
+                $"<updated>{LastUpdated.ToString("yyyyMMdd")}T{LastUpdated.ToString("HHmmss")}Z</updated>",
+                $"<id>{Id}</id>",
+                $"<path-id>{Path.Id}</path-id>",
+                $"<path>{Path.Path}</path>",
             };
 
-            foreach (var Note in Notes)
+            foreach (var note in Notes)
             {
-                XMLRepresentation.AddRange(Note.ToXMLRepresentation());
+                xmlRepresentation.AddRange(note.ToXmlRepresentation());
             }
 
-            XMLRepresentation.Add("</en-export>");
+            xmlRepresentation.Add("</en-export>");
 
-            return XMLRepresentation.ToArray();
+            return xmlRepresentation.ToArray();
         }
     }
 }

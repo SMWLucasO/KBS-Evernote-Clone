@@ -12,6 +12,6 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
     /// </summary>
     public interface INote : IParseable
     {
-        // ...
+        Notebook NoteOwner { get; set; }
     }
 }

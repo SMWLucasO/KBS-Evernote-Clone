@@ -1,9 +1,11 @@
 ﻿using EvernoteCloneLibrary.Files.Parsers;
 using EvernoteCloneLibrary.Notebooks;
+using EvernoteCloneLibrary.Notebooks.Location;
 using EvernoteCloneLibrary.Notebooks.Notes;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace EvernoteCloneLibraryTests.TestHelpers
 {
@@ -24,6 +26,13 @@ namespace EvernoteCloneLibraryTests.TestHelpers
             {
                 Id = -1,
                 LocationID = 1,
+                Path = ((new NotebookLocationRepository()).GetBy(
+                        new string[] { "Id = @Id" },
+                        new Dictionary<string, object>() { { "@Id", 1 } }
+                        ).Select(
+                        el => new NotebookLocation() { Id = el.Id, Path = el.Path }
+                        )
+                    ).First(),
                 Title = $"Notebook #{1}",
                 CreationDate = DateTime.Now.Date,
                 LastUpdated = DateTime.Now,

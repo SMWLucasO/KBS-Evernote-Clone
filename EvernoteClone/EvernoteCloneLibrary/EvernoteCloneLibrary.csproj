@@ -50,6 +50,10 @@
     <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Renci.SshNet, Version=2016.1.0.0, Culture=neutral, PublicKeyToken=1cee9f8bde3db106, processorArchitecture=MSIL">
+      <HintPath>..\packages\SSH.NET.2016.1.0\lib\net40\Renci.SshNet.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
@@ -69,9 +73,17 @@
     <Compile Include="Database\DataAccess.cs" />
     <Compile Include="Database\IModel.cs" />
     <Compile Include="Database\IRepository.cs" />
+    <Compile Include="Database\SshConnection.cs" />
+    <Compile Include="Extensions\ListExtensions.cs" />
     <Compile Include="Files\Parsers\IParseable.cs" />
     <Compile Include="Files\Parsers\XMLExporter.cs" />
     <Compile Include="Files\Parsers\XMLImporter.cs" />
+    <Compile Include="Notebooks\Location\LocationUser\LocationUser.cs" />
+    <Compile Include="Notebooks\Location\LocationUser\LocationUserModel.cs" />
+    <Compile Include="Notebooks\Location\LocationUser\LocationUserRepository.cs" />
+    <Compile Include="Notebooks\Location\NotebookLocation.cs" />
+    <Compile Include="Notebooks\Location\NotebookLocationModel.cs" />
+    <Compile Include="Notebooks\Location\NotebookLocationRepository.cs" />
     <Compile Include="Notebooks\Notebook.cs" />
     <Compile Include="Notebooks\NotebookModel.cs" />
     <Compile Include="Notebooks\NotebookRepository.cs" />
@@ -80,12 +92,14 @@
     <Compile Include="Notebooks\Notes\NoteRepository.cs" />
     <Compile Include="Notebooks\Notes\Note.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Notebooks\Location\" />
+    <Compile Include="Users\User.cs" />
+    <Compile Include="Users\UserModel.cs" />
+    <Compile Include="Users\UserRepository.cs" />
+    <Compile Include="Utils\ValidationUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">

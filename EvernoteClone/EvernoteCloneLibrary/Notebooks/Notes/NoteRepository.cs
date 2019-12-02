@@ -23,7 +23,7 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
         {
             if (ToInsert != null)
             {
-                if (ToInsert.CreationDate != null && ToInsert.LastUpdated != null && !(string.IsNullOrEmpty(ToInsert.Author)))
+                if (CheckIfDataIsCorrect(ToInsert))
                 {
                     if (string.IsNullOrEmpty(ToInsert.Title))
                     {
@@ -47,6 +47,12 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
             return false;
         }
 
+        private static bool CheckIfDataIsCorrect(NoteModel ToInsert)
+        {
+            return ToInsert.CreationDate != null && ToInsert.LastUpdated != null && !(string.IsNullOrEmpty(ToInsert.Author));
+        }
+
+
         /// <summary>
         /// The method for selecting Note records which satisfy the conditions.
         /// </summary>
@@ -69,6 +75,7 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
                     NotebookID = (int)sqlDataReader["NotebookID"],
                     Title = (string)sqlDataReader["Title"],
                     Content = (string)sqlDataReader["Content"],
+                    NewContent = (string)sqlDataReader["Content"],
                     Author = (string)sqlDataReader["Author"],
                     CreationDate = (DateTime)sqlDataReader["CreationDate"],
                     LastUpdated = (DateTime)sqlDataReader["LastUpdated"]
@@ -92,7 +99,7 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
             // TODO: Make sure the note is actually from the author before saving it.
             if (ToUpdate != null)
             {
-                if (!(string.IsNullOrEmpty(ToUpdate.Author) || ToUpdate.CreationDate == null || ToUpdate.LastUpdated == null))
+                if (CheckIfDataExists(ToUpdate))
                 {
                     Dictionary<string, object> parameters = GenerateQueryParameters(ToUpdate);
                     parameters.Add("@Id", ToUpdate.Id);
@@ -105,6 +112,11 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
             }
 
             return false;
+        }
+
+        private static bool CheckIfDataExists(NoteModel ToUpdate)
+        {
+            return !(string.IsNullOrEmpty(ToUpdate.Author) || ToUpdate.CreationDate == null || ToUpdate.LastUpdated == null);
         }
 
         /// <summary>

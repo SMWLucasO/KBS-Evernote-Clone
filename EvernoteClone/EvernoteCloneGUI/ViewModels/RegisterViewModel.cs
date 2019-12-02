@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Windows;
 using System.Text.RegularExpressions;
+using System.Security.Cryptography;
+using EvernoteCloneLibrary.Users;
 
 namespace EvernoteCloneGUI.ViewModels
 {
@@ -16,7 +18,7 @@ namespace EvernoteCloneGUI.ViewModels
         private string email;
         private string password;
         private string passwordConfirm;
-
+        private bool isEnabled;
         private static int minimumLength = 5;
         private static int upperLength = 1;
         private static int lowerLength = 1;
@@ -40,23 +42,27 @@ namespace EvernoteCloneGUI.ViewModels
             set { password = value; }
         }
 
-        public string PasswordConfirm 
+        //Password confirm property
+        public string PasswordConfirm
         {
             get { return passwordConfirm; }
             set { passwordConfirm = value; }
         }
 
+        //First name property
         public string FirstName
         {
             get { return firstName; }
             set { firstName = value; }
         }
 
+        //Last name property
         public string LastName
         {
-            get { return lastName;}
-            set { lastName = value;}
+            get { return lastName; }
+            set { lastName = value; }
         }
+
 
 
 
@@ -65,22 +71,30 @@ namespace EvernoteCloneGUI.ViewModels
         #region Show error messages
         //Show error message
         public string this[string PropertyName]
-        {           
+        {
             get
             {
-                
+
                 string result = null;
-                
-                if(PropertyName == "Email")
+
+                if (PropertyName == "Email")
                 {
                     if (string.IsNullOrEmpty(Email) || isValidEmail(Email) == false)
-                        result = "Please enter email!";
+                        result = "Please enter your email!";
                 }
                 if (PropertyName == "Password")
                 {
-                    
-                    if (string.IsNullOrEmpty(Password))
-                        result = "Please enter Password!";
+                    try
+                    {
+                        if (ValidatePassword(Password) == false)
+                        {
+                            result = "Please enter valid password!";
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        result = "";
+                    }
                 }
                 if (PropertyName == "Password")
                 {
@@ -99,9 +113,11 @@ namespace EvernoteCloneGUI.ViewModels
                 if (PropertyName == "PasswordConfirm")
                 {
                     if (PasswordConfirm != null)
-                        if (!PasswordConfirm.ToString().Equals(Password.ToString()))
+                        if (PasswordTheSame(PasswordConfirm,Password) == false)
                             result = "Password are not equal!";
                 }
+
+               
                 return result;
             }
         }
@@ -109,10 +125,10 @@ namespace EvernoteCloneGUI.ViewModels
         //Throws Error
         public string Error
         {
-            
-            get 
+
+            get
             {
-                  throw new NotImplementedException();
+                throw new NotImplementedException();
             }
         }
 
@@ -134,7 +150,37 @@ namespace EvernoteCloneGUI.ViewModels
         }
 
         #endregion
+        #region Validates password
 
+        //method to validate inserted password
+        public bool ValidatePassword(string Password)
+        {
+            if (Password.Length < minimumLength)
+                return false;
+            if (UpperCount(Password) < upperLength)
+                return false;
+            if (LowerCount(Password) < lowerLength)
+                return false;
+            if (NumericCount(Password) < numericLength)
+                return false;
+            if (SpecialCharCount(Password) < specialChar)
+                return false;
+            return true;
+        }
+
+        // Checks if password are the same
+        public bool PasswordTheSame (string password1, string password2)
+        {
+            if (password1.ToString().Equals(password2.ToString()))
+            {
+                return true;
+            } else
+            {
+                return false;
+            }
+        }
+
+        #endregion
         #region Methods to count specifics in password
 
         //Counts uppercase characters in password
@@ -163,7 +209,6 @@ namespace EvernoteCloneGUI.ViewModels
         }
 
         #endregion
-
         #region Validates password
 
         //method to validate inserted password
@@ -183,18 +228,57 @@ namespace EvernoteCloneGUI.ViewModels
         }
 
         #endregion
+        #region Password encrypter
 
+        //Encrypt password md5
+        public string Encryption(String password)
+        {
+            MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
+            byte[] encrypt;
+            UTF8Encoding encode = new UTF8Encoding();
+
+            //encrypt the given password string into Encrypted data  
+            encrypt = md5.ComputeHash(encode.GetBytes(password));
+            StringBuilder encryptdata = new StringBuilder();
+
+            //Create a new string by using the encrypted data  
+            for (int i = 0; i < encrypt.Length; i++)
+            {
+                encryptdata.Append(encrypt[i].ToString());
+            }
+            return encryptdata.ToString();
+        }
+
+        #endregion
+
+
+        #region Register button
+        //Register button event
         public void Register()
         {
             string tbFirstName = FirstName;
             string tbLastName = LastName;
             string tbEmail = Email;
-            string tbPassword = Password.ToString();
-            string cPassword = PasswordConfirm.ToString();
+            string tbPassword = Encryption(Password.ToString());
 
-            MessageBox.Show(tbPassword + " - " + cPassword);
-            /*DataAccess.Instance.ExecuteAndRead();*/
+            if (isValidEmail(Email) && ValidatePassword(Password) && PasswordTheSame(PasswordConfirm, Password))
+            {
+                if (User.Register(tbEmail, tbPassword, tbFirstName, tbLastName))
+                {
+
+                    MessageBox.Show("True");
+                }
+                else
+                {
+                    MessageBox.Show("False");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please fill the fields with errors");
+            }
+
         }
-
+        #endregion
     }
 }
