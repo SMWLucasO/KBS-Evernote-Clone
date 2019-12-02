@@ -196,6 +196,8 @@ namespace EvernoteCloneGUI.ViewModels
                     }
                 }
 
+                MessageBox.Show("Yeet");
+
                 allNotesNotebook.Notes = notes;
                 
                 if(allNotesNotebook.Notes.Count > 0)

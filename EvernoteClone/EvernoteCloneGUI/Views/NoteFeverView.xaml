@@ -50,7 +50,7 @@
         </Grid>
         <Button FontFamily="Lato" FontWeight="Light" Content="Username" Background="#404040" Foreground="White" FontSize="16" Grid.Row="1" Grid.ColumnSpan="1" ></Button>
         <Button FontFamily="Lato" FontWeight="Light" Content="New Note" Background="#0052cc" Foreground="White" FontSize="16" x:Name="NewNote"  Grid.Row="2" Grid.ColumnSpan="1"  Grid.RowSpan="1"/>
-        <Button FontFamily="Lato" FontWeight="Light" Content="All Notes" Background="#404040" Foreground="White" FontSize="16" Grid.Row="3" Grid.ColumnSpan="1" Grid.RowSpan="1"></Button>
+        <Button FontFamily="Lato" FontWeight="Light" Content="All Notes" Background="#404040" Foreground="White" FontSize="16" x:Name="OpenAllNotes" Grid.Row="3" Grid.ColumnSpan="1" Grid.RowSpan="1"></Button>
         <TreeView FontFamily="Lato" FontWeight="ExtraLight" x:Name="NotebooksTreeView" Background="#404040" Foreground="White" Grid.Row="4" ItemsSource="{Binding Path=NotebooksTreeView}" Grid.ColumnSpan="1" Grid.RowSpan="1" cal:Message.Attach="[Event SelectedItemChanged] = [TreeView_SelectedItemChanged($eventArgs)]"></TreeView>
         <Button FontFamily="Lato" FontWeight="Light" Content="Shared With Me" Background="#404040" Foreground="White" FontSize="16" Grid.Row="5" Grid.ColumnSpan="1" ></Button>
         <Button FontFamily="Lato" FontWeight="Light" Content="Bin" Background="#404040" Foreground="White" FontSize="16" Grid.Row="6" Grid.ColumnSpan="1" ></Button>
