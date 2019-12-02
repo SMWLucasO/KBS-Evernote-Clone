@@ -93,12 +93,12 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Helpers\PasswordHelper.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\PasswordHelper.cs" />
     <Compile Include="ViewModels\NewNoteViewModel.cs" />
     <Compile Include="ViewModels\NotebookNotesMenuViewModel.cs" />
     <Compile Include="ViewModels\NotebookViewModel.cs" />

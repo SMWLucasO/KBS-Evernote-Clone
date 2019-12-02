@@ -20,7 +20,6 @@
         </ContextMenu>
     </Window.Resources>
     <Grid>
-       
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="255*"/>
             <ColumnDefinition Width="254*"/>
@@ -28,7 +27,6 @@
             <ColumnDefinition Width="254*"/>
             <ColumnDefinition Width="255*"/>
         </Grid.ColumnDefinitions>
-
         <Grid.RowDefinitions>
             <RowDefinition Height="120"/>
             <RowDefinition Height="70"/>

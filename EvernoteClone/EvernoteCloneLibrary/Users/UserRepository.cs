@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace EvernoteCloneLibrary.Users
 {
-    class UserRepository : IRepository<UserModel>
+    public class UserRepository : IRepository<UserModel>
     {
 
         //Deletes user
