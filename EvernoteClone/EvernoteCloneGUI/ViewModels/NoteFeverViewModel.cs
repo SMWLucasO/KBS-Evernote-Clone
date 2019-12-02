@@ -21,24 +21,73 @@ namespace EvernoteCloneGUI.ViewModels
     /// </summary>
     public class NoteFeverViewModel : Conductor<object>
     {
-        // Notebook information for viewing things
+        /// <value>
+        /// Notebooks contains all the local notebooks (and online notebooks, if UserID != 1)
+        /// </value>
         public List<Notebook> Notebooks { get; private set; } = new List<Notebook>();
 
+        /// <value>
+        /// SelectedNotebook contains the currently selected Notebook
+        /// </value>
         public Notebook SelectedNotebook;
+        
+        /// <value>
+        /// SelectedNote contains the currently selected Note
+        /// </value>
         public Note SelectedNote;
 
+        /// <value>
+        /// UserID contains the Id of the currently logged in user (TODO change with User object)
+        /// </value>
         private int UserID = -1; // TODO change this!!!
 
-        public NotebookViewModel NotebookViewModel { get; private set; }
+        /// <value>
+        /// NotebookViewModel contains the (only???) instance of the NotebookViewModel
+        /// That is used to display all the notes inside a Notebook
+        /// </value>
+        public NotebookViewModel NotebookViewModel { get; set; }
+        
+        /// <value>
+        /// NotebooksTreeView contains the whole folder structure together with all the notebooks
+        /// </value>
         public ObservableCollection<TreeViewItem> NotebooksTreeView { get; } = new ObservableCollection<TreeViewItem>(new List<TreeViewItem>());
 
+        /// <value>
+        /// RootContext contains a ContextMenu with a button to Add Folders to the root item
+        /// </value>
         public readonly ContextMenu RootContext = new ContextMenu();
+        
+        /// <value>
+        /// FolderContext contains a ContextMenu with 2 buttons, one to Add Folders and one to Add Notebooks, to the selected folder
+        /// </value>
         public readonly ContextMenu FolderContext = new ContextMenu();
+        
+        /// <value>
+        /// NotebookContext contains a ContextMenu with a button to add Notes to the selected Notebook
+        /// </value>
         public readonly ContextMenu NotebookContext = new ContextMenu();
 
+        /// <value>
+        /// FolderImage contains the image used to display a folder in the treeview
+        /// </value>
         public BitmapImage FolderImage { get; } = new BitmapImage(new Uri("pack://application:,,,/EvernoteCloneGUI;component/Resources/folder.png"));
+        
+        /// <value>
+        /// NotebookImage contains the image used to display a notebook in the treeview
+        /// </value>
         public BitmapImage NotebookImage { get; } = new BitmapImage(new Uri("pack://application:,,,/EvernoteCloneGUI;component/Resources/journal.png"));
 
+        /// <summary>
+        /// SelectedTreeViewItem contains the currently selected tree view item
+        /// </summary>
+        public TreeViewItem SelectedTreeViewItem;
+
+        /// <summary>
+        /// This method creates a menu item (for a ContextMenu)
+        /// </summary>
+        /// <param name="Header">The display header</param>
+        /// <param name="CustomEventHandler">A method that handles the button_click event</param>
+        /// <returns>Returns a MenuItem</returns>
         public MenuItem CreateMenuItem(string Header, RoutedEventHandler CustomEventHandler)
         {
             MenuItem menuItem = new MenuItem {Header = Header};
@@ -72,9 +121,13 @@ namespace EvernoteCloneGUI.ViewModels
             LoadNoteViewIfNoteExists();
         }
 
+        /// <summary>
+        /// This loads all the notebooks from the filesystem (and from the database as well, if UserID != 1)
+        /// </summary>
+        /// <param name="initialLoad">If this is true, it loads the SelectedNotebook and SelectedNote</param>
         private void LoadNotebooks(bool initialLoad = false)
-        {
-            // TODO: IF the user is logged in (there should be a property here with the user), insert the UserID.
+        {   
+            // Load all Notebooks
             Notebooks = Notebook.Load(UserID);
 
             if (Notebooks.Count > 0)
@@ -92,6 +145,9 @@ namespace EvernoteCloneGUI.ViewModels
             }
         }
 
+        /// <summary>
+        /// This loads the NoteView if there are notes inside the Notebook
+        /// </summary>
         public void LoadNoteViewIfNoteExists()
         {
             if (SelectedNotebook != null)
@@ -199,13 +255,26 @@ namespace EvernoteCloneGUI.ViewModels
                 }
             }
         }
-
+        
+        /// <summary>
+        /// (Re)loads the folder structure and notebooks
+        /// </summary>
         public void LoadNotebooksTreeView()
         {
-            NotebooksTreeView.Clear();
+            // Create a root TreeViewItem
             TreeViewItem rootTreeViewItem = CreateTreeNode("My Notebooks", RootContext);
+            
+            // Load all Folders (LoadFolders) and attach Notebooks to them (LoadNotebooksIntoFolderStructure)
+            // Now, loop over them all, and add them to the root TreeViewItem
             foreach (TreeViewItem treeViewItem in LoadNotebooksIntoFolderStructure(LoadFolders()))
                 rootTreeViewItem.Items.Add(treeViewItem);
+            
+            // Clear the NotebooksTreeView and add the folder and notebook structure (also save the currently selected folder, and select it again)
+            string path = "";
+            string notebookTitle = "";
+            bool isNotebook = IsNotebook(SelectedTreeViewItem);
+
+            NotebooksTreeView.Clear();
             NotebooksTreeView.Add(rootTreeViewItem);
         }
 
@@ -376,9 +445,9 @@ namespace EvernoteCloneGUI.ViewModels
             // If valueRequestViewModel.Value == null, cancel button is pressed
             if (valueRequestViewModel.Value != null)
             {
-                while ((valueRequestViewModel.Value = valueRequestViewModel.Value.Trim()).ToCharArray().Length >=
+                while ((valueRequestViewModel.Value = valueRequestViewModel.Value.Trim()).Length >=
                        MinCharacters
-                       && valueRequestViewModel.Value.ToCharArray().Length <= MaxCharacters)
+                       && valueRequestViewModel.Value.Length <= MaxCharacters)
                 {
                     MessageBox.Show($"Text should be between {MinCharacters} and {MaxCharacters} characters long.",
                         "NoteFever | Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -436,6 +505,8 @@ namespace EvernoteCloneGUI.ViewModels
         {
             if (RoutedPropertyChangedEventArgs.NewValue is TreeViewItem treeViewItem)
             {
+                SelectedTreeViewItem = treeViewItem;
+                
                 if (!IsNotebook(treeViewItem))
                     return;
 
