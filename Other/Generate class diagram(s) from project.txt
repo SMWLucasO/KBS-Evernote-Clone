@@ -1,6 +1,9 @@
 PlantUmlClassDiagramGenerator: https://github.com/pierre3/PlantUmlClassDiagramGenerator
 PlantUML: http://plantuml.com/
 
+We can paste the generated code in a draw.io class diagram through:
+Arrange > Insert > Advanced > PlantUML and then select PlantUML SVG. You can now export it as PNG
+
 Install PlantUmlClassDiagramGenerator to generate *.puml files from project: 
 $ dotnet tool install --global PlantUmlClassDiagramGenerator --version 1.2.0
 Download PlantUML to generate *.png files from *.puml: http://plantuml.com/download
