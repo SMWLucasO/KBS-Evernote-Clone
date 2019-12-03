@@ -13,19 +13,19 @@ namespace EvernoteCloneLibrary.Files.Parsers
     /// <summary>
     /// The class responsible for importing 
     /// </summary>
-    public static class XMLImporter
+    public static class XmlImporter
     {
 
         /// <summary>
         /// Method for importing notebooks, returns null if there is no directory found that matches the FilePath.
         /// </summary>
-        /// <param name="FilePath"></param>
+        /// <param name="filePath"></param>
         /// <returns></returns>
-        public static List<Notebook> TryImportNotebooks(string FilePath)
+        public static List<Notebook> TryImportNotebooks(string filePath)
         {
             try
             {
-                return ImportNotebooks(FilePath);
+                return ImportNotebooks(filePath);
             } catch(DirectoryNotFoundException) { }
 
             return null;
@@ -34,25 +34,25 @@ namespace EvernoteCloneLibrary.Files.Parsers
         /// <summary>
         /// Method for importing notebooks
         /// </summary>
-        /// <param name="FilePath"></param>
+        /// <param name="filePath"></param>
         /// <returns></returns>
-        public static List<Notebook> ImportNotebooks(string FilePath)
+        public static List<Notebook> ImportNotebooks(string filePath)
         {
-            if (!(string.IsNullOrEmpty(FilePath)))
+            if (!(string.IsNullOrEmpty(filePath)))
             {
                 List<Notebook> notebooks = new List<Notebook>();
-                if (!(ValidateFolderExistsNotEmpty(FilePath)))
+                if (!(ValidateFolderExistsNotEmpty(filePath)))
                 {
                     return null;
                 }
 
-                foreach (string File in Directory.GetFiles(FilePath))
+                foreach (string file in Directory.GetFiles(filePath))
                 {
                     // load the XML from the path and parse it for usage
-                    XDocument xDocument = XDocument.Load(File);
+                    XDocument xDocument = XDocument.Load(file);
 
                     // generate a notebook using the information from the file itself
-                    Notebook notebook = GenerateNotebookFromFile(File, xDocument);
+                    Notebook notebook = GenerateNotebookFromFile(file, xDocument);
 
                     if (notebook != null)
                     {
@@ -74,18 +74,18 @@ namespace EvernoteCloneLibrary.Files.Parsers
         }
 
         // TODO: add summary
-        public static List<NotebookLocation> ImportNotebookLocations(string FilePath)
+        public static List<NotebookLocation> ImportNotebookLocations(string filePath)
         {
-            if (!(string.IsNullOrEmpty(FilePath)))
+            if (!(string.IsNullOrEmpty(filePath)))
             {
                 List<NotebookLocation> notebookLocations = new List<NotebookLocation>();
-                if (!File.Exists(FilePath))
+                if (!File.Exists(filePath))
                 {
                     return null;
                 }
 
                 // load the XML from the path and parse it for usage
-                XDocument xDocument = XDocument.Load(FilePath);
+                XDocument xDocument = XDocument.Load(filePath);
                 foreach (XElement xElement in xDocument.Descendants("location"))
                 {
                     notebookLocations.Add(new NotebookLocation
@@ -104,11 +104,11 @@ namespace EvernoteCloneLibrary.Files.Parsers
         /// <summary>
         /// Helper method for generating a notebook out of existing data of the file specified by the path.
         /// </summary>
-        /// <param name="FullPath"></param>
+        /// <param name="fullPath"></param>
         /// <returns></returns>
-        private static Notebook GenerateNotebookFromFile(string FullPath, XDocument xDocument)
+        private static Notebook GenerateNotebookFromFile(string fullPath, XDocument xDocument)
         {
-            if (FullPath != null && xDocument != null)
+            if (fullPath != null && xDocument != null)
             {
 
                 if (xDocument.Descendants("en-export") != null)
@@ -130,11 +130,11 @@ namespace EvernoteCloneLibrary.Files.Parsers
                                     Id = int.Parse(node.Element("path-id").Value),
                                     Path = node.Element("path").Value
                                 },
-                                LocationID = int.Parse(node.Element("path-id").Value),
+                                LocationId = int.Parse(node.Element("path-id").Value),
                                 // File data which applies to the notebook.
                                 CreationDate = DateTime.Parse(FormatDateTime(node.Element("created").Value)),
                                 LastUpdated = DateTime.Parse(FormatDateTime(node.Element("updated").Value)),
-                                FSName = Path.GetFileNameWithoutExtension(FullPath)
+                                FsName = Path.GetFileNameWithoutExtension(fullPath)
                             };
                         }
 
@@ -150,7 +150,7 @@ namespace EvernoteCloneLibrary.Files.Parsers
         /// </summary>
         /// <param name="xDocument"></param>
         /// <returns></returns>
-        private static List<Note> GenerateNotesFromXml(XDocument xDocument, Notebook Notebook)
+        private static List<Note> GenerateNotesFromXml(XDocument xDocument, Notebook notebook)
         {
 
             if (ValidationUtil.AreNotNull(xDocument, xDocument.Descendants("en-export"),
@@ -163,7 +163,7 @@ namespace EvernoteCloneLibrary.Files.Parsers
                     // If all required data is existent, then we (eventually) add it to the list.
                     if (ValidationUtil.AreNotNull(node.Element("created")?.Value, node.Element("updated")?.Value, node.Element("note-attributes"),
                         node.Element("note-attributes").Element("author")?.Value, node.Element("id")?.Value, node.Element("title")?.Value,
-                        Notebook))
+                        notebook))
                     {
                         Note note = new Note
                         {
@@ -201,8 +201,8 @@ namespace EvernoteCloneLibrary.Files.Parsers
                         note.Tags = tags;
 
                         // Set all the notebook data for the note
-                        note.NoteOwner = Notebook;
-                        note.NotebookID = Notebook.Id;
+                        note.NoteOwner = notebook;
+                        note.NotebookId = notebook.Id;
 
                         if (ValidationUtil.IsNotNull(note.Tags))
                         {
@@ -222,16 +222,16 @@ namespace EvernoteCloneLibrary.Files.Parsers
         #endregion
 
         #region Validation methods
-        private static bool ValidateFolderExistsNotEmpty(string FilePath)
+        private static bool ValidateFolderExistsNotEmpty(string filePath)
         {
-            return Directory.Exists(FilePath) && Directory.GetFiles(FilePath).Length > 0;
+            return Directory.Exists(filePath) && Directory.GetFiles(filePath).Length > 0;
         }
 
         #endregion
 
         #region Helper methods
-        private static string GetStrippedContent(string Value)
-            => Value.Replace("<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE en-note SYSTEM \"http://xml.evernote.com/pub/enml2.dtd\">", "")
+        private static string GetStrippedContent(string value)
+            => value.Replace("<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE en-note SYSTEM \"http://xml.evernote.com/pub/enml2.dtd\">", "")
                             .Replace("<en-note>", "")
                             .Replace("</en-note>", "")
                             .Replace("'\r", "");
@@ -241,20 +241,20 @@ namespace EvernoteCloneLibrary.Files.Parsers
         /// An ISO-8601 '00000000T000000Z' formatter.
         /// Converts the above to an appropriate DateTime (ex: 2019-07-05 05:40:53)
         /// </summary>
-        /// <param name="Datetime"</param>
+        /// <param name="datetime"</param>
         /// <returns></returns>
-        private static string FormatDateTime(string Datetime)
+        private static string FormatDateTime(string datetime)
         {
-            if (Datetime != null)
+            if (datetime != null)
             {
-                if (Datetime.Length >= 16)
+                if (datetime.Length >= 16)
                 {
-                    string year = Datetime.Substring(0, 4);
-                    string month = Datetime.Substring(4, 2);
-                    string day = Datetime.Substring(6, 2);
-                    string hour = Datetime.Substring(9, 2);
-                    string minute = Datetime.Substring(11, 2);
-                    string second = Datetime.Substring(13, 2);
+                    string year = datetime.Substring(0, 4);
+                    string month = datetime.Substring(4, 2);
+                    string day = datetime.Substring(6, 2);
+                    string hour = datetime.Substring(9, 2);
+                    string minute = datetime.Substring(11, 2);
+                    string second = datetime.Substring(13, 2);
 
                     return (year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second);
                 }

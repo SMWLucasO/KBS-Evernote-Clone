@@ -18,16 +18,16 @@ namespace EvernoteCloneLibraryTests.Users
             = new List<int>();
 
         [TestCase("yrs@hotmail.com", "Appeltje123!", "Nice", "GoodHustle"), Order(1)]
-        public void Insert_ShouldInsert(string Username, string Password, string FirstName, string LastName)
+        public void Insert_ShouldInsert(string username, string password, string firstName, string lastName)
         {
             //Arrange
             UserRepository userRepository = new UserRepository();
             UserModel user = new UserModel()
             {
-                Username = Username,
-                Password = Password,
-                FirstName = FirstName,
-                LastName = LastName,
+                Username = username,
+                Password = password,
+                FirstName = firstName,
+                LastName = lastName,
                 CreationDate = DateTime.Now.Date
 
             };

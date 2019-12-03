@@ -10,19 +10,19 @@ namespace EvernoteCloneLibrary.Notebooks.Location
         /// <summary>
         /// The method for inserting a NotebookLocation record, where the class members are columns and the class member values are column values.
         /// </summary>
-        /// <param name="ToInsert">The model to be inserted into the table</param>
+        /// <param name="toInsert">The model to be inserted into the table</param>
         /// <returns>bool to determine if the note was inserted</returns>
-        public bool Insert(NotebookLocationModel ToInsert)
+        public bool Insert(NotebookLocationModel toInsert)
         {
-            if (ToInsert != null)
+            if (toInsert != null)
             {
-                Dictionary<string, object> parameters = GenerateQueryParameters(ToInsert);
+                Dictionary<string, object> parameters = GenerateQueryParameters(toInsert);
 
                 int id = DataAccess.Instance.ExecuteAndReturnId("INSERT INTO [NotebookLocation] ([Path])"
                         + " VALUES (@Path)", parameters);
 
                 if (id != -1)
-                    ToInsert.Id = id;
+                    toInsert.Id = id;
                 return id != -1;
             }
             return false;
@@ -31,15 +31,15 @@ namespace EvernoteCloneLibrary.Notebooks.Location
         /// <summary>
         /// The method for selecting NotebookLocation records which satisfy the conditions.
         /// </summary>
-        /// <param name="Conditions">These parameters may NOT be user-typed, injection is possible.</param>
-        /// <param name="Parameters">Bindings for the conditions.</param>
+        /// <param name="conditions">These parameters may NOT be user-typed, injection is possible.</param>
+        /// <param name="parameters">Bindings for the conditions.</param>
         /// <returns>an enumerable containing all the notes selected from the database.</returns>
-        public IEnumerable<NotebookLocationModel> GetBy(string[] Conditions, Dictionary<string, object> Parameters)
+        public IEnumerable<NotebookLocationModel> GetBy(string[] conditions, Dictionary<string, object> parameters)
         {
             List<NotebookLocationModel> generatedModels = new List<NotebookLocationModel>();
 
             // Query the database using the specified data
-            SqlDataReader sqlDataReader = DataAccess.Instance.ExecuteAndRead("NotebookLocation", Conditions, Parameters);
+            SqlDataReader sqlDataReader = DataAccess.Instance.ExecuteAndRead("NotebookLocation", conditions, parameters);
 
             while (sqlDataReader.Read())
             {
@@ -61,17 +61,17 @@ namespace EvernoteCloneLibrary.Notebooks.Location
         /// <summary>
         /// The method for updating the NotebookLocationModel record which the specified model represents.
         /// </summary>
-        /// <param name="ToUpdate">The model which is to be updated</param>
+        /// <param name="toUpdate">The model which is to be updated</param>
         /// <returns>bool to determine if the update was a success</returns>
-        public bool Update(NotebookLocationModel ToUpdate)
+        public bool Update(NotebookLocationModel toUpdate)
         {
             // TODO: Make sure the note is actually from the author before saving it. @Lucas don't think this should be here...
-            if (ToUpdate != null)
+            if (toUpdate != null)
             {
-                if (!(string.IsNullOrEmpty(ToUpdate.Path)))
+                if (!(string.IsNullOrEmpty(toUpdate.Path)))
                 {
-                    Dictionary<string, object> parameters = GenerateQueryParameters(ToUpdate);
-                    parameters.Add("@Id", ToUpdate.Id);
+                    Dictionary<string, object> parameters = GenerateQueryParameters(toUpdate);
+                    parameters.Add("@Id", toUpdate.Id);
 
                     return DataAccess.Instance.Execute("UPDATE [NotebookLocation] SET [Path] = @Path WHERE Id = @Id",
                         parameters);
@@ -83,18 +83,18 @@ namespace EvernoteCloneLibrary.Notebooks.Location
         /// <summary>
         /// The method for deleting the NotebookLocation record which the specified model represents.
         /// </summary>
-        /// <param name="ToDelete"></param>
+        /// <param name="toDelete"></param>
         /// <returns></returns>
-        public bool Delete(NotebookLocationModel ToDelete)
+        public bool Delete(NotebookLocationModel toDelete)
         {
-            if (ToDelete != null)
+            if (toDelete != null)
             {
-                Dictionary<string, object> Parameter = new Dictionary<string, object>()
+                Dictionary<string, object> parameter = new Dictionary<string, object>()
                 {
-                    { "@Id", ToDelete.Id }
+                    { "@Id", toDelete.Id }
                 };
 
-                return DataAccess.Instance.Execute("DELETE FROM [NotebookLocation] WHERE Id = @Id", Parameter);
+                return DataAccess.Instance.Execute("DELETE FROM [NotebookLocation] WHERE Id = @Id", parameter);
             }
             return false;
         }
@@ -102,14 +102,14 @@ namespace EvernoteCloneLibrary.Notebooks.Location
         /// <summary>
         /// A helper method to generate the query parameters.
         /// </summary>
-        /// <param name="ToExtractFrom">The NotebookLocationModel which data will be extracted from</param>
+        /// <param name="toExtractFrom">The NotebookLocationModel which data will be extracted from</param>
         /// <returns></returns>
-        public Dictionary<string, object> GenerateQueryParameters(NotebookLocationModel ToExtractFrom)
+        public Dictionary<string, object> GenerateQueryParameters(NotebookLocationModel toExtractFrom)
         {
-            if (ToExtractFrom != null)
+            if (toExtractFrom != null)
             {
                 return new Dictionary<string, object>() {
-                    { "@Path", ToExtractFrom.Path },
+                    { "@Path", toExtractFrom.Path },
                 };
             }
             return null;

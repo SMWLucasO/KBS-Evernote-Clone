@@ -6,23 +6,23 @@ namespace EvernoteCloneLibrary.Files.Parsers
     /// <summary>
     /// Class for exporting parseable objects to their XML representation.
     /// </summary>
-    public static class XMLExporter
+    public static class XmlExporter
     {
         /// <summary>
         /// Method to export notebooks to XML form.
         /// </summary>
-        /// <param name="FilePath"></param>
-        /// <param name="FileName"></param>
-        /// <param name="ParseableObject"></param>
+        /// <param name="filePath"></param>
+        /// <param name="fileName"></param>
+        /// <param name="parseableObject"></param>
         /// <returns></returns>
-        public static bool Export(string FilePath, string FileName, IParseable ParseableObject)
+        public static bool Export(string filePath, string fileName, IParseable parseableObject)
         {
-            if (ValidateExportParameters(FilePath, FileName, ParseableObject))
+            if (ValidateExportParameters(filePath, fileName, parseableObject))
             {
-                string fullPath = $"{FilePath}/{FileName}";
+                string fullPath = $"{filePath}/{fileName}";
 
-                if (TryGeneratePath(FilePath))
-                    File.WriteAllLines(fullPath, ParseableObject.ToXmlRepresentation());
+                if (TryGeneratePath(filePath))
+                    File.WriteAllLines(fullPath, parseableObject.ToXmlRepresentation());
                 return ValidateFileExists(fullPath);
             }
             return false;
@@ -32,55 +32,55 @@ namespace EvernoteCloneLibrary.Files.Parsers
         /// <summary>
         /// Validate if the input parameters aren't null (or empty)
         /// </summary>
-        /// <param name="FilePath"></param>
-        /// <param name="Filename"></param>
-        /// <param name="ParseableObject"></param>
+        /// <param name="filePath"></param>
+        /// <param name="filename"></param>
+        /// <param name="parseableObject"></param>
         /// <returns></returns>
-        private static bool ValidateExportParameters(string FilePath, string Filename, IParseable ParseableObject) => 
-            (!(string.IsNullOrEmpty(FilePath) || string.IsNullOrEmpty(Filename)) && ParseableObject != null);
+        private static bool ValidateExportParameters(string filePath, string filename, IParseable parseableObject) => 
+            (!(string.IsNullOrEmpty(filePath) || string.IsNullOrEmpty(filename)) && parseableObject != null);
 
         /// <summary>
         /// Validator method for if the file exists.
         /// </summary>
-        /// <param name="FullPath"></param>
+        /// <param name="fullPath"></param>
         /// <returns></returns>
-        private static bool ValidateFileExists(string FullPath) =>
-            File.Exists(FullPath) && Path.HasExtension(FullPath);
+        private static bool ValidateFileExists(string fullPath) =>
+            File.Exists(fullPath) && Path.HasExtension(fullPath);
         #endregion
         #region Export path generation
         /// <summary>
         /// Try to generate the path. If it errors, return false.
         /// </summary>
-        /// <param name="FilePath"></param>
+        /// <param name="filePath"></param>
         /// <returns></returns>
-        private static bool TryGeneratePath(string FilePath)
+        private static bool TryGeneratePath(string filePath)
         {
-            try { return GeneratePath(FilePath); }
+            try { return GeneratePath(filePath); }
             catch (Exception) { return false; }
         }
 
         /// <summary>
         /// Generate the path if it does not exist, return a bool indicating whether the path was generated.
         /// </summary>
-        /// <param name="FilePath"></param>
+        /// <param name="filePath"></param>
         /// <returns></returns>
-        private static bool GeneratePath(string FilePath)
+        private static bool GeneratePath(string filePath)
         {
-            if (!(Directory.Exists(FilePath)))
-                Directory.CreateDirectory(FilePath);
-            return Directory.Exists(FilePath);
+            if (!(Directory.Exists(filePath)))
+                Directory.CreateDirectory(filePath);
+            return Directory.Exists(filePath);
         }
         #endregion
 
-        public static bool Export(string FilePath, string FileName, string[] content)
+        public static bool Export(string filePath, string fileName, string[] content)
         {
-            if (!(string.IsNullOrEmpty(FilePath) || string.IsNullOrEmpty(FileName)))
+            if (!(string.IsNullOrEmpty(filePath) || string.IsNullOrEmpty(fileName)))
             {
-                string fullPath = $"{FilePath}/{FileName}";
+                string fullPath = $"{filePath}/{fileName}";
                 if (Path.HasExtension(fullPath))
                 {
-                    if (!(Directory.Exists(FilePath)))
-                        Directory.CreateDirectory(FilePath);
+                    if (!(Directory.Exists(filePath)))
+                        Directory.CreateDirectory(filePath);
                     File.WriteAllLines(fullPath, content);
 
                     return File.Exists(fullPath);

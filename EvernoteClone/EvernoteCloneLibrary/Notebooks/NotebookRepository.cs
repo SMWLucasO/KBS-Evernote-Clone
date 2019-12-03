@@ -16,22 +16,22 @@ namespace EvernoteCloneLibrary.Notebooks
         /// <summary>
         /// The method for inserting a Notebook record, where the class members are columns and the class member values are column values.
         /// </summary>
-        /// <param name="ToInsert">The model to be inserted into the table</param>
+        /// <param name="toInsert">The model to be inserted into the table</param>
         /// <returns>bool to determine if the note was inserted</returns>
-        public bool Insert(NotebookModel ToInsert)
+        public bool Insert(NotebookModel toInsert)
         {
-            if (ToInsert != null)
+            if (toInsert != null)
             {
-                if (string.IsNullOrEmpty(ToInsert.Title))
-                    ToInsert.Title = "Nameless notebook";
-                Dictionary<string, object> Parameters = GenerateQueryParameters(ToInsert);
+                if (string.IsNullOrEmpty(toInsert.Title))
+                    toInsert.Title = "Nameless notebook";
+                Dictionary<string, object> parameters = GenerateQueryParameters(toInsert);
 
                 int id = DataAccess.Instance.ExecuteAndReturnId(
                     "INSERT INTO [Notebook] ([UserID], [LocationID], [Title], [CreationDate], [LastUpdated])"
-                        + " VALUES (@UserID, @LocationID, @Title, @CreationDate, @LastUpdated)", Parameters);
+                        + " VALUES (@UserID, @LocationID, @Title, @CreationDate, @LastUpdated)", parameters);
 
                 if (id != -1)
-                    ToInsert.Id = id;
+                    toInsert.Id = id;
                 return id != -1;
             }
             return false;
@@ -40,13 +40,13 @@ namespace EvernoteCloneLibrary.Notebooks
         /// <summary>
         /// The method for selecting Notebook records which satisfy the conditions.
         /// </summary>
-        /// <param name="Conditions">These parameters may NOT be user-typed, injection is possible.</param>
-        /// <param name="Parameters">Bindings for the conditions.</param>
+        /// <param name="conditions">These parameters may NOT be user-typed, injection is possible.</param>
+        /// <param name="parameters">Bindings for the conditions.</param>
         /// <returns>an enumerable containing all the notebooks selected from the database.</returns>
-        public IEnumerable<NotebookModel> GetBy(string[] Conditions, Dictionary<string, object> Parameters)
+        public IEnumerable<NotebookModel> GetBy(string[] conditions, Dictionary<string, object> parameters)
         {
             List<Notebook> generatedNotebooks = new List<Notebook>();
-            SqlDataReader fetchedSqlDataReader = DataAccess.Instance.ExecuteAndRead("Notebook", Conditions, Parameters);
+            SqlDataReader fetchedSqlDataReader = DataAccess.Instance.ExecuteAndRead("Notebook", conditions, parameters);
 
             while (fetchedSqlDataReader.Read())
             {
@@ -56,8 +56,8 @@ namespace EvernoteCloneLibrary.Notebooks
                 Notebook notebook = new Notebook()
                 {
                     Id = (int)fetchedSqlDataReader["Id"],
-                    LocationID = (int)fetchedSqlDataReader["LocationID"],
-                    UserID = (int)fetchedSqlDataReader["UserID"],
+                    LocationId = (int)fetchedSqlDataReader["LocationID"],
+                    UserId = (int)fetchedSqlDataReader["UserID"],
                     Title = (string)fetchedSqlDataReader["Title"],
                     CreationDate = (DateTime)fetchedSqlDataReader["CreationDate"],
                     LastUpdated = (DateTime)fetchedSqlDataReader["LastUpdated"],
@@ -108,17 +108,17 @@ namespace EvernoteCloneLibrary.Notebooks
         /// <summary>
         /// The method for updating the Notebook record which the specified model represents.
         /// </summary>
-        /// <param name="ToUpdate">The model which is to be updated</param>
+        /// <param name="toUpdate">The model which is to be updated</param>
         /// <returns>bool to determine if the update was a success</returns>
-        public bool Update(NotebookModel ToUpdate)
+        public bool Update(NotebookModel toUpdate)
         {
-            if (ToUpdate != null)
+            if (toUpdate != null)
             {
-                if (string.IsNullOrEmpty(ToUpdate.Title))
-                    ToUpdate.Title = "Nameless title";
+                if (string.IsNullOrEmpty(toUpdate.Title))
+                    toUpdate.Title = "Nameless title";
 
-                Dictionary<string, object> parameters = GenerateQueryParameters(ToUpdate);
-                parameters.Add("@Id", ToUpdate.Id);
+                Dictionary<string, object> parameters = GenerateQueryParameters(toUpdate);
+                parameters.Add("@Id", toUpdate.Id);
 
                 return DataAccess.Instance.Execute("UPDATE [Notebook] SET [UserID] = @UserID, [LocationID] = @LocationID, "
                     + "[Title] = @Title, [CreationDate] = @CreationDate, [LastUpdated] = @LastUpdated WHERE Id = @Id", parameters);
@@ -129,15 +129,15 @@ namespace EvernoteCloneLibrary.Notebooks
         /// <summary>
         /// The method for deleting the Notebook record which the specified model represents.
         /// </summary>
-        /// <param name="ToDelete"></param>
+        /// <param name="toDelete"></param>
         /// <returns></returns>
-        public bool Delete(NotebookModel ToDelete)
+        public bool Delete(NotebookModel toDelete)
         {
-            if (ToDelete != null)
+            if (toDelete != null)
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>()
                 {
-                    { "@Id", ToDelete.Id }
+                    { "@Id", toDelete.Id }
                 };
 
                 return DataAccess.Instance.Execute("DELETE FROM [Notebook] WHERE Id = @Id", parameters);
@@ -148,19 +148,19 @@ namespace EvernoteCloneLibrary.Notebooks
         /// <summary>
         /// A helper method to generate the query parameters.
         /// </summary>
-        /// <param name="ToExtractFrom">The NotebookModel which data will be extracted from</param>
+        /// <param name="toExtractFrom">The NotebookModel which data will be extracted from</param>
         /// <returns></returns>
-        public Dictionary<string, object> GenerateQueryParameters(NotebookModel ToExtractFrom)
+        public Dictionary<string, object> GenerateQueryParameters(NotebookModel toExtractFrom)
         {
-            if (ToExtractFrom != null)
+            if (toExtractFrom != null)
             {
                 return new Dictionary<string, object>()
                 {
-                    { "@UserID", ToExtractFrom.UserID },
-                    { "@LocationID", ToExtractFrom.LocationID },
-                    { "@Title", ToExtractFrom.Title },
-                    { "@CreationDate", ToExtractFrom.CreationDate },
-                    { "@LastUpdated", ToExtractFrom.LastUpdated }
+                    { "@UserID", toExtractFrom.UserId },
+                    { "@LocationID", toExtractFrom.LocationId },
+                    { "@Title", toExtractFrom.Title },
+                    { "@CreationDate", toExtractFrom.CreationDate },
+                    { "@LastUpdated", toExtractFrom.LastUpdated }
                 };
             }
             return null;

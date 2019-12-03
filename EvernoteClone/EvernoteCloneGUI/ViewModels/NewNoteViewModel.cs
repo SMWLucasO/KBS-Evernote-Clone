@@ -124,7 +124,7 @@ namespace EvernoteCloneGUI.ViewModels
             // If the NoteOwner isn't null, we fetch the Id of the user it contains
             // though NoteOwner should never be null
             if (NoteOwner != null)
-                return NoteOwner.Save(NoteOwner.UserID);
+                return NoteOwner.Save(NoteOwner.UserId);
 
             return false;
         }
@@ -157,10 +157,10 @@ namespace EvernoteCloneGUI.ViewModels
         /// <summary>
         /// Method which retrieves the new contents from the richtextbox.
         /// </summary>
-        /// <param name="TextChangedEventArgs"></param>
-        public void StoreRichTextBoxContent(TextChangedEventArgs TextChangedEventArgs)
+        /// <param name="textChangedEventArgs"></param>
+        public void StoreRichTextBoxContent(TextChangedEventArgs textChangedEventArgs)
         {
-            if (TextChangedEventArgs.Source is RichTextBox richTextBox)
+            if (textChangedEventArgs.Source is RichTextBox richTextBox)
             {
                 // Get the text from the richtextbox and create/read from a stream to get the data
                 TextRange range = new TextRange(richTextBox.Document.ContentStart, richTextBox.Document.ContentEnd);
@@ -176,13 +176,13 @@ namespace EvernoteCloneGUI.ViewModels
         /// Method which loads all the contents of the XaML string into the text editor.
         /// <see cref="https://stackoverflow.com/questions/1449121/how-to-insert-xaml-into-richtextbox">Impl. from here</see>
         /// </summary>
-        /// <param name="XamlString"></param>
+        /// <param name="xamlString"></param>
         /// <returns></returns>
-        private FlowDocument SetRtf(string XamlString)
+        private FlowDocument SetRtf(string xamlString)
         {
-            if (!(string.IsNullOrEmpty(XamlString.Trim())))
+            if (!(string.IsNullOrEmpty(xamlString.Trim())))
             {
-                StringReader stringReader = new StringReader(XamlString);
+                StringReader stringReader = new StringReader(xamlString);
                 XmlReaderSettings xmlReaderSettings = new XmlReaderSettings
                 {
                     DtdProcessing = DtdProcessing.Parse,
@@ -206,24 +206,24 @@ namespace EvernoteCloneGUI.ViewModels
         /// When the view is ready, and we are loading the note, this is the only way to
         /// attach the content to the text editor.
         /// </summary>
-        /// <param name="View"></param>
-        protected override void OnViewReady(object View)
+        /// <param name="view"></param>
+        protected override void OnViewReady(object view)
         {
             if (Note.Content == null)
                 Note.Content = "";
 
             if (_loadNote)
             {
-                NewNoteView newNoteView = (NewNoteView)View;
+                NewNoteView newNoteView = (NewNoteView)view;
                 newNoteView.TextEditor.Document = SetRtf(NewContent);
             }
 
-            base.OnViewReady(View);
+            base.OnViewReady(view);
         }
 
-        protected override void OnViewAttached(object View, object Context)
+        protected override void OnViewAttached(object view, object context)
         {
-            if (View is NewNoteView newNoteView)
+            if (view is NewNoteView newNoteView)
                 SetupTextEditor(newNoteView);
         }
 
@@ -232,14 +232,14 @@ namespace EvernoteCloneGUI.ViewModels
         /// Beforehand it set the content to an empty string if it is currently null, since this might
         /// cause unexpected behaviour otherwise.
         /// </summary>
-        /// <param name="NewNoteView"></param>
-        private void SetupTextEditor(NewNoteView NewNoteView)
+        /// <param name="newNoteView"></param>
+        private void SetupTextEditor(NewNoteView newNoteView)
         {
             if (Note.Content == null)
                 Note.Content = "";
 
             if (_loadNote)
-                NewNoteView.TextEditor.Document = SetRtf(NewContent);
+                newNoteView.TextEditor.Document = SetRtf(NewContent);
         }
     }
 }

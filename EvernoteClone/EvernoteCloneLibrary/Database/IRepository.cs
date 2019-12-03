@@ -13,36 +13,36 @@ namespace EvernoteCloneLibrary.Database
         /// A method signature for getting models by specified conditions
         /// </summary>
         /// <param name="conditions"></param>
-        /// <param name="Parameters"></param>
+        /// <param name="parameters"></param>
         /// <returns></returns>
-        IEnumerable<T> GetBy(string[] Conditions, Dictionary<string, object> Parameters);
+        IEnumerable<T> GetBy(string[] conditions, Dictionary<string, object> parameters);
 
         /// <summary>
         /// A method signature used for inserting a new record into the table
         /// </summary>
-        /// <param name="ToInsert"></param>
+        /// <param name="toInsert"></param>
         /// <returns></returns>
-        bool Insert(T ToInsert);
+        bool Insert(T toInsert);
         
         /// <summary>
         /// A method signature used for updating an existing record 
         /// </summary>
-        /// <param name="ToUpdate"></param>
+        /// <param name="toUpdate"></param>
         /// <returns></returns>
-        bool Update(T ToUpdate);
+        bool Update(T toUpdate);
         
         /// <summary>
         /// A method signature for deleting an existing record
         /// </summary>
-        /// <param name="ToDelete"></param>
+        /// <param name="toDelete"></param>
         /// <returns></returns>
-        bool Delete(T ToDelete);
+        bool Delete(T toDelete);
 
         /// <summary>
         /// A helper method to generate the query parameters.
         /// </summary>
-        /// <param name="ToExtractFrom">The model which data will be extracted from</param>
+        /// <param name="toExtractFrom">The model which data will be extracted from</param>
         /// <returns></returns>
-        Dictionary<string, object> GenerateQueryParameters(T ToExtractFrom);
+        Dictionary<string, object> GenerateQueryParameters(T toExtractFrom);
     }
 }

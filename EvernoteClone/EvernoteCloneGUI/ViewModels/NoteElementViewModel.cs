@@ -26,7 +26,7 @@ namespace EvernoteCloneGUI.ViewModels
 
         public NoteFeverViewModel Container { get; set; }
 
-        public void LoadOnClick(EventArgs ClickedEventArgs)
+        public void LoadOnClick(EventArgs clickedEventArgs)
         {
             if (Container?.SelectedNote != null)
             {

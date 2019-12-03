@@ -57,10 +57,10 @@ namespace EvernoteCloneGUI.ViewModels
         /// Event that searches for notes within a notebook when more than 2 characters (which are not whitespace)
         /// are typed into the searchbar.
         /// </summary>
-        /// <param name="EventArgs"></param>
-        public void SearchNoteInNotebook(TextChangedEventArgs EventArgs)
+        /// <param name="eventArgs"></param>
+        public void SearchNoteInNotebook(TextChangedEventArgs eventArgs)
         {
-            if (EventArgs.Source is TextBox searchBar)
+            if (eventArgs.Source is TextBox searchBar)
             {
                 // Acceptance criteria specifies that the text should have at least 2 characters.
                 if (searchBar.Text.Trim().Length >= 2 &&
@@ -116,16 +116,16 @@ namespace EvernoteCloneGUI.ViewModels
         /// <summary>
         /// Method which generates the ViewModel objects to be inserted in the NotebookNotesMenuViewModel.
         /// </summary>
-        /// <param name="Notes"></param>
+        /// <param name="notes"></param>
         /// <returns></returns>
-        public ObservableCollection<NoteElementViewModel> GenerateNoteElementsFromNotebook(List<INote> Notes)
+        public ObservableCollection<NoteElementViewModel> GenerateNoteElementsFromNotebook(List<INote> notes)
         {
             ObservableCollection<NoteElementViewModel> noteElementViewModels = new ObservableCollection<NoteElementViewModel>();
-            if (Notes != null)
+            if (notes != null)
             {
                 if (Parent is NoteFeverViewModel noteFeverViewModel)
                 {
-                    foreach (Note note in Notes.Cast<Note>())
+                    foreach (Note note in notes.Cast<Note>())
                     {
                         NoteElementViewModel noteElementView = new NoteElementViewModel()
                         {

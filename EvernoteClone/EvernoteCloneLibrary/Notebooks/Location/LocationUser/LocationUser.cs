@@ -6,12 +6,12 @@ namespace EvernoteCloneLibrary.Notebooks.Location.LocationUser
     public class LocationUser : LocationUserModel
     {
         // TODO: add summary
-        public static List<LocationUser> GetAllLocationsFromUser(int UserID)
+        public static List<LocationUser> GetAllLocationsFromUser(int userId)
         {
             LocationUserRepository locationUserRepository = new LocationUserRepository();
             return locationUserRepository.GetBy(
                 new string[] { "UserID = @UserID" },
-                new Dictionary<string, object>() { { "@UserID", UserID } }
+                new Dictionary<string, object>() { { "@UserID", userId } }
             ).Select((el) => ((LocationUser)el)).ToList();
         }
 

@@ -12,7 +12,7 @@ namespace EvernoteCloneLibraryTests.Notebooks.Notes
     class NoteRepositoryTests
     {
 
-        static List<Note> InsertedNotes = new List<Note>();
+        static List<Note> _insertedNotes = new List<Note>();
 
         [Order(1)]
         [TestCase("Some title", "<b>Message</b>", "", false, Description = "A note is not allowed to not have an author, and an author always has a name.")]
@@ -21,17 +21,17 @@ namespace EvernoteCloneLibraryTests.Notebooks.Notes
         [TestCase("", "<b>message</b>", "Lucas", true, Description = "If no title is given, a default one should be generated.")]
         [TestCase("Some stuff", "", "Lucas", true, Description = "Notes can be inserted without content")]
         [TestCase("", "", "text", true, Description = "If no title is given, a default one should be generated and notes dont have to have contents.")]
-        public void Insert_ShouldReturn(string Title, string Content, string Author, bool Expected)
+        public void Insert_ShouldReturn(string title, string content, string author, bool expected)
         {
             // Arrange
             Note note = new Note()
             {
-                NotebookID = 2, // ID 2 is default test notebook
-                Title = Title,
-                Content = Content,
+                NotebookId = 2, // ID 2 is default test notebook
+                Title = title,
+                Content = content,
                 CreationDate = DateTime.Now.Date,
                 LastUpdated = DateTime.Now,
-                Author = Author,
+                Author = author,
             };
 
             NoteRepository noteRepository = new NoteRepository();
@@ -41,26 +41,26 @@ namespace EvernoteCloneLibraryTests.Notebooks.Notes
 
             // Should only add the Id if it got inserted.
             if (actual)
-                InsertedNotes.Add(note);
+                _insertedNotes.Add(note);
 
             // Assert
-            Assert.That(Expected, Is.EqualTo(actual));
+            Assert.That(expected, Is.EqualTo(actual));
         }
 
         [Order(2)]
         [TestCase("", false, Description = "A note should always have an author.")]
         [TestCase(null, false, Description = "A note should always have an author.")]
         [TestCase("SomeText", true, Description = "A note should be able to change title")]
-        public void Update_ShouldReturn(string Author, bool Expected)
+        public void Update_ShouldReturn(string author, bool expected)
         {
             // arrange
             NoteRepository repository = new NoteRepository();
 
             // act and assert
-            foreach (Note note in InsertedNotes)
+            foreach (Note note in _insertedNotes)
             {
-                note.Author = Author;
-                Assert.That(repository.Update(note), Is.EqualTo(Expected));
+                note.Author = author;
+                Assert.That(repository.Update(note), Is.EqualTo(expected));
             }
 
         }
@@ -73,7 +73,7 @@ namespace EvernoteCloneLibraryTests.Notebooks.Notes
             NoteRepository noteRepository = new NoteRepository();
 
             // Act and Assert
-            foreach (Note note in InsertedNotes)
+            foreach (Note note in _insertedNotes)
             {
                 Assert.That(
                     noteRepository.GetBy(
@@ -91,7 +91,7 @@ namespace EvernoteCloneLibraryTests.Notebooks.Notes
             NoteRepository noteRepository = new NoteRepository();
 
             // Act and Assert
-            foreach (Note note in InsertedNotes)
+            foreach (Note note in _insertedNotes)
             {
                 Assert.That(noteRepository.Delete(note), Is.True);
             }

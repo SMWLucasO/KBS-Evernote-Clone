@@ -46,54 +46,54 @@ namespace EvernoteCloneLibrary.Database
         /// See: <see cref="DataAccess.RowsAffectedReturnType">RowsAffectedReturnType</see> and <see cref="DataAccess.SqlDataReaderReturnType">SqlDataReaderReturnType</see> 
         /// </remarks>
         /// <typeparam name="T"></typeparam>
-        /// <param name="QueryString"></param>
-        /// <param name="Parameters"></param>
-        /// <param name="ReturnType"></param>
+        /// <param name="queryString"></param>
+        /// <param name="parameters"></param>
+        /// <param name="returnType"></param>
         /// <returns></returns>
-        private T Query<T>(string QueryString, Dictionary<string, object> Parameters, Func<SqlCommand, T> ReturnType)
+        private T Query<T>(string queryString, Dictionary<string, object> parameters, Func<SqlCommand, T> returnType)
         {
             SqlConnection sqlConnection = OpenSqlConnection();
             
-            using (SqlCommand sqlCommand = GenerateParameteredCommand(QueryString, sqlConnection, Parameters))
-                return ReturnType(sqlCommand);
+            using (SqlCommand sqlCommand = GenerateParameteredCommand(queryString, sqlConnection, parameters))
+                return returnType(sqlCommand);
         }
 
         /// <summary>
         /// Method for SELECT queries within repositories
         /// </summary>
-        /// <param name="Table"></param>
-        /// <param name="Conditions"></param>
-        /// <param name="Parameters"></param>
+        /// <param name="table"></param>
+        /// <param name="conditions"></param>
+        /// <param name="parameters"></param>
         /// <returns></returns>
-        public SqlDataReader ExecuteAndRead(string Table, string[] Conditions, Dictionary<string, object> Parameters)
+        public SqlDataReader ExecuteAndRead(string table, string[] conditions, Dictionary<string, object> parameters)
         {
             StringBuilder conditionBuilder = new StringBuilder();
 
             // build the condition string: ( WHERE ... AND ... AND ... AND ... ) etc
             // conditions array should hold strings of: key = value, key >= value ... etc
-            for (int i = 0; i < Conditions.Length; i++)
+            for (int i = 0; i < conditions.Length; i++)
             {
                 if (i == 0)
                     conditionBuilder.Append("WHERE ");
                 else
                     conditionBuilder.Append("AND ");
-                conditionBuilder.Append(Conditions[i]).Append(" ");
+                conditionBuilder.Append(conditions[i]).Append(" ");
             }
 
             // Query the database using the specified data
-            return Query($"SELECT * FROM {Table} {conditionBuilder}",
-                Parameters, SqlDataReaderReturnType);
+            return Query($"SELECT * FROM {table} {conditionBuilder}",
+                parameters, SqlDataReaderReturnType);
         }
 
         /// <summary>
         /// Method for INSERT/DELETE/UPDATE queries within repositories.
         /// </summary>
-        /// <param name="Query"></param>
-        /// <param name="Parameters"></param>
+        /// <param name="query"></param>
+        /// <param name="parameters"></param>
         /// <returns></returns>
-        public bool Execute(string Query, Dictionary<string, object> Parameters)
+        public bool Execute(string query, Dictionary<string, object> parameters)
         {
-            bool success = this.Query(Query, Parameters, RowsAffectedReturnType);
+            bool success = this.Query(query, parameters, RowsAffectedReturnType);
             CloseSqlConnection();
             return success;
         }
@@ -102,13 +102,13 @@ namespace EvernoteCloneLibrary.Database
         /// Return -1 if nothing was returned from the query, otherwise return the last inserted id.
         /// Just in case, this method should only be used for INSERT repository methods.
         /// </summary>
-        /// <param name="Query"></param>
-        /// <param name="Parameters"></param>
+        /// <param name="query"></param>
+        /// <param name="parameters"></param>
         /// <returns></returns>
-        public int ExecuteAndReturnId(string Query, Dictionary<string, object> Parameters)
+        public int ExecuteAndReturnId(string query, Dictionary<string, object> parameters)
         {
             int id = -1;
-            SqlDataReader data = this.Query($"{Query} SELECT NewID = SCOPE_IDENTITY()", Parameters, SqlDataReaderReturnType);
+            SqlDataReader data = this.Query($"{query} SELECT NewID = SCOPE_IDENTITY()", parameters, SqlDataReaderReturnType);
             
             if (data.Read())
                 id = Convert.ToInt32(Math.Truncate(((decimal)data["NewID"])));
@@ -120,17 +120,17 @@ namespace EvernoteCloneLibrary.Database
         /// <summary>
         /// Method which prepares the SqlCommand for being executed
         /// </summary>
-        /// <param name="QueryString">string</param>
-        /// <param name="Connection">SqlConnection</param>
-        /// <param name="Parameters"></param>
+        /// <param name="queryString">string</param>
+        /// <param name="connection">SqlConnection</param>
+        /// <param name="parameters"></param>
         /// <returns>SqlCommand</returns>
-        private SqlCommand GenerateParameteredCommand(string QueryString, SqlConnection Connection, Dictionary<string, object> Parameters)
+        private SqlCommand GenerateParameteredCommand(string queryString, SqlConnection connection, Dictionary<string, object> parameters)
         {
-            SqlCommand command = new SqlCommand(QueryString, Connection);
+            SqlCommand command = new SqlCommand(queryString, connection);
             
-            if (Parameters != null)
-                foreach (string key in Parameters.Keys)
-                    command.Parameters.AddWithValue(key, Parameters[key]);
+            if (parameters != null)
+                foreach (string key in parameters.Keys)
+                    command.Parameters.AddWithValue(key, parameters[key]);
 
             return command;
         }

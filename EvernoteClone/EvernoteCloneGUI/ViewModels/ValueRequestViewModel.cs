@@ -12,8 +12,8 @@ namespace EvernoteCloneGUI.ViewModels
         /// <summary>
         /// Delegate for the events which handle the dialog results
         /// </summary>
-        /// <param name="ViewModel"></param>
-        public delegate void DialogResultHandler(ValueRequestViewModel ViewModel);
+        /// <param name="viewModel"></param>
+        public delegate void DialogResultHandler(ValueRequestViewModel viewModel);
 
         /// <summary>
         /// When the submit button gets clicked, this event will get called.
@@ -43,15 +43,15 @@ namespace EvernoteCloneGUI.ViewModels
         /// <summary>
         /// Event which gets called when the 'submit' button gets clicked.
         /// </summary>
-        /// <param name="EventArgs"></param>
-        public void OnSubmit(EventArgs EventArgs) =>
+        /// <param name="eventArgs"></param>
+        public void OnSubmit(EventArgs eventArgs) =>
             Submission?.Invoke(this);
 
         /// <summary>
         /// Event which gets called when the 'cancel' button gets clicked.
         /// </summary>
-        /// <param name="EventArgs"></param>
-        public void OnCancel(EventArgs EventArgs) =>
+        /// <param name="eventArgs"></param>
+        public void OnCancel(EventArgs eventArgs) =>
             Cancellation?.Invoke(this);
     }
 }
