@@ -37,7 +37,7 @@ namespace EvernoteCloneLibrary.Database
         static SshConnection() { }
 
         /// <summary>
-        /// The SshConnection class needs to be privae to block any other object from being created
+        /// The SshConnection class needs to be private to block any other object from being created
         /// </summary>
         private SshConnection()
         {
@@ -55,8 +55,12 @@ namespace EvernoteCloneLibrary.Database
             if (!_keepSshAliveTimer.Enabled)
             {
                 (_sshClient, _localPort) = ConnectSsh(
-                    sshHostName: (Constant.TEST_MODE ? Constant.TEST_SSH_HOST : Constant.SSH_HOST),
-                    sshUserName: (Constant.TEST_MODE ? Constant.TEST_SSH_USERNAME : Constant.SSH_USERNAME),
+                    sshHostName: (Constant.TEST_MODE ? 
+                        Constant.TEST_SSH_HOST : 
+                        Constant.SSH_HOST),
+                    sshUserName: (Constant.TEST_MODE ? 
+                        Constant.TEST_SSH_USERNAME : 
+                        Constant.SSH_USERNAME),
                     sshKeyFile: (Constant.TEST_MODE ?
                         (Constant.TEST_SSH_USE_PUBLIC_KEY ? Constant.TEST_SSH_KEY_PATH : null) :
                         (Constant.SSH_USE_PUBLIC_KEY ? Constant.SSH_KEY_PATH : null)),
@@ -66,8 +70,12 @@ namespace EvernoteCloneLibrary.Database
                     sshPassword: (Constant.TEST_MODE ?
                         (Constant.TEST_SSH_USE_PUBLIC_KEY ? null : Constant.TEST_SSH_PASSWORD) :
                         (Constant.SSH_USE_PUBLIC_KEY ? null : Constant.SSH_PASSWORD)),
-                    databaseServer: (Constant.TEST_MODE ? Constant.TEST_DATABASE_HOST : Constant.DATABASE_HOST),
-                    databasePort: (Constant.TEST_MODE ? Constant.TEST_DATABASE_PORT : Constant.DATABASE_PORT));
+                    databaseServer: (Constant.TEST_MODE ? 
+                        Constant.TEST_DATABASE_HOST : 
+                        Constant.DATABASE_HOST),
+                    databasePort: (Constant.TEST_MODE ? 
+                        Constant.TEST_DATABASE_PORT : 
+                        Constant.DATABASE_PORT));
             }
             else
                 _keepSshAliveTimer.Stop();
@@ -80,8 +88,8 @@ namespace EvernoteCloneLibrary.Database
         /// When this event is called, _sshClient is disconnected.
         /// </summary>
         /// <param name="source"></param>
-        /// <param name="Event"></param>
-        private static void OnTimedEvent(object source, ElapsedEventArgs Event) => 
+        /// <param name="e"></param>
+        private static void OnTimedEvent(object source, ElapsedEventArgs e) => 
             _sshClient.Disconnect();
 
         /// <summary>
@@ -104,7 +112,7 @@ namespace EvernoteCloneLibrary.Database
         /// <param name="databaseServer"></param>
         /// <param name="databasePort"></param>
         /// <returns></returns>
-        public static (SshClient SshClient, uint Port) ConnectSsh(string sshHostName, string sshUserName, string sshPassword = null,
+        private static (SshClient SshClient, uint Port) ConnectSsh(string sshHostName, string sshUserName, string sshPassword = null,
             string sshKeyFile = null, string sshPassPhrase = null, int sshPort = 22, string databaseServer = "localhost", int databasePort = 3306)
         {
             // check arguments
