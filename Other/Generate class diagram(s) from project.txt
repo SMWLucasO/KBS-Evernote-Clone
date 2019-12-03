@@ -10,3 +10,12 @@ $ puml-gen C:\git\KBS-Evernote-Clone\EvernoteClone\ C:\git\KBS-Evernote-Clone\UM
 
 Generate *.png from all *.puml files: 
 $ java -jar plantuml.jar "C:\git\KBS-Evernote-Clone\UML\**.puml"
+
+
+
+
+To generate only 1 .puml file:
+$ puml-gen <file>
+
+To generate only 1 .png file from .puml file:
+$ java -jar plantuml.jar <file>
