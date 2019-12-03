@@ -1,0 +1,11 @@
+@startuml
+class NotebookModel {
+    + Id : int <<get>> <<set>>
+    + UserId : int <<get>> <<set>>
+    + LocationId : int <<get>> <<set>>
+    + <<virtual>> Title : string <<get>> <<set>>
+}
+IModel <|-- NotebookModel
+NotebookModel --> "CreationDate" DateTime
+NotebookModel --> "LastUpdated" DateTime
+@enduml

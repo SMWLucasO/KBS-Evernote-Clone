@@ -1,0 +1,20 @@
+@startuml
+class NewNoteViewModel {
+    - _title : string = ""
+    - <<readonly>> _loadNote : bool
+    + Title : string <<get>> <<set>>
+    + NewContent : string <<get>> <<set>>
+    + NewNoteViewModel(loadNote:bool)
+    + LoadNote() : void
+    + SaveNote() : bool
+    + NotifyUserOfSave() : void
+    + StoreRichTextBoxContent(textChangedEventArgs:TextChangedEventArgs) : void
+    - SetRtf(xamlString:string) : FlowDocument
+    # <<override>> OnViewReady(view:object) : void
+    # <<override>> OnViewAttached(view:object, context:object) : void
+    - SetupTextEditor(newNoteView:NewNoteView) : void
+}
+Screen <|-- NewNoteViewModel
+NewNoteViewModel o-> "Note" Note
+NewNoteViewModel --> "NoteOwner" Notebook
+@enduml

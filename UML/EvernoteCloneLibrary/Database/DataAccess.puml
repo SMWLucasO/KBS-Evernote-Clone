@@ -1,0 +1,19 @@
+@startuml
+class DataAccess {
+    {static} DataAccess()
+    - DataAccess()
+    - Query(queryString:string, parameters:Dictionary<string, object>, returnType:Func<SqlCommand, T>) : T
+    + ExecuteAndRead(table:string, conditions:string[], parameters:Dictionary<string, object>) : SqlDataReader
+    + Execute(query:string, parameters:Dictionary<string, object>) : bool
+    + ExecuteAndReturnId(query:string, parameters:Dictionary<string, object>) : int
+    - GenerateParameteredCommand(queryString:string, connection:SqlConnection, parameters:Dictionary<string, object>) : SqlCommand
+    - OpenSqlConnection() : SqlConnection
+    + CloseSqlConnection() : void
+}
+class "Func`2"<T1,T2> {
+}
+DataAccess o-> "Instance" DataAccess
+DataAccess --> "_connection" SqlConnection
+DataAccess o-> "RowsAffectedReturnType<SqlCommand,bool>" "Func`2"
+DataAccess o-> "SqlDataReaderReturnType<SqlCommand,SqlDataReader>" "Func`2"
+@enduml

@@ -1,0 +1,51 @@
+@startuml
+class NoteFeverViewModel {
+    - _userId : int
+    + CreateMenuItem(header:string, customEventHandler:RoutedEventHandler) : MenuItem
+    # <<override>> OnActivate() : void
+    - LoadNotebooks(initialLoad:bool) : void
+    + LoadNoteViewIfNoteExists() : void
+    + NewNote() : void
+    + User() : void
+    + OpenAllNotes() : void
+    + LoadNotebooksTreeView() : void
+    - SelectPath(rootTreeViewItem:TreeViewItem, path:string) : void
+    - LoadFolders() : List<TreeViewItem>
+    - LoadNotebooksIntoFolderStructure(treeViewItems:List<TreeViewItem>) : List<TreeViewItem>
+    - CreateTreeNode(header:string, contextMenu:ContextMenu, notebookId:int) : TreeViewItem
+    - CreateTreeHeader(header:string, contextMenu:ContextMenu, notebookId:int) : StackPanel
+    + AddFolder(sender:object, routedEventArgs:RoutedEventArgs) : void
+    + AddFolderToRoot(sender:object, e:RoutedEventArgs) : void
+    + AddNotebook(sender:object, e:RoutedEventArgs) : void
+    + AddNote(sender:object, e:RoutedEventArgs) : void
+    + GetUserInput(dialogTitle:string, dialogValueRequestText:string, minCharacters:int, maxCharacters:int) : string
+    + HandleSubmit(valueRequestViewModel:ValueRequestViewModel) : void
+    + HandleCancel(valueRequestViewModel:ValueRequestViewModel) : void
+    - GetPath(treeViewItem:TreeViewItem, isNotebook:bool) : string
+    - GetNotebookId(treeViewItem:TreeViewItem) : int
+    - IsNotebook(treeViewItem:TreeViewItem) : bool
+    - GetHeader(treeViewItem:TreeViewItem) : string
+    + TreeView_SelectedItemChanged(routedPropertyChangedEventArgs:RoutedPropertyChangedEventArgs<object>) : void
+    + SelectNotebook(notebookId:int) : void
+    + Login() : void
+    + SelectNotebook(path:string, title:string) : void
+}
+class "Conductor`1"<T> {
+}
+class "List`1"<T> {
+}
+class "ObservableCollection`1"<T> {
+}
+"Conductor`1" "<object>" <|-- NoteFeverViewModel
+NoteFeverViewModel o-> "Notebooks<Notebook>" "List`1"
+NoteFeverViewModel --> "SelectedNotebook" Notebook
+NoteFeverViewModel --> "SelectedNote" Note
+NoteFeverViewModel --> "NotebookViewModel" NotebookViewModel
+NoteFeverViewModel o-> "NotebooksTreeView<TreeViewItem>" "ObservableCollection`1"
+NoteFeverViewModel o-> "RootContext" ContextMenu
+NoteFeverViewModel o-> "FolderContext" ContextMenu
+NoteFeverViewModel o-> "NotebookContext" ContextMenu
+NoteFeverViewModel o-> "FolderImage" BitmapImage
+NoteFeverViewModel o-> "NotebookImage" BitmapImage
+NoteFeverViewModel --> "SelectedTreeViewItem" TreeViewItem
+@enduml

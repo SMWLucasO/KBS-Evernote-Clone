@@ -1,0 +1,35 @@
+@startuml
+class Constant <<static>> {
+    + <<const>> TEST_MODE : bool = true
+    + <<const>> TEST_NOTEBOOK_STORAGE_PATH : string = "test/local/notebooks"
+    + <<const>> TEST_USERDATA_STORAGE_PATH : string = "test/local/userdata"
+    + <<const>> TEST_SSH_USE_PUBLIC_KEY : bool = false
+    + <<const>> TEST_SSH_HOST : string = "145.44.234.54"
+    + <<const>> TEST_SSH_USERNAME : string = "student"
+    + <<const>> TEST_SSH_PASSWORD : string = "Ug5#ItC@14"
+    + <<const>> TEST_SSH_KEY_PATH : string = @"C:\git\KBS-Evernote-Clone\EvernoteClone\open-ssh"
+    + <<const>> TEST_SSH_KEY_PASSPHRASE : string = null
+    + <<const>> TEST_SSH_KEEP_ALLIVE : int = 2000
+    + <<const>> TEST_DATABASE_HOST : string = "127.0.0.1"
+    + <<const>> TEST_DATABASE_PORT : int = 1433
+    + <<const>> TEST_DATABASE_USERNAME : string = "sa"
+    + <<const>> TEST_DATABASE_PASSWORD : string = "Ikw1lmijnd@ta"
+    + <<const>> TEST_DATABASE_CATALOG : string = "NoteFever_EvernoteClone_Test"
+    + <<const>> TEST_DATABASE_INTEGRATED_SECURITY : string = "False"
+    + <<const>> PRODUCTION_NOTEBOOK_STORAGE_PATH : string = "production/local/notebooks"
+    + <<const>> PRODUCTION_USERDATA_STORAGE_PATH : string = "production/local/userdata"
+    + <<const>> SSH_USE_PUBLIC_KEY : bool = false
+    + <<const>> SSH_HOST : string = "145.44.234.54"
+    + <<const>> SSH_USERNAME : string = "student"
+    + <<const>> SSH_PASSWORD : string = "Ug5#ItC@14"
+    + <<const>> SSH_KEY_PATH : string = @"C:\git\KBS-Evernote-Clone\EvernoteClone\open-ssh"
+    + <<const>> SSH_KEY_PASSPHRASE : string = null
+    + <<const>> SSH_KEEP_ALLIVE : int = 2000
+    + <<const>> DATABASE_HOST : string = "127.0.0.1"
+    + <<const>> DATABASE_PORT : int = 1433
+    + <<const>> DATABASE_USERNAME : string = "sa"
+    + <<const>> DATABASE_PASSWORD : string = "Ikw1lmijnd@ta"
+    + <<const>> DATABASE_CATALOG : string = "NoteFever_EvernoteClone"
+    + <<const>> DATABASE_INTEGRATED_SECURITY : string = "False"
+}
+@enduml

@@ -1,0 +1,7 @@
+@startuml
+class Bootstrapper {
+    + Bootstrapper()
+    # <<override>> OnStartup(sender:object, e:StartupEventArgs) : void
+}
+BootstrapperBase <|-- Bootstrapper
+@enduml
