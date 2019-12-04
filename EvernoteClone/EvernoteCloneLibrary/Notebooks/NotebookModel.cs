@@ -14,5 +14,6 @@ namespace EvernoteCloneLibrary.Notebooks
         public virtual string Title { get; set; }
         public DateTime CreationDate { get; set; }
         public DateTime LastUpdated { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

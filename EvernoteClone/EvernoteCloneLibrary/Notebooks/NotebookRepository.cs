@@ -27,8 +27,8 @@ namespace EvernoteCloneLibrary.Notebooks
                 Dictionary<string, object> parameters = GenerateQueryParameters(toInsert);
 
                 int id = DataAccess.Instance.ExecuteAndReturnId(
-                    "INSERT INTO [Notebook] ([UserID], [LocationID], [Title], [CreationDate], [LastUpdated])"
-                        + " VALUES (@UserID, @LocationID, @Title, @CreationDate, @LastUpdated)", parameters);
+                    "INSERT INTO [Notebook] ([UserID], [LocationID], [Title], [CreationDate], [LastUpdated], [Deleted])"
+                        + " VALUES (@UserID, @LocationID, @Title, @CreationDate, @LastUpdated, @Deleted)", parameters);
 
                 if (id != -1)
                     toInsert.Id = id;
@@ -61,7 +61,7 @@ namespace EvernoteCloneLibrary.Notebooks
                     Title = (string)fetchedSqlDataReader["Title"],
                     CreationDate = (DateTime)fetchedSqlDataReader["CreationDate"],
                     LastUpdated = (DateTime)fetchedSqlDataReader["LastUpdated"],
-                    // Get all the notes of the notebook by the notebookid, cast it to an INote.
+                    IsDeleted = (bool) fetchedSqlDataReader["Deleted"],
                     Notes = new List<INote>(),
                 };
 
@@ -121,7 +121,7 @@ namespace EvernoteCloneLibrary.Notebooks
                 parameters.Add("@Id", toUpdate.Id);
 
                 return DataAccess.Instance.Execute("UPDATE [Notebook] SET [UserID] = @UserID, [LocationID] = @LocationID, "
-                    + "[Title] = @Title, [CreationDate] = @CreationDate, [LastUpdated] = @LastUpdated WHERE Id = @Id", parameters);
+                    + "[Title] = @Title, [CreationDate] = @CreationDate, [LastUpdated] = @LastUpdated, [Deleted] = @Deleted WHERE Id = @Id", parameters);
             }
             return false;
         }
@@ -160,7 +160,8 @@ namespace EvernoteCloneLibrary.Notebooks
                     { "@LocationID", toExtractFrom.LocationId },
                     { "@Title", toExtractFrom.Title },
                     { "@CreationDate", toExtractFrom.CreationDate },
-                    { "@LastUpdated", toExtractFrom.LastUpdated }
+                    { "@LastUpdated", toExtractFrom.LastUpdated },
+                    { "@Deleted", toExtractFrom.IsDeleted }
                 };
             }
             return null;

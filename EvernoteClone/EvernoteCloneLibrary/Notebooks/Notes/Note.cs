@@ -88,6 +88,7 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
                        $"<updated>{LastUpdated:yyyyMMdd}T{LastUpdated:HHmmss}Z</updated>",
                        $"<note-attributes>",
                            $"<author>{Author}</author>",
+                           $"<deleted>{IsDeleted}</deleted>",
                        "</note-attributes>",
                    $"</note>"
             };

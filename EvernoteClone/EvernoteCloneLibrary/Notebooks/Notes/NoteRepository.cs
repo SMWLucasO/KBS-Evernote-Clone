@@ -27,8 +27,8 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
 
                     Dictionary<string, object> parameters = GenerateQueryParameters(toInsert);
 
-                    int id = DataAccess.Instance.ExecuteAndReturnId("INSERT INTO [Note] ([NotebookID], [Title], [Content], [Author], [CreationDate], [LastUpdated])"
-                            + " VALUES (@NotebookID, @Title, @Content, @Author, @CreationDate, @LastUpdated)", parameters);
+                    int id = DataAccess.Instance.ExecuteAndReturnId("INSERT INTO [Note] ([NotebookID], [Title], [Content], [Author], [CreationDate], [LastUpdated], [Deleted])"
+                            + " VALUES (@NotebookID, @Title, @Content, @Author, @CreationDate, @LastUpdated, @Deleted)", parameters);
                     
                     if(id != -1)
                         toInsert.Id = id;
@@ -66,7 +66,8 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
                     NewContent = (string)sqlDataReader["Content"],
                     Author = (string)sqlDataReader["Author"],
                     CreationDate = (DateTime)sqlDataReader["CreationDate"],
-                    LastUpdated = (DateTime)sqlDataReader["LastUpdated"]
+                    LastUpdated = (DateTime)sqlDataReader["LastUpdated"],
+                    IsDeleted = (bool) sqlDataReader["Deleted"]
                 });
             }
 
@@ -93,7 +94,7 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
                     parameters.Add("@Id", toUpdate.Id);
 
                     return DataAccess.Instance.Execute("UPDATE [Note] SET [NotebookID] = @NotebookID, [Title] = @Title, [Content] = @Content, "
-                        + "[Author] = @Author, [CreationDate] = @CreationDate, [LastUpdated] = @LastUpdated WHERE Id = @Id",
+                        + "[Author] = @Author, [CreationDate] = @CreationDate, [LastUpdated] = @LastUpdated, [Deleted] = @Deleted WHERE Id = @Id",
                         parameters);
                 }
             }
@@ -134,7 +135,8 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
                     { "@Content",  toExtractFrom.Content },
                     { "@Author", toExtractFrom.Author },
                     { "@CreationDate", toExtractFrom.CreationDate.Date },
-                    { "@LastUpdated", toExtractFrom.LastUpdated }
+                    { "@LastUpdated", toExtractFrom.LastUpdated },
+                    { "@Deleted", toExtractFrom.IsDeleted }
                 };
             }
             return null;

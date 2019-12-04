@@ -117,7 +117,8 @@ namespace EvernoteCloneLibrary.Files.Parsers
                     {
                         if (ValidationUtil.AreNotNull(node.Element("id")?.Value, node.Element("title")?.Value,
                             node.Element("path")?.Value, node.Element("path-id")?.Value,
-                            node.Element("created")?.Value, node.Element("updated")?.Value))
+                            node.Element("created")?.Value, node.Element("updated")?.Value,
+                            node.Element("deleted")?.Value))
                         {
                             return new Notebook
                             {
@@ -134,6 +135,7 @@ namespace EvernoteCloneLibrary.Files.Parsers
                                 // File data which applies to the notebook.
                                 CreationDate = DateTime.Parse(FormatDateTime(node.Element("created").Value)),
                                 LastUpdated = DateTime.Parse(FormatDateTime(node.Element("updated").Value)),
+                                IsDeleted = bool.Parse(node.Element("deleted").Value),
                                 FsName = Path.GetFileNameWithoutExtension(fullPath)
                             };
                         }
@@ -163,7 +165,7 @@ namespace EvernoteCloneLibrary.Files.Parsers
                     // If all required data is existent, then we (eventually) add it to the list.
                     if (ValidationUtil.AreNotNull(node.Element("created")?.Value, node.Element("updated")?.Value, node.Element("note-attributes"),
                         node.Element("note-attributes").Element("author")?.Value, node.Element("id")?.Value, node.Element("title")?.Value,
-                        notebook))
+                        node.Element("note-attributes").Element("deleted")?.Value, notebook))
                     {
                         Note note = new Note
                         {
@@ -182,8 +184,9 @@ namespace EvernoteCloneLibrary.Files.Parsers
                         // fetch the date the note was last updated, needed to change it from 'T00000000Z000000' where '0' is an arbitrary value
                         note.LastUpdated = DateTime.Parse(FormatDateTime(node.Element("updated").Value));
 
-                        // fetch the author of the note, the author lives in a subnode.
+                        // fetch the author of the note and a bool to check if it is soft-deleted. Both nodes are attributes of a note.
                         note.Author = node.Element("note-attributes").Element("author").Value;
+                        note.IsDeleted = bool.Parse(node.Element("note-attributes").Element("deleted").Value);
 
                         // fetch all the tags of the note.
                         // There can be zero or more tags, therefore make sure it exists 

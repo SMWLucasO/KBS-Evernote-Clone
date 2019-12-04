@@ -29,7 +29,7 @@ namespace EvernoteCloneLibrary.Notebooks
             get
             {
                 // If we do Title = null, then it will give the default title.
-                if (_title == null) 
+                if (_title == null)
                     Title = null;
                 return _title;
             }
@@ -195,11 +195,11 @@ namespace EvernoteCloneLibrary.Notebooks
         private Notebook Update(int newId, int userId = -1)
         {
             Id = newId;
-            
+
             // If Path.Id equals -1 (and Id != -1, and thus the notebook is also stored in the database), update this to the database version
             if (Path.Id == -1 && Id != -1)
                 Path = NotebookLocation.GetNotebookLocationByPath(Path.Path, userId);
-            
+
             return XmlExporter.Export(GetNotebookStoragePath(), FsName, this) ? this : null;
         }
 
@@ -301,7 +301,7 @@ namespace EvernoteCloneLibrary.Notebooks
                     // ignored
                 }
             }
-            storedLocally = UpdateLocalStorage(this); 
+            storedLocally = UpdateLocalStorage(this);
 
             return storedInTheCloud || storedLocally;
         }
@@ -324,6 +324,27 @@ namespace EvernoteCloneLibrary.Notebooks
         }
 
         /// <summary>
+        /// Generates a list of notes, bounded by a condition.
+        /// </summary>
+        /// <param name="condition"></param>
+        /// <returns></returns>
+        public List<INote> RetrieveNoteList(Func<INote, bool> condition)
+        {
+            List<INote> notes = new List<INote>();
+
+            foreach (Note note in Notes)
+            {
+                if (condition(note))
+                {
+                    notes.Add(note);
+                }
+            }
+
+
+            return notes;
+        }
+
+        /// <summary>
         /// Get the storage path for saving notes and notebooks locally.
         /// </summary>
         /// <returns></returns>
@@ -343,7 +364,7 @@ namespace EvernoteCloneLibrary.Notebooks
         {
             if (obj == null)
                 return false;
-            
+
             if (obj is Notebook notebook)
             {
                 if (notebook.Id != -1)
@@ -374,6 +395,7 @@ namespace EvernoteCloneLibrary.Notebooks
                 $"<en-export export-date=\"{DateTime.Now.ToString("yyyyMMdd")}T{DateTime.Now.ToString("HHmmss")}Z\"",
                 $" application=\"EvernoteClone/Windows\" version=\"6.x\">",
                 $"<title>{Title}</title>",
+                $"<deleted>{IsDeleted}</deleted>",
                 $"<created>{CreationDate.ToString("yyyyMMdd")}T{CreationDate.ToString("HHmmss")}Z</created>",
                 $"<updated>{LastUpdated.ToString("yyyyMMdd")}T{LastUpdated.ToString("HHmmss")}Z</updated>",
                 $"<id>{Id}</id>",
