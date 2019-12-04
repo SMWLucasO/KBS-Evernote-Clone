@@ -1,5 +1,6 @@
 ﻿using Caliburn.Micro;
 using EvernoteCloneLibrary.Notebooks.Notes;
+using EvernoteCloneLibrary.Utils;
 using System;
 using System.Windows;
 
@@ -57,7 +58,14 @@ namespace EvernoteCloneGUI.ViewModels
             if(Container != null)
             {
                 Container.SelectedNote = Note;
-                Container.LoadNoteViewIfNoteExists();
+                bool showDeletedNotes = false;
+
+                if(ValidationUtil.AreNotNull(Container.NotebookViewModel, Container.NotebookViewModel.NotebookNotesMenu))
+                {
+                    showDeletedNotes = Container.NotebookViewModel.NotebookNotesMenu.ShowDeletedNotes;
+                }
+
+                Container.LoadNoteViewIfNoteExists(showDeletedNotes);
             }
             
         }

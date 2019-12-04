@@ -13,6 +13,10 @@ namespace EvernoteCloneGUI.ViewModels
     /// </summary>
     public class NotebookNotesMenuViewModel : Conductor<NoteElementViewModel>.Collection.AllActive
     {
+
+        public bool ShowDeletedNotes { get; set; }
+
+        #region Databound properties and their 'behind the scenes' instance variables
         private string _notebookNoteCount = "0 note(s)";
         private ObservableCollection<NoteElementViewModel> _noteElementViews;
 
@@ -47,11 +51,11 @@ namespace EvernoteCloneGUI.ViewModels
             }
         }
 
+        #endregion
+
         public Notebook Notebook { get; set; }
 
-
-
-        public NotebookNotesMenuViewModel() { }
+        #region Events
 
         /// <summary>
         /// Event that searches for notes within a notebook when more than 2 characters (which are not whitespace)
@@ -73,10 +77,11 @@ namespace EvernoteCloneGUI.ViewModels
                         string searchFor = searchBar.Text.ToLower().Trim();
                         List<INote> returnedNotes = new List<INote>();
 
-                        // To stay performant, we first check the values which don't need to be iterated over.
+                        // Check if the contents we are searching for is contained within the content, title, author or tags of the note.
+
                         foreach (Note note in Notebook.Notes.Cast<Note>())
                         {
-                            if (note.Content != null && note.Content.ToLower().Contains(searchFor) 
+                            if (note.Content != null && note.Content.ToLower().Contains(searchFor)
                                 || note.Title != null && note.Title.ToLower().Contains(searchFor)
                                 || note.Author != null && note.Author.ToLower().Contains(searchFor))
                             {
@@ -95,6 +100,7 @@ namespace EvernoteCloneGUI.ViewModels
                             }
                         }
 
+                        // Generate 
                         NoteElementViews = GenerateNoteElementsFromNotebook(returnedNotes);
                     }
                 }
@@ -110,8 +116,23 @@ namespace EvernoteCloneGUI.ViewModels
             }
         }
 
-        public void LoadNotesIntoNotebookMenu() =>
+        #endregion
+
+        #region Helper methods
+
+        public void LoadAllNotesIntoNotebookMenu(List<INote> notes)
+        {
+            if (notes != null)
+            {
+                NoteElementViews = GenerateNoteElementsFromNotebook(notes);
+            }
+        }
+
+        public void LoadNotesIntoNotebookMenu(bool showDeletedNotes = false)
+        {
+            this.ShowDeletedNotes = showDeletedNotes;
             NoteElementViews = GenerateNoteElementsFromNotebook(Notebook.Notes);
+        }
 
         /// <summary>
         /// Method which generates the ViewModel objects to be inserted in the NotebookNotesMenuViewModel.
@@ -127,21 +148,27 @@ namespace EvernoteCloneGUI.ViewModels
                 {
                     foreach (Note note in notes.Cast<Note>())
                     {
-                        NoteElementViewModel noteElementView = new NoteElementViewModel()
+                        if(!note.IsDeleted || ShowDeletedNotes)
                         {
-                            Container = noteFeverViewModel,
-                            Note = note,
-                            Title = note.Title ?? "",
-                            NoteCreationDate = note.CreationDate.Date.ToString("dd-MM-yyyy") ?? "Unknown"
-                        };
+                            NoteElementViewModel noteElementView = new NoteElementViewModel()
+                            {
+                                Container = noteFeverViewModel,
+                                Note = note,
+                                Title = note.Title ?? "",
+                                NoteCreationDate = note.CreationDate.Date.ToString("dd-MM-yyyy") ?? "Unknown"
+                            };
 
-                        if (note.Equals(noteFeverViewModel.SelectedNote) && noteFeverViewModel.NotebookViewModel != null)
-                            noteFeverViewModel.NotebookViewModel.SelectedNoteElement = noteElementView;
-                        noteElementViewModels.Add(noteElementView);
+                            if (note.Equals(noteFeverViewModel.SelectedNote) && noteFeverViewModel.NotebookViewModel != null)
+                                noteFeverViewModel.NotebookViewModel.SelectedNoteElement = noteElementView;
+                            noteElementViewModels.Add(noteElementView);
+                        }
+                        
                     }
                 }
             }
             return noteElementViewModels;
         }
+
+        #endregion
     }
 }

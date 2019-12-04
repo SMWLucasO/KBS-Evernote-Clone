@@ -3,6 +3,7 @@ using EvernoteCloneGUI.Views;
 using EvernoteCloneLibrary.Constants;
 using EvernoteCloneLibrary.Notebooks;
 using EvernoteCloneLibrary.Notebooks.Notes;
+using EvernoteCloneLibrary.Utils;
 using System;
 using System.IO;
 using System.Text;
@@ -20,10 +21,13 @@ namespace EvernoteCloneGUI.ViewModels
     /// </summary>
     public class NewNoteViewModel : Screen
     {
-        private string _title = "";
+        
         private readonly bool _loadNote;
+        
+        #region Databound properties
 
-        // We can use this later on to add the notification changes
+        private string _title = "";
+
         public string Title
         {
             get => _title;
@@ -36,13 +40,13 @@ namespace EvernoteCloneGUI.ViewModels
                 {
                     // Dynamically set the title of the window.
                     if (!(string.IsNullOrEmpty(_title)))
-                        DisplayName = $"NoteFever | {_title}";
+                        DisplayName = $"Note Fever | {_title}";
                     else
-                        DisplayName = $"NoteFever | Nameless note";
+                        DisplayName = $"Note Fever | Nameless note";
                 }
                 else
                     if (Parent is NoteFeverViewModel container && container.NotebookViewModel?.SelectedNoteElement != null)
-                        container.NotebookViewModel.SelectedNoteElement.Title = _title;
+                    container.NotebookViewModel.SelectedNoteElement.Title = _title;
 
             }
         }
@@ -57,6 +61,10 @@ namespace EvernoteCloneGUI.ViewModels
             }
         }
 
+        #endregion
+
+        #region Properties
+
         /// <summary>
         /// If this object is null, or has id '-1' it means we are generating a new note,
         /// otherwise we are updating one.
@@ -68,12 +76,16 @@ namespace EvernoteCloneGUI.ViewModels
         /// </summary>
         public Notebook NoteOwner { get; set; }
 
+        #endregion
+
         // TODO add all bindings
         public NewNoteViewModel(bool loadNote = false)
         {
-            DisplayName = "NoteFever | Nameless note";
+            DisplayName = "Note Fever | Nameless note";
             _loadNote = loadNote;
         }
+
+        #region Saving and loading
 
         /// <summary>
         /// Method for loading the contents of the note object into the databound properties.
@@ -91,13 +103,13 @@ namespace EvernoteCloneGUI.ViewModels
         /// Method for storing the note into the database.
         /// </summary>
         /// <returns></returns>
-        public bool SaveNote()
+        public bool SaveNote(bool showDeletedNotes = false)
         {
             // Set some standard values for now and save
             Note.Author = "Nameless author"; // If user is logged in, this should obv. be different!
             Note.Title = Title; // We don't have to check if it is empty or null, the property in note does that already
             Note.Save();
-            
+
             if (Note.NoteOwner == null && NoteOwner != null && !(NoteOwner.IsNotNoteOwner))
                 Note.NoteOwner = NoteOwner;
 
@@ -118,7 +130,7 @@ namespace EvernoteCloneGUI.ViewModels
                     }
                 }
 
-                noteFeverViewModel.NotebookViewModel?.NotebookNotesMenu?.LoadNotesIntoNotebookMenu();
+                noteFeverViewModel.NotebookViewModel?.NotebookNotesMenu?.LoadNotesIntoNotebookMenu(showDeletedNotes);
             }
 
             // If the NoteOwner isn't null, we fetch the Id of the user it contains
@@ -134,12 +146,23 @@ namespace EvernoteCloneGUI.ViewModels
         /// </summary>
         public void NotifyUserOfSave()
         {
-            if (SaveNote())
+            bool shouldShowDeleted = false;
+            NoteFeverViewModel parent = null;
+            if(Parent != null && Parent is NoteFeverViewModel)
             {
-                MessageBox.Show("Note was saved successfully!", "NoteFever | Saved.", MessageBoxButton.OK, MessageBoxImage.Information);
+                parent = (NoteFeverViewModel) Parent;
+                if(ValidationUtil.AreNotNull(parent.NotebookViewModel, parent.NotebookViewModel.NotebookNotesMenu))
+                {
+                    shouldShowDeleted = parent.NotebookViewModel.NotebookNotesMenu.ShowDeletedNotes;
+                }
+            }
+
+            if (SaveNote(shouldShowDeleted))
+            {
+                MessageBox.Show("Note was saved successfully!", "Note Fever | Saved.", MessageBoxButton.OK, MessageBoxImage.Information);
                 if (Parent != null)
                 {
-                    if (Parent is NoteFeverViewModel parent)
+                    if (Parent is NoteFeverViewModel)
                     {
                         if (GetView() != null && !(_loadNote))
                         {
@@ -151,9 +174,12 @@ namespace EvernoteCloneGUI.ViewModels
                 }
             }
             else
-                MessageBox.Show("We were unable to save your note.", "NoteFever | Failed.", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("We were unable to save your note.", "Note Fever | Failed.", MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
+        #endregion
+
+        #region Events
         /// <summary>
         /// Method which retrieves the new contents from the richtextbox.
         /// </summary>
@@ -171,6 +197,35 @@ namespace EvernoteCloneGUI.ViewModels
                 NewContent = Encoding.Default.GetString(stream.ToArray());
             }
         }
+
+        /// <summary>
+        /// When the view is ready, and we are loading the note, this is the only way to
+        /// attach the content to the text editor.
+        /// </summary>
+        /// <param name="view"></param>
+        protected override void OnViewReady(object view)
+        {
+            if (Note.Content == null)
+                Note.Content = "";
+
+            if (_loadNote)
+            {
+                NewNoteView newNoteView = (NewNoteView)view;
+                newNoteView.TextEditor.Document = SetRtf(NewContent);
+            }
+
+            base.OnViewReady(view);
+        }
+
+        protected override void OnViewAttached(object view, object context)
+        {
+            if (view is NewNoteView newNoteView)
+                SetupTextEditor(newNoteView);
+        }
+
+        #endregion
+
+        #region Helper methods
 
         /// <summary>
         /// Method which loads all the contents of the XaML string into the text editor.
@@ -202,30 +257,9 @@ namespace EvernoteCloneGUI.ViewModels
             return new FlowDocument();
         }
 
-        /// <summary>
-        /// When the view is ready, and we are loading the note, this is the only way to
-        /// attach the content to the text editor.
-        /// </summary>
-        /// <param name="view"></param>
-        protected override void OnViewReady(object view)
-        {
-            if (Note.Content == null)
-                Note.Content = "";
+        #endregion
 
-            if (_loadNote)
-            {
-                NewNoteView newNoteView = (NewNoteView)view;
-                newNoteView.TextEditor.Document = SetRtf(NewContent);
-            }
-
-            base.OnViewReady(view);
-        }
-
-        protected override void OnViewAttached(object view, object context)
-        {
-            if (view is NewNoteView newNoteView)
-                SetupTextEditor(newNoteView);
-        }
+        #region Setup methods
 
         /// <summary>
         /// Method which loads the text into the text editor.
@@ -241,5 +275,7 @@ namespace EvernoteCloneGUI.ViewModels
             if (_loadNote)
                 newNoteView.TextEditor.Document = SetRtf(NewContent);
         }
+
+        #endregion
     }
 }
