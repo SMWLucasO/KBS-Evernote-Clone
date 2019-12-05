@@ -152,28 +152,16 @@ namespace EvernoteCloneGUI.ViewModels
         private static int SpecialCharCount(string password) =>
             Regex.Matches(password, @"[^0-9a-zA-Z\._]").Count;
         #endregion
-        #region Password encrypter
-        //Encrypt password using md5 hasing algorithm
-        public string Encryption(string password)
-        {
-            //encrypt the given password string into Encrypted data  
-            byte[] encrypt = new MD5CryptoServiceProvider().ComputeHash(new UTF8Encoding().GetBytes(password));
-            StringBuilder encryptData = new StringBuilder();
 
-            //Create a new string by using the encrypted data  
-            for (int i = 0; i < encrypt.Length; i++)
-                encryptData.Append(encrypt[i].ToString());
-            return encryptData.ToString();
-        }
-        #endregion
         #region Register button
         //Register button event
         public void Register()
         {
+            User user = new User();
             string tbFirstName = FirstName;
             string tbLastName = LastName;
             string tbEmail = Email;
-            string tbPassword = Encryption(Password);
+            string tbPassword = User.Encryption(Password.ToString());
 
             if (IsValidEmail(Email) && ValidatePassword(Password) && PasswordTheSame(PasswordConfirm, Password))
             {

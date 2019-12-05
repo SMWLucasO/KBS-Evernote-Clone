@@ -49,6 +49,22 @@ namespace EvernoteCloneLibrary.Users
             return null;
         }
 
+        public Dictionary<string, object> GenerateLoginParameters(UserModel ToExtractFrom)
+        {
+            if (ToExtractFrom != null)
+            {
+                Dictionary<string, object> parameters = new Dictionary<string, object>()
+                {
+                    { "@Username", ToExtractFrom.Username },
+                    { "@Password", ToExtractFrom.Password }
+
+                };
+
+                return parameters;
+            }
+            return null;
+        }
+
         //Fetch data
         public IEnumerable<UserModel> GetBy(string[] conditions, Dictionary<string, object> parameters)
         {
@@ -64,11 +80,11 @@ namespace EvernoteCloneLibrary.Users
                     Id = (int)fetchedSqlDataReader["Id"],
                     Username = (string)fetchedSqlDataReader["Username"],
                     Password = (string)fetchedSqlDataReader["Password"],
-                    FirstName = (string)fetchedSqlDataReader["FirstName"],
-                    LastName = (string)fetchedSqlDataReader["LastName"],
+                    FirstName = !(fetchedSqlDataReader["FirstName"] is DBNull) ? (string)fetchedSqlDataReader["FirstName"] : null,
+                    LastName = !(fetchedSqlDataReader["LastName"] is DBNull) ? (string)fetchedSqlDataReader["LastName"] : null,
                     IsGoogleAccount = (bool)fetchedSqlDataReader["IsGoogleAccount"],
                     CreationDate = (DateTime)fetchedSqlDataReader["CreationDate"],
-                    LastLogin = (DateTime)fetchedSqlDataReader["LastLogin"],
+                    LastLogin = !(fetchedSqlDataReader["LastLogin"] is DBNull) ? (DateTime)fetchedSqlDataReader["LastLogin"] : DateTime.Now,
                     Notebooks = notebookRepository.GetBy(
                             new string[] { "UserID = @UserID" },
                             new Dictionary<string, object>()
@@ -131,6 +147,24 @@ namespace EvernoteCloneLibrary.Users
                     + "[Username] = @Username, [Password] = @Password WHERE Id = @Id", parameters);
             }
             return false;
+        }
+
+        public UserModel CompareDB(UserModel Comparedb)
+        {
+            if (Comparedb != null)
+            {
+                if (string.IsNullOrEmpty(Comparedb.Username) || string.IsNullOrEmpty(Comparedb.Password))
+                    return null;
+                
+                Dictionary<string, object> parameters = GenerateLoginParameters(Comparedb);
+                var user = this.GetBy(new[] { "Username = @Username", "Password = @Password" }, parameters).ToList();
+
+                if (user.Count > 0)
+                    return user[0];
+                return null;
+
+            }
+            return null;
         }
     }
 }
