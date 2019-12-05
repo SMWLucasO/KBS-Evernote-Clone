@@ -1,0 +1,28 @@
+@startuml
+class Notebook {
+    - _title : string
+    + FsName : string <<get>> <<set>>
+    + IsNotNoteOwner : bool <<get>> <<set>>
+    + <<override>> Title : string <<get>> <<set>>
+    + Notebook()
+    + {static} Load(userId:int) : List<Notebook>
+    + UpdatePathId(userId:int) : void
+    + {static} GetAllNotebooksFromDatabase(userId:int) : List<Notebook>
+    - {static} LoadNotebook(fsNotebook:Notebook, dbNotebook:Notebook, listToAddTo:List<Notebook>, userId:int) : void
+    - Update(newId:int, userId:int) : Notebook
+    + {static} AddNewNotebookToDatabaseAndGetId(notebook:Notebook, userId:int) : int
+    + Save(userId:int, forceInsert:bool) : bool
+    - {static} UpdateLocalStorage(notebook:Notebook) : bool
+    - {static} GetNotebookStoragePath() : string
+    + <<override>> ToString() : string
+    + <<override>> Equals(obj:object) : bool
+    + <<override>> GetHashCode() : int
+    + ToXmlRepresentation() : string[]
+}
+class "List`1"<T> {
+}
+NotebookModel <|-- Notebook
+IParseable <|-- Notebook
+Notebook --> "Notes<INote>" "List`1"
+Notebook o-> "Path" NotebookLocation
+@enduml

@@ -13,13 +13,13 @@ namespace EvernoteCloneLibrary.Users
         public List<Notebook> Notebooks { get; set; }
 
 
-        public static UserModel Login(string Username, string Password)
+        public static UserModel Login(string username, string password)
         {
             UserRepository userRepositoryLogin = new UserRepository();
             UserModel userModelLogin = new UserModel()
             {
-                Username = Username,
-                Password = Password
+                Username = username,
+                Password = password
             };
             return userRepositoryLogin.CompareDB(userModelLogin);
         }
@@ -49,15 +49,15 @@ namespace EvernoteCloneLibrary.Users
 
 
         //Inserts user data in database
-        public static bool Register(string Username, string Password, string FirstName, string LastName)
+        public static bool Register(string username, string password, string firstName, string lastName)
         {
             UserRepository userRepository = new UserRepository();
             UserModel userModel = new UserModel()
             {
-                Username = Username,
-                Password = Password,
-                FirstName = FirstName,
-                LastName = LastName,
+                Username = username,
+                Password = password,
+                FirstName = firstName,
+                LastName = lastName,
                 CreationDate = DateTime.Now.Date
             };
             return userRepository.Insert(userModel);

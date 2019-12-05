@@ -1,0 +1,12 @@
+@startuml
+class UserRepository {
+    + Delete(toDelete:UserModel) : bool
+    + GenerateQueryParameters(toExtractFrom:UserModel) : Dictionary<string, object>
+    + GetBy(conditions:string[], parameters:Dictionary<string, object>) : IEnumerable<UserModel>
+    + Insert(toInsert:UserModel) : bool
+    + Update(toUpdate:UserModel) : bool
+}
+class "IRepository`1"<T> {
+}
+"IRepository`1" "<UserModel>" <|-- UserRepository
+@enduml

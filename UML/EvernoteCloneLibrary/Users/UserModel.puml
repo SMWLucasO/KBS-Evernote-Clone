@@ -1,0 +1,13 @@
+@startuml
+class UserModel {
+    + Id : int <<get>> <<set>>
+    + Username : string <<get>> <<set>>
+    + Password : string <<get>> <<set>>
+    + FirstName : string <<get>> <<set>> = ""
+    + LastName : string <<get>> <<set>> = ""
+    + IsGoogleAccount : bool <<get>> <<set>>
+    + CreationDate : DateTime? <<get>> <<set>>
+    + LastLogin : DateTime? <<get>> <<set>>
+}
+IModel <|-- UserModel
+@enduml

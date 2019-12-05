@@ -1,0 +1,14 @@
+@startuml
+class SshConnection {
+    - {static} _localPort : uint
+    {static} SshConnection()
+    - SshConnection()
+    + GetSshPort() : uint
+    - {static} OnTimedEvent(source:object, e:ElapsedEventArgs) : void
+    + {static} IsAlive() : bool
+    - {static} ConnectSsh(sshHostName:string, sshUserName:string, sshPassword:string, sshKeyFile:string, sshPassPhrase:string, sshPort:int, databaseServer:string, databasePort:int) : (SshClient SshClient, uint Port)
+}
+SshConnection o-> "Instance" SshConnection
+SshConnection --> "_sshClient" SshClient
+SshConnection o-> "_keepSshAliveTimer" Timer
+@enduml

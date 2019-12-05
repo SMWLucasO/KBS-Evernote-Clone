@@ -1,169 +1,127 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Windows;
 using System.Text.RegularExpressions;
 using System.Security.Cryptography;
 using EvernoteCloneLibrary.Users;
 
+// TODO: see next comments
+// Password 1: Test123
+// Password 2: Test123!
+// Password 1: Test123!
+// Error message under Password 2
 namespace EvernoteCloneGUI.ViewModels
 {
     public class RegisterViewModel : IDataErrorInfo
     {
-        private string firstName;
-        private string lastName;
-        private string email;
-        private string password;
-        private string passwordConfirm;
-        private bool isEnabled;
-        private static int minimumLength = 5;
-        private static int upperLength = 1;
-        private static int lowerLength = 1;
-        private static int specialChar = 1;
-        private static int numericLength = 2;
-
-
-
+        #region Variables
+        // TODO change variable names according to coding conventions
+        private string _firstName;
+        private string _lastName;
+        private string _email;
+        private string _password;
+        private string _passwordConfirm;
+        private static int _minimumLength = 5;
+        private static int _upperLength = 1;
+        private static int _lowerLength = 1;
+        private static int _specialChar = 1;
+        private static int _numericLength = 2;
+        #endregion
         #region Properties
         //Email property
         public string Email
         {
-            get { return email; }
-            set { email = value; }
+            get => _email;
+            set => _email = value;
         }
 
         //Password property
         public string Password
         {
-            get { return password; }
-            set { password = value; }
+            get => _password;
+            set => _password = value;
         }
 
         //Password confirm property
         public string PasswordConfirm
         {
-            get { return passwordConfirm; }
-            set { passwordConfirm = value; }
+            get => _passwordConfirm;
+            set => _passwordConfirm = value;
         }
 
         //First name property
         public string FirstName
         {
-            get { return firstName; }
-            set { firstName = value; }
+            get => _firstName;
+            set => _firstName = value;
         }
 
         //Last name property
         public string LastName
         {
-            get { return lastName; }
-            set { lastName = value; }
+            get => _lastName;
+            set => _lastName = value;
         }
-
-
-
-
         #endregion
-
         #region Show error messages
         //Show error message
-        public string this[string PropertyName]
+        public string this[string propertyName]
         {
             get
             {
-
                 string result = null;
 
-                if (PropertyName == "Email")
-                {
-                    if (string.IsNullOrEmpty(Email) || isValidEmail(Email) == false)
+                // Email
+                if (propertyName == "Email")
+                    if (string.IsNullOrEmpty(Email) || IsValidEmail(Email) == false)
                         result = "Please enter your email!";
-                }
-                if (PropertyName == "Password")
-                {
-                    try
-                    {
+                
+                // Password
+                if (propertyName == "Password")
+                    if (!string.IsNullOrWhiteSpace(Password))
                         if (ValidatePassword(Password) == false)
-                        {
                             result = "Please enter valid password!";
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        result = "";
-                    }
-                }
-                if (PropertyName == "Password")
-                {
-                    try
-                    {
-                        if (ValidatePassword(Password) == false)
-                        {
-                            result = "Please enter valid password!";
-                        }
-                    }
-                    catch(Exception e)
-                    {
-                        result = "";
-                    }
-                }
-                if (PropertyName == "PasswordConfirm")
-                {
+                
+                // PasswordConfirm
+                if (propertyName == "PasswordConfirm")
                     if (PasswordConfirm != null)
                         if (PasswordTheSame(PasswordConfirm,Password) == false)
                             result = "Password are not equal!";
-                }
 
-               
                 return result;
             }
         }
 
         //Throws Error
-        public string Error
-        {
-
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
+        public string Error => 
+            throw new NotImplementedException();
         #endregion
-
         #region Method to check if email is valid
         //Check if email is valid 
-        bool isValidEmail(string email)
+        bool IsValidEmail(string email)
         {
             try
             {
                 var address = new System.Net.Mail.MailAddress(email);
                 return address.Address == email;
             }
-            catch
-            {
-                return false;
-            }
+            catch { return false; }
         }
-
         #endregion
         #region Validates password
-
         //method to validate inserted password
-        public bool ValidatePassword(string Password)
+        public bool ValidatePassword(string password)
         {
-            if (Password.Length < minimumLength)
+            if (password.Length < _minimumLength)
                 return false;
-            if (UpperCount(Password) < upperLength)
+            if (UpperCount(password) < _upperLength)
                 return false;
-            if (LowerCount(Password) < lowerLength)
+            if (LowerCount(password) < _lowerLength)
                 return false;
-            if (NumericCount(Password) < numericLength)
+            if (NumericCount(password) < _numericLength)
                 return false;
-            if (SpecialCharCount(Password) < specialChar)
+            if (SpecialCharCount(password) < _specialChar)
                 return false;
             return true;
         }
@@ -171,46 +129,29 @@ namespace EvernoteCloneGUI.ViewModels
         // Checks if password are the same
         public bool PasswordTheSame (string password1, string password2)
         {
-            if (password1.ToString().Equals(password2.ToString()))
-            {
+            if (password1.Equals(password2))
                 return true;
-            } else
-            {
-                return false;
-            }
+            return false;
         }
-
         #endregion
         #region Methods to count specifics in password
-
         //Counts uppercase characters in password
-        private static int UpperCount(string Password)
-        {
-            return Regex.Matches(Password, "[A-Z]").Count;
-        }
+        private static int UpperCount(string password) =>
+            Regex.Matches(password, "[A-Z]").Count;
 
         //Counts lowercase characters in password
-        private static int LowerCount(string Password)
-        {
-            return Regex.Matches(Password, "[a-z]").Count;
-        }
+        private static int LowerCount(string password) =>
+            Regex.Matches(password, "[a-z]").Count;
 
         //Counts numeric characters in password
-        private static int NumericCount(string Password)
-        {
-            return Regex.Matches(Password, "[0-9]").Count;
-        }
+        private static int NumericCount(string password) =>
+            Regex.Matches(password, "[0-9]").Count;
 
         //Counts special characters in password
 
-        private static int SpecialCharCount(string Password)
-        {
-            return Regex.Matches(Password, @"[^0-9a-zA-Z\._]").Count;
-        }
-
+        private static int SpecialCharCount(string password) =>
+            Regex.Matches(password, @"[^0-9a-zA-Z\._]").Count;
         #endregion
- 
-        
 
         #region Register button
         //Register button event
@@ -222,22 +163,15 @@ namespace EvernoteCloneGUI.ViewModels
             string tbEmail = Email;
             string tbPassword = User.Encryption(Password.ToString());
 
-            if (isValidEmail(Email) && ValidatePassword(Password) && PasswordTheSame(PasswordConfirm, Password))
+            if (IsValidEmail(Email) && ValidatePassword(Password) && PasswordTheSame(PasswordConfirm, Password))
             {
                 if (User.Register(tbEmail, tbPassword, tbFirstName, tbLastName))
-                {
-
                     MessageBox.Show("Registration succesful!");
-                }
                 else
-                {
-                    MessageBox.Show("Registration failed! Please try again. (F's in chat)");
-                }
+                    MessageBox.Show("Registration failed! Please try again.");
             }
             else
-            {
                 MessageBox.Show("Please fill the fields with errors");
-            }
 
         }
         #endregion

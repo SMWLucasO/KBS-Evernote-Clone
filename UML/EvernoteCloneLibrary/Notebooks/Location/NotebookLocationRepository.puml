@@ -1,0 +1,12 @@
+@startuml
+class NotebookLocationRepository {
+    + Insert(toInsert:NotebookLocationModel) : bool
+    + GetBy(conditions:string[], parameters:Dictionary<string, object>) : IEnumerable<NotebookLocationModel>
+    + Update(toUpdate:NotebookLocationModel) : bool
+    + Delete(toDelete:NotebookLocationModel) : bool
+    + GenerateQueryParameters(toExtractFrom:NotebookLocationModel) : Dictionary<string, object>
+}
+class "IRepository`1"<T> {
+}
+"IRepository`1" "<NotebookLocationModel>" <|-- NotebookLocationRepository
+@enduml

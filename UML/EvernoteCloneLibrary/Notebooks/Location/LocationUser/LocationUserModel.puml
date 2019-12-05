@@ -1,0 +1,7 @@
+@startuml
+class LocationUserModel {
+    + LocationId : int <<get>> <<set>>
+    + UserId : int <<get>> <<set>>
+}
+IModel <|-- LocationUserModel
+@enduml

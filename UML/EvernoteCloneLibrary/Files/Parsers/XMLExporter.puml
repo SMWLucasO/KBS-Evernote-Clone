@@ -1,0 +1,10 @@
+@startuml
+class XmlExporter <<static>> {
+    + {static} Export(filePath:string, fileName:string, parseableObject:IParseable) : bool
+    - {static} ValidateExportParameters(filePath:string, filename:string, parseableObject:IParseable) : bool
+    - {static} ValidateFileExists(fullPath:string) : bool
+    - {static} TryGeneratePath(filePath:string) : bool
+    - {static} GeneratePath(filePath:string) : bool
+    + {static} Export(filePath:string, fileName:string, content:string[]) : bool
+}
+@enduml

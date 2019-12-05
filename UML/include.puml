@@ -1,0 +1,445 @@
+@startuml
+class App <<partial>> {
+}
+Application <|-- App
+class Bootstrapper {
+    + Bootstrapper()
+    # <<override>> OnStartup(sender:object, e:StartupEventArgs) : void
+}
+BootstrapperBase <|-- Bootstrapper
+class PasswordHelper <<static>> {
+    + {static} SetAttach(dp:DependencyObject, value:bool) : void
+    + {static} GetAttach(dp:DependencyObject) : bool
+    + {static} GetPassword(dp:DependencyObject) : string
+    + {static} SetPassword(dp:DependencyObject, value:string) : void
+    - {static} GetIsUpdating(dp:DependencyObject) : bool
+    - {static} SetIsUpdating(dp:DependencyObject, value:bool) : void
+    - {static} OnPasswordPropertyChanged(sender:DependencyObject, e:DependencyPropertyChangedEventArgs) : void
+    - {static} Attach(sender:DependencyObject, e:DependencyPropertyChangedEventArgs) : void
+    - {static} PasswordChanged(sender:object, e:RoutedEventArgs) : void
+}
+PasswordHelper o-> "PasswordProperty" DependencyProperty
+PasswordHelper o-> "AttachProperty" DependencyProperty
+PasswordHelper o-> "IsUpdatingProperty" DependencyProperty
+class LoginViewModel {
+    + Register() : void
+}
+class NewNoteViewModel {
+    - _title : string = ""
+    - <<readonly>> _loadNote : bool
+    + Title : string <<get>> <<set>>
+    + NewContent : string <<get>> <<set>>
+    + NewNoteViewModel(loadNote:bool)
+    + LoadNote() : void
+    + SaveNote() : bool
+    + NotifyUserOfSave() : void
+    + StoreRichTextBoxContent(textChangedEventArgs:TextChangedEventArgs) : void
+    - SetRtf(xamlString:string) : FlowDocument
+    # <<override>> OnViewReady(view:object) : void
+    # <<override>> OnViewAttached(view:object, context:object) : void
+    - SetupTextEditor(newNoteView:NewNoteView) : void
+}
+Screen <|-- NewNoteViewModel
+NewNoteViewModel o-> "Note" Note
+NewNoteViewModel --> "NoteOwner" Notebook
+class NotebookNotesMenuViewModel {
+    - _notebookNoteCount : string = "0 note(s)"
+    + NotebookName : string <<get>> <<set>>
+    + NotebookNoteCount : string <<get>> <<set>>
+    + NotebookNotesMenuViewModel()
+    + SearchNoteInNotebook(eventArgs:TextChangedEventArgs) : void
+    + LoadNotesIntoNotebookMenu() : void
+    + GenerateNoteElementsFromNotebook(notes:List<INote>) : ObservableCollection<NoteElementViewModel>
+}
+class "Conductor`1"<T> {
+}
+class "ObservableCollection`1"<T> {
+}
+NotebookNotesMenuViewModel --> "_noteElementViews<NoteElementViewModel>" "ObservableCollection`1"
+NotebookNotesMenuViewModel --> "NoteElementViews<NoteElementViewModel>" "ObservableCollection`1"
+NotebookNotesMenuViewModel --> "Notebook" Notebook
+class NotebookViewModel {
+    + NotebookViewModel()
+    + <<sealed>> <<override>> ActivateItem(item:object) : void
+}
+class "Conductor`1"<T> {
+}
+NotebookViewModel --> "NotebookNotesMenu" NotebookNotesMenuViewModel
+NotebookViewModel --> "NewNoteViewModel" NewNoteViewModel
+NotebookViewModel --> "SelectedNoteElement" NoteElementViewModel
+class NoteElementViewModel {
+    - _title : string
+    + Title : string <<get>> <<set>>
+    + NoteCreationDate : string <<get>> <<set>>
+    + LoadOnClick(clickedEventArgs:EventArgs) : void
+    - SwitchNoteView() : void
+}
+PropertyChangedBase <|-- NoteElementViewModel
+NoteElementViewModel --> "Note" Note
+NoteElementViewModel --> "Container" NoteFeverViewModel
+class NoteFeverViewModel {
+    - _userId : int
+    + CreateMenuItem(header:string, customEventHandler:RoutedEventHandler) : MenuItem
+    # <<override>> OnActivate() : void
+    - LoadNotebooks(initialLoad:bool) : void
+    + LoadNoteViewIfNoteExists() : void
+    + NewNote() : void
+    + User() : void
+    + OpenAllNotes() : void
+    + LoadNotebooksTreeView() : void
+    - SelectPath(rootTreeViewItem:TreeViewItem, path:string) : void
+    - LoadFolders() : List<TreeViewItem>
+    - LoadNotebooksIntoFolderStructure(treeViewItems:List<TreeViewItem>) : List<TreeViewItem>
+    - CreateTreeNode(header:string, contextMenu:ContextMenu, notebookId:int) : TreeViewItem
+    - CreateTreeHeader(header:string, contextMenu:ContextMenu, notebookId:int) : StackPanel
+    + AddFolder(sender:object, routedEventArgs:RoutedEventArgs) : void
+    + AddFolderToRoot(sender:object, e:RoutedEventArgs) : void
+    + AddNotebook(sender:object, e:RoutedEventArgs) : void
+    + AddNote(sender:object, e:RoutedEventArgs) : void
+    + GetUserInput(dialogTitle:string, dialogValueRequestText:string, minCharacters:int, maxCharacters:int) : string
+    + HandleSubmit(valueRequestViewModel:ValueRequestViewModel) : void
+    + HandleCancel(valueRequestViewModel:ValueRequestViewModel) : void
+    - GetPath(treeViewItem:TreeViewItem, isNotebook:bool) : string
+    - GetNotebookId(treeViewItem:TreeViewItem) : int
+    - IsNotebook(treeViewItem:TreeViewItem) : bool
+    - GetHeader(treeViewItem:TreeViewItem) : string
+    + TreeView_SelectedItemChanged(routedPropertyChangedEventArgs:RoutedPropertyChangedEventArgs<object>) : void
+    + SelectNotebook(notebookId:int) : void
+    + Login() : void
+    + SelectNotebook(path:string, title:string) : void
+}
+class "Conductor`1"<T> {
+}
+class "List`1"<T> {
+}
+class "ObservableCollection`1"<T> {
+}
+"Conductor`1" "<object>" <|-- NoteFeverViewModel
+NoteFeverViewModel o-> "Notebooks<Notebook>" "List`1"
+NoteFeverViewModel --> "SelectedNotebook" Notebook
+NoteFeverViewModel --> "SelectedNote" Note
+NoteFeverViewModel --> "NotebookViewModel" NotebookViewModel
+NoteFeverViewModel o-> "NotebooksTreeView<TreeViewItem>" "ObservableCollection`1"
+NoteFeverViewModel o-> "RootContext" ContextMenu
+NoteFeverViewModel o-> "FolderContext" ContextMenu
+NoteFeverViewModel o-> "NotebookContext" ContextMenu
+NoteFeverViewModel o-> "FolderImage" BitmapImage
+NoteFeverViewModel o-> "NotebookImage" BitmapImage
+NoteFeverViewModel --> "SelectedTreeViewItem" TreeViewItem
+class RegisterViewModel {
+    - _firstName : string
+    - _lastName : string
+    - _email : string
+    - _password : string
+    - _passwordConfirm : string
+    - {static} _minimumLength : int = 5
+    - {static} _upperLength : int = 1
+    - {static} _lowerLength : int = 1
+    - {static} _specialChar : int = 1
+    - {static} _numericLength : int = 2
+    + Email : string <<get>> <<set>>
+    + Password : string <<get>> <<set>>
+    + PasswordConfirm : string <<get>> <<set>>
+    + FirstName : string <<get>> <<set>>
+    + LastName : string <<get>> <<set>>
+    + Error : string <<get>>
+    IsValidEmail(email:string) : bool
+    + ValidatePassword(password:string) : bool
+    + PasswordTheSame(password1:string, password2:string) : bool
+    - {static} UpperCount(password:string) : int
+    - {static} LowerCount(password:string) : int
+    - {static} NumericCount(password:string) : int
+    - {static} SpecialCharCount(password:string) : int
+    + Encryption(password:string) : string
+    + Register() : void
+}
+IDataErrorInfo <|-- RegisterViewModel
+class ValueRequestViewModel {
+    +  <<event>> Submission : DialogResultHandler 
+    +  <<event>> Cancellation : DialogResultHandler 
+    + DialogTitle : string <<get>> <<set>> = "No title has been specified."
+    + DialogValueRequestText : string <<get>> <<set>> = "No request text has been given."
+    + Value : string <<get>> <<set>> = ""
+    + OnSubmit(eventArgs:EventArgs) : void
+    + OnCancel(eventArgs:EventArgs) : void
+}
+Screen <|-- ValueRequestViewModel
+class Constant <<static>> {
+    + <<const>> TEST_MODE : bool = true
+    + <<const>> TEST_NOTEBOOK_STORAGE_PATH : string = "test/local/notebooks"
+    + <<const>> TEST_USERDATA_STORAGE_PATH : string = "test/local/userdata"
+    + <<const>> TEST_SSH_USE_PUBLIC_KEY : bool = false
+    + <<const>> TEST_SSH_HOST : string = "145.44.234.54"
+    + <<const>> TEST_SSH_USERNAME : string = "student"
+    + <<const>> TEST_SSH_PASSWORD : string = "Ug5#ItC@14"
+    + <<const>> TEST_SSH_KEY_PATH : string = @"C:\git\KBS-Evernote-Clone\EvernoteClone\open-ssh"
+    + <<const>> TEST_SSH_KEY_PASSPHRASE : string = null
+    + <<const>> TEST_SSH_KEEP_ALLIVE : int = 2000
+    + <<const>> TEST_DATABASE_HOST : string = "127.0.0.1"
+    + <<const>> TEST_DATABASE_PORT : int = 1433
+    + <<const>> TEST_DATABASE_USERNAME : string = "sa"
+    + <<const>> TEST_DATABASE_PASSWORD : string = "Ikw1lmijnd@ta"
+    + <<const>> TEST_DATABASE_CATALOG : string = "NoteFever_EvernoteClone_Test"
+    + <<const>> TEST_DATABASE_INTEGRATED_SECURITY : string = "False"
+    + <<const>> PRODUCTION_NOTEBOOK_STORAGE_PATH : string = "production/local/notebooks"
+    + <<const>> PRODUCTION_USERDATA_STORAGE_PATH : string = "production/local/userdata"
+    + <<const>> SSH_USE_PUBLIC_KEY : bool = false
+    + <<const>> SSH_HOST : string = "145.44.234.54"
+    + <<const>> SSH_USERNAME : string = "student"
+    + <<const>> SSH_PASSWORD : string = "Ug5#ItC@14"
+    + <<const>> SSH_KEY_PATH : string = @"C:\git\KBS-Evernote-Clone\EvernoteClone\open-ssh"
+    + <<const>> SSH_KEY_PASSPHRASE : string = null
+    + <<const>> SSH_KEEP_ALLIVE : int = 2000
+    + <<const>> DATABASE_HOST : string = "127.0.0.1"
+    + <<const>> DATABASE_PORT : int = 1433
+    + <<const>> DATABASE_USERNAME : string = "sa"
+    + <<const>> DATABASE_PASSWORD : string = "Ikw1lmijnd@ta"
+    + <<const>> DATABASE_CATALOG : string = "NoteFever_EvernoteClone"
+    + <<const>> DATABASE_INTEGRATED_SECURITY : string = "False"
+}
+class DataAccess {
+    {static} DataAccess()
+    - DataAccess()
+    - Query(queryString:string, parameters:Dictionary<string, object>, returnType:Func<SqlCommand, T>) : T
+    + ExecuteAndRead(table:string, conditions:string[], parameters:Dictionary<string, object>) : SqlDataReader
+    + Execute(query:string, parameters:Dictionary<string, object>) : bool
+    + ExecuteAndReturnId(query:string, parameters:Dictionary<string, object>) : int
+    - GenerateParameteredCommand(queryString:string, connection:SqlConnection, parameters:Dictionary<string, object>) : SqlCommand
+    - OpenSqlConnection() : SqlConnection
+    + CloseSqlConnection() : void
+}
+class "Func`2"<T1,T2> {
+}
+DataAccess o-> "Instance" DataAccess
+DataAccess --> "_connection" SqlConnection
+DataAccess o-> "RowsAffectedReturnType<SqlCommand,bool>" "Func`2"
+DataAccess o-> "SqlDataReaderReturnType<SqlCommand,SqlDataReader>" "Func`2"
+interface IModel {
+}
+interface "IRepository`1"<T> {
+    GetBy(conditions:string[], parameters:Dictionary<string, object>) : IEnumerable<T>
+    Insert(toInsert:T) : bool
+    Update(toUpdate:T) : bool
+    Delete(toDelete:T) : bool
+    GenerateQueryParameters(toExtractFrom:T) : Dictionary<string, object>
+}
+class SshConnection {
+    - {static} _localPort : uint
+    {static} SshConnection()
+    - SshConnection()
+    + GetSshPort() : uint
+    - {static} OnTimedEvent(source:object, e:ElapsedEventArgs) : void
+    + {static} IsAlive() : bool
+    - {static} ConnectSsh(sshHostName:string, sshUserName:string, sshPassword:string, sshKeyFile:string, sshPassPhrase:string, sshPort:int, databaseServer:string, databasePort:int) : (SshClient SshClient, uint Port)
+}
+SshConnection o-> "Instance" SshConnection
+SshConnection --> "_sshClient" SshClient
+SshConnection o-> "_keepSshAliveTimer" Timer
+class ListExtensions <<static>> {
+    + {static} AddIfNotPresent(list:List<T>, toAdd:T) : bool
+}
+class Notebook {
+    - _title : string
+    + FsName : string <<get>> <<set>>
+    + IsNotNoteOwner : bool <<get>> <<set>>
+    + <<override>> Title : string <<get>> <<set>>
+    + Notebook()
+    + {static} Load(userId:int) : List<Notebook>
+    + UpdatePathId(userId:int) : void
+    + {static} GetAllNotebooksFromDatabase(userId:int) : List<Notebook>
+    - {static} LoadNotebook(fsNotebook:Notebook, dbNotebook:Notebook, listToAddTo:List<Notebook>, userId:int) : void
+    - Update(newId:int, userId:int) : Notebook
+    + {static} AddNewNotebookToDatabaseAndGetId(notebook:Notebook, userId:int) : int
+    + Save(userId:int, forceInsert:bool) : bool
+    - {static} UpdateLocalStorage(notebook:Notebook) : bool
+    - {static} GetNotebookStoragePath() : string
+    + <<override>> ToString() : string
+    + <<override>> Equals(obj:object) : bool
+    + <<override>> GetHashCode() : int
+    + ToXmlRepresentation() : string[]
+}
+class "List`1"<T> {
+}
+NotebookModel <|-- Notebook
+IParseable <|-- Notebook
+Notebook --> "Notes<INote>" "List`1"
+Notebook o-> "Path" NotebookLocation
+class NotebookModel {
+    + Id : int <<get>> <<set>>
+    + UserId : int <<get>> <<set>>
+    + LocationId : int <<get>> <<set>>
+    + <<virtual>> Title : string <<get>> <<set>>
+}
+IModel <|-- NotebookModel
+NotebookModel --> "CreationDate" DateTime
+NotebookModel --> "LastUpdated" DateTime
+class NotebookRepository {
+    + Insert(toInsert:NotebookModel) : bool
+    + GetBy(conditions:string[], parameters:Dictionary<string, object>) : IEnumerable<NotebookModel>
+    + Update(toUpdate:NotebookModel) : bool
+    + Delete(toDelete:NotebookModel) : bool
+    + GenerateQueryParameters(toExtractFrom:NotebookModel) : Dictionary<string, object>
+}
+class "IRepository`1"<T> {
+}
+"IRepository`1" "<NotebookModel>" <|-- NotebookRepository
+class User {
+    + {static} Login(username:string, password:string) : User
+    + {static} Register(username:string, password:string, firstName:string, lastName:string) : bool
+}
+class "List`1"<T> {
+}
+UserModel <|-- User
+User --> "Notebooks<Notebook>" "List`1"
+class UserModel {
+    + Id : int <<get>> <<set>>
+    + Username : string <<get>> <<set>>
+    + Password : string <<get>> <<set>>
+    + FirstName : string <<get>> <<set>> = ""
+    + LastName : string <<get>> <<set>> = ""
+    + IsGoogleAccount : bool <<get>> <<set>>
+    + CreationDate : DateTime? <<get>> <<set>>
+    + LastLogin : DateTime? <<get>> <<set>>
+}
+IModel <|-- UserModel
+class UserRepository {
+    + Delete(toDelete:UserModel) : bool
+    + GenerateQueryParameters(toExtractFrom:UserModel) : Dictionary<string, object>
+    + GetBy(conditions:string[], parameters:Dictionary<string, object>) : IEnumerable<UserModel>
+    + Insert(toInsert:UserModel) : bool
+    + Update(toUpdate:UserModel) : bool
+}
+class "IRepository`1"<T> {
+}
+"IRepository`1" "<UserModel>" <|-- UserRepository
+class ValidationUtil <<static>> {
+    - {static} ValidateMultiple(validator:Func<object, bool>, objects:object[]) : bool
+    + {static} AreNotNull(objects:object[]) : bool
+    + {static} AreNullOrEmpty(strings:string[]) : bool
+    + {static} IsNotNull(Object:object) : bool
+}
+interface IParseable {
+    ToXmlRepresentation() : string[]
+}
+class XmlExporter <<static>> {
+    + {static} Export(filePath:string, fileName:string, parseableObject:IParseable) : bool
+    - {static} ValidateExportParameters(filePath:string, filename:string, parseableObject:IParseable) : bool
+    - {static} ValidateFileExists(fullPath:string) : bool
+    - {static} TryGeneratePath(filePath:string) : bool
+    - {static} GeneratePath(filePath:string) : bool
+    + {static} Export(filePath:string, fileName:string, content:string[]) : bool
+}
+class XmlImporter <<static>> {
+    + {static} TryImportNotebooks(filePath:string) : List<Notebook>
+    + {static} ImportNotebooks(filePath:string) : List<Notebook>
+    + {static} ImportNotebookLocations(filePath:string) : List<NotebookLocation>
+    - {static} GenerateNotebookFromFile(fullPath:string, xDocument:XDocument) : Notebook
+    - {static} GenerateNotesFromXml(xDocument:XDocument, notebook:Notebook) : List<Note>
+    - {static} ValidateFolderExistsNotEmpty(filePath:string) : bool
+    - {static} GetStrippedContent(value:string) : string
+    - {static} FormatDateTime(datetime:string) : string
+}
+class NotebookLocation {
+    - _path : string
+    + <<override>> Path : string <<get>> <<set>>
+    + {static} GetNotebookLocationById(id:int) : NotebookLocation
+    + {static} GetNotebookLocationById(id:int, notebookLocationRepository:NotebookLocationRepository) : NotebookLocation
+    + {static} GetNotebookLocationPathById(id:int) : string
+    + {static} GetNotebookLocationPathById(id:int, notebookLocationRepository:NotebookLocationRepository) : string
+    + {static} GetNotebookLocationByPath(path:string, userId:int) : NotebookLocation
+    + {static} AddNewNotebookLocation(notebookLocation:NotebookLocation, userId:int) : bool
+    + {static} AddNewNotebookLocationAndGetId(notebookLocation:NotebookLocation, userId:int) : int
+    + {static} AddNewNotebookLocationToDatabaseAndGetId(notebookLocation:NotebookLocation, userId:int) : int
+    + {static} GetAllNotebookLocationsFromDatabase(userId:int) : List<NotebookLocation>
+    + {static} AddNotebookLocationToLocalStorage(notebookLocation:NotebookLocation) : bool
+    - {static} GetNewXmlRepresentation(notebookLocation:NotebookLocation) : string[]
+    - {static} GetXmlRepresentation(notebookLocations:List<NotebookLocation>, newNotebookLocation:NotebookLocation) : string[]
+    + {static} Load(userId:int) : List<NotebookLocation>
+    - AddLocally() : NotebookLocation
+    - {static} LoadNotebookLocation(fsNotebookLocation:NotebookLocation, dbNotebookLocation:NotebookLocation, listToAddTo:List<NotebookLocation>) : void
+    - Update(oldId:int, newId:int) : NotebookLocation
+    + ToXmlRepresentation() : string[]
+    + <<override>> Equals(obj:object) : bool
+    + Equals(other:NotebookLocation) : bool
+    + <<override>> GetHashCode() : int
+    - {static} GetUserDataStoragePath() : string
+}
+NotebookLocationModel <|-- NotebookLocation
+IParseable <|-- NotebookLocation
+class NotebookLocationModel {
+    + Id : int <<get>> <<set>>
+    + <<virtual>> Path : string <<get>> <<set>>
+}
+IModel <|-- NotebookLocationModel
+class NotebookLocationRepository {
+    + Insert(toInsert:NotebookLocationModel) : bool
+    + GetBy(conditions:string[], parameters:Dictionary<string, object>) : IEnumerable<NotebookLocationModel>
+    + Update(toUpdate:NotebookLocationModel) : bool
+    + Delete(toDelete:NotebookLocationModel) : bool
+    + GenerateQueryParameters(toExtractFrom:NotebookLocationModel) : Dictionary<string, object>
+}
+class "IRepository`1"<T> {
+}
+"IRepository`1" "<NotebookLocationModel>" <|-- NotebookLocationRepository
+interface INote {
+}
+IParseable <|-- INote
+INote --> "NoteOwner" Notebook
+class Note {
+    - _title : string = "Nameless note"
+    - _newContent : string = ""
+    + <<override>> Title : string <<get>> <<set>>
+    + NewContent : string <<get>> <<set>>
+    + Note()
+    + Save() : void
+    + <<override>> ToString() : string
+    + ToXmlRepresentation() : string[]
+}
+class "List`1"<T> {
+}
+NoteModel <|-- Note
+INote <|-- Note
+Note --> "Tags<string>" "List`1"
+Note --> "NoteOwner" Notebook
+class NoteModel {
+    + Id : int <<get>> <<set>>
+    + NotebookId : int <<get>> <<set>>
+    + <<virtual>> Title : string <<get>> <<set>> = ""
+    + Content : string <<get>> <<set>> = ""
+    + Author : string <<get>> <<set>>
+}
+IModel <|-- NoteModel
+NoteModel --> "CreationDate" DateTime
+NoteModel --> "LastUpdated" DateTime
+class NoteRepository {
+    + Insert(toInsert:NoteModel) : bool
+    - {static} CheckIfDataIsCorrect(noteModel:NoteModel) : bool
+    + GetBy(conditions:string[], parameters:Dictionary<string, object>) : IEnumerable<NoteModel>
+    + Update(toUpdate:NoteModel) : bool
+    + Delete(toDelete:NoteModel) : bool
+    + GenerateQueryParameters(toExtractFrom:NoteModel) : Dictionary<string, object>
+}
+class "IRepository`1"<T> {
+}
+"IRepository`1" "<NoteModel>" <|-- NoteRepository
+class LocationUser {
+    + {static} GetAllLocationsFromUser(userId:int) : List<LocationUser>
+    + {static} AddNewLocationUser(locationUser:LocationUser) : bool
+}
+LocationUserModel <|-- LocationUser
+class LocationUserModel {
+    + LocationId : int <<get>> <<set>>
+    + UserId : int <<get>> <<set>>
+}
+IModel <|-- LocationUserModel
+class LocationUserRepository {
+    + Insert(toInsert:LocationUserModel) : bool
+    + GetBy(conditions:string[], parameters:Dictionary<string, object>) : IEnumerable<LocationUserModel>
+    + Update(toUpdate:LocationUserModel) : bool
+    + Delete(toDelete:LocationUserModel) : bool
+    + GenerateQueryParameters(toExtractFrom:LocationUserModel) : Dictionary<string, object>
+}
+class "IRepository`1"<T> {
+}
+"IRepository`1" "<LocationUserModel>" <|-- LocationUserRepository
+@enduml

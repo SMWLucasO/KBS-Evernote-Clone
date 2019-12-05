@@ -2,19 +2,14 @@
 using EvernoteCloneGUI.Views;
 using EvernoteCloneLibrary.Notebooks;
 using EvernoteCloneLibrary.Notebooks.Location;
-using EvernoteCloneLibrary.Notebooks.Location.LocationUser;
 using EvernoteCloneLibrary.Notebooks.Notes;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Collections.ObjectModel;
 using System.Dynamic;
 using System.Linq;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Controls;
@@ -23,7 +18,6 @@ using System.ComponentModel;
 using EvernoteCloneLibrary.Users;
 
 // TODO add summary
-
 namespace EvernoteCloneGUI.ViewModels
 {
     /// <summary>
@@ -33,72 +27,81 @@ namespace EvernoteCloneGUI.ViewModels
     {
         LoginViewModel loginViewModel = new LoginViewModel();
         User loginUser = null;
-       
-        // Notebook information for viewing things
-        public List<Notebook> Notebooks { get; private set; }
-            = new List<Notebook>();
 
-        public Notebook SelectedNotebook;
-        public Note SelectedNote;
+        /// <value>
+        /// Notebooks contains all the local notebooks (and online notebooks, if UserID != 1)
+        /// </value>
+        public List<Notebook> Notebooks { get; private set; } = new List<Notebook>();
 
-        private int UserID = 3; // TODO change this!!!
+        /// <value>
+        /// SelectedNotebook contains the currently selected Notebook
+        /// </value>
+        public Notebook SelectedNotebook { get; set; }
 
+        /// <value>
+        /// SelectedNote contains the currently selected Note
+        /// </value>
+        public Note SelectedNote { get; set; }
+
+        /// <value>
+        /// UserID contains the Id of the currently logged in user (TODO change with User object)
+        /// </value>
+        private int _userId = -1; // TODO change this!!!
+
+        /// <value>
+        /// NotebookViewModel contains the (only???) instance of the NotebookViewModel
+        /// That is used to display all the notes inside a Notebook
+        /// </value>
         public NotebookViewModel NotebookViewModel { get; set; }
+
+        /// <value>
+        /// NotebooksTreeView contains the whole folder structure together with all the notebooks
+        /// </value>
         public ObservableCollection<TreeViewItem> NotebooksTreeView { get; } = new ObservableCollection<TreeViewItem>(new List<TreeViewItem>());
 
-        public ContextMenu RootContext = new ContextMenu();
-        public ContextMenu FolderContext = new ContextMenu();
-        public ContextMenu NotebookContext = new ContextMenu();
+        /// <value>
+        /// RootContext contains a ContextMenu with a button to Add Folders to the root item
+        /// </value>
+        public readonly ContextMenu RootContext = new ContextMenu();
 
+        /// <value>
+        /// FolderContext contains a ContextMenu with 2 buttons, one to Add Folders and one to Add Notebooks, to the selected folder
+        /// </value>
+        public readonly ContextMenu FolderContext = new ContextMenu();
+
+        /// <value>
+        /// NotebookContext contains a ContextMenu with a button to add Notes to the selected Notebook
+        /// </value>
+        public readonly ContextMenu NotebookContext = new ContextMenu();
+
+        /// <value>
+        /// FolderImage contains the image used to display a folder in the treeview
+        /// </value>
         public BitmapImage FolderImage { get; } = new BitmapImage(new Uri("pack://application:,,,/EvernoteCloneGUI;component/Resources/folder.png"));
-        public BitmapImage NotebookImage { get; } = new BitmapImage(new Uri("pack://application:,,,/EvernoteCloneGUI;component/Resources/journal.png"));
-        //public BitmapImage NotebookImage { get; } = new BitmapImage(new Uri(@"/Resources/ok-01.png", UriKind.Relative));
 
-        public MenuItem CreateMenuItem(string Header, RoutedEventHandler CustomEventHandler)
-        {
-            MenuItem menuItem = new MenuItem();
-            menuItem.Header = Header;
-            menuItem.Click += CustomEventHandler;
-            return menuItem;
-        }
+        /// <value>
+        /// NotebookImage contains the image used to display a notebook in the treeview
+        /// </value>
+        public BitmapImage NotebookImage { get; } = new BitmapImage(new Uri("pack://application:,,,/EvernoteCloneGUI;component/Resources/journal.png"));
+
+        /// <summary>
+        /// SelectedTreeViewItem contains the currently selected tree view item
+        /// </summary>
+        public TreeViewItem SelectedTreeViewItem;
 
         // <User object stuff here>
         // <ReplaceThis>
         // </User object stuff here>
 
+        #region Notebook loading
         /// <summary>
-        /// Whenever we know that there is a note selected,
-        /// we want to switch to the note user control, which will display it with all its data.
+        /// This loads all the notebooks from the filesystem (and from the database as well, if UserID != 1)
         /// </summary>
-        protected override void OnActivate()
-        {
-            Login();
-            if(loginUser == null)
-            {
-                Environment.Exit(0);
-            }
-                
-
-            // First load contextmenu's
-            RootContext.Items.Add(CreateMenuItem("Add Folder", AddFolderToRoot));
-            FolderContext.Items.Add(CreateMenuItem("Add Folder", AddFolder));
-            FolderContext.Items.Add(CreateMenuItem("Add Notebook", AddNotebook));
-            NotebookContext.Items.Add(CreateMenuItem("Add Note", AddNote));
-
-            // Load all folders, notebooks and add them all to the view
-            LoadNotebooksTreeView();
-
-            // Load Notebooks
-            LoadNotebooks(true);
-
-            // Only do this when a note has been opened, otherwise the right side should still be empty.
-            LoadNoteViewIfNoteExists();
-        }
-
+        /// <param name="initialLoad">If this is true, it loads the SelectedNotebook and SelectedNote</param>
         private void LoadNotebooks(bool initialLoad = false)
         {
-            // TODO: IF the user is logged in (there should be a property here with the user), insert the UserID.
-            Notebooks = Notebook.Load(UserID);
+            // Load all Notebooks
+            Notebooks = Notebook.Load(_userId);
 
             if (Notebooks.Count > 0)
             {
@@ -115,138 +118,69 @@ namespace EvernoteCloneGUI.ViewModels
             }
         }
 
-        public void LoadNoteViewIfNoteExists()
+        #endregion
+
+        #region Treeview impl. for notes and notebooks
+
+        /// <summary>
+        /// This method creates a menu item (for a ContextMenu)
+        /// </summary>
+        /// <param name="header">The display header</param>
+        /// <param name="customEventHandler">A method that handles the button_click event</param>
+        /// <returns>Returns a MenuItem</returns>
+        public MenuItem CreateMenuItem(string header, RoutedEventHandler customEventHandler)
         {
-
-            if (SelectedNotebook != null)
-            {
-                NewNoteViewModel newNoteViewModel = null;
-                if (SelectedNote != null)
-                {
-                    newNoteViewModel = new NewNoteViewModel(true)
-                    {
-                        Note = SelectedNote,
-                        NoteOwner = SelectedNotebook,
-                        Parent = this
-                    };
-                }
-                // Create the notebook view with the required data.
-                NotebookViewModel = new NotebookViewModel()
-                {
-                    NewNoteViewModel = newNoteViewModel,
-                    NotebookNotesMenu = new NotebookNotesMenuViewModel()
-                    {
-                        Notebook = SelectedNotebook,
-                        NotebookName = SelectedNotebook.Title,
-                        NotebookNoteCount = $"{SelectedNotebook.Notes.Count} note(s)",
-                        Parent = this
-                    }
-                };
-
-
-
-                NotebookViewModel.NewNoteViewModel?.LoadNote();
-                NotebookViewModel.NotebookNotesMenu.LoadNotesIntoNotebookMenu();
-
-                ActivateItem(NotebookViewModel);
-
-            }
+            MenuItem menuItem = new MenuItem { Header = header };
+            menuItem.Click += customEventHandler;
+            return menuItem;
         }
 
         /// <summary>
-        /// Open the Window responsible for the creation of new notes.
+        /// (Re)loads the folder structure and notebooks
         /// </summary>
-        public void NewNote()
-        {
-            // it will get confusing if I don't use an '==' here (It is placed for readability purposes)
-            if(SelectedNotebook == null || SelectedNotebook.IsNotNoteOwner == false)
-            {
-                IWindowManager windowManager = new WindowManager();
-
-                dynamic settings = new ExpandoObject();
-                settings.Height = 600;
-                settings.Width = 800;
-                settings.SizeToContent = SizeToContent.Manual;
-
-                NewNoteViewModel newNoteViewModel = new NewNoteViewModel
-                {
-                    Parent = this,
-                    NoteOwner = SelectedNotebook
-                };
-                windowManager.ShowDialog(newNoteViewModel, null, settings);
-            } else
-            {
-                MessageBox.Show("Cannot add new notes whilst in 'all notes' mode.", "Failed", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        public void User()
-        {
-            IWindowManager windowManagerUser = new WindowManager();
-
-            dynamic size = new ExpandoObject();
-            size.Height = 600;
-            size.Width = 800;
-            size.SizeToContent = SizeToContent.Manual;
-
-            RegisterView registerView = new RegisterView();
-            windowManagerUser.ShowDialog(registerView, null, size);
-        }
-
-        /// <summary>
-        /// Method which opens the view containing all the user's notes.
-        /// </summary>
-        public void OpenAllNotes()
-        {
-            if(Notebooks != null)
-            {
-                Notebook allNotesNotebook = new Notebook()
-                {
-                    Id = -1,
-                    LocationID = -1,
-                    UserID = -1,
-                    Title = "All notes",
-                    LastUpdated = DateTime.Now,
-                    CreationDate = DateTime.Now.Date,
-                    IsNotNoteOwner = true
-                };
-                List<INote> notes = new List<INote>();
-                foreach (Notebook notebook in Notebooks)
-                {
-                    foreach (Note note in notebook.Notes)
-                    {
-                        notes.Add(note);
-                    }
-                }
-
-                MessageBox.Show("Yeet");
-
-                allNotesNotebook.Notes = notes;
-                
-                if(allNotesNotebook.Notes.Count > 0)
-                {
-                    SelectedNotebook = allNotesNotebook;
-                    SelectedNote = (Note)allNotesNotebook.Notes.First();
-                    if (SelectedNote != null)
-                    {
-                        LoadNoteViewIfNoteExists();
-                    }
-                }
-            }
-        }
-
         public void LoadNotebooksTreeView()
         {
-            NotebooksTreeView.Clear();
+            // Create a root TreeViewItem
             TreeViewItem rootTreeViewItem = CreateTreeNode("My Notebooks", RootContext);
+
+            // Load all Folders (LoadFolders) and attach Notebooks to them (LoadNotebooksIntoFolderStructure)
+            // Now, loop over them all, and add them to the root TreeViewItem
             foreach (TreeViewItem treeViewItem in LoadNotebooksIntoFolderStructure(LoadFolders()))
                 rootTreeViewItem.Items.Add(treeViewItem);
+
+            // Clear the NotebooksTreeView and add the folder and notebook structure (also save the currently selected folder, and select it again)
+            if (SelectedTreeViewItem != null)
+                SelectPath(ref rootTreeViewItem, GetPath(SelectedTreeViewItem) + "/" + GetHeader(SelectedTreeViewItem));
+
+            NotebooksTreeView.Clear();
             NotebooksTreeView.Add(rootTreeViewItem);
+        }
+
+        private void SelectPath(ref TreeViewItem rootTreeViewItem, string path)
+        {
+            rootTreeViewItem.IsExpanded = true;
+            TreeViewItem currentNode = null;
+
+            foreach (string directory in path.Split('/'))
+            {
+                if (currentNode != null)
+                    currentNode.IsExpanded = true;
+
+                if (currentNode == null)
+                {
+                    if (rootTreeViewItem.Items.Cast<TreeViewItem>().Any(treeViewItem => GetHeader(treeViewItem) == directory))
+                        currentNode = rootTreeViewItem.Items.Cast<TreeViewItem>().First(treeViewItem => GetHeader(treeViewItem) == directory);
+                    else
+                        break;
+                }
+                else if (currentNode.Items.Cast<TreeViewItem>().Any(treeViewItem => GetHeader(treeViewItem) == directory))
+                    currentNode = currentNode.Items.Cast<TreeViewItem>().First(treeViewItem => GetHeader(treeViewItem) == directory);
+            }
         }
 
         private List<TreeViewItem> LoadFolders()
         {
-            List<NotebookLocation> notebookLocations = NotebookLocation.Load(UserID); // TODO: change UserID
+            List<NotebookLocation> notebookLocations = NotebookLocation.Load(_userId); // TODO: change UserID
             List<TreeViewItem> treeViewItems = new List<TreeViewItem>();
             foreach (string path in notebookLocations.Select(notebookLocation => notebookLocation.Path))
             {
@@ -296,40 +230,39 @@ namespace EvernoteCloneGUI.ViewModels
             return treeViewItems;
         }
 
-        private TreeViewItem CreateTreeNode(string Header, ContextMenu ContextMenu, int NotebookID = -1)
+        private TreeViewItem CreateTreeNode(string header, ContextMenu contextMenu, int notebookId = -1)
         {
             TreeViewItem treeViewItem = new TreeViewItem();
-            treeViewItem.Header = CreateTreeHeader(Header, ContextMenu, NotebookID);
+            treeViewItem.Header = CreateTreeHeader(header, contextMenu, notebookId);
             treeViewItem.Foreground = Brushes.White;
             treeViewItem.IsExpanded = false;
             treeViewItem.FontSize = 14;
-            treeViewItem.ContextMenu = ContextMenu;
+            treeViewItem.ContextMenu = contextMenu;
             return treeViewItem;
         }
 
-        private StackPanel CreateTreeHeader(string Header, ContextMenu ContextMenu, int NotebookID = -1)
+        private StackPanel CreateTreeHeader(string header, ContextMenu contextMenu, int notebookId = -1)
         {
-            StackPanel stackPanel = new StackPanel();
-            stackPanel.Orientation = Orientation.Horizontal;
+            StackPanel stackPanel = new StackPanel { Orientation = Orientation.Horizontal };
 
             Image image = new Image();
             image.Height = 16;
             image.Width = 16;
 
-            if (ContextMenu == FolderContext || ContextMenu == RootContext)
+            if (contextMenu == FolderContext || contextMenu == RootContext)
                 image.Source = FolderImage;
-            else if (ContextMenu == NotebookContext)
+            else if (contextMenu == NotebookContext)
                 image.Source = NotebookImage;
             stackPanel.Children.Add(image);
 
             TextBlock textBlock = new TextBlock();
-            textBlock.Inlines.Add(Header);
+            textBlock.Inlines.Add(header);
             stackPanel.Children.Add(textBlock);
 
-            if (ContextMenu == NotebookContext)
+            if (contextMenu == NotebookContext)
             {
                 Label label = new Label();
-                label.Content = NotebookID + "";
+                label.Content = notebookId + "";
                 label.Visibility = Visibility.Collapsed;
                 stackPanel.Children.Add(label);
             }
@@ -337,9 +270,9 @@ namespace EvernoteCloneGUI.ViewModels
             return stackPanel;
         }
 
-        public void AddFolder(object sender, RoutedEventArgs e)
+        public void AddFolder(object sender, RoutedEventArgs routedEventArgs)
         {
-            if (e.Source is MenuItem menuItem)
+            if (routedEventArgs.Source is MenuItem menuItem)
             {
                 if (menuItem.Parent is ContextMenu contextMenu)
                 {
@@ -348,7 +281,7 @@ namespace EvernoteCloneGUI.ViewModels
 
                     if (newFolderName != null)
                     {
-                        NotebookLocation.AddNewNotebookLocation(new NotebookLocation() { Path = path + "/" + newFolderName }, UserID); // TODO: change UserID AND do something with return value
+                        NotebookLocation.AddNewNotebookLocation(new NotebookLocation() { Path = path + "/" + newFolderName }, _userId); // TODO: change UserID AND do something with return value
 
                         // TODO fix refresh (for now, delete and add)
                         LoadNotebooksTreeView();
@@ -362,71 +295,19 @@ namespace EvernoteCloneGUI.ViewModels
             string newFolderName = GetUserInput("Create new folder", "What do you want your new folder to be called:");
             if (newFolderName != null)
             {
-                NotebookLocation.AddNewNotebookLocation(new NotebookLocation() { Path = newFolderName }, UserID); // TODO maybe do something with return value?
+                NotebookLocation.AddNewNotebookLocation(new NotebookLocation() { Path = newFolderName }, _userId); // TODO maybe do something with return value?
 
                 // TODO fix refresh (for now, delete and add)
                 LoadNotebooksTreeView();
             }
         }
 
-        public void AddNotebook(object sender, RoutedEventArgs e)
-        {
-            if (e.Source is MenuItem menuItem)
-            {
-                ContextMenu contextMenu = menuItem.Parent as ContextMenu;
-                if (contextMenu != null)
-                {
-                    string path = GetPath(contextMenu.PlacementTarget as TreeViewItem);
-                    string newNotebookName = GetUserInput("Create new notebook", "What do you want your new notebook to be called:");
-
-                    if (newNotebookName != null)
-                    {
-                        NotebookLocation notebookLocation = NotebookLocation.GetNotebookLocationByPath(path, UserID);
-                        Notebook notebook = new Notebook() { UserID = UserID, LocationID = notebookLocation.Id, Title = newNotebookName, CreationDate = DateTime.Now.Date, LastUpdated = DateTime.Now, Path = notebookLocation };
-                        notebook.Save(UserID);
-
-                        // TODO fix refresh (for now, delete and add)
-                        LoadNotebooksTreeView();
-                    }
-                }
-            }
-        }
-
-        public void AddNote(object sender, RoutedEventArgs e) =>
-            NewNote();
-
-        public string GetUserInput(string DialogTitle, string DialogValueRequestText)
-        {
-            IWindowManager windowManager = new WindowManager();
-
-            ValueRequestViewModel valueRequestViewModel = new ValueRequestViewModel
-            {
-                Parent = this,
-                DialogTitle = DialogTitle,
-                DialogValueRequestText = DialogValueRequestText
-            };
-            valueRequestViewModel.Submission += HandleSubmit;
-            valueRequestViewModel.Cancellation += HandleCancel;
-
-            windowManager.ShowDialog(valueRequestViewModel);
-
-            return string.IsNullOrWhiteSpace(valueRequestViewModel.Value) ? null : valueRequestViewModel.Value.Trim();
-        }
-
-        public void HandleSubmit(ValueRequestViewModel valueRequestViewModel) =>
-            (valueRequestViewModel.GetView() as Window).Close();
-        public void HandleCancel(ValueRequestViewModel valueRequestViewModel)
-        {
-            valueRequestViewModel.Value = null;
-            (valueRequestViewModel.GetView() as Window).Close();
-        }
-
-        private string GetPath(TreeViewItem treeViewItem, bool IsNotebook = false)
+        private string GetPath(TreeViewItem treeViewItem, bool isNotebook = false)
         {
             if (GetHeader(treeViewItem) == "My Notebooks")
                 return "";
 
-            string path = IsNotebook ? "" : GetHeader(treeViewItem);
+            string path = isNotebook ? "" : GetHeader(treeViewItem);
             while (treeViewItem.Parent is TreeViewItem item)
             {
                 treeViewItem = item;
@@ -434,10 +315,10 @@ namespace EvernoteCloneGUI.ViewModels
                     break;
                 path = GetHeader(treeViewItem) + "/" + path;
             }
-            return IsNotebook ? path.Substring(0, path.Length - 1) : path;
+            return isNotebook ? path.Substring(0, path.Length - 1) : path;
         }
 
-        private int GetNotebookID(TreeViewItem treeViewItem)
+        private int GetNotebookId(TreeViewItem treeViewItem)
         {
             if (treeViewItem.Header is StackPanel stackPanel)
                 if (stackPanel.Children[2] is Label label)
@@ -456,28 +337,266 @@ namespace EvernoteCloneGUI.ViewModels
             return treeViewItem.Header.ToString();
         }
 
-        public void TreeView_SelectedItemChanged(RoutedPropertyChangedEventArgs<object> routedPropertyChangedEventArgs)
-        {
-            if (routedPropertyChangedEventArgs.NewValue is TreeViewItem treeViewItem)
-            {
-                if (!IsNotebook(treeViewItem))
-                    return;
+        #endregion
 
-                int notebookID = GetNotebookID(treeViewItem);
-                if (notebookID != -1)
-                    SelectNotebook(notebookID);
-                else
-                    SelectNotebook(GetPath(treeViewItem, true), GetHeader(treeViewItem));
+        #region Treeview context menu, including pop-ups
+
+        public void AddNotebook(object sender, RoutedEventArgs e)
+        {
+            if (e.Source is MenuItem menuItem)
+            {
+                if (menuItem.Parent is ContextMenu contextMenu)
+                {
+                    string path = GetPath(contextMenu.PlacementTarget as TreeViewItem);
+                    string newNotebookName = GetUserInput("Create new notebook", "What do you want your new notebook to be called:");
+
+                    if (newNotebookName != null)
+                    {
+                        NotebookLocation notebookLocation = NotebookLocation.GetNotebookLocationByPath(path, _userId);
+                        Notebook notebook = new Notebook() { UserId = _userId, LocationId = notebookLocation.Id, Title = newNotebookName, CreationDate = DateTime.Now.Date, LastUpdated = DateTime.Now, Path = notebookLocation };
+                        notebook.Save(_userId);
+
+                        // TODO fix refresh (for now, delete and add)
+                        LoadNotebooksTreeView();
+                    }
+                }
             }
         }
 
-        public void SelectNotebook(int NotebookID)
+        public void AddNote(object sender, RoutedEventArgs e) =>
+            OpenNewNotePopupView();
+
+        public string GetUserInput(string dialogTitle, string dialogValueRequestText, int minCharacters = 2, int maxCharacters = 64)
         {
-            SelectedNotebook = Notebooks.First(notebook => notebook.Id == NotebookID);
+            IWindowManager windowManager = new WindowManager();
+
+            ValueRequestViewModel valueRequestViewModel = new ValueRequestViewModel
+            {
+                Parent = this,
+                DialogTitle = dialogTitle,
+                DialogValueRequestText = dialogValueRequestText
+            };
+            valueRequestViewModel.Submission += HandleSubmit;
+            valueRequestViewModel.Cancellation += HandleCancel;
+
+            windowManager.ShowDialog(valueRequestViewModel);
+
+            // If valueRequestViewModel.Value == null, cancel button is pressed
+            if (valueRequestViewModel.Value != null)
+            {
+                while (!((valueRequestViewModel.Value = valueRequestViewModel.Value.Trim()).Length >=
+                       minCharacters
+                       && valueRequestViewModel.Value.Length <= maxCharacters))
+                {
+                    valueRequestViewModel.Value = "";
+                    if (MessageBox.Show($"Text should be between {minCharacters} and {maxCharacters} characters long.",
+                            "NoteFever | Error", MessageBoxButton.OKCancel, MessageBoxImage.Error) ==
+                        MessageBoxResult.Cancel)
+                        break;
+                }
+            }
+
+            return string.IsNullOrWhiteSpace(valueRequestViewModel.Value) ? null : valueRequestViewModel.Value.Trim();
+        }
+
+        public void HandleSubmit(ValueRequestViewModel valueRequestViewModel) =>
+            (valueRequestViewModel.GetView() as Window)?.Close();
+        public void HandleCancel(ValueRequestViewModel valueRequestViewModel)
+        {
+            valueRequestViewModel.Value = null;
+            (valueRequestViewModel.GetView() as Window)?.Close();
+        }
+
+        #endregion
+
+        #region Loading and opening views
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void LoadNoteViewIfNoteExists(bool showDeletedNotes = false)
+        {
+            if (SelectedNotebook != null)
+            {
+                NewNoteViewModel newNoteViewModel = null;
+                if (SelectedNote != null)
+                {
+
+                    newNoteViewModel = new NewNoteViewModel(true)
+                    {
+                        Note = SelectedNote,
+                        NoteOwner = SelectedNote.NoteOwner,
+                        Parent = this
+                    };
+                }
+                // Create the notebook view with the required data.
+                NotebookViewModel = new NotebookViewModel()
+                {
+                    NewNoteViewModel = newNoteViewModel,
+                    NotebookNotesMenu = new NotebookNotesMenuViewModel()
+                    {
+                        Notebook = SelectedNotebook,
+                        NotebookName = SelectedNotebook.Title,
+                        NotebookNoteCount = $"{SelectedNotebook.Notes.Count} note(s)",
+                        Parent = this
+                    }
+                };
+
+                NotebookViewModel.NewNoteViewModel?.LoadNote();
+                NotebookViewModel.NotebookNotesMenu.LoadNotesIntoNotebookMenu(showDeletedNotes);
+
+                ActivateItem(NotebookViewModel);
+            }
+        }
+
+        /// <summary>
+        /// Open the Window responsible for the creation of new notes.
+        /// </summary>
+        public void OpenNewNotePopupView()
+        {
+            // it will get confusing if I don't use an '==' here (It is placed for readability purposes)
+            if (SelectedNotebook == null || SelectedNotebook.IsNotNoteOwner == false)
+            {
+                IWindowManager windowManager = new WindowManager();
+
+                dynamic settings = new ExpandoObject();
+                settings.Height = 600;
+                settings.Width = 800;
+                settings.SizeToContent = SizeToContent.Manual;
+
+                NewNoteViewModel newNoteViewModel = new NewNoteViewModel
+                {
+                    Parent = this,
+                    NoteOwner = SelectedNotebook
+                };
+                windowManager.ShowDialog(newNoteViewModel, null, settings);
+            }
+            else
+                MessageBox.Show("Cannot add new notes whilst not in a notebook", "Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+
+        public void OpenRegisterView()
+        {
+            IWindowManager windowManagerUser = new WindowManager();
+
+            dynamic size = new ExpandoObject();
+            size.Height = 600;
+            size.Width = 800;
+            size.SizeToContent = SizeToContent.Manual;
+
+            RegisterView registerView = new RegisterView();
+            windowManagerUser.ShowDialog(registerView, null, size);
+        }
+
+        /// <summary>
+        /// Method which opens the view containing all the user's notes.
+        /// </summary>
+        public void OpenAllNotesView()
+        {
+            if (Notebooks != null)
+            {
+                Notebook allNotesNotebook = new Notebook()
+                {
+                    Id = -1,
+                    LocationId = -1,
+                    UserId = -1,
+                    Title = "All notes",
+                    LastUpdated = DateTime.Now,
+                    CreationDate = DateTime.Now.Date,
+                    IsNotNoteOwner = true
+                };
+
+                List<INote> notes = new List<INote>();
+                foreach (Notebook notebook in Notebooks)
+                {
+                    // We want to retrieve all notes which are not deleted.
+                    notes.AddRange(notebook.RetrieveNoteList((note) => (!((NoteModel)note).IsDeleted)));
+                }
+
+                allNotesNotebook.Notes = notes;
+
+                if (!(ValidateAndLoadNotebookView(allNotesNotebook)))
+                {
+                    MessageBox.Show("There are no notes to view.", "Note Fever", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Open the view for all deleted notes
+        /// </summary>
+        public void OpenDeletedNotesView()
+        {
+            Notebook trashNotebook = new Notebook()
+            {
+                Id = -1,
+                LocationId = -1,
+                UserId = -1,
+                Title = "Bin",
+                LastUpdated = DateTime.Now,
+                CreationDate = DateTime.Now.Date,
+                IsNotNoteOwner = true
+            };
+
+            List<INote> deletedNotes = new List<INote>();
+
+            foreach (Notebook notebook in Notebooks)
+            {
+                deletedNotes.AddRange(
+                    notebook.RetrieveNoteList((note) => ((NoteModel)note).IsDeleted).Cast<INote>()
+                    );
+            }
+
+            trashNotebook.Notes = deletedNotes;
+            if (!(ValidateAndLoadNotebookView(trashNotebook, true)))
+            {
+                MessageBox.Show("There are no deleted notes.", "Note Fever", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+
+        }
+        public void OpenLoginPopupView()
+        {
+            IWindowManager windowManager = new WindowManager();
+
+            LoginViewModel loginViewModel = new LoginViewModel();
+            windowManager.ShowDialog(loginViewModel, null);
+        }
+
+        /// <summary>
+        /// Open the view if the notebook has notes
+        /// </summary>
+        /// <param name="notebook"></param>
+        /// <param name="showDeletedNotes"></param>
+        private bool ValidateAndLoadNotebookView(Notebook notebook, bool showDeletedNotes = false)
+        {
+            if (notebook != null && notebook.Notes.Count > 0)
+            {
+                SelectedNotebook = notebook;
+                SelectedNote = (Note)notebook.Notes.First();
+                if (SelectedNote != null)
+                {
+                    LoadNoteViewIfNoteExists(showDeletedNotes);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public void SelectNotebook(int notebookId)
+        {
+            SelectedNotebook = Notebooks.First(notebook => notebook.Id == notebookId);
             LoadNoteViewIfNoteExists();
         }
 
-    
+
+        public void SelectNotebook(string path, string title)
+        {
+            SelectedNotebook = Notebooks.First(notebook => notebook.Path.Path == path && notebook.Title == title);
+            LoadNoteViewIfNoteExists();
+        }
+
+        #endregion
 
         public void Login()
         {
@@ -487,14 +606,66 @@ namespace EvernoteCloneGUI.ViewModels
             windowManager.ShowDialog(loginViewModel, null);
 
             loginUser = loginViewModel.user;
-            UserID = loginUser?.Id ?? -1;
+            _userId = loginUser?.Id ?? -1;
         }
         
-        
-        public void SelectNotebook(string Path, string Title)
+
+        #region Events
+
+        public void TreeView_SelectedItemChanged(RoutedPropertyChangedEventArgs<object> routedPropertyChangedEventArgs)
         {
-            SelectedNotebook = Notebooks.First(notebook => notebook.Path.Path == Path && notebook.Title == Title);
+            if (routedPropertyChangedEventArgs.NewValue is TreeViewItem treeViewItem)
+            {
+                SelectedTreeViewItem = treeViewItem;
+
+                if (!IsNotebook(treeViewItem))
+                    return;
+
+                int notebookId = GetNotebookId(treeViewItem);
+                if (notebookId != -1)
+                    SelectNotebook(notebookId);
+                else
+                    SelectNotebook(GetPath(treeViewItem, true), GetHeader(treeViewItem));
+            }
+        }
+
+        /// <summary>
+        /// Whenever we know that there is a note selected,
+        /// we want to switch to the note user control, which will display it with all its data.
+        /// </summary>
+        protected override void OnActivate()
+        {
+            Login();
+            if(loginUser == null)
+            {
+                Environment.Exit(0);
+            }
+
+            // Set UserID equal to user input, this is for testing purposes only!
+            //var userInputReturn = GetUserInput("UserID",
+            //    "Input UserID for testing purposes! -1 is offline, 3 is online:", 1, 2);
+            //if (userInputReturn == null)
+            //    Environment.Exit(0);
+            //_userId = int.Parse(userInputReturn);
+
+
+            // First load contextmenu's
+            RootContext.Items.Add(CreateMenuItem("Add Folder", AddFolderToRoot));
+            FolderContext.Items.Add(CreateMenuItem("Add Folder", AddFolder));
+            FolderContext.Items.Add(CreateMenuItem("Add Notebook", AddNotebook));
+            NotebookContext.Items.Add(CreateMenuItem("Add Note", AddNote));
+
+            // Load all folders, notebooks and add them all to the view
+            LoadNotebooksTreeView();
+
+            // Load Notebooks
+            LoadNotebooks(true);
+
+            // Only do this when a note has been opened, otherwise the right side should still be empty.
             LoadNoteViewIfNoteExists();
         }
+
+        #endregion
+
     }
 }

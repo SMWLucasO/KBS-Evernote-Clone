@@ -1,10 +1,7 @@
 ﻿using EvernoteCloneLibrary.Database;
-using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EvernoteCloneLibrary.Notebooks.Location.LocationUser
 {
@@ -13,40 +10,39 @@ namespace EvernoteCloneLibrary.Notebooks.Location.LocationUser
         /// <summary>
         /// The method for inserting a LocationUser record, where the class members are columns and the class member values are column values.
         /// </summary>
-        /// <param name="ToInsert">The model to be inserted into the table</param>
+        /// <param name="toInsert">The model to be inserted into the table</param>
         /// <returns>bool to determine if the note was inserted</returns>
-        public bool Insert(LocationUserModel ToInsert)
+        public bool Insert(LocationUserModel toInsert)
         {
-            if (ToInsert != null)
+            if (toInsert != null)
             {
-                Dictionary<string, object> parameters = GenerateQueryParameters(ToInsert);
+                Dictionary<string, object> parameters = GenerateQueryParameters(toInsert);
 
                 return DataAccess.Instance.Execute("INSERT INTO [LocationUser] ([LocationID], [UserID]) VALUES (@LocationID, @UserID)", parameters);
             }
-
             return false;
         }
 
         /// <summary>
         /// The method for selecting LocationUser records which satisfy the conditions.
         /// </summary>
-        /// <param name="Conditions">These parameters may NOT be user-typed, injection is possible.</param>
-        /// <param name="Parameters">Bindings for the conditions.</param>
+        /// <param name="conditions">These parameters may NOT be user-typed, injection is possible.</param>
+        /// <param name="parameters">Bindings for the conditions.</param>
         /// <returns>an enumerable containing all the notes selected from the database.</returns>
-        public IEnumerable<LocationUserModel> GetBy(string[] Conditions, Dictionary<string, object> Parameters)
+        public IEnumerable<LocationUserModel> GetBy(string[] conditions, Dictionary<string, object> parameters)
         {
             List<LocationUserModel> generatedModels = new List<LocationUserModel>();
 
             // Query the database using the specified data
-            SqlDataReader sqlDataReader = DataAccess.Instance.ExecuteAndRead("LocationUser", Conditions, Parameters);
+            SqlDataReader sqlDataReader = DataAccess.Instance.ExecuteAndRead("LocationUser", conditions, parameters);
 
             while (sqlDataReader.Read())
             {
                 // Generate a model for each row of the LocationUser table.
                 generatedModels.Add(new LocationUser()
                 { 
-                    LocationID = (int)sqlDataReader["LocationID"],
-                    UserID = (int)sqlDataReader["UserID"]
+                    LocationId = (int)sqlDataReader["LocationID"],
+                    UserId = (int)sqlDataReader["UserID"]
                 });
             }
 
@@ -60,26 +56,26 @@ namespace EvernoteCloneLibrary.Notebooks.Location.LocationUser
         /// <summary>
         /// This will always return false, because this is a 'koppel tabel' and this will never be updated (only inserted, deleted or viewed)
         /// </summary>
-        /// <param name="ToUpdate">The model which is to be updated</param>
+        /// <param name="toUpdate">The model which is to be updated</param>
         /// <returns>bool to determine if the update was a success (will always be false)</returns>
-        public bool Update(LocationUserModel ToUpdate) => false;
+        public bool Update(LocationUserModel toUpdate) => false;
 
         /// <summary>
         /// The method for deleting the LocationUser record which the specified model represents.
         /// </summary>
-        /// <param name="ToDelete"></param>
+        /// <param name="toDelete"></param>
         /// <returns></returns>
-        public bool Delete(LocationUserModel ToDelete)
+        public bool Delete(LocationUserModel toDelete)
         {
-            if (ToDelete != null)
+            if (toDelete != null)
             {
-                Dictionary<string, object> Parameters = new Dictionary<string, object>()
+                Dictionary<string, object> parameters = new Dictionary<string, object>()
                 {
-                    { "@LocationID", ToDelete.LocationID },
-                    { "@UserID", ToDelete.UserID }
+                    { "@LocationID", toDelete.LocationId },
+                    { "@UserID", toDelete.UserId }
                 };
 
-                return DataAccess.Instance.Execute("DELETE FROM [LocationUser] WHERE LocationID = @LocationID AND UserID = @UserID", Parameters);
+                return DataAccess.Instance.Execute("DELETE FROM [LocationUser] WHERE LocationID = @LocationID AND UserID = @UserID", parameters);
             }
 
             return false;
@@ -88,15 +84,15 @@ namespace EvernoteCloneLibrary.Notebooks.Location.LocationUser
         /// <summary>
         /// A helper method to generate the query parameters.
         /// </summary>
-        /// <param name="ToExtractFrom">The LocationUserModel which data will be extracted from</param>
+        /// <param name="toExtractFrom">The LocationUserModel which data will be extracted from</param>
         /// <returns></returns>
-        public Dictionary<string, object> GenerateQueryParameters(LocationUserModel ToExtractFrom)
+        public Dictionary<string, object> GenerateQueryParameters(LocationUserModel toExtractFrom)
         {
-            if (ToExtractFrom != null)
+            if (toExtractFrom != null)
             {
                 return new Dictionary<string, object>() {
-                    { "@LocationID", ToExtractFrom.LocationID },
-                    { "@UserID", ToExtractFrom.UserID }
+                    { "@LocationID", toExtractFrom.LocationId },
+                    { "@UserID", toExtractFrom.UserId }
                 };
             }
 

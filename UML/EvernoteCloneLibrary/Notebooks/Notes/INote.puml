@@ -1,0 +1,6 @@
+@startuml
+interface INote {
+}
+IParseable <|-- INote
+INote --> "NoteOwner" Notebook
+@enduml

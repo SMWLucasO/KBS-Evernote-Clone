@@ -4,48 +4,45 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
+// TODO change comments to summary @Chino or @Mart
 namespace EvernoteCloneLibrary.Users
 {
     public class UserRepository : IRepository<UserModel>
     {
-
         //Deletes user
-        public bool Delete(UserModel ToDelete)
+        public bool Delete(UserModel toDelete)
         {
-            if (ToDelete != null)
+            if (toDelete != null)
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>()
                 {
-                    {"@Id", ToDelete.Id }
+                    {"@Id", toDelete.Id }
                 };
                 return DataAccess.Instance.Execute("DELETE FROM [User] WHERE Id = @Id", parameters);
             }
             return false;
         }
-
-
+        
         //Gets data from database
-        public Dictionary<string, object> GenerateQueryParameters(UserModel ToExtractFrom)
+        public Dictionary<string, object> GenerateQueryParameters(UserModel toExtractFrom)
         {
-            if (ToExtractFrom != null)
+            if (toExtractFrom != null)
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>()
                 {
-                    { "@Username", ToExtractFrom.Username },
-                    { "@Password", ToExtractFrom.Password },
-                    { "@IsGoogleAccount", ToExtractFrom.IsGoogleAccount },
-                    { "@CreationDate", ToExtractFrom.CreationDate }
+                    { "@Username", toExtractFrom.Username },
+                    { "@Password", toExtractFrom.Password },
+                    { "@IsGoogleAccount", toExtractFrom.IsGoogleAccount },
+                    { "@CreationDate", toExtractFrom.CreationDate }
                 };
 
-                if (!string.IsNullOrWhiteSpace(ToExtractFrom.FirstName))
-                    parameters.Add("@FirstName", ToExtractFrom.FirstName);
-                if (!string.IsNullOrWhiteSpace(ToExtractFrom.LastName))
-                    parameters.Add("@LastName", ToExtractFrom.LastName);
-                if (ToExtractFrom.LastLogin != null)
-                    parameters.Add("@LastLogin", ToExtractFrom.LastLogin);
+                if (!string.IsNullOrWhiteSpace(toExtractFrom.FirstName))
+                    parameters.Add("@FirstName", toExtractFrom.FirstName);
+                if (!string.IsNullOrWhiteSpace(toExtractFrom.LastName))
+                    parameters.Add("@LastName", toExtractFrom.LastName);
+                if (toExtractFrom.LastLogin != null)
+                    parameters.Add("@LastLogin", toExtractFrom.LastLogin);
 
                 return parameters;
             }
@@ -69,10 +66,10 @@ namespace EvernoteCloneLibrary.Users
         }
 
         //Fetch data
-        public IEnumerable<UserModel> GetBy(string[] Conditions, Dictionary<string, object> Parameters)
+        public IEnumerable<UserModel> GetBy(string[] conditions, Dictionary<string, object> parameters)
         {
             List<User> usersList = new List<User>();
-            SqlDataReader fetchedSqlDataReader = DataAccess.Instance.ExecuteAndRead("User", Conditions, Parameters);
+            SqlDataReader fetchedSqlDataReader = DataAccess.Instance.ExecuteAndRead("User", conditions, parameters);
 
             NotebookRepository notebookRepository = new NotebookRepository();
 
@@ -106,58 +103,48 @@ namespace EvernoteCloneLibrary.Users
         }
 
         // Insert data in database
-        public bool Insert(UserModel ToInsert)
+        public bool Insert(UserModel toInsert)
         {
-
-            if (ToInsert != null)
+            if (toInsert != null)
             {
-                if (string.IsNullOrEmpty(ToInsert.Username) || string.IsNullOrEmpty(ToInsert.Password)
-                    || ToInsert.CreationDate == null)
-                {
+                if (string.IsNullOrEmpty(toInsert.Username) || string.IsNullOrEmpty(toInsert.Password) || toInsert.CreationDate == null)
                     return false;
-                }
 
-                Dictionary<string, object> Parameters = GenerateQueryParameters(ToInsert);
+                Dictionary<string, object> parameters = GenerateQueryParameters(toInsert);
+                
                 int id = DataAccess.Instance.ExecuteAndReturnId(
                     "INSERT INTO [User] ([Username], [Password]," +
-                        (string.IsNullOrWhiteSpace(ToInsert.FirstName) ? "" : " [FirstName],") +
-                        (string.IsNullOrWhiteSpace(ToInsert.LastName) ? "" : " [LastName],") +
+                        (string.IsNullOrWhiteSpace(toInsert.FirstName) ? "" : " [FirstName],") +
+                        (string.IsNullOrWhiteSpace(toInsert.LastName) ? "" : " [LastName],") +
                         " [IsGoogleAccount], [CreationDate]" +
-                        (ToInsert.LastLogin == null ? "" : ", [LastLogin]") +
-                    ") VALUES (@Username, @Password," +
-                        (string.IsNullOrWhiteSpace(ToInsert.FirstName) ? "" : " @FirstName,") +
-                        (string.IsNullOrWhiteSpace(ToInsert.LastName) ? "" : " @LastName,") +
+                        (toInsert.LastLogin == null ? "" : ", [LastLogin]") +
+                        ") VALUES (@Username, @Password," +
+                        (string.IsNullOrWhiteSpace(toInsert.FirstName) ? "" : " @FirstName,") +
+                        (string.IsNullOrWhiteSpace(toInsert.LastName) ? "" : " @LastName,") +
                         " @IsGoogleAccount, @CreationDate" +
-                        (ToInsert.LastLogin == null ? "" : ", @LastLogin") +
-                    ")", Parameters);
+                        (toInsert.LastLogin == null ? "" : ", @LastLogin") +
+                        ")", parameters);
 
                 if (id != -1)
-                {
-                    ToInsert.Id = id;
-                }
-
+                    toInsert.Id = id;
                 return id != -1;
             }
-
             return false;
         }
 
         //Update user
-        public bool Update(UserModel ToUpdate)
+        public bool Update(UserModel toUpdate)
         {
-            if (ToUpdate != null)
+            if (toUpdate != null)
             {
-                if (string.IsNullOrEmpty(ToUpdate.FirstName) || string.IsNullOrEmpty(ToUpdate.LastName) || string.IsNullOrEmpty(ToUpdate.Password) || string.IsNullOrEmpty(ToUpdate.Username))
-                {
+                if (string.IsNullOrEmpty(toUpdate.FirstName) || string.IsNullOrEmpty(toUpdate.LastName) || string.IsNullOrEmpty(toUpdate.Password) || string.IsNullOrEmpty(toUpdate.Username))
                     return false;
-                }
 
-                Dictionary<string, object> parameters = GenerateQueryParameters(ToUpdate);
-                parameters.Add("@Id", ToUpdate.Id);
+                Dictionary<string, object> parameters = GenerateQueryParameters(toUpdate);
+                parameters.Add("@Id", toUpdate.Id);
 
                 return DataAccess.Instance.Execute("UPDATE [User] SET [FirstName] = @FirstName, [LastName] = @LastName, "
                     + "[Username] = @Username, [Password] = @Password WHERE Id = @Id", parameters);
-
             }
             return false;
         }

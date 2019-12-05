@@ -1,10 +1,7 @@
 ﻿using Caliburn.Micro;
 using EvernoteCloneLibrary.Notebooks.Notes;
+using EvernoteCloneLibrary.Utils;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace EvernoteCloneGUI.ViewModels
@@ -14,15 +11,10 @@ namespace EvernoteCloneGUI.ViewModels
     /// </summary>
     public class NoteElementViewModel : PropertyChangedBase
     {
-
         private string _title;
-
         public string Title
         {
-            get
-            {
-                return _title;
-            }
+            get => _title;
             set
             {
                 _title = value;
@@ -33,11 +25,11 @@ namespace EvernoteCloneGUI.ViewModels
 
         public Note Note { get; set; }
 
-        public NoteFeverViewModel Container { get; set; } = null;
+        public NoteFeverViewModel Container { get; set; }
 
-        public void LoadOnClick(EventArgs ClickedEventArgs)
+        public void LoadOnClick(EventArgs clickedEventArgs)
         {
-            if (Container != null && Container.SelectedNote != null)
+            if (Container?.SelectedNote != null)
             {
                 // When we click on the NoteElementView, it gets called from the class which was clicked
                 // thus we need to get the currently selected note (so, the one which is currently being displayed
@@ -54,20 +46,28 @@ namespace EvernoteCloneGUI.ViewModels
                     }
                 }
                 else
-                {
                     SwitchNoteView();
-                }
-
             }
-
+            else
+                SwitchNoteView();
+            
         }
 
         private void SwitchNoteView()
         {
-            Container.SelectedNote = Note;
-            Container.LoadNoteViewIfNoteExists();
+            if(Container != null)
+            {
+                Container.SelectedNote = Note;
+                bool showDeletedNotes = false;
+
+                if(ValidationUtil.AreNotNull(Container.NotebookViewModel, Container.NotebookViewModel.NotebookNotesMenu))
+                {
+                    showDeletedNotes = Container.NotebookViewModel.NotebookNotesMenu.ShowDeletedNotes;
+                }
+
+                Container.LoadNoteViewIfNoteExists(showDeletedNotes);
+            }
+            
         }
-
-
     }
 }

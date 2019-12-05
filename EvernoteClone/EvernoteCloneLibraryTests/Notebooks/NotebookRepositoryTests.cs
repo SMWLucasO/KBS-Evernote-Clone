@@ -10,20 +10,20 @@ namespace EvernoteCloneLibraryTests.Notebooks
     [TestFixture, Order(3)]
     class NotebookRepositoryTests
     {
-        static List<Notebook> InsertedNotebooks = new List<Notebook>();
+        static List<Notebook> _insertedNotebooks = new List<Notebook>();
 
         [Order(1)]
         [TestCase("", true)]
         [TestCase(null, true)]
         [TestCase("Works", true)]
-        public void Insert_ShouldReturn(string Title, bool Expected)
+        public void Insert_ShouldReturn(string title, bool expected)
         {
             // Arrange
             Notebook notebook = new Notebook()
             {
-                UserID = 3,
-                LocationID = 1, // default id for testing
-                Title = Title,
+                UserId = 3,
+                LocationId = 1, // default id for testing
+                Title = title,
                 CreationDate = DateTime.Now.Date,
                 LastUpdated = DateTime.Now
             };
@@ -35,26 +35,26 @@ namespace EvernoteCloneLibraryTests.Notebooks
 
             // Should only add the Id if it got inserted.
             if (actual)
-                InsertedNotebooks.Add(notebook);
+                _insertedNotebooks.Add(notebook);
 
             // Assert
-            Assert.That(Expected, Is.EqualTo(actual));
+            Assert.That(expected, Is.EqualTo(actual));
         }
 
         [Order(2)]
         [TestCase("", true)]
         [TestCase(null, true)]
         [TestCase("ATitle", true)]
-        public void Update_ShouldReturn(string Title, bool Expected)
+        public void Update_ShouldReturn(string title, bool expected)
         {
             // arrange
             NotebookRepository repository = new NotebookRepository();
 
             // act and assert
-            foreach (Notebook notebook in InsertedNotebooks)
+            foreach (Notebook notebook in _insertedNotebooks)
             {
-                notebook.Title = Title;
-                Assert.That(repository.Update(notebook), Is.EqualTo(Expected));
+                notebook.Title = title;
+                Assert.That(repository.Update(notebook), Is.EqualTo(expected));
             }
 
         }
@@ -67,7 +67,7 @@ namespace EvernoteCloneLibraryTests.Notebooks
             NotebookRepository notebookRepository = new NotebookRepository();
 
             // Act and Assert
-            foreach (Notebook notebook in InsertedNotebooks)
+            foreach (Notebook notebook in _insertedNotebooks)
             {
                 Assert.That(
                     notebookRepository.GetBy(
@@ -85,7 +85,7 @@ namespace EvernoteCloneLibraryTests.Notebooks
             NotebookRepository noteRepository = new NotebookRepository();
 
             // Act and Assert
-            foreach (Notebook notebook in InsertedNotebooks)
+            foreach (Notebook notebook in _insertedNotebooks)
             {
                 Assert.That(noteRepository.Delete(notebook), Is.True);
             }

@@ -47,6 +47,12 @@
                             <Border BorderBrush="Black" BorderThickness="0 1 0 0" DockPanel.Dock="Top">
                                 <Button cal:Message.Attach="[Event Click] = [LoadOnClick($eventArgs)]"
                                         VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                                    <!-- Example for context menu -->
+                                    <Button.ContextMenu>
+                                        <ContextMenu StaysOpen="true">
+                                            <MenuItem Header="Remove"/>
+                                        </ContextMenu>
+                                    </Button.ContextMenu>
                                     <Button.Template>
                                         <ControlTemplate TargetType="{x:Type Button}">
                                             <ContentPresenter />

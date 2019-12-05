@@ -1,0 +1,5 @@
+@startuml
+class ListExtensions <<static>> {
+    + {static} AddIfNotPresent(list:List<T>, toAdd:T) : bool
+}
+@enduml

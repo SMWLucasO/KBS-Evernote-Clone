@@ -1,0 +1,8 @@
+@startuml
+class ValidationUtil <<static>> {
+    - {static} ValidateMultiple(validator:Func<object, bool>, objects:object[]) : bool
+    + {static} AreNotNull(objects:object[]) : bool
+    + {static} AreNullOrEmpty(strings:string[]) : bool
+    + {static} IsNotNull(Object:object) : bool
+}
+@enduml

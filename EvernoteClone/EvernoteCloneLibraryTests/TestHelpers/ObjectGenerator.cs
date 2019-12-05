@@ -25,7 +25,7 @@ namespace EvernoteCloneLibraryTests.TestHelpers
             Notebook notebook = new Notebook()
             {
                 Id = -1,
-                LocationID = 1,
+                LocationId = 1,
                 Path = ((new NotebookLocationRepository()).GetBy(
                         new string[] { "Id = @Id" },
                         new Dictionary<string, object>() { { "@Id", 1 } }
@@ -43,7 +43,7 @@ namespace EvernoteCloneLibraryTests.TestHelpers
                 Note note = new Note()
                 {
                     Id = -1,
-                    NotebookID = 1,
+                    NotebookId = 1,
                     Title = $"Test #{j}",
                     Author = $"Some {j}",
                     Content = $"ASDF {j}",

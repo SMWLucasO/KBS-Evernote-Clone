@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EvernoteCloneLibrary.Notebooks.Notes
 {
@@ -13,58 +11,48 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
     /// </summary>
     public class NoteRepository : IRepository<NoteModel>
     {
-
         /// <summary>
         /// The method for inserting a Note record, where the class members are columns and the class member values are column values.
         /// </summary>
-        /// <param name="ToInsert">The model to be inserted into the table</param>
+        /// <param name="toInsert">The model to be inserted into the table</param>
         /// <returns>bool to determine if the note was inserted</returns>
-        public bool Insert(NoteModel ToInsert)
+        public bool Insert(NoteModel toInsert)
         {
-            if (ToInsert != null)
+            if (toInsert != null)
             {
-                if (CheckIfDataIsCorrect(ToInsert))
+                if (CheckIfDataIsCorrect(toInsert))
                 {
-                    if (string.IsNullOrEmpty(ToInsert.Title))
-                    {
-                        ToInsert.Title = "Nameless note";
-                    }
+                    if (string.IsNullOrEmpty(toInsert.Title))
+                        toInsert.Title = "Nameless note";
 
-                    Dictionary<string, object> parameters = GenerateQueryParameters(ToInsert);
+                    Dictionary<string, object> parameters = GenerateQueryParameters(toInsert);
 
-                    int id = DataAccess.Instance.ExecuteAndReturnId("INSERT INTO [Note] ([NotebookID], [Title], [Content], [Author], [CreationDate], [LastUpdated])"
-                            + " VALUES (@NotebookID, @Title, @Content, @Author, @CreationDate, @LastUpdated)", parameters);
+                    int id = DataAccess.Instance.ExecuteAndReturnId("INSERT INTO [Note] ([NotebookID], [Title], [Content], [Author], [CreationDate], [LastUpdated], [Deleted])"
+                            + " VALUES (@NotebookID, @Title, @Content, @Author, @CreationDate, @LastUpdated, @Deleted)", parameters);
                     
                     if(id != -1)
-                    {
-                        ToInsert.Id = id;
-                    }
-
+                        toInsert.Id = id;
                     return id != -1;
                 }
             }
-
             return false;
         }
 
-        private static bool CheckIfDataIsCorrect(NoteModel ToInsert)
-        {
-            return ToInsert.CreationDate != null && ToInsert.LastUpdated != null && !(string.IsNullOrEmpty(ToInsert.Author));
-        }
-
+        private static bool CheckIfDataIsCorrect(NoteModel noteModel) =>
+            !(string.IsNullOrEmpty(noteModel.Author));
 
         /// <summary>
         /// The method for selecting Note records which satisfy the conditions.
         /// </summary>
         /// <param name="conditions">These parameters may NOT be user-typed, injection is possible.</param>
-        /// <param name="Parameters">Bindings for the conditions.</param>
+        /// <param name="parameters">Bindings for the conditions.</param>
         /// <returns>an enumerable containing all the notes selected from the database.</returns>
-        public IEnumerable<NoteModel> GetBy(string[] Conditions, Dictionary<string, object> Parameters)
+        public IEnumerable<NoteModel> GetBy(string[] conditions, Dictionary<string, object> parameters)
         {
             List<NoteModel> generatedModels = new List<NoteModel>();
 
             // Query the database using the specified data
-            SqlDataReader sqlDataReader = DataAccess.Instance.ExecuteAndRead("Note", Conditions, Parameters);
+            SqlDataReader sqlDataReader = DataAccess.Instance.ExecuteAndRead("Note", conditions, parameters);
 
             while (sqlDataReader.Read())
             {
@@ -72,13 +60,14 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
                 generatedModels.Add(new Note()
                 {
                     Id = (int)sqlDataReader["Id"],
-                    NotebookID = (int)sqlDataReader["NotebookID"],
+                    NotebookId = (int)sqlDataReader["NotebookID"],
                     Title = (string)sqlDataReader["Title"],
                     Content = (string)sqlDataReader["Content"],
                     NewContent = (string)sqlDataReader["Content"],
                     Author = (string)sqlDataReader["Author"],
                     CreationDate = (DateTime)sqlDataReader["CreationDate"],
-                    LastUpdated = (DateTime)sqlDataReader["LastUpdated"]
+                    LastUpdated = (DateTime)sqlDataReader["LastUpdated"],
+                    IsDeleted = (bool) sqlDataReader["Deleted"]
                 });
             }
 
@@ -92,75 +81,65 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
         /// <summary>
         /// The method for updating the Note record which the specified model represents.
         /// </summary>
-        /// <param name="ToUpdate">The model which is to be updated</param>
+        /// <param name="toUpdate">The model which is to be updated</param>
         /// <returns>bool to determine if the update was a success</returns>
-        public bool Update(NoteModel ToUpdate)
+        public bool Update(NoteModel toUpdate)
         {
             // TODO: Make sure the note is actually from the author before saving it.
-            if (ToUpdate != null)
+            if (toUpdate != null)
             {
-                if (CheckIfDataExists(ToUpdate))
+                if (CheckIfDataIsCorrect(toUpdate))
                 {
-                    Dictionary<string, object> parameters = GenerateQueryParameters(ToUpdate);
-                    parameters.Add("@Id", ToUpdate.Id);
-
+                    Dictionary<string, object> parameters = GenerateQueryParameters(toUpdate);
+                    parameters.Add("@Id", toUpdate.Id);
 
                     return DataAccess.Instance.Execute("UPDATE [Note] SET [NotebookID] = @NotebookID, [Title] = @Title, [Content] = @Content, "
-                        + "[Author] = @Author, [CreationDate] = @CreationDate, [LastUpdated] = @LastUpdated WHERE Id = @Id",
+                        + "[Author] = @Author, [CreationDate] = @CreationDate, [LastUpdated] = @LastUpdated, [Deleted] = @Deleted WHERE Id = @Id",
                         parameters);
                 }
             }
-
             return false;
-        }
-
-        private static bool CheckIfDataExists(NoteModel ToUpdate)
-        {
-            return !(string.IsNullOrEmpty(ToUpdate.Author) || ToUpdate.CreationDate == null || ToUpdate.LastUpdated == null);
         }
 
         /// <summary>
         /// The method for deleting the Note record which the specified model represents.
         /// </summary>
-        /// <param name="ToDelete"></param>
+        /// <param name="toDelete"></param>
         /// <returns></returns>
-        public bool Delete(NoteModel ToDelete)
+        public bool Delete(NoteModel toDelete)
         {
-            if(ToDelete != null)
+            if(toDelete != null)
             {
-                Dictionary<string, object> Parameter = new Dictionary<string, object>()
-            {
-                { "@Id", ToDelete.Id }
-            };
+                Dictionary<string, object> parameter = new Dictionary<string, object>
+                {
+                    { "@Id", toDelete.Id }
+                };
 
-                return DataAccess.Instance.Execute("DELETE FROM [Note] WHERE Id = @Id", Parameter);
+                return DataAccess.Instance.Execute("DELETE FROM [Note] WHERE Id = @Id", parameter);
             }
-
             return false;
         }
-
 
         /// <summary>
         /// A helper method to generate the query parameters.
         /// </summary>
-        /// <param name="ToExtractFrom">The NoteModel which data will be extracted from</param>
+        /// <param name="toExtractFrom">The NoteModel which data will be extracted from</param>
         /// <returns></returns>
-        public Dictionary<string, object> GenerateQueryParameters(NoteModel ToExtractFrom)
+        public Dictionary<string, object> GenerateQueryParameters(NoteModel toExtractFrom)
         {
-            if (ToExtractFrom != null)
+            if (toExtractFrom != null)
             {
-                return new Dictionary<string, object>() {
-                { "@NotebookID", ToExtractFrom.NotebookID },
-                { "@Title", ToExtractFrom.Title },
-                { "@Content",  ToExtractFrom.Content },
-                { "@Author", ToExtractFrom.Author },
-                { "@CreationDate", ToExtractFrom.CreationDate.Date },
-                { "@LastUpdated", ToExtractFrom.LastUpdated }
-            };
+                return new Dictionary<string, object> {
+                    { "@NotebookID", toExtractFrom.NotebookId },
+                    { "@Title", toExtractFrom.Title },
+                    { "@Content",  toExtractFrom.Content },
+                    { "@Author", toExtractFrom.Author },
+                    { "@CreationDate", toExtractFrom.CreationDate.Date },
+                    { "@LastUpdated", toExtractFrom.LastUpdated },
+                    { "@Deleted", toExtractFrom.IsDeleted }
+                };
             }
-
             return null;
         }
-
     }
 }

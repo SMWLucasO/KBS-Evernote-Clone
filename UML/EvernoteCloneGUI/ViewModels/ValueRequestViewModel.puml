@@ -1,0 +1,12 @@
+@startuml
+class ValueRequestViewModel {
+    +  <<event>> Submission : DialogResultHandler 
+    +  <<event>> Cancellation : DialogResultHandler 
+    + DialogTitle : string <<get>> <<set>> = "No title has been specified."
+    + DialogValueRequestText : string <<get>> <<set>> = "No request text has been given."
+    + Value : string <<get>> <<set>> = ""
+    + OnSubmit(eventArgs:EventArgs) : void
+    + OnCancel(eventArgs:EventArgs) : void
+}
+Screen <|-- ValueRequestViewModel
+@enduml

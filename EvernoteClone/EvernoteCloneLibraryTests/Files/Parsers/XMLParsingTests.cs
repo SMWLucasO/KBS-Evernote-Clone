@@ -12,19 +12,19 @@ namespace EvernoteCloneLibraryTests.Files.Parsers
 {
 
     [TestFixture, Order(1)]
-    class XMLExporterTests
+    class XmlExporterTests
     {
 
         [TestCase(Constant.TEST_NOTEBOOK_STORAGE_PATH + "/testcases/", "file.enex", 1)]
         [TestCase(Constant.TEST_NOTEBOOK_STORAGE_PATH + "/testcases/", "file2.enex", 3)]
-        public void Export_ShouldExport(string FilePath, string Filename, int notes)
+        public void Export_ShouldExport(string filePath, string filename, int notes)
         {
             // Arrange
             IParseable parseable = ObjectGenerator.GenerateTestableNotebook(notes);
 
 
             // Act
-            bool actual = XMLExporter.Export(FilePath, Filename, parseable);
+            bool actual = XmlExporter.Export(filePath, filename, parseable);
 
             // Assert
             Assert.That(actual, Is.True);
@@ -39,14 +39,14 @@ namespace EvernoteCloneLibraryTests.Files.Parsers
         [TestCase("", null, 3)]
         [TestCase(null, "", 3)]
         [TestCase("somepath/", "filewithoutextension", 3)]
-        public void Export_ShouldNotExport(string FilePath, string Filename, int notes)
+        public void Export_ShouldNotExport(string filePath, string filename, int notes)
         {
             // Arrange
             IParseable parseable = ObjectGenerator.GenerateTestableNotebook(notes);
 
 
             // Act
-            bool actual = XMLExporter.Export(FilePath, Filename, parseable);
+            bool actual = XmlExporter.Export(filePath, filename, parseable);
 
             // Assert
             Assert.That(actual, Is.False);
@@ -55,7 +55,7 @@ namespace EvernoteCloneLibraryTests.Files.Parsers
     }
 
     [TestFixture, Order(2)]
-    class XMLImporterTests
+    class XmlImporterTests
     {
 
         [Order(1)]
@@ -63,7 +63,7 @@ namespace EvernoteCloneLibraryTests.Files.Parsers
         public void Import_ShouldImportNotebooks()
         {
             // Act
-            List<Notebook> loaded = XMLImporter.TryImportNotebooks(Constant.TEST_NOTEBOOK_STORAGE_PATH + "/testcases/");
+            List<Notebook> loaded = XmlImporter.TryImportNotebooks(Constant.TEST_NOTEBOOK_STORAGE_PATH + "/testcases/");
 
             // Assert
             Assert.IsNotNull(loaded);
@@ -74,10 +74,10 @@ namespace EvernoteCloneLibraryTests.Files.Parsers
         [TestCase("Folder/That/Doesnot/Exist/")]
         [TestCase(null)]
         [TestCase("SomeExistingDirectory/")]
-        public void Import_ShouldNotImport_IsNull(string Path)
+        public void Import_ShouldNotImport_IsNull(string path)
         {
             // Arrange and Act
-            List<Notebook> actual = XMLImporter.TryImportNotebooks(Path);
+            List<Notebook> actual = XmlImporter.TryImportNotebooks(path);
 
             // Assert
             Assert.IsNull(actual);

@@ -14,7 +14,7 @@ namespace EvernoteCloneLibraryTests.Notebooks
     [TestFixture, Order(5)]
     class NotebookTests
     {
-        public string XMLEmporterTests { get; private set; }
+        public string XmlEmporterTests { get; private set; }
 
 
 
@@ -23,37 +23,37 @@ namespace EvernoteCloneLibraryTests.Notebooks
         [Order(1)]
         [TestCase(-1, 1, true)]
         [TestCase(3, 1, true)]
-        public void Save_ShouldReturn(int UserID, int NotesToGenerate, bool Expected)
+        public void Save_ShouldReturn(int userId, int notesToGenerate, bool expected)
         {
             // Arrange
-            Notebook notebook = (Notebook)ObjectGenerator.GenerateTestableNotebook(NotesToGenerate);
+            Notebook notebook = (Notebook)ObjectGenerator.GenerateTestableNotebook(notesToGenerate);
 
             // Act
-            bool actual = notebook.Save(UserID);
+            bool actual = notebook.Save(userId);
 
             // Assert
-            Assert.That(actual, Is.EqualTo(Expected));
+            Assert.That(actual, Is.EqualTo(expected));
 
         }
 
         [Order(2)]
         [TestCase(-1, true, Description = "If the user ID is '-1', it means it should just get the local notebooks.")]
         [TestCase(3, false, Description = "If the user ID is '3', it means the notes from user 3 will also be loaded.")]
-        public void Load_ShouldReturn(int UserID, bool ShouldJustBeFS)
+        public void Load_ShouldReturn(int userId, bool shouldJustBeFs)
         {
             // Arrange
-            List<Notebook> notebooksFromFS = XMLImporter.ImportNotebooks(Constant.TEST_NOTEBOOK_STORAGE_PATH);
+            List<Notebook> notebooksFromFs = XmlImporter.ImportNotebooks(Constant.TEST_NOTEBOOK_STORAGE_PATH);
             
             // Act
-            List<Notebook> actual = Notebook.Load(UserID);
+            List<Notebook> actual = Notebook.Load(userId);
             // Assert
-            if (ShouldJustBeFS)
+            if (shouldJustBeFs)
             {
-                Assert.That(actual.Count, Is.EqualTo(notebooksFromFS.Count));
+                Assert.That(actual.Count, Is.EqualTo(notebooksFromFs.Count));
             }
             else
             {
-                CollectionAssert.AreNotEquivalent(notebooksFromFS, actual);
+                CollectionAssert.AreNotEquivalent(notebooksFromFs, actual);
             }
 
         }
@@ -63,17 +63,17 @@ namespace EvernoteCloneLibraryTests.Notebooks
         [TestCase(0, "", "Nameless notebook")]
         [TestCase(3, "Notebook1", "Notebook1 (3)")]
         [TestCase(0, "Notebook", "Notebook")]
-        public void ToString_ShouldReturn(int NotesToGenerate, string NotebookTitle, string Expected)
+        public void ToString_ShouldReturn(int notesToGenerate, string notebookTitle, string expected)
         {
             // Arrange
-            Notebook generatedNotebook = (Notebook)ObjectGenerator.GenerateTestableNotebook(NotesToGenerate);
-            generatedNotebook.Title = NotebookTitle;
+            Notebook generatedNotebook = (Notebook)ObjectGenerator.GenerateTestableNotebook(notesToGenerate);
+            generatedNotebook.Title = notebookTitle;
 
             // Act
             string actual = generatedNotebook.ToString();
 
             // Assert
-            Assert.That(Expected, Is.EqualTo(actual));
+            Assert.That(expected, Is.EqualTo(actual));
         }
 
         [Order(4)]
