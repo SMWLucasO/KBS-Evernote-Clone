@@ -19,6 +19,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.ComponentModel;
+using EvernoteCloneLibrary.Users;
 
 // TODO add summary
 
@@ -29,7 +31,9 @@ namespace EvernoteCloneGUI.ViewModels
     /// </summary>
     public class NoteFeverViewModel : Conductor<object>
     {
-
+        LoginViewModel loginViewModel = new LoginViewModel();
+        User loginUser = null;
+       
         // Notebook information for viewing things
         public List<Notebook> Notebooks { get; private set; }
             = new List<Notebook>();
@@ -68,6 +72,13 @@ namespace EvernoteCloneGUI.ViewModels
         /// </summary>
         protected override void OnActivate()
         {
+            Login();
+            if(loginUser == null)
+            {
+                Environment.Exit(0);
+            }
+                
+
             // First load contextmenu's
             RootContext.Items.Add(CreateMenuItem("Add Folder", AddFolderToRoot));
             FolderContext.Items.Add(CreateMenuItem("Add Folder", AddFolder));
@@ -82,7 +93,6 @@ namespace EvernoteCloneGUI.ViewModels
 
             // Only do this when a note has been opened, otherwise the right side should still be empty.
             LoadNoteViewIfNoteExists();
-
         }
 
         private void LoadNotebooks(bool initialLoad = false)
@@ -467,13 +477,19 @@ namespace EvernoteCloneGUI.ViewModels
             LoadNoteViewIfNoteExists();
         }
 
+    
+
         public void Login()
         {
             IWindowManager windowManager = new WindowManager();     
 
             LoginViewModel loginViewModel = new LoginViewModel();
             windowManager.ShowDialog(loginViewModel, null);
+
+            loginUser = loginViewModel.user;
+            UserID = loginUser?.Id ?? -1;
         }
+        
         
         public void SelectNotebook(string Path, string Title)
         {

@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:EvernoteCloneGUI.Views"
+        xmlns:local="clr-namespace:EvernoteCloneGUI.Helpers"
         mc:Ignorable="d"
         Title="LoginView" Height="450" Width="550">
     <Grid>
@@ -22,9 +22,9 @@
         </Grid.RowDefinitions>
 
         <Label Grid.Column="0" Content="Username" Grid.ColumnSpan="2" Margin="104,84,10.5,51" Grid.RowSpan="2"/>
-        <TextBox Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="4" Margin="104,32,103,28.5"/>
+        <TextBox Text="{Binding Path=EmailLogin}" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="4" Margin="104,32,103,28.5"/>
         <Label Grid.Column="0" Grid.Row="2" Content="Password" Margin="104,0,32.5,52.5" Grid.ColumnSpan="2"></Label>
-        <PasswordBox Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="4" Margin="104,32,103,28.5"/>
+        <PasswordBox Name="PasswordLogin" local:PasswordHelper.Attach="False" local:PasswordHelper.Password="{Binding Path=PasswordLogin, Mode=TwoWay, ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged,ValidatesOnExceptions=True}" Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="4" Margin="104,32,103,28.5"/>
         <Button x:Name="Login" Grid.Row="3" Content="Login" Background="#0052cc" Foreground="White" Margin="104,26.5,32.5,10" Grid.ColumnSpan="2"/>
         <Button x:Name="Register" Grid.Row="3" Content="Register" Background="#0052cc" Foreground="White" Margin="33.5,26.5,103,10" Grid.Column="2" Grid.ColumnSpan="2"/>
     </Grid>

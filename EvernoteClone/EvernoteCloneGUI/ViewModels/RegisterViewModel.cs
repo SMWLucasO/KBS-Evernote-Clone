@@ -210,37 +210,17 @@ namespace EvernoteCloneGUI.ViewModels
 
         #endregion
  
-        #region Password encrypter
-
-        //Encrypt password md5
-        public string Encryption(String password)
-        {
-            MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
-            byte[] encrypt;
-            UTF8Encoding encode = new UTF8Encoding();
-
-            //encrypt the given password string into Encrypted data  
-            encrypt = md5.ComputeHash(encode.GetBytes(password));
-            StringBuilder encryptdata = new StringBuilder();
-
-            //Create a new string by using the encrypted data  
-            for (int i = 0; i < encrypt.Length; i++)
-            {
-                encryptdata.Append(encrypt[i].ToString());
-            }
-            return encryptdata.ToString();
-        }
-
-        #endregion
+        
 
         #region Register button
         //Register button event
         public void Register()
         {
+            User user = new User();
             string tbFirstName = FirstName;
             string tbLastName = LastName;
             string tbEmail = Email;
-            string tbPassword = Encryption(Password.ToString());
+            string tbPassword = User.Encryption(Password.ToString());
 
             if (isValidEmail(Email) && ValidatePassword(Password) && PasswordTheSame(PasswordConfirm, Password))
             {

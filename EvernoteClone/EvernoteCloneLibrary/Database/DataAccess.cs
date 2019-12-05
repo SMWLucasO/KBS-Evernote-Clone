@@ -95,7 +95,7 @@ namespace EvernoteCloneLibrary.Database
             }
 
             // Query the database using the specified data
-            return Query($"SELECT * FROM {Table} {conditionBuilder.ToString()}",
+            return Query($"SELECT * FROM [{Table}] {conditionBuilder.ToString()}",
                 Parameters, SqlDataReaderReturnType);
 
         }
