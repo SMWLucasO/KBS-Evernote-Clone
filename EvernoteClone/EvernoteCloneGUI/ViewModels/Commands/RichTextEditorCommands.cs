@@ -19,8 +19,6 @@ namespace EvernoteCloneGUI.ViewModels.Commands
 
         #region Text decoration
 
-        private static bool IsBold = false;
-
         public static void ToggleBold(RichTextBox textEditor)
         {
 
@@ -42,28 +40,24 @@ namespace EvernoteCloneGUI.ViewModels.Commands
                 {
                     if (obj is Run run)
                     {
-                        if (IsBold)
+                        if (run.FontWeight == FontWeights.Normal)
                         {
-                            run.FontWeight = FontWeights.Normal;
-                            IsBold = false;
+                            run.FontWeight = FontWeights.Bold;
                         }
                         else
                         {
-                            run.FontWeight = FontWeights.Bold;
-                            IsBold = true;
+                            run.FontWeight = FontWeights.Normal;
                         }
-
                     }
                     else if (obj is Paragraph paragraph)
                     {
-                        if (IsBold)
+                        if (paragraph.FontWeight == FontWeights.Normal)
                         {
-                            paragraph.FontWeight = FontWeights.Normal;
+                            paragraph.FontWeight = FontWeights.Bold;
                         }
                         else
                         {
-                            paragraph.FontWeight = FontWeights.Bold;
-                            IsBold = true;
+                            paragraph.FontWeight = FontWeights.Normal;
                         }
                     }
                 }
@@ -73,17 +67,135 @@ namespace EvernoteCloneGUI.ViewModels.Commands
 
         public static void ToggleItalic(RichTextBox textEditor)
         {
+            if (!(textEditor.Selection.IsEmpty))
+            {
+                if (textEditor.Selection.GetPropertyValue(TextElement.FontStyleProperty).Equals(FontStyles.Italic))
+                {
+                    ApplySelectionChange(textEditor.Selection, TextElement.FontStyleProperty, FontStyles.Normal);
+                }
+                else
+                {
+                    ApplySelectionChange(textEditor.Selection, TextElement.FontStyleProperty, FontStyles.Italic);
+                }
+            }
+            else
+            {
+                ApplyChange(textEditor, (obj) =>
+                {
+                    if (obj is Run run)
+                    {
+                        if (run.FontStyle == FontStyles.Normal)
+                        {
+                            run.FontStyle = FontStyles.Italic;
+                        }
+                        else
+                        {
+                            run.FontStyle = FontStyles.Normal;
+                        }
+                    }
+                    else if (obj is Paragraph paragraph)
+                    {
+                        if (paragraph.FontStyle == FontStyles.Normal)
+                        {
+                            paragraph.FontStyle = FontStyles.Italic;
+                        }
+                        else
+                        {
+                            paragraph.FontStyle = FontStyles.Normal;
+                        }
+                    }
+                });
+            }
 
         }
 
         public static void ToggleUnderlined(RichTextBox textEditor)
         {
+            if (!(textEditor.Selection.IsEmpty))
+            {
+                if (textEditor.Selection.GetPropertyValue(Inline.TextDecorationsProperty) == TextDecorations.Underline)
+                {
+                    ApplySelectionChange(textEditor.Selection, Inline.TextDecorationsProperty, null);
 
+                }
+                else
+                {
+                    ApplySelectionChange(textEditor.Selection, Inline.TextDecorationsProperty, TextDecorations.Underline);
+                }
+            }
+            else
+            {
+                ApplyChange(textEditor, (obj) =>
+                {
+                    if (obj is Run run)
+                    {
+                        if (run.TextDecorations == null)
+                        {
+                            run.TextDecorations = TextDecorations.Underline;
+                        }
+                        else
+                        {
+
+                            run.TextDecorations = null;
+                        }
+                    }
+                    else if (obj is Paragraph paragraph)
+                    {
+                        if (paragraph.TextDecorations == null)
+                        {
+                            paragraph.TextDecorations = TextDecorations.Underline;
+                        }
+                        else
+                        {
+                            paragraph.TextDecorations = null;
+                        }
+                    }
+                });
+            }
         }
 
         public static void ToggleStrikethrough(RichTextBox textEditor)
         {
+            if (!(textEditor.Selection.IsEmpty))
+            {
+                if (textEditor.Selection.GetPropertyValue(Inline.TextDecorationsProperty) == TextDecorations.Strikethrough)
+                {
+                    ApplySelectionChange(textEditor.Selection, Inline.TextDecorationsProperty, null);
 
+                }
+                else
+                {
+                    ApplySelectionChange(textEditor.Selection, Inline.TextDecorationsProperty, TextDecorations.Strikethrough);
+                }
+            }
+            else
+            {
+                ApplyChange(textEditor, (obj) =>
+                {
+                    if (obj is Run run)
+                    {
+                        if (run.TextDecorations == null)
+                        {
+                            run.TextDecorations = TextDecorations.Strikethrough;
+                        }
+                        else
+                        {
+                            run.TextDecorations = null;
+                        }
+                    }
+                    else if (obj is Paragraph paragraph)
+                    {
+                        if (paragraph.TextDecorations == null)
+                        {
+                            paragraph.TextDecorations = TextDecorations.Strikethrough;
+                        }
+                        else
+                        {
+                            paragraph.TextDecorations = null;
+                        }
+                    }
+                });
+            }
         }
 
         #endregion
@@ -136,11 +248,11 @@ namespace EvernoteCloneGUI.ViewModels.Commands
                 });
             }
 
-
+            textEditor.Focus();
         }
-
         #endregion
 
+        #region Helper methods for applying text from now on(the point in the text where it was typed) or selectively
         /// <summary>
         /// Use this method when text is selected.
         /// </summary>
@@ -149,7 +261,7 @@ namespace EvernoteCloneGUI.ViewModels.Commands
         /// <param name="value">A value which fits together with the value property</param>
         private static void ApplySelectionChange(TextSelection selection, DependencyProperty formattingProperty, object value)
         {
-            if (ValidationUtil.AreNotNull(selection, formattingProperty, value))
+            if (ValidationUtil.AreNotNull(selection, formattingProperty))
             {
                 selection.ApplyPropertyValue(formattingProperty, value);
             }
@@ -183,6 +295,7 @@ namespace EvernoteCloneGUI.ViewModels.Commands
                         Inline currentRun = curParagraph.Inlines.Where(
                             (inline) => new TextRange(inline.ElementStart, inline.ElementEnd).Contains(textEditor.CaretPosition)).FirstOrDefault();
 
+                        // Generate the new 'run' nodes, where the new piece of text is supposed to be in the middle.
                         Run firstHalf = new Run(new TextRange(currentRun.ContentStart, textEditor.CaretPosition).Text);
                         Run secondHalf = new Run(new TextRange(textEditor.CaretPosition, currentRun.ContentEnd).Text);
                         Run newContent = new Run(" ", textEditor.CaretPosition.GetInsertionPosition(LogicalDirection.Forward));
@@ -192,7 +305,7 @@ namespace EvernoteCloneGUI.ViewModels.Commands
 
                         curParagraph.Inlines.InsertBefore(currentRun, firstHalf);
                         curParagraph.Inlines.Remove(currentRun);
-                        
+
                         TextRange range = new TextRange(currentRun.ElementStart, currentRun.ElementStart)
                         {
                             Text = ""
@@ -203,7 +316,7 @@ namespace EvernoteCloneGUI.ViewModels.Commands
                         // Reset the cursor into the new block. 
                         // If we don't do this, the font size will default again when you start typing.
                         textEditor.CaretPosition = newContent.ContentStart.GetPositionAtOffset(1);
-                        
+
 
                         textEditor.Focus();
 
@@ -213,6 +326,15 @@ namespace EvernoteCloneGUI.ViewModels.Commands
             }
         }
 
+        #endregion
+
+        #region Helper methods
+
+        /// <summary>
+        /// Copy all decorative data (fontweight, fontfamily, fontsize, textdecorations, etc.)
+        /// </summary>
+        /// <param name="currentRun"></param>
+        /// <param name="runs"></param>
         private static void CopyStyleData(Inline currentRun, params Run[] runs)
         {
             foreach (Run run in runs)
@@ -221,7 +343,10 @@ namespace EvernoteCloneGUI.ViewModels.Commands
                 run.FontFamily = currentRun.FontFamily;
                 run.FontSize = currentRun.FontSize;
                 run.TextDecorations = currentRun.TextDecorations;
+                run.FontStyle = currentRun.FontStyle;
             }
         }
+
+        #endregion
     }
 }
