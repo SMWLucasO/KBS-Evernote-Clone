@@ -1,10 +1,13 @@
 ﻿using Caliburn.Micro;
+using EvernoteCloneGUI.ViewModels.Commands;
 using EvernoteCloneGUI.Views;
 using EvernoteCloneLibrary.Constants;
 using EvernoteCloneLibrary.Notebooks;
 using EvernoteCloneLibrary.Notebooks.Notes;
 using EvernoteCloneLibrary.Utils;
 using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Windows;
@@ -12,6 +15,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Markup;
 using System.Xml;
+using System.Linq;
 
 // TODO summary @Lucas
 namespace EvernoteCloneGUI.ViewModels
@@ -21,9 +25,14 @@ namespace EvernoteCloneGUI.ViewModels
     /// </summary>
     public class NewNoteViewModel : Screen
     {
-        
+
         private readonly bool _loadNote;
-        
+
+        private string _font = "";
+        private int _fontSize = 12;
+
+        private RichTextBox _textEditor = null;
+
         #region Databound properties
 
         private string _title = "";
@@ -58,6 +67,43 @@ namespace EvernoteCloneGUI.ViewModels
             {
                 Note.NewContent = value;
                 NotifyOfPropertyChange(() => NewContent);
+            }
+        }
+
+        public List<string> Fonts { get; set; } = new List<string>();
+        public string SelectedFont
+        {
+            get
+            {
+                return _font;
+            }
+            set
+            {
+                // make sure that the value is not null & the given value is an existing font.
+                if (value != null && FontFamily.Families.Where((family) => family.Name == value).ToList().Count > 0)
+                {
+                    _font = value;
+                    RichTextEditorCommands.ChangeFont(_textEditor, _font);
+                }
+
+            }
+        }
+
+        public List<int> FontSizes { get; set; } = new List<int>();
+
+        public int SelectedFontSize
+        {
+            get
+            {
+                return _fontSize;
+            }
+            set
+            {
+                if(value > 0 && value < 250)
+                {
+                    _fontSize = value;
+                    RichTextEditorCommands.ChangeFontSize(_textEditor, _fontSize);
+                }
             }
         }
 
@@ -148,10 +194,10 @@ namespace EvernoteCloneGUI.ViewModels
         {
             bool shouldShowDeleted = false;
             NoteFeverViewModel parent = null;
-            if(Parent != null && Parent is NoteFeverViewModel)
+            if (Parent != null && Parent is NoteFeverViewModel)
             {
-                parent = (NoteFeverViewModel) Parent;
-                if(ValidationUtil.AreNotNull(parent.NotebookViewModel, parent.NotebookViewModel.NotebookNotesMenu))
+                parent = (NoteFeverViewModel)Parent;
+                if (ValidationUtil.AreNotNull(parent.NotebookViewModel, parent.NotebookViewModel.NotebookNotesMenu))
                 {
                     shouldShowDeleted = parent.NotebookViewModel.NotebookNotesMenu.ShowDeletedNotes;
                 }
@@ -220,8 +266,37 @@ namespace EvernoteCloneGUI.ViewModels
         protected override void OnViewAttached(object view, object context)
         {
             if (view is NewNoteView newNoteView)
+            {
+                _textEditor = newNoteView.TextEditor;
                 SetupTextEditor(newNoteView);
+            }
+
         }
+
+        #region Toolbar events
+        
+        public void OnToggleBold()
+        {
+            RichTextEditorCommands.ToggleBold(_textEditor);
+        }
+
+        public void OnToggleItalics()
+        {
+            RichTextEditorCommands.ToggleItalic(_textEditor);
+        }
+
+        public void OnToggleStrikethrough()
+        {
+            RichTextEditorCommands.ToggleStrikethrough(_textEditor);
+        }
+
+        public void OnToggleUnderline()
+        {
+            RichTextEditorCommands.ToggleUnderlined(_textEditor);
+        }
+
+        #endregion
+
 
         #endregion
 
@@ -271,6 +346,25 @@ namespace EvernoteCloneGUI.ViewModels
         {
             if (Note.Content == null)
                 Note.Content = "";
+
+            // Setup fonts
+            foreach (FontFamily font in FontFamily.Families)
+            {
+                
+                Fonts.Add(font.Name);
+                
+            }
+
+            for (int i = 0; i < 200; ++i)
+            {
+                FontSizes.Add(i);
+            }
+
+            // defaults
+            _fontSize = 11;
+            SelectedFont = "Arial";
+
+            NotifyOfPropertyChange(() => Fonts);
 
             if (_loadNote)
                 newNoteView.TextEditor.Document = SetRtf(NewContent);

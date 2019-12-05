@@ -8,6 +8,8 @@
              xmlns:cal="http://www.caliburnproject.org"
              mc:Ignorable="d" Background="WhiteSmoke"
              d:DesignHeight="100" d:DesignWidth="250">
+    <UserControl.Resources>
+    </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="5*"/>
