@@ -381,9 +381,11 @@ namespace EvernoteCloneGUI.ViewModels
                        minCharacters
                        && valueRequestViewModel.Value.Length <= maxCharacters))
                 {
-                    MessageBox.Show($"Text should be between {minCharacters} and {maxCharacters} characters long.",
-                        "NoteFever | Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     valueRequestViewModel.Value = "";
+                    if (MessageBox.Show($"Text should be between {minCharacters} and {maxCharacters} characters long.",
+                            "NoteFever | Error", MessageBoxButton.OKCancel, MessageBoxImage.Error) ==
+                        MessageBoxResult.Cancel)
+                        break;
                 }
             }
 
