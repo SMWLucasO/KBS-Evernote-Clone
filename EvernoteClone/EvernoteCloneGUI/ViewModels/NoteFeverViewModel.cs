@@ -617,7 +617,11 @@ namespace EvernoteCloneGUI.ViewModels
         protected override void OnActivate()
         {
             // Set UserID equal to user input, this is for testing purposes only!
-            _userId = int.Parse(GetUserInput("UserID", "Input UserID for testing purposes! -1 is offline, 3 is online:", 1, 2));
+            var userInputReturn = GetUserInput("UserID",
+                "Input UserID for testing purposes! -1 is offline, 3 is online:", 1, 2);
+            if (userInputReturn == null)
+                Environment.Exit(0);
+            _userId = int.Parse(userInputReturn);
 
             // First load contextmenu's
             RootContext.Items.Add(CreateMenuItem("Add Folder", AddFolderToRoot));
