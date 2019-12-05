@@ -148,7 +148,7 @@ namespace EvernoteCloneGUI.ViewModels
                 {
                     foreach (Note note in notes.Cast<Note>())
                     {
-                        if(!note.IsDeleted || ShowDeletedNotes)
+                        if (!note.IsDeleted || ShowDeletedNotes)
                         {
                             NoteElementViewModel noteElementView = new NoteElementViewModel()
                             {
@@ -158,11 +158,21 @@ namespace EvernoteCloneGUI.ViewModels
                                 NoteCreationDate = note.CreationDate.Date.ToString("dd-MM-yyyy") ?? "Unknown"
                             };
 
+                            // @Tiemen Nienhuis (find a way to bind it properly) 
+                            if (note.IsDeleted)
+                            {
+                                // ... context menu specific to deletion
+                            }
+                            else
+                            {
+                                // if note is not deleted...
+                            }
+
                             if (note.Equals(noteFeverViewModel.SelectedNote) && noteFeverViewModel.NotebookViewModel != null)
                                 noteFeverViewModel.NotebookViewModel.SelectedNoteElement = noteElementView;
                             noteElementViewModels.Add(noteElementView);
                         }
-                        
+
                     }
                 }
             }
