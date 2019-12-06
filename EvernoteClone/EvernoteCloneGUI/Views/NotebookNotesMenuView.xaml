@@ -50,7 +50,7 @@
                                     <!-- Example for context menu -->
                                     <Button.ContextMenu>
                                         <ContextMenu StaysOpen="true">
-                                            <MenuItem Header="Remove"/>
+                                            <MenuItem Header="Remove" cal:Message.Attach="[Event Click] = [RemoveNote($eventArgs)]"/>
                                         </ContextMenu>
                                     </Button.ContextMenu>
                                     <Button.Template>

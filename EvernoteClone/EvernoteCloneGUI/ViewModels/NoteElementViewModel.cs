@@ -69,5 +69,12 @@ namespace EvernoteCloneGUI.ViewModels
             }
             
         }
+
+        public void RemoveNote(RoutedEventArgs rEvent)
+        {
+            Note.IsDeleted = true;
+            NoteRepository nr = new NoteRepository();
+            nr.Update(Note);
+        }
     }
 }
