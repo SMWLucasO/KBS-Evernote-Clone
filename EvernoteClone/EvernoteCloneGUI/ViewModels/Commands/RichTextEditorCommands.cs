@@ -332,6 +332,30 @@ namespace EvernoteCloneGUI.ViewModels.Commands
         }
         #endregion
 
+        #region Alignment
+
+        public static void SetTextAlignment(RichTextBox textEditor, TextAlignment alignment)
+        {
+            ApplyChange(textEditor, (obj) =>
+            {
+                if (obj is Run run)
+                {
+                    if (run.Parent is Paragraph paragraph)
+                    {
+                        paragraph.TextAlignment = alignment;
+                    }
+
+                }
+                else if (obj is Paragraph paragraph)
+                {
+                    paragraph.TextAlignment = alignment;
+                }
+
+            });
+        }
+
+        #endregion
+
         #region Helper methods for applying text from now on(the point in the text where it was typed) or selectively
         /// <summary>
         /// Use this method when text is selected.
