@@ -56,12 +56,12 @@
                 <Label>Font Size</Label>
                 <ComboBox Margin="5 0 10 0" SelectedItem="{Binding SelectedFontSize}" x:Name="FontSizes" IsEditable="True"/>
                 <Separator/>
-                <Button FontWeight="Bold" cal:Message.Attach="[Event Click] = [OnToggleBold]" Margin="5 0 5 0">B</Button>
-                <Button FontStyle="Italic" cal:Message.Attach="[Event Click] = [OnToggleItalics]"  Margin="5 0 5 0">I</Button>
-                <Button Margin="5 0 5 0" cal:Message.Attach="[Event Click] = [OnToggleUnderline]">
+                <Button FontWeight="Bold" cal:Message.Attach="[Event Click] = [OnToggleBold]" Width="20">B</Button>
+                <Button FontStyle="Italic" cal:Message.Attach="[Event Click] = [OnToggleItalics]"  Width="20">I</Button>
+                <Button Width="20" cal:Message.Attach="[Event Click] = [OnToggleUnderline]">
                     <TextBlock TextDecorations="Underline">U</TextBlock>
                 </Button>
-                <Button Margin="5 0 5 0" cal:Message.Attach="[Event Click] = [OnToggleStrikethrough]">
+                <Button Width="20" cal:Message.Attach="[Event Click] = [OnToggleStrikethrough]">
                     <TextBlock TextDecorations="Strikethrough">S</TextBlock>
                 </Button>
                 <Separator></Separator>
