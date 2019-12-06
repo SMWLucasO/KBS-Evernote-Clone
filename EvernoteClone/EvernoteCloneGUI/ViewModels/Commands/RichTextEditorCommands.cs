@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Windows.Media;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows;
@@ -20,79 +17,48 @@ namespace EvernoteCloneGUI.ViewModels.Commands
 
         #region Color
 
+        /// <summary>
+        /// Handles the setting of textcolor of a selection or setting the color of the 'from now on' text
+        /// </summary>
+        /// <param name="textEditor"></param>
         public static void SetTextColor(RichTextBox textEditor)
         {
-
             string hexadecimalColor = OpenColorPickRequest();
             if (hexadecimalColor != null)
             {
                 Brush brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(hexadecimalColor));
-                if (!(textEditor.Selection.IsEmpty))
-                {
-                    ApplySelectionChange(textEditor.Selection, TextElement.ForegroundProperty, brush);
-                }
-                else
-                {
-                    ApplyChange(textEditor, (obj) =>
-                    {
-                        if (obj is Run run)
-                        {
-                            run.Foreground = brush;
-                        }
-                        else if (obj is Paragraph paragraph)
-                        {
-                            paragraph.Foreground = brush;
-                        }
-                    });
-                }
-            }
-
-
-        }
-
-        public static void ToggleTextMarking(RichTextBox textEditor)
-        {
-            if (!(textEditor.Selection.IsEmpty))
-            {
-                if (textEditor.Selection.GetPropertyValue(TextElement.BackgroundProperty) == null)
-                {
-                    ApplySelectionChange(textEditor.Selection, TextElement.BackgroundProperty, Brushes.Yellow);
-                }
-                else
-                {
-                    ApplySelectionChange(textEditor.Selection, TextElement.BackgroundProperty, null);
-                }
-
-            }
-            else
-            {
                 ApplyChange(textEditor, (obj) =>
                 {
-                    if (obj is Run run)
+                    if (obj is TextSelection run)
                     {
-                        if (run.Background == null)
-                        {
-                            run.Background = Brushes.Yellow;
-                        }
-                        else
-                        {
-                            run.Background = null;
-                        }
+                        run.ApplyPropertyValue(TextElement.ForegroundProperty, brush);
                     }
-                    else if (obj is Paragraph paragraph)
-                    {
-                        if (paragraph.Background == null)
-                        {
-                            paragraph.Background = Brushes.Yellow;
-                        }
-                        else
-                        {
-                            paragraph.Background = null;
-                        }
-                    }
-                }
-                );
+                });
             }
+
+            textEditor.Focus();
+        }
+
+
+        /// <summary>
+        /// Handles the toggling of the marking of a selection or the 'from now on' text
+        /// </summary>
+        /// <param name="textEditor"></param>
+        public static void ToggleTextMarking(RichTextBox textEditor)
+        {
+            ApplyChange(textEditor, (selection) =>
+            {
+                if (selection.GetPropertyValue(TextElement.BackgroundProperty) != Brushes.Yellow)
+                {
+                    selection.ApplyPropertyValue(TextElement.BackgroundProperty, Brushes.Yellow);
+                }
+                else
+                {
+                    selection.ApplyPropertyValue(TextElement.BackgroundProperty, null);
+                }
+            });
+
+            textEditor.Focus();
         }
 
         #endregion
@@ -101,181 +67,70 @@ namespace EvernoteCloneGUI.ViewModels.Commands
 
         public static void ToggleBold(RichTextBox textEditor)
         {
-
-            if (!(textEditor.Selection.IsEmpty))
+            ApplyChange(textEditor, (selection) =>
             {
-                if (textEditor.Selection.GetPropertyValue(TextElement.FontWeightProperty).Equals(FontWeights.Bold))
+                if (selection.GetPropertyValue(TextElement.FontWeightProperty).Equals(FontWeights.Normal))
                 {
-                    ApplySelectionChange(textEditor.Selection, TextElement.FontWeightProperty, FontWeights.Normal);
+                    selection.ApplyPropertyValue(TextElement.FontWeightProperty, FontWeights.Bold);
                 }
                 else
                 {
-                    ApplySelectionChange(textEditor.Selection, TextElement.FontWeightProperty, FontWeights.Bold);
+                    selection.ApplyPropertyValue(TextElement.FontWeightProperty, FontWeights.Normal);
                 }
+            });
 
-            }
-            else
-            {
-                ApplyChange(textEditor, (obj) =>
-                {
-                    if (obj is Run run)
-                    {
-                        if (run.FontWeight == FontWeights.Normal)
-                        {
-                            run.FontWeight = FontWeights.Bold;
-                        }
-                        else
-                        {
-                            run.FontWeight = FontWeights.Normal;
-                        }
-                    }
-                    else if (obj is Paragraph paragraph)
-                    {
-                        if (paragraph.FontWeight == FontWeights.Normal)
-                        {
-                            paragraph.FontWeight = FontWeights.Bold;
-                        }
-                        else
-                        {
-                            paragraph.FontWeight = FontWeights.Normal;
-                        }
-                    }
-                }
-                );
-            }
+            textEditor.Focus();
         }
 
         public static void ToggleItalic(RichTextBox textEditor)
         {
-            if (!(textEditor.Selection.IsEmpty))
+            ApplyChange(textEditor, (selection) =>
             {
-                if (textEditor.Selection.GetPropertyValue(TextElement.FontStyleProperty).Equals(FontStyles.Italic))
+                if (selection.GetPropertyValue(TextElement.FontStyleProperty).Equals(FontStyles.Normal))
                 {
-                    ApplySelectionChange(textEditor.Selection, TextElement.FontStyleProperty, FontStyles.Normal);
+                    selection.ApplyPropertyValue(TextElement.FontStyleProperty, FontStyles.Italic);
                 }
                 else
                 {
-                    ApplySelectionChange(textEditor.Selection, TextElement.FontStyleProperty, FontStyles.Italic);
+                    selection.ApplyPropertyValue(TextElement.FontStyleProperty, FontStyles.Normal);
                 }
-            }
-            else
-            {
-                ApplyChange(textEditor, (obj) =>
-                {
-                    if (obj is Run run)
-                    {
-                        if (run.FontStyle == FontStyles.Normal)
-                        {
-                            run.FontStyle = FontStyles.Italic;
-                        }
-                        else
-                        {
-                            run.FontStyle = FontStyles.Normal;
-                        }
-                    }
-                    else if (obj is Paragraph paragraph)
-                    {
-                        if (paragraph.FontStyle == FontStyles.Normal)
-                        {
-                            paragraph.FontStyle = FontStyles.Italic;
-                        }
-                        else
-                        {
-                            paragraph.FontStyle = FontStyles.Normal;
-                        }
-                    }
-                });
-            }
+            });
 
+            textEditor.Focus();
         }
 
         public static void ToggleUnderlined(RichTextBox textEditor)
         {
-            if (!(textEditor.Selection.IsEmpty))
+            ApplyChange(textEditor, (selection) =>
             {
-                if (textEditor.Selection.GetPropertyValue(Inline.TextDecorationsProperty) == TextDecorations.Underline)
+                if (selection.GetPropertyValue(Inline.TextDecorationsProperty) != TextDecorations.Underline)
                 {
-                    ApplySelectionChange(textEditor.Selection, Inline.TextDecorationsProperty, null);
-
+                    selection.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Underline);
                 }
                 else
                 {
-                    ApplySelectionChange(textEditor.Selection, Inline.TextDecorationsProperty, TextDecorations.Underline);
+                    selection.ApplyPropertyValue(Inline.TextDecorationsProperty, null);
                 }
-            }
-            else
-            {
-                ApplyChange(textEditor, (obj) =>
-                {
-                    if (obj is Run run)
-                    {
-                        if (run.TextDecorations == null)
-                        {
-                            run.TextDecorations = TextDecorations.Underline;
-                        }
-                        else
-                        {
+            });
 
-                            run.TextDecorations = null;
-                        }
-                    }
-                    else if (obj is Paragraph paragraph)
-                    {
-                        if (paragraph.TextDecorations == null)
-                        {
-                            paragraph.TextDecorations = TextDecorations.Underline;
-                        }
-                        else
-                        {
-                            paragraph.TextDecorations = null;
-                        }
-                    }
-                });
-            }
+            textEditor.Focus();
         }
 
         public static void ToggleStrikethrough(RichTextBox textEditor)
         {
-            if (!(textEditor.Selection.IsEmpty))
+            ApplyChange(textEditor, (selection) =>
             {
-                if (textEditor.Selection.GetPropertyValue(Inline.TextDecorationsProperty) == TextDecorations.Strikethrough)
+                if (selection.GetPropertyValue(Inline.TextDecorationsProperty) != TextDecorations.Strikethrough)
                 {
-                    ApplySelectionChange(textEditor.Selection, Inline.TextDecorationsProperty, null);
-
+                    selection.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Strikethrough);
                 }
                 else
                 {
-                    ApplySelectionChange(textEditor.Selection, Inline.TextDecorationsProperty, TextDecorations.Strikethrough);
+                    selection.ApplyPropertyValue(Inline.TextDecorationsProperty, null);
                 }
-            }
-            else
-            {
-                ApplyChange(textEditor, (obj) =>
-                {
-                    if (obj is Run run)
-                    {
-                        if (run.TextDecorations == null)
-                        {
-                            run.TextDecorations = TextDecorations.Strikethrough;
-                        }
-                        else
-                        {
-                            run.TextDecorations = null;
-                        }
-                    }
-                    else if (obj is Paragraph paragraph)
-                    {
-                        if (paragraph.TextDecorations == null)
-                        {
-                            paragraph.TextDecorations = TextDecorations.Strikethrough;
-                        }
-                        else
-                        {
-                            paragraph.TextDecorations = null;
-                        }
-                    }
-                });
-            }
+            });
+
+            textEditor.Focus();
         }
 
         #endregion
@@ -284,49 +139,21 @@ namespace EvernoteCloneGUI.ViewModels.Commands
         public static void ChangeFont(RichTextBox textEditor, string selectedFont)
         {
             FontFamily fontFamily = new FontFamily(selectedFont);
-            if (!(textEditor.Selection.IsEmpty))
+
+            ApplyChange(textEditor, (selection) =>
             {
-                ApplySelectionChange(textEditor.Selection, TextElement.FontFamilyProperty, fontFamily);
-            }
-            else
-            {
-                ApplyChange(textEditor, (obj) =>
-                {
-                    if (obj is Run run)
-                    {
-                        run.FontFamily = fontFamily;
-                    }
-                    else if (obj is Paragraph paragraph)
-                    {
-                        paragraph.FontFamily = fontFamily;
-                    }
-                }
-                );
-            }
+                selection.ApplyPropertyValue(TextElement.FontFamilyProperty, fontFamily);
+            });
 
             textEditor.Focus();
         }
 
         public static void ChangeFontSize(RichTextBox textEditor, int fontSize)
         {
-            if (!(textEditor.Selection.IsEmpty))
+            ApplyChange(textEditor, (selection) =>
             {
-                ApplySelectionChange(textEditor.Selection, TextElement.FontSizeProperty, ((double)fontSize));
-            }
-            else
-            {
-                ApplyChange(textEditor, (obj) =>
-                {
-                    if (obj is Run run)
-                    {
-                        run.FontSize = fontSize;
-                    }
-                    else if (obj is Paragraph paragraph)
-                    {
-                        paragraph.FontSize = fontSize;
-                    }
-                });
-            }
+                selection.ApplyPropertyValue(TextElement.FontSizeProperty, ((double)fontSize));
+            });
 
             textEditor.Focus();
         }
@@ -334,99 +161,44 @@ namespace EvernoteCloneGUI.ViewModels.Commands
 
         #region Alignment
 
+
+        /// <summary>
+        /// Sets the alignment of the 'from now on' or selection text
+        /// </summary>
+        /// <param name="textEditor"></param>
+        /// <param name="alignment"></param>
         public static void SetTextAlignment(RichTextBox textEditor, TextAlignment alignment)
         {
-            ApplyChange(textEditor, (obj) =>
+            ApplyChange(textEditor, (selection) =>
             {
-                if (obj is Run run)
-                {
-                    if (run.Parent is Paragraph paragraph)
-                    {
-                        paragraph.TextAlignment = alignment;
-                    }
-
-                }
-                else if (obj is Paragraph paragraph)
-                {
-                    paragraph.TextAlignment = alignment;
-                }
-
+                selection.ApplyPropertyValue(Paragraph.TextAlignmentProperty, alignment);
             });
+
+            textEditor.Focus();
         }
 
         #endregion
 
         #region Helper methods for applying text from now on(the point in the text where it was typed) or selectively
-        /// <summary>
-        /// Use this method when text is selected.
-        /// </summary>
-        /// <param name="selection"></param>
-        /// <param name="formattingProperty">A value property which can be applied to the selection</param>
-        /// <param name="value">A value which fits together with the value property</param>
-        private static void ApplySelectionChange(TextSelection selection, DependencyProperty formattingProperty, object value)
-        {
-            if (ValidationUtil.AreNotNull(selection, formattingProperty))
-            {
-                selection.ApplyPropertyValue(formattingProperty, value);
-            }
-        }
 
         /// <summary>
         /// Use this method when no text is selected. It means that from now on the 'change' will take effect.
         /// </summary>
         /// <param name="textEditor"></param>
         /// <param name="change"></param>
-        private static void ApplyChange(RichTextBox textEditor, Action<object> change)
+        private static void ApplyChange(RichTextBox textEditor, Action<TextSelection> change)
         {
             if (ValidationUtil.AreNotNull(textEditor, textEditor.Selection, change))
             {
                 if (textEditor.Selection.Start.Paragraph == null)
                 {
                     Paragraph paragraph = new Paragraph();
-                    change(paragraph);
+                    Run run = new Run();
+                    paragraph.Inlines.Add(run);
                     textEditor.Document.Blocks.Add(paragraph);
-
-                }
-                else
-                {
-                    TextPointer currentCaret = textEditor.CaretPosition;
-                    Block curBlock = textEditor.Document.Blocks.Where
-                        (x => x.ContentStart.CompareTo(currentCaret) == -1 && x.ContentEnd.CompareTo(currentCaret) == 1).FirstOrDefault();
-                    if (curBlock != null)
-                    {
-                        Paragraph curParagraph = curBlock as Paragraph;
-
-                        Inline currentRun = curParagraph.Inlines.Where(
-                            (inline) => new TextRange(inline.ElementStart, inline.ElementEnd).Contains(textEditor.CaretPosition)).FirstOrDefault();
-
-                        // Generate the new 'run' nodes, where the new piece of text is supposed to be in the middle.
-                        Run firstHalf = new Run(new TextRange(currentRun.ContentStart, textEditor.CaretPosition).Text);
-                        Run secondHalf = new Run(new TextRange(textEditor.CaretPosition, currentRun.ContentEnd).Text);
-                        Run newContent = new Run(" ", textEditor.CaretPosition.GetInsertionPosition(LogicalDirection.Forward));
-
-                        // Copy all the styling data (text deco, font, font size, etc...)
-                        CopyStyleData(currentRun, firstHalf, secondHalf, newContent);
-
-                        curParagraph.Inlines.InsertBefore(currentRun, firstHalf);
-                        curParagraph.Inlines.Remove(currentRun);
-
-                        TextRange range = new TextRange(currentRun.ElementStart, currentRun.ElementStart)
-                        {
-                            Text = ""
-                        };
-
-                        change(newContent);
-
-                        // Reset the cursor into the new block. 
-                        // If we don't do this, the font size will default again when you start typing.
-                        textEditor.CaretPosition = newContent.ContentStart.GetPositionAtOffset(1);
-
-
-                        textEditor.Focus();
-
-                    }
                 }
 
+                change(textEditor.Selection);
             }
         }
 
@@ -435,24 +207,9 @@ namespace EvernoteCloneGUI.ViewModels.Commands
         #region Helper methods
 
         /// <summary>
-        /// Copy all decorative data (fontweight, fontfamily, fontsize, textdecorations, etc.)
+        /// Opens a popup where the user can insert a HEX-value which will be used as color.
         /// </summary>
-        /// <param name="currentRun"></param>
-        /// <param name="runs"></param>
-        private static void CopyStyleData(Inline currentRun, params Run[] runs)
-        {
-            foreach (Run run in runs)
-            {
-                run.FontWeight = currentRun.FontWeight;
-                run.FontFamily = currentRun.FontFamily;
-                run.FontSize = currentRun.FontSize;
-                run.TextDecorations = currentRun.TextDecorations;
-                run.FontStyle = currentRun.FontStyle;
-                run.Foreground = currentRun.Foreground;
-                run.Background = currentRun.Background;
-            }
-        }
-
+        /// <returns></returns>
         private static string OpenColorPickRequest()
         {
             IWindowManager windowManager = new WindowManager();
