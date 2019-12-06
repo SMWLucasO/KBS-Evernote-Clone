@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Media;
-using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows;
@@ -232,7 +231,6 @@ namespace EvernoteCloneGUI.ViewModels.Commands
 
                         output = $"#{model.Value}";
                         model.TryClose();
-
                     }
                     else
                     {

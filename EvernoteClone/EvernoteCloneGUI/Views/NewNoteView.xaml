@@ -69,6 +69,9 @@
                 <Button Margin="5 0 5 0" cal:Message.Attach="[Event Click] = [OnSetCenterAlignment]">Center</Button>
                 <Button Margin="5 0 5 0" cal:Message.Attach="[Event Click] = [OnSetRightAlignment]">Right</Button>
                 <Separator Margin="5 0 5 0"></Separator>
+                <Button Margin="5 0 5 0" Foreground="Black" Command="EditingCommands.IncreaseIndentation">Indent</Button>
+                <Button Margin="5 0 5 0" Foreground="Black" Command="EditingCommands.DecreaseIndentation">Undent</Button>
+                <Separator/>
                 <Button Margin="5 0 5 0" Foreground="Red" cal:Message.Attach="[Event Click] = [OnSetTextColor]">
                     <TextBlock FontWeight="Bold">TC</TextBlock>
                 </Button>
@@ -107,7 +110,7 @@
         </StackPanel>
         <StackPanel>
             <RichTextBox Height="669" x:Name="TextEditor" cal:Message.Attach="[Event TextChanged] = [StoreRichTextBoxContent($eventArgs)]" 
-                         SpellCheck.IsEnabled="True">
+                         SpellCheck.IsEnabled="True" AcceptsTab="True">
                 <FlowDocument>
                     
                 </FlowDocument>
