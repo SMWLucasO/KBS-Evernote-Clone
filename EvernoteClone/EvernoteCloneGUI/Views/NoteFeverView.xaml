@@ -38,10 +38,11 @@
             </Grid.RowDefinitions>
             <Grid Grid.Row="0" Background="#ffffff" Margin="0,0,0.5,0">
                 <TextBlock Margin="25,0,0,0" Text="Note Fever" Foreground="#0052cc" FontSize="28" VerticalAlignment="Center" FontFamily="Lato" FontWeight="Light"></TextBlock>
-                <Image Margin="0,0,25,0" Source="Images/logotransparentv2.png" Width="64" Height="95" HorizontalAlignment="Right" Stretch="Fill"/>
+                <Image Margin="0,0,25,0" Source="Images/logotransparentv2.png" Width="64" Height="95" HorizontalAlignment="Right" Stretch="Fill"></Image>
             </Grid>
             <Button FontFamily="Lato" FontWeight="Light" Content="Username" Background="#404040" Foreground="White" FontSize="16" Grid.Row="1" Grid.ColumnSpan="1" x:Name="OpenLoginPopupView"></Button>
             <Button FontFamily="Lato" FontWeight="Light" Content="New Note" Background="#0052cc" Foreground="White" FontSize="16" x:Name="OpenNewNotePopupView"  Grid.Row="2" Grid.ColumnSpan="1"  Grid.RowSpan="1"/>
+            <Button Height="25" Width="25" VerticalAlignment="Bottom" HorizontalAlignment="Right"  Background="#0052cc" Foreground="White" Grid.Row="3" Panel.ZIndex="1">&#x27F3;</Button>
             <Button FontFamily="Lato" FontWeight="Light" Content="All Notes" Background="#404040" Foreground="White" FontSize="16" x:Name="OpenAllNotesView" Grid.Row="3" Grid.ColumnSpan="1" Grid.RowSpan="1"></Button>
             <TreeView FontFamily="Lato" FontWeight="ExtraLight" x:Name="NotebooksTreeView" Background="#404040" Foreground="White" Grid.Row="4" ItemsSource="{Binding Path=NotebooksTreeView}" Grid.ColumnSpan="1" Grid.RowSpan="1" cal:Message.Attach="[Event SelectedItemChanged] = [TreeView_SelectedItemChanged($eventArgs)]"></TreeView>
             <Button FontFamily="Lato" FontWeight="Light" Content="Shared With Me" Background="#404040" Foreground="White" FontSize="16" Grid.Row="5" Grid.ColumnSpan="1" ></Button>
