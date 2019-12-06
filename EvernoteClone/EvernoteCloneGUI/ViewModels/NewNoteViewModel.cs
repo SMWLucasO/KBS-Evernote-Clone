@@ -295,6 +295,16 @@ namespace EvernoteCloneGUI.ViewModels
             RichTextEditorCommands.ToggleUnderlined(_textEditor);
         }
 
+        public void OnSetTextColor()
+        {
+            RichTextEditorCommands.SetTextColor(_textEditor);
+        }
+
+        public void OnToggleTextMarking()
+        {
+            RichTextEditorCommands.ToggleTextMarking(_textEditor);
+        }
+
         #endregion
 
 

@@ -69,6 +69,25 @@
                 <Button Margin="5 0 5 0">Center</Button>
                 <Button Margin="5 0 5 0">Right</Button>
                 <Separator Margin="5 0 5 0"></Separator>
+                <Button Margin="5 0 5 0" Foreground="Red" cal:Message.Attach="[Event Click] = [OnSetTextColor]">
+                    <TextBlock FontWeight="Bold">TC</TextBlock>
+                </Button>
+                <Button Margin="5 0 5 0" FontWeight="Bold" cal:Message.Attach="[Event Click] = [OnToggleTextMarking]">
+                    <TextBlock Background="Yellow">M</TextBlock>
+                </Button>
+                <Separator/>
+                <Button Margin="5 0 5 0">
+                    <TextBlock FontWeight="Bold">Insert</TextBlock>
+                    <Button.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Table"></MenuItem>
+                            <MenuItem Header="Codeblocks"></MenuItem>
+                            <MenuItem Header="Ordered list"></MenuItem>
+                            <MenuItem Header="Unordered list"></MenuItem>
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                </Button>
+                <Separator/>
             </ToolBar>
         </ToolBarTray>
         <StackPanel>
@@ -90,7 +109,7 @@
             <RichTextBox Height="669" x:Name="TextEditor" cal:Message.Attach="[Event TextChanged] = [StoreRichTextBoxContent($eventArgs)]" 
                          SpellCheck.IsEnabled="True">
                 <FlowDocument>
-
+                    
                 </FlowDocument>
             </RichTextBox>
         </StackPanel>
