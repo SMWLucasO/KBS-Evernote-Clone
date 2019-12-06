@@ -65,9 +65,9 @@
                     <TextBlock TextDecorations="Strikethrough">S</TextBlock>
                 </Button>
                 <Separator></Separator>
-                <Button Margin="5 0 5 0" >Left</Button>
-                <Button Margin="5 0 5 0">Center</Button>
-                <Button Margin="5 0 5 0">Right</Button>
+                <Button Margin="5 0 5 0" cal:Message.Attach="[Event Click] = [OnSetLeftAlignment]">Left</Button>
+                <Button Margin="5 0 5 0" cal:Message.Attach="[Event Click] = [OnSetCenterAlignment]">Center</Button>
+                <Button Margin="5 0 5 0" cal:Message.Attach="[Event Click] = [OnSetRightAlignment]">Right</Button>
                 <Separator Margin="5 0 5 0"></Separator>
                 <Button Margin="5 0 5 0" Foreground="Red" cal:Message.Attach="[Event Click] = [OnSetTextColor]">
                     <TextBlock FontWeight="Bold">TC</TextBlock>
