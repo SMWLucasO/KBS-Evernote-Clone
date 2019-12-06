@@ -10,7 +10,7 @@ namespace EvernoteCloneLibrary.Notebooks.Location.LocationUser
         {
             LocationUserRepository locationUserRepository = new LocationUserRepository();
             return locationUserRepository.GetBy(
-                new string[] { "UserID = @UserID" },
+                new[] { "UserID = @UserID" },
                 new Dictionary<string, object>() { { "@UserID", userId } }
             ).Select((el) => ((LocationUser)el)).ToList();
         }

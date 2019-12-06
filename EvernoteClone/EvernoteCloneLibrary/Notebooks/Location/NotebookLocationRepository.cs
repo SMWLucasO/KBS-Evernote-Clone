@@ -18,6 +18,14 @@ namespace EvernoteCloneLibrary.Notebooks.Location
             {
                 Dictionary<string, object> parameters = GenerateQueryParameters(toInsert);
 
+                // Check if the path already exists, if so, set toInsert.Id equal to the already existing NotebookLocation id
+                List<NotebookLocationModel> notebookLocations = GetBy(new[] {"Path = @Path"}, parameters).ToList();
+                if (notebookLocations.Count > 0)
+                {
+                    toInsert.Id = notebookLocations[0].Id;
+                    return true;
+                }
+
                 int id = DataAccess.Instance.ExecuteAndReturnId("INSERT INTO [NotebookLocation] ([Path])"
                         + " VALUES (@Path)", parameters);
 
@@ -68,7 +76,7 @@ namespace EvernoteCloneLibrary.Notebooks.Location
             // TODO: Make sure the note is actually from the author before saving it. @Lucas don't think this should be here...
             if (toUpdate != null)
             {
-                if (!(string.IsNullOrEmpty(toUpdate.Path)))
+                if (!string.IsNullOrEmpty(toUpdate.Path) && toUpdate.Id != -1)
                 {
                     Dictionary<string, object> parameters = GenerateQueryParameters(toUpdate);
                     parameters.Add("@Id", toUpdate.Id);
@@ -93,6 +101,8 @@ namespace EvernoteCloneLibrary.Notebooks.Location
                 {
                     { "@Id", toDelete.Id }
                 };
+                
+                
 
                 return DataAccess.Instance.Execute("DELETE FROM [NotebookLocation] WHERE Id = @Id", parameter);
             }

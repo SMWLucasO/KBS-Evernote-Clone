@@ -99,7 +99,7 @@ namespace EvernoteCloneGUI.ViewModels
             }
             set
             {
-                if(value > 0 && value < 250)
+                if (value > 0 && value < 250)
                 {
                     _fontSize = value;
                     RichTextEditorCommands.ChangeFontSize(_textEditor, _fontSize);
@@ -274,7 +274,7 @@ namespace EvernoteCloneGUI.ViewModels
         }
 
         #region Toolbar events
-        
+
         public void OnToggleBold()
         {
             RichTextEditorCommands.ToggleBold(_textEditor);
@@ -293,6 +293,31 @@ namespace EvernoteCloneGUI.ViewModels
         public void OnToggleUnderline()
         {
             RichTextEditorCommands.ToggleUnderlined(_textEditor);
+        }
+
+        public void OnSetTextColor()
+        {
+            RichTextEditorCommands.SetTextColor(_textEditor);
+        }
+
+        public void OnToggleTextMarking()
+        {
+            RichTextEditorCommands.ToggleTextMarking(_textEditor);
+        }
+
+        public void OnSetLeftAlignment()
+        {
+            RichTextEditorCommands.SetTextAlignment(_textEditor, TextAlignment.Left);
+        }
+
+        public void OnSetCenterAlignment()
+        {
+            RichTextEditorCommands.SetTextAlignment(_textEditor, TextAlignment.Center);
+        }
+
+        public void OnSetRightAlignment()
+        {
+            RichTextEditorCommands.SetTextAlignment(_textEditor, TextAlignment.Right);
         }
 
         #endregion
@@ -350,9 +375,9 @@ namespace EvernoteCloneGUI.ViewModels
             // Setup fonts
             foreach (FontFamily font in FontFamily.Families)
             {
-                
+
                 Fonts.Add(font.Name);
-                
+
             }
 
             for (int i = 0; i < 200; ++i)

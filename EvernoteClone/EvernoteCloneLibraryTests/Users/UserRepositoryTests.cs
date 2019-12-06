@@ -12,120 +12,85 @@ namespace EvernoteCloneLibraryTests.Users
     [TestFixture]
     public class UserRepositoryTest
     {
+        private static List<UserModel> storedUsers = new List<UserModel>
+        {
+            new UserModel
+            {
+                Username = "yr7s@hotmail.com",
+                Password = User.Encryption("Appeltje123!"),
+                FirstName = "Nice",
+                LastName = "GoodHustle",
+                CreationDate = DateTime.Now.Date
+            },
+            new UserModel
+            {
+                Username = "test@email.example",
+                Password = User.Encryption("SupersterkWachtwoord123!"),
+                FirstName = "FName",
+                LastName = "LName",
+                CreationDate = DateTime.Now.Date
+            }
+        };
 
-
-        public static List<int> StoredUserIDs
-            = new List<int>();
-
-        [TestCase("yr7s@hotmail.com", "Appeltje123!", "Nice", "GoodHustle"), Order(1)]
-        public void Insert_ShouldInsert(string Username, string Password, string FirstName, string LastName)
+        [Order(1)]
+        [TestCaseSource(nameof(storedUsers))]
+        public void Insert_ShouldInsert(UserModel user)
         {
             //Arrange
             UserRepository userRepository = new UserRepository();
-            UserModel user = new UserModel()
-            {
-                Username = Username,
-                Password = Password,
-                FirstName = FirstName,
-                LastName = LastName,
-                CreationDate = DateTime.Now.Date
-
-            };
 
             //Act            
-            var result = userRepository.Insert(user);
-
-            StoredUserIDs.Add(user.Id);
+            bool result = userRepository.Insert(user);
 
             //Assert
             Assert.IsTrue(result);
         }
 
+        [Order(2)]
+        [TestCaseSource(nameof(storedUsers))]
+        public void Update_ShouldReturn(UserModel user)
+        {
+            //Arrange
+            UserRepository userRepository = new UserRepository();
+            user.FirstName = user.FirstName + "UPDATE";
+            user.LastName = user.LastName + "UPDATE";
+
+            //Act
+            bool result = userRepository.Update(user);
+
+            // Assert
+            Assert.IsTrue(result);
+        }
         
-        [TestCase, Order(2)]
-        public void GetBy_ShouldReturn()
+        [Order(3)]
+        [TestCaseSource(nameof(storedUsers))]
+        public void GetBy_ShouldReturn(UserModel expectedUser)
         {
-
             //Arrange
-            UserRepository user = new UserRepository();
-            UserModel user2 = new UserModel()
-            {
-                Username = "Lol@hotmail.com",
-                Password = "Pk",
-                FirstName = "dk",
-                LastName = "Nice",
-                CreationDate = DateTime.Now.Date
-
-            };
-
-            //Act and Assert
-            foreach (int users in StoredUserIDs)
-            {
-                Assert.That(user.GetBy(new string[] { "id = @Id" }, new Dictionary<string, object> { { "Id", user2.Id } }).ToList().First().Id, Is.EqualTo(users));
-            }
-        }
-
-        [Test, Order(3)]
-        public void Update_ShouldReturn()
-        {
-
-            //Arrange
-            bool Expected = true;
             UserRepository userRepository = new UserRepository();
-            UserModel user = new UserModel()
-            {
-                Username = "Lol@hotmail.com",
-                Password = "Pk",
-                FirstName = "dk",
-                LastName = "Nice",
-                CreationDate = DateTime.Now.Date
-
-            };
+            
+            // Act
+            UserModel actualUser = userRepository.GetBy(
+                new[] {"Id = @Id"},
+                new Dictionary<string, object> {{"Id", expectedUser.Id}}
+            ).ToList().First();
 
             //Act and Assert
-            userRepository.Insert(user);
-
-            foreach (int users in StoredUserIDs)
-            {
-
-                Assert.That(userRepository.Update(user), Is.EqualTo(Expected));
-            }
-
-
+            Assert.AreEqual(expectedUser.Id, actualUser.Id);
         }
 
-        [Test, Order(4)]
-        public void Delete_ShouldReturn()
+        [Order(4)]
+        [TestCaseSource(nameof(storedUsers))]
+        public void Delete_ShouldReturn(UserModel user)
         {
-
-            //Arrange
-            bool Expected = true;
+            // Arrange
             UserRepository userRepository = new UserRepository();
-            UserModel user = new UserModel()
-            {
-                Username = "Lol@hotmail.com",
-                Password = "Pk",
-                FirstName = "dk",
-                LastName = "Nice",
-                CreationDate = DateTime.Now.Date
 
-            };
-
-            //Act and Assert
-            var result = userRepository.Insert(user);
-
-
-            Dictionary<string, object> parameters = new Dictionary<string, object>()
-                {
-                    {"@Id", user.Id}
-                };
-            foreach (int users in StoredUserIDs)
-            {
-
-                Assert.That(userRepository.Delete(user), Is.EqualTo(Expected));
-            }
+            // Act
+            var result = userRepository.Delete(user);
+            
+            // Assert
+            Assert.IsTrue(result);
         }
-
     }
-
 }

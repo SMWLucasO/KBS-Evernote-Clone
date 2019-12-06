@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows;
 using EvernoteCloneLibrary.Utils;
+using Caliburn.Micro;
 
 namespace EvernoteCloneGUI.ViewModels.Commands
 {
@@ -16,6 +17,85 @@ namespace EvernoteCloneGUI.ViewModels.Commands
     /// </summary>
     public static class RichTextEditorCommands
     {
+
+        #region Color
+
+        public static void SetTextColor(RichTextBox textEditor)
+        {
+
+            string hexadecimalColor = OpenColorPickRequest();
+            if (hexadecimalColor != null)
+            {
+                Brush brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(hexadecimalColor));
+                if (!(textEditor.Selection.IsEmpty))
+                {
+                    ApplySelectionChange(textEditor.Selection, TextElement.ForegroundProperty, brush);
+                }
+                else
+                {
+                    ApplyChange(textEditor, (obj) =>
+                    {
+                        if (obj is Run run)
+                        {
+                            run.Foreground = brush;
+                        }
+                        else if (obj is Paragraph paragraph)
+                        {
+                            paragraph.Foreground = brush;
+                        }
+                    });
+                }
+            }
+
+
+        }
+
+        public static void ToggleTextMarking(RichTextBox textEditor)
+        {
+            if (!(textEditor.Selection.IsEmpty))
+            {
+                if (textEditor.Selection.GetPropertyValue(TextElement.BackgroundProperty) == null)
+                {
+                    ApplySelectionChange(textEditor.Selection, TextElement.BackgroundProperty, Brushes.Yellow);
+                }
+                else
+                {
+                    ApplySelectionChange(textEditor.Selection, TextElement.BackgroundProperty, null);
+                }
+
+            }
+            else
+            {
+                ApplyChange(textEditor, (obj) =>
+                {
+                    if (obj is Run run)
+                    {
+                        if (run.Background == null)
+                        {
+                            run.Background = Brushes.Yellow;
+                        }
+                        else
+                        {
+                            run.Background = null;
+                        }
+                    }
+                    else if (obj is Paragraph paragraph)
+                    {
+                        if (paragraph.Background == null)
+                        {
+                            paragraph.Background = Brushes.Yellow;
+                        }
+                        else
+                        {
+                            paragraph.Background = null;
+                        }
+                    }
+                }
+                );
+            }
+        }
+
+        #endregion
 
         #region Text decoration
 
@@ -252,6 +332,30 @@ namespace EvernoteCloneGUI.ViewModels.Commands
         }
         #endregion
 
+        #region Alignment
+
+        public static void SetTextAlignment(RichTextBox textEditor, TextAlignment alignment)
+        {
+            ApplyChange(textEditor, (obj) =>
+            {
+                if (obj is Run run)
+                {
+                    if (run.Parent is Paragraph paragraph)
+                    {
+                        paragraph.TextAlignment = alignment;
+                    }
+
+                }
+                else if (obj is Paragraph paragraph)
+                {
+                    paragraph.TextAlignment = alignment;
+                }
+
+            });
+        }
+
+        #endregion
+
         #region Helper methods for applying text from now on(the point in the text where it was typed) or selectively
         /// <summary>
         /// Use this method when text is selected.
@@ -344,7 +448,51 @@ namespace EvernoteCloneGUI.ViewModels.Commands
                 run.FontSize = currentRun.FontSize;
                 run.TextDecorations = currentRun.TextDecorations;
                 run.FontStyle = currentRun.FontStyle;
+                run.Foreground = currentRun.Foreground;
+                run.Background = currentRun.Background;
             }
+        }
+
+        private static string OpenColorPickRequest()
+        {
+            IWindowManager windowManager = new WindowManager();
+
+            string output = "";
+
+            ValueRequestViewModel valueRequestViewModel = new ValueRequestViewModel
+            {
+                DialogTitle = "Pick a color",
+                DialogValueRequestText = "Insert a HEX color to change the color to (without the '#')"
+            };
+            valueRequestViewModel.Submission += (model) =>
+            {
+                try
+                {
+                    if (model.Value.Length == 3 || model.Value.Length == 6)
+                    {
+                        // If this doesn't error, it means that the value is a proper hexadecimal
+                        Int32.Parse(model.Value, System.Globalization.NumberStyles.HexNumber);
+
+                        output = $"#{model.Value}";
+                        model.TryClose();
+
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please provide a valid hexadecimal color.", "Note Fever", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Please provide a valid hexadecimal color.", "Note Fever", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            };
+
+            valueRequestViewModel.Cancellation += (model) => model.TryClose();
+
+            windowManager.ShowDialog(valueRequestViewModel);
+
+            return output;
         }
 
         #endregion

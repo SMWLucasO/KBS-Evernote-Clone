@@ -17,6 +17,11 @@ namespace EvernoteCloneLibrary.Notebooks.Location.LocationUser
             if (toInsert != null)
             {
                 Dictionary<string, object> parameters = GenerateQueryParameters(toInsert);
+                
+                // Check if the path already exists, if so, set toInsert.Id equal to the already existing NotebookLocation id
+                List<LocationUserModel> notebookLocations = GetBy(new[] {"LocationID = @LocationID", "UserID = @UserID"}, parameters).ToList();
+                if (notebookLocations.Count > 0)
+                    return true;
 
                 return DataAccess.Instance.Execute("INSERT INTO [LocationUser] ([LocationID], [UserID]) VALUES (@LocationID, @UserID)", parameters);
             }
