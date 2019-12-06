@@ -80,7 +80,7 @@
                 </Button>
                 <Separator/>
                 <Button Margin="5 0 5 0">
-                    <TextBlock FontWeight="Bold">Insert</TextBlock>
+                    <TextBlock>Insert</TextBlock>
                     <Button.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="Table"></MenuItem>
