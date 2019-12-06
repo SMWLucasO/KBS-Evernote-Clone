@@ -448,6 +448,8 @@ namespace EvernoteCloneGUI.ViewModels.Commands
                 run.FontSize = currentRun.FontSize;
                 run.TextDecorations = currentRun.TextDecorations;
                 run.FontStyle = currentRun.FontStyle;
+                run.Foreground = currentRun.Foreground;
+                run.Background = currentRun.Background;
             }
         }
 
