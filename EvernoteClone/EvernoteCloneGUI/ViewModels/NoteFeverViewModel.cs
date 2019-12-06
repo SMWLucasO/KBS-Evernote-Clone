@@ -22,6 +22,8 @@ namespace EvernoteCloneGUI.ViewModels
     /// </summary>
     public class NoteFeverViewModel : Conductor<object>
     {
+        #region Properties
+        
         LoginViewModel loginViewModel = new LoginViewModel();
         User loginUser = null;
 
@@ -85,12 +87,15 @@ namespace EvernoteCloneGUI.ViewModels
         /// SelectedTreeViewItem contains the currently selected tree view item
         /// </summary>
         public TreeViewItem SelectedTreeViewItem;
+        
+        #endregion
 
         // <User object stuff here>
         // <ReplaceThis>
         // </User object stuff here>
 
         #region Notebook loading
+        
         /// <summary>
         /// This loads all the notebooks from the filesystem (and from the database as well, if UserID != 1)
         /// </summary>
@@ -116,7 +121,7 @@ namespace EvernoteCloneGUI.ViewModels
         }
 
         #endregion
-
+        
         #region Treeview impl. for notes and notebooks
 
         /// <summary>
@@ -335,7 +340,7 @@ namespace EvernoteCloneGUI.ViewModels
         }
 
         #endregion
-
+        
         #region Treeview context menu, including pop-ups
 
         public void AddNotebook(object sender, RoutedEventArgs e)
@@ -405,12 +410,8 @@ namespace EvernoteCloneGUI.ViewModels
         }
 
         #endregion
-
+        
         #region Loading and opening views
-
-        /// <summary>
-        /// 
-        /// </summary>
         public void LoadNoteViewIfNoteExists(bool showDeletedNotes = false)
         {
             if (SelectedNotebook != null)
@@ -592,7 +593,7 @@ namespace EvernoteCloneGUI.ViewModels
             SelectedNotebook = Notebooks.First(notebook => notebook.Path.Path == path && notebook.Title == title);
             LoadNoteViewIfNoteExists();
         }
-
+        
         #endregion
 
         public void Login()
@@ -606,7 +607,6 @@ namespace EvernoteCloneGUI.ViewModels
             _userId = loginUser?.Id ?? -1;
         }
         
-
         #region Events
 
         public void TreeView_SelectedItemChanged(RoutedPropertyChangedEventArgs<object> routedPropertyChangedEventArgs)
@@ -663,6 +663,5 @@ namespace EvernoteCloneGUI.ViewModels
         }
 
         #endregion
-
     }
 }
