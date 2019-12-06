@@ -142,6 +142,7 @@ namespace EvernoteCloneGUI.ViewModels
         public ObservableCollection<NoteElementViewModel> GenerateNoteElementsFromNotebook(List<INote> notes)
         {
             ObservableCollection<NoteElementViewModel> noteElementViewModels = new ObservableCollection<NoteElementViewModel>();
+            
             if (notes != null)
             {
                 if (Parent is NoteFeverViewModel noteFeverViewModel)
@@ -157,16 +158,6 @@ namespace EvernoteCloneGUI.ViewModels
                                 Title = note.Title ?? "",
                                 NoteCreationDate = note.CreationDate.Date.ToString("dd-MM-yyyy") ?? "Unknown"
                             };
-
-                            // @Tiemen Nienhuis (find a way to bind it properly) 
-                            if (note.IsDeleted)
-                            {
-                                // ... context menu specific to deletion
-                            }
-                            else
-                            {
-                                // if note is not deleted...
-                            }
 
                             if (note.Equals(noteFeverViewModel.SelectedNote) && noteFeverViewModel.NotebookViewModel != null)
                                 noteFeverViewModel.NotebookViewModel.SelectedNoteElement = noteElementView;

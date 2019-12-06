@@ -34,10 +34,11 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
         /// This string should be modified when content changes, not the Content property.
         /// The Content property is specifically for saved content.
         /// </summary>
-        public string NewContent {
+        public string NewContent
+        {
             get
             {
-                if (Content == null) 
+                if (Content == null)
                     Content = _newContent;
                 return _newContent;
             }
@@ -54,11 +55,28 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
         {
             Content = NewContent;
             LastUpdated = DateTime.Now;
-            
-            if(Id == -1)
+
+            if (Id == -1)
                 CreationDate = DateTime.Now.Date;
         }
-        
+
+        /// <summary>
+        /// Delete the note permanently
+        /// TODO: If we end up implementing the note history, delete those before deleting the note itself.
+        /// ^ Same goes for tags
+        /// </summary>
+        public void DeletePermanently()
+        {
+            NoteRepository repository = new NoteRepository();
+            if(this.Id != -1)
+            {
+                repository.Delete(this);
+            }
+           
+            NoteOwner.Notes.Remove(this);
+            NoteOwner.Save();
+        }
+
         /// <summary>
         /// If the author is null, we will throw an exception.
         /// We don't have to care about the Title, because it will automatically be renamed when null.

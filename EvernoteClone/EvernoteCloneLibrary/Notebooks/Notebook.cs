@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using EvernoteCloneLibrary.Extensions;
+using System.IO;
 
 namespace EvernoteCloneLibrary.Notebooks
 {
@@ -304,6 +305,26 @@ namespace EvernoteCloneLibrary.Notebooks
             storedLocally = UpdateLocalStorage(this);
 
             return storedInTheCloud || storedLocally;
+        }
+
+        /// <summary>
+        /// Delete the notebook, including its bindings, completely.
+        /// TODO: @Jorisvos add deletion logic for folders here.
+        /// </summary>
+        public void DeletePermanently()
+        {
+            NotebookRepository notebookRepository = new NotebookRepository();
+            if (this.Id != -1)
+            {
+                notebookRepository.Delete(this);
+            }
+
+            // Delete the notebook file from local storage.
+            string path = GetNotebookStoragePath() + $"/{this.FsName}.enex";
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
         }
 
         /// <summary>
