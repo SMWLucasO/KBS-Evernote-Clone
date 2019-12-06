@@ -24,48 +24,48 @@ namespace EvernoteCloneLibrary.Notebooks.Location
         }
 
         // TODO: add summary
-        public static NotebookLocation GetNotebookLocationById(int id) => 
-            GetNotebookLocationById(id, new NotebookLocationRepository());
-
-        public static NotebookLocation GetNotebookLocationById(int id, NotebookLocationRepository notebookLocationRepository)
+        private static NotebookLocation GetNotebookLocationById(int id,
+            NotebookLocationRepository notebookLocationRepository)
         {
-            return notebookLocationRepository.GetBy(
-                    new string[] { "Id = @Id" },
-                    new Dictionary<string, object>() { { "@Id", id } }
-                ).Select((el) => ((NotebookLocation)el)).ToList()[0];
+            List<NotebookLocation> notebookLocations = notebookLocationRepository.GetBy(
+                new[] {"Id = @Id"},
+                new Dictionary<string, object>() {{"@Id", id}}
+            ).Select(el => (NotebookLocation) el).ToList();
+
+            return notebookLocations.Count > 0 ? notebookLocations.First() : null;
         }
 
-        public static string GetNotebookLocationPathById(int id) =>
-            GetNotebookLocationPathById(id, new NotebookLocationRepository());
-
-        public static string GetNotebookLocationPathById(int id, NotebookLocationRepository notebookLocationRepository)
+        public static NotebookLocation GetNotebookLocationById(int id, int userId)
         {
-            return notebookLocationRepository.GetBy(
-                new string[] { "Id = @Id" },
-                new Dictionary<string, object>() { { "@Id", id } }
-            ).Select((el) => ((NotebookLocation)el)).ToList()[0].Path;
+            List<NotebookLocation> notebookLocations = Load(userId);
+            
+            foreach (NotebookLocation notebookLocation in notebookLocations)
+                if (notebookLocation.Id == id)
+                    return notebookLocation;
+
+            return null;
         }
+
+        public static string GetNotebookLocationPathById(int id, int userId) =>
+            GetNotebookLocationById(id, userId)?.Path;
 
         public static NotebookLocation GetNotebookLocationByPath(string path, int userId)
         {
-            if (userId != -1)
-            {
-                NotebookLocationRepository notebookLocationRepository = new NotebookLocationRepository();
-                return notebookLocationRepository.GetBy(
-                    new[] { "Path = @Path" },
-                    new Dictionary<string, object> { { "@Path", path } }
-                ).Select(notebookLocation => ((NotebookLocation)notebookLocation)).ToList()[0];
-            }
-            return Load(userId).First(notebookLocation => notebookLocation.Path == path);
+            List<NotebookLocation> notebookLocations = Load(userId);
+            
+            foreach (NotebookLocation notebookLocation in notebookLocations)
+                if (notebookLocation.Path == path)
+                    return notebookLocation;
+
+            return null;
         }
 
         public static bool AddNewNotebookLocation(NotebookLocation notebookLocation, int userId) =>
-            AddNotebookLocationToLocalStorage(notebookLocation) || AddNewNotebookLocationToDatabaseAndGetId(notebookLocation, userId) != 1;
+            AddNewNotebookLocationToDatabaseAndGetId(notebookLocation, userId) != 1 || AddNotebookLocationToLocalStorage(notebookLocation);
 
         public static int AddNewNotebookLocationAndGetId(NotebookLocation notebookLocation, int userId)
         {
-            if (userId != -1)
-                AddNewNotebookLocationToDatabaseAndGetId(notebookLocation, userId);
+            AddNewNotebookLocationToDatabaseAndGetId(notebookLocation, userId);
             AddNotebookLocationToLocalStorage(notebookLocation);
 
             return notebookLocation.Id;
