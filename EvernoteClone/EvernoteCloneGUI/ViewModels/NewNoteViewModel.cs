@@ -275,6 +275,11 @@ namespace EvernoteCloneGUI.ViewModels
 
         #region Toolbar events
 
+        public void OnInsertTable()
+        {
+            RichTextEditorCommands.InsertTable(_textEditor);
+        }
+
         public void OnToggleBold()
         {
             RichTextEditorCommands.ToggleBold(_textEditor);

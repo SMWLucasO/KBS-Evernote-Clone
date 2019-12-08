@@ -50,12 +50,13 @@
         <ToolBarTray>
             <ToolBar>
                 <Label>Font</Label>
-                <ComboBox Margin="5 0 10 0" x:Name="Fonts" SelectedItem="{Binding SelectedFont}">
-                    
-                </ComboBox>
+                <ComboBox Margin="5 0 10 0" x:Name="Fonts" SelectedItem="{Binding SelectedFont}" />
+                
                 <Label>Font Size</Label>
                 <ComboBox Margin="5 0 10 0" SelectedItem="{Binding SelectedFontSize}" x:Name="FontSizes" IsEditable="True"/>
+                
                 <Separator/>
+                
                 <Button FontWeight="Bold" cal:Message.Attach="[Event Click] = [OnToggleBold]" Width="20">B</Button>
                 <Button FontStyle="Italic" cal:Message.Attach="[Event Click] = [OnToggleItalics]"  Width="20">I</Button>
                 <Button Width="20" cal:Message.Attach="[Event Click] = [OnToggleUnderline]">
@@ -64,15 +65,20 @@
                 <Button Width="20" cal:Message.Attach="[Event Click] = [OnToggleStrikethrough]">
                     <TextBlock TextDecorations="Strikethrough">S</TextBlock>
                 </Button>
-                <Separator></Separator>
+
+                <Separator />
+
                 <Button Margin="5 0 5 0" cal:Message.Attach="[Event Click] = [OnSetLeftAlignment]">Left</Button>
                 <Button Margin="5 0 5 0" cal:Message.Attach="[Event Click] = [OnSetCenterAlignment]">Center</Button>
                 <Button Margin="5 0 5 0" cal:Message.Attach="[Event Click] = [OnSetRightAlignment]">Right</Button>
-                <Separator Margin="5 0 5 0"></Separator>
+
+                <Separator Margin="5 0 5 0" />
+
                 <Button Margin="5 0 5 0" Foreground="Black" Command="EditingCommands.DecreaseIndentation">Undent</Button>
                 <Button Margin="5 0 5 0" Foreground="Black" Command="EditingCommands.IncreaseIndentation">Indent</Button>
                 
                 <Separator/>
+                
                 <Button Margin="5 0 5 0" Foreground="Red" cal:Message.Attach="[Event Click] = [OnSetTextColor]">
                     <TextBlock FontWeight="Bold">TC</TextBlock>
                 </Button>
@@ -84,7 +90,7 @@
                     <TextBlock>Insert</TextBlock>
                     <Button.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Table"></MenuItem>
+                            <MenuItem Header="Table" cal:Message.Attach="[Event Click] = [OnInsertTable]" />
                             <MenuItem Header="Codeblocks"></MenuItem>
                             <MenuItem Header="Ordered list"></MenuItem>
                             <MenuItem Header="Unordered list"></MenuItem>

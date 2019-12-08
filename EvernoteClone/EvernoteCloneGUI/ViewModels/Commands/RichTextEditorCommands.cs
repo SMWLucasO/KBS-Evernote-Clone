@@ -5,6 +5,7 @@ using System.Windows.Documents;
 using System.Windows;
 using EvernoteCloneLibrary.Utils;
 using Caliburn.Micro;
+using System.Linq;
 
 namespace EvernoteCloneGUI.ViewModels.Commands
 {
@@ -13,6 +14,75 @@ namespace EvernoteCloneGUI.ViewModels.Commands
     /// </summary>
     public static class RichTextEditorCommands
     {
+
+        #region Graphical (tables, separators, codeblocks)
+
+        public static void InsertTable(RichTextBox textEditor)
+        {
+
+            // Get the row and column data, there is no use for the code if either the rows or cols are at 0
+            (uint rows, uint columns) = OpenTableDataSpecifier();
+            if (rows > 0 && columns > 0)
+            {
+                // Generate the table columns
+                Table table = new Table
+                {
+                    CellSpacing = 5
+                };
+
+                for (int i = 0; i < columns; i++)
+                {
+                    table.Columns.Add(new TableColumn
+                    {
+                        Width = new GridLength(10, GridUnitType.Star)
+
+                    }
+                    );
+                }
+
+                // Generate the rows
+                table.RowGroups.Add(new TableRowGroup());
+                for (int i = 0; i < rows; i++)
+                {
+                    TableRow tableRow = new TableRow();
+                    if (i % 2 == 0)
+                    {
+                        tableRow.Background = Brushes.LightGray;
+                    }
+                    else
+                    {
+                        tableRow.Background = Brushes.White;
+                    }
+
+                    table.RowGroups[0].Rows.Add(tableRow);
+                    for (int j = 0; j < columns; j++)
+                    {
+                        table.RowGroups[0].Rows[i].Cells.Add(new TableCell(new Paragraph(new Run("")))
+                        {
+                            FontSize = 12,
+                            Padding = new Thickness(1, 1, 1, 1)
+                        }
+                        );
+                    }
+                }
+
+                Block positionToInsertAt = GetNearestPosition(textEditor);
+
+                // If we can insert the table near our current position, we do this. Otherwise, insert it at the end of the document 
+                if (positionToInsertAt != null)
+                {
+                    textEditor.Document.Blocks.InsertAfter(positionToInsertAt, table);
+                }
+                else
+                {
+                    textEditor.Document.Blocks.Add(table);
+                }
+            }
+
+
+        }
+
+        #endregion
 
         #region Color
 
@@ -206,6 +276,18 @@ namespace EvernoteCloneGUI.ViewModels.Commands
         #region Helper methods
 
         /// <summary>
+        /// Finds and returns the nearest block at our current cursor position
+        /// </summary>
+        /// <param name="textEditor"></param>
+        /// <returns></returns>
+        private static Block GetNearestPosition(RichTextBox textEditor)
+        {
+            return textEditor.Document.Blocks
+                .Where(x => x.ContentStart.CompareTo(textEditor.CaretPosition) == -1 && x.ContentEnd.CompareTo(textEditor.CaretPosition) == 1)
+                .FirstOrDefault();
+        }
+
+        /// <summary>
         /// Opens a popup where the user can insert a HEX-value which will be used as color.
         /// </summary>
         /// <returns></returns>
@@ -249,6 +331,29 @@ namespace EvernoteCloneGUI.ViewModels.Commands
 
             return output;
         }
+
+        /// <summary>
+        /// Open a window and return a tuple containing: (rowcount, columncount)
+        /// </summary>
+        /// <returns></returns>
+        private static (uint, uint) OpenTableDataSpecifier()
+        {
+
+            IWindowManager windowManager = new WindowManager();
+            TableRowColumnSpecifierViewModel rowColumnSpecifierViewModel
+                = new TableRowColumnSpecifierViewModel();
+
+            bool closed = windowManager.ShowDialog(rowColumnSpecifierViewModel) ?? false;
+
+            if (closed && rowColumnSpecifierViewModel.Submitted && !rowColumnSpecifierViewModel.Cancelled)
+            {
+                return (rowColumnSpecifierViewModel.RowCount, rowColumnSpecifierViewModel.ColumnCount);
+            }
+
+            return (0, 0);
+        }
+
+
 
         #endregion
     }

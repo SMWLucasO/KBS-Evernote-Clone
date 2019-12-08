@@ -13,6 +13,9 @@ namespace EvernoteCloneGUI.ViewModels
 
         private bool _canSubmit = true;
 
+        public bool Submitted = false;
+        public bool Cancelled = false;
+
         #region Databound properties
 
         public uint ColumnCount { get; set; } = 1;
@@ -57,7 +60,8 @@ namespace EvernoteCloneGUI.ViewModels
             }
             else
             {
-                TryClose();
+                Submitted = true;
+                TryClose(true);
             }
 
         }
@@ -67,7 +71,8 @@ namespace EvernoteCloneGUI.ViewModels
         /// </summary>
         public void OnCancel()
         {
-            TryClose();
+            Cancelled = true;
+            TryClose(false);
         }
 
         #endregion
