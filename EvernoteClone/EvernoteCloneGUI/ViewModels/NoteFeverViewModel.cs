@@ -425,21 +425,8 @@ namespace EvernoteCloneGUI.ViewModels
                     if (SelectedNotebook.Notes.Count > 0)
                     {
                         IEnumerable<INote> notes = SelectedNotebook.Notes.Where((note) => !((Note)note).IsDeleted);
-                        if (notes.ToList().Count > 0)
-                        {
-                            notebookCountString = $"{notes.ToList().Count} note(s)";
-                            SelectedNote = (Note)notes.First();
-                        }
-                        else
-                        {
-                            SelectedNote = null;
-                        }
+                        notebookCountString = $"{notes.ToList().Count} note(s)";
                     }
-                    else
-                    {
-                        SelectedNote = null;
-                    }
-
                 }
                 else
                 {
