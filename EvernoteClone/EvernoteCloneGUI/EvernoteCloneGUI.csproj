@@ -120,6 +120,7 @@
     <Compile Include="ViewModels\NoteElementViewModel.cs" />
     <Compile Include="ViewModels\NoteFeverViewModel.cs" />
     <Compile Include="ViewModels\RegisterViewModel.cs" />
+    <Compile Include="ViewModels\TableRowColumnSpecifierViewModel.cs" />
     <Compile Include="ViewModels\ValueRequestViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -158,6 +159,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\RegisterView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\TableRowColumnSpecifierView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
