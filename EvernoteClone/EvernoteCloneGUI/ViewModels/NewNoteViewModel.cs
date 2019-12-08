@@ -286,24 +286,9 @@ namespace EvernoteCloneGUI.ViewModels
             RichTextEditorCommands.InsertHorizontalLine(_textEditor);
         }
 
-        public void OnToggleBold()
-        {
-            RichTextEditorCommands.ToggleBold(_textEditor);
-        }
-
-        public void OnToggleItalics()
-        {
-            RichTextEditorCommands.ToggleItalic(_textEditor);
-        }
-
         public void OnToggleStrikethrough()
         {
             RichTextEditorCommands.ToggleStrikethrough(_textEditor);
-        }
-
-        public void OnToggleUnderline()
-        {
-            RichTextEditorCommands.ToggleUnderlined(_textEditor);
         }
 
         public void OnSetTextColor()
@@ -314,21 +299,6 @@ namespace EvernoteCloneGUI.ViewModels
         public void OnToggleTextMarking()
         {
             RichTextEditorCommands.ToggleTextMarking(_textEditor);
-        }
-
-        public void OnSetLeftAlignment()
-        {
-            RichTextEditorCommands.SetTextAlignment(_textEditor, TextAlignment.Left);
-        }
-
-        public void OnSetCenterAlignment()
-        {
-            RichTextEditorCommands.SetTextAlignment(_textEditor, TextAlignment.Center);
-        }
-
-        public void OnSetRightAlignment()
-        {
-            RichTextEditorCommands.SetTextAlignment(_textEditor, TextAlignment.Right);
         }
 
         #endregion

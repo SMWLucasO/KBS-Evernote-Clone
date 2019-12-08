@@ -15,8 +15,10 @@ namespace EvernoteCloneGUI.ViewModels.Commands
     public static class RichTextEditorCommands
     {
 
+
         #region Graphical (tables, separators, codeblocks)
 
+        
         public static void InsertHorizontalLine(RichTextBox textEditor)
         {
             // create the horizontal line and find the nearest position to the cursor
@@ -25,7 +27,7 @@ namespace EvernoteCloneGUI.ViewModels.Commands
                 Background = Brushes.Black,
                 Padding = new Thickness(0, 5, 0, 5),
                 Height = 2,
-                MinWidth = 500 
+                MinWidth = 500
             };
             Block nearest = GetNearestPosition(textEditor);
 
@@ -181,57 +183,6 @@ namespace EvernoteCloneGUI.ViewModels.Commands
 
         #region Text decoration
 
-        public static void ToggleBold(RichTextBox textEditor)
-        {
-            ApplyChange(textEditor, (selection) =>
-            {
-                if (selection.GetPropertyValue(TextElement.FontWeightProperty).Equals(FontWeights.Normal))
-                {
-                    selection.ApplyPropertyValue(TextElement.FontWeightProperty, FontWeights.Bold);
-                }
-                else
-                {
-                    selection.ApplyPropertyValue(TextElement.FontWeightProperty, FontWeights.Normal);
-                }
-            });
-
-            textEditor.Focus();
-        }
-
-        public static void ToggleItalic(RichTextBox textEditor)
-        {
-            ApplyChange(textEditor, (selection) =>
-            {
-                if (selection.GetPropertyValue(TextElement.FontStyleProperty).Equals(FontStyles.Normal))
-                {
-                    selection.ApplyPropertyValue(TextElement.FontStyleProperty, FontStyles.Italic);
-                }
-                else
-                {
-                    selection.ApplyPropertyValue(TextElement.FontStyleProperty, FontStyles.Normal);
-                }
-            });
-
-            textEditor.Focus();
-        }
-
-        public static void ToggleUnderlined(RichTextBox textEditor)
-        {
-            ApplyChange(textEditor, (selection) =>
-            {
-                if (selection.GetPropertyValue(Inline.TextDecorationsProperty) != TextDecorations.Underline)
-                {
-                    selection.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Underline);
-                }
-                else
-                {
-                    selection.ApplyPropertyValue(Inline.TextDecorationsProperty, null);
-                }
-            });
-
-            textEditor.Focus();
-        }
-
         public static void ToggleStrikethrough(RichTextBox textEditor)
         {
             ApplyChange(textEditor, (selection) =>
@@ -273,26 +224,6 @@ namespace EvernoteCloneGUI.ViewModels.Commands
 
             textEditor.Focus();
         }
-        #endregion
-
-        #region Alignment
-
-
-        /// <summary>
-        /// Sets the alignment of the 'from now on' or selection text
-        /// </summary>
-        /// <param name="textEditor"></param>
-        /// <param name="alignment"></param>
-        public static void SetTextAlignment(RichTextBox textEditor, TextAlignment alignment)
-        {
-            ApplyChange(textEditor, (selection) =>
-            {
-                selection.ApplyPropertyValue(Paragraph.TextAlignmentProperty, alignment);
-            });
-
-            textEditor.Focus();
-        }
-
         #endregion
 
         #region Helper methods for applying text from now on(the point in the text where it was typed) or selectively
@@ -399,9 +330,8 @@ namespace EvernoteCloneGUI.ViewModels.Commands
 
             return (0, 0);
         }
-
-
-
         #endregion
+
+
     }
 }

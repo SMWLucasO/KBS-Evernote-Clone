@@ -56,10 +56,10 @@
                 <ComboBox Margin="5 0 10 0" SelectedItem="{Binding SelectedFontSize}" x:Name="FontSizes" IsEditable="True"/>
                 
                 <Separator/>
-                
-                <Button FontWeight="Bold" cal:Message.Attach="[Event Click] = [OnToggleBold]" Width="20">B</Button>
-                <Button FontStyle="Italic" cal:Message.Attach="[Event Click] = [OnToggleItalics]"  Width="20">I</Button>
-                <Button Width="20" cal:Message.Attach="[Event Click] = [OnToggleUnderline]">
+
+                <Button FontWeight="Bold" Command="EditingCommands.ToggleBold" Width="20">B</Button>
+                <Button FontStyle="Italic" Command="EditingCommands.ToggleItalic"  Width="20">I</Button>
+                <Button Width="20" Command="EditingCommands.ToggleUnderline">
                     <TextBlock TextDecorations="Underline">U</TextBlock>
                 </Button>
                 <Button Width="20" cal:Message.Attach="[Event Click] = [OnToggleStrikethrough]">
@@ -68,9 +68,9 @@
 
                 <Separator />
 
-                <Button Margin="5 0 5 0" cal:Message.Attach="[Event Click] = [OnSetLeftAlignment]">Left</Button>
-                <Button Margin="5 0 5 0" cal:Message.Attach="[Event Click] = [OnSetCenterAlignment]">Center</Button>
-                <Button Margin="5 0 5 0" cal:Message.Attach="[Event Click] = [OnSetRightAlignment]">Right</Button>
+                <Button Margin="5 0 5 0" Command="EditingCommands.AlignLeft">Left</Button>
+                <Button Margin="5 0 5 0" Command="EditingCommands.AlignCenter">Center</Button>
+                <Button Margin="5 0 5 0" Command="EditingCommands.AlignRight">Right</Button>
 
                 <Separator Margin="5 0 5 0" />
 
@@ -93,8 +93,8 @@
                             <MenuItem Header="Table" cal:Message.Attach="[Event Click] = [OnInsertTable]" />
                             <MenuItem Header="Horizontal line" cal:Message.Attach="[Event Click] = [OnInsertHorizontalLine]" />
                             <MenuItem Header="Codeblocks"></MenuItem>
-                            <MenuItem Header="Ordered list"></MenuItem>
-                            <MenuItem Header="Unordered list"></MenuItem>
+                            <MenuItem Header="Ordered list" Command="EditingCommands.ToggleBullets"></MenuItem>
+                            <MenuItem Header="Unordered list" Command="EditingCommands.ToggleNumbering"></MenuItem>
                         </ContextMenu>
                     </Button.ContextMenu>
                 </Button>
