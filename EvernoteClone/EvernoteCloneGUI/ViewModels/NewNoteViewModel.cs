@@ -268,6 +268,7 @@ namespace EvernoteCloneGUI.ViewModels
             if (view is NewNoteView newNoteView)
             {
                 _textEditor = newNoteView.TextEditor;
+                _textEditor.MinHeight = SystemParameters.FullPrimaryScreenHeight;
                 SetupTextEditor(newNoteView);
             }
 
@@ -278,6 +279,11 @@ namespace EvernoteCloneGUI.ViewModels
         public void OnInsertTable()
         {
             RichTextEditorCommands.InsertTable(_textEditor);
+        }
+
+        public void OnInsertHorizontalLine()
+        {
+            RichTextEditorCommands.InsertHorizontalLine(_textEditor);
         }
 
         public void OnToggleBold()

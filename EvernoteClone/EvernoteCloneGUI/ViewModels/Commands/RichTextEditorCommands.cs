@@ -17,6 +17,42 @@ namespace EvernoteCloneGUI.ViewModels.Commands
 
         #region Graphical (tables, separators, codeblocks)
 
+        public static void InsertHorizontalLine(RichTextBox textEditor)
+        {
+            // create the horizontal line and find the nearest position to the cursor
+            Separator separator = new Separator()
+            {
+                Background = Brushes.Black,
+                Padding = new Thickness(0, 5, 0, 5),
+                Height = 2,
+                MinWidth = 500 
+            };
+            Block nearest = GetNearestPosition(textEditor);
+
+            // create a paragraph and insert the separator in it
+            Paragraph paragraph = new Paragraph()
+            {
+                TextAlignment = TextAlignment.Center,
+            };
+
+            paragraph.Inlines.Add(separator);
+
+            // When there is a block nearby, we insert the line afterwards in a new paragraph
+            // else we just add the paragraph to the end of the document.
+            // We add a newline paragraph for ease-of-use.
+            if (nearest != null)
+            {
+                textEditor.Document.Blocks.InsertAfter(nearest, paragraph);
+                textEditor.Document.Blocks.InsertAfter(paragraph, new Paragraph(new Run("")));
+            }
+            else
+            {
+                textEditor.Document.Blocks.Add(paragraph);
+                textEditor.Document.Blocks.Add(new Paragraph(new Run("")));
+            }
+
+        }
+
         public static void InsertTable(RichTextBox textEditor)
         {
 
@@ -72,10 +108,21 @@ namespace EvernoteCloneGUI.ViewModels.Commands
                 if (positionToInsertAt != null)
                 {
                     textEditor.Document.Blocks.InsertAfter(positionToInsertAt, table);
+
+                    // Add a newline after the table if it is the last element.
+                    if (textEditor.Document.Blocks.LastBlock.Equals(table))
+                    {
+
+                        textEditor.Document.Blocks.Add(new Paragraph(new Run("")));
+                    }
+
                 }
                 else
                 {
                     textEditor.Document.Blocks.Add(table);
+
+                    // Add a newline after the table (we can already assume it is on the last line)
+                    textEditor.Document.Blocks.Add(new Paragraph(new Run("")));
                 }
             }
 
