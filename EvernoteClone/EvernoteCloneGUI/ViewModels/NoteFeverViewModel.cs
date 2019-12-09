@@ -814,7 +814,10 @@ namespace EvernoteCloneGUI.ViewModels
 
             // If user closed login window without logging in or clicking the 'Use locally' button, close application
             if (loginUser == null)
+            {
                 Environment.Exit(0);
+            }
+
 
             // First load context menu's
             RootContext.Items.Add(CreateMenuItem("Add Folder", AddFolderToRoot));
