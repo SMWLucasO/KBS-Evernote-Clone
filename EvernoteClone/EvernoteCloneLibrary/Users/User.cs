@@ -12,8 +12,10 @@ namespace EvernoteCloneLibrary.Users
     {
         public List<Notebook> Notebooks { get; set; }
 
+
         /// <summary>
-        /// Log the user in
+        /// Passes username and password to check if they're in the database
+        /// if so, login will give a success message else a failed message.
         /// </summary>
         /// <param name="username"></param>
         /// <param name="password"></param>
@@ -32,7 +34,7 @@ namespace EvernoteCloneLibrary.Users
         #region Password encrypter
 
         /// <summary>
-        /// Encrypt the password of the user
+        /// Passess a password, gets encrypted through a md5 method and returns this in a string.
         /// </summary>
         /// <param name="password"></param>
         /// <returns></returns>
@@ -57,15 +59,17 @@ namespace EvernoteCloneLibrary.Users
         #endregion
 
 
+        #region Handles sign-up account
         /// <summary>
-        /// Store the account in the database
+        /// First method is to sign-up a normal account. Passes username, password,firstname and lastname. 
+        /// Second method is to sign-up a google account passess same variables with a boolean to set the value to true for google accounts. 
         /// </summary>
         /// <param name="username"></param>
         /// <param name="password"></param>
         /// <param name="firstName"></param>
         /// <param name="lastName"></param>
         /// <returns></returns>
-        public static bool Register(string username, string password, string firstName, string lastName)
+        public static bool Register(string username, string password, string firstName, string lastName, bool isGoogle = false)
         {
             UserRepository userRepository = new UserRepository();
             UserModel userModel = new UserModel()
@@ -74,9 +78,11 @@ namespace EvernoteCloneLibrary.Users
                 Password = password,
                 FirstName = firstName,
                 LastName = lastName,
+                IsGoogleAccount = isGoogle,
                 CreationDate = DateTime.Now.Date
             };
             return userRepository.Insert(userModel);
         }
+        #endregion
     }
 }
