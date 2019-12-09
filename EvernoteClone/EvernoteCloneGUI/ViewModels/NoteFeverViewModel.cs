@@ -106,30 +106,42 @@ namespace EvernoteCloneGUI.ViewModels
         private void SelectFirst()
         {
             SelectFirstNotebook();
-            SelectFirstNote(Notebooks.FirstOrDefault());
+            SelectFirstNote(SelectedNotebook);
         }
 
         /// <summary>
         /// Select the first notebook (if Notebooks not null)
         /// </summary>
-        private void SelectFirstNotebook() =>
-            SelectedNotebook = Notebooks.FirstOrDefault();
+        private void SelectFirstNotebook()
+        {
+            if (Notebooks.Count > 0)
+            {
+                SelectedNotebook = Notebooks.Where((notebook) => !(notebook.IsDeleted)).FirstOrDefault();
+            }
+        }
+
 
         /// <summary>
         /// Select the first note from the selected notebook
         /// </summary>
         private void SelectFirstNoteFromSelectedNotebook() =>
             SelectFirstNote(SelectedNotebook);
-        
+
         /// <summary>
         /// Select the first note from the given notebook
         /// </summary>
         /// <param name="notebook">The notebook from which the note should be selected</param>
-        private void SelectFirstNote(Notebook notebook) =>
-            SelectedNote = (Note)notebook?.Notes.FirstOrDefault();
+        private void SelectFirstNote(Notebook notebook)
+        {
+            if (notebook?.Notes.Count > 0)
+            {
+                SelectedNote = (Note)notebook?.Notes.Where((note) => !((Note)note).IsDeleted).FirstOrDefault();
+            }
+        }
+
 
         #endregion
-        
+
         #region Treeview impl. for notes and notebooks
 
         /// <summary>
@@ -170,7 +182,7 @@ namespace EvernoteCloneGUI.ViewModels
             NotebooksTreeView.Clear();
             NotebooksTreeView.Add(rootTreeViewItem);
         }
-        
+
         /// <summary>
         /// Set the IsExpanded property of every TreeViewItem that is included in the given path
         /// </summary>
@@ -244,7 +256,7 @@ namespace EvernoteCloneGUI.ViewModels
 
             bool notebookIsPartOfSubfolders = false;
             List<NotebookLocation> notebookLocations = RecursiveGetSubFolders(currentNode, ref notebookIsPartOfSubfolders);
-            
+
             return notebookIsPartOfSubfolders ? null : notebookLocations;
         }
 
@@ -259,7 +271,7 @@ namespace EvernoteCloneGUI.ViewModels
         {
             if (notebookIsPartOfSubfolders)
                 return null;
-            
+
             List<NotebookLocation> notebookLocations = new List<NotebookLocation>();
             foreach (TreeViewItem treeViewItem in rootTreeViewItem.Items.Cast<TreeViewItem>())
             {
@@ -267,8 +279,8 @@ namespace EvernoteCloneGUI.ViewModels
                 {
                     notebookIsPartOfSubfolders = true;
                 }
-                    
-                notebookLocations.Add(new NotebookLocation{Path = GetPath(treeViewItem)});
+
+                notebookLocations.Add(new NotebookLocation { Path = GetPath(treeViewItem) });
                 notebookLocations.AddRange(RecursiveGetSubFolders(rootTreeViewItem, ref notebookIsPartOfSubfolders));
             }
 
@@ -411,7 +423,7 @@ namespace EvernoteCloneGUI.ViewModels
             {
                 Label label = new Label
                 {
-                    Content = notebookId + "", 
+                    Content = notebookId + "",
                     Visibility = Visibility.Collapsed
                 };
                 stackPanel.Children.Add(label);
@@ -453,9 +465,9 @@ namespace EvernoteCloneGUI.ViewModels
                     if (newFolderName != null)
                     {
                         if (!NotebookLocation.AddNewNotebookLocation(
-                            new NotebookLocation() {Path = path + "/" + newFolderName}, loginUser.Id))
+                            new NotebookLocation() { Path = path + "/" + newFolderName }, loginUser.Id))
                         {
-                            MessageBox.Show("Something happened while adding the folder, does it already exist?","NoteFever | Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                            MessageBox.Show("Something happened while adding the folder, does it already exist?", "NoteFever | Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                         }
                         else // TODO fix refresh (for now, delete and add)
                         {
@@ -477,9 +489,9 @@ namespace EvernoteCloneGUI.ViewModels
             if (newFolderName != null)
             {
                 if (!NotebookLocation.AddNewNotebookLocation(
-                    new NotebookLocation {Path = newFolderName}, loginUser.Id))
+                    new NotebookLocation { Path = newFolderName }, loginUser.Id))
                 {
-                    MessageBox.Show("Something happened while adding the folder, does it already exist?","NoteFever | Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    MessageBox.Show("Something happened while adding the folder, does it already exist?", "NoteFever | Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 }
                 else // TODO fix refresh (for now, delete and add)
                 {
@@ -549,7 +561,7 @@ namespace EvernoteCloneGUI.ViewModels
         #endregion
 
         #region Treeview context menu, including pop-ups
-        
+
         /// <summary>
         /// Add a notebook to the folder structure
         /// </summary>
@@ -571,11 +583,11 @@ namespace EvernoteCloneGUI.ViewModels
 
                         if (!notebook.Save(loginUser.Id))
                         {
-                            MessageBox.Show("Something happened while adding the notebook, does it already exist?","NoteFever | Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                            MessageBox.Show("Something happened while adding the notebook, does it already exist?", "NoteFever | Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                         }
                         else // TODO fix refresh (for now, delete and add)
                         {
-                            LoadNotebooksTreeView();    
+                            LoadNotebooksTreeView();
                         }
                     }
                 }
@@ -599,7 +611,13 @@ namespace EvernoteCloneGUI.ViewModels
 
             notebook.IsDeleted = true;
             notebookRep.Update(notebook);
+
+            SelectedNotebook = null;
+            LoadNoteViewIfNoteExists();
+
             LoadNotebooksTreeView();
+
+
         }
 
         /// <summary>

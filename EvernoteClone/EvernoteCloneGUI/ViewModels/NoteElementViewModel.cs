@@ -183,7 +183,7 @@ namespace EvernoteCloneGUI.ViewModels
                         Container.NotebookViewModel.NotebookNotesMenu.LoadNotesIntoNotebookMenu();
 
                         // Remove note from text editor if that is the one we're removing.
-                        if (Container.SelectedNote.Equals(Note))
+                        if (Container.SelectedNote != null && Container.SelectedNote.Equals(Note))
                         {
                             Container.SelectedNote = null;
                         }
@@ -215,6 +215,8 @@ namespace EvernoteCloneGUI.ViewModels
 
 
                 Note.NoteOwner.Save();
+                // reload notebook treeview
+                Container.LoadNotebooksTreeView();
 
             }
         }
