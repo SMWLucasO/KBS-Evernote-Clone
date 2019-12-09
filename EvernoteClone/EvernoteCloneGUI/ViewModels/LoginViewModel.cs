@@ -61,7 +61,6 @@ namespace EvernoteCloneGUI.ViewModels
 
         #endregion
 
-
         #region Handles login click event
 
         /// <summary>
@@ -89,13 +88,12 @@ namespace EvernoteCloneGUI.ViewModels
         }
         #endregion
 
-
         #region Local variables
         /// <summary>
         /// Local variables needed to connect to client for Google Oauth2.0.
         /// </summary>
-        const string clientID = "299435995922-pgpo06947h7aij34klp5g5l0ktku26tv.apps.googleusercontent.com";
-        const string clientSecret = "c-ZFoxmjPXFcXUI9sXpAzI8N";
+        const string clientID = "IsSecret";
+        const string clientSecret = "IsSecret";
         const string authorizationEndpoint = "https://accounts.google.com/o/oauth2/v2/auth";
         #endregion
 
