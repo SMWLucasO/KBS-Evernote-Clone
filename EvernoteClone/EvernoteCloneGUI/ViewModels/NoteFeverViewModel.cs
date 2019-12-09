@@ -582,6 +582,11 @@ namespace EvernoteCloneGUI.ViewModels
             }
         }
 
+        /// <summary>
+        /// Removes the notebook from the folder structure
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public void RemoveNotebook(Object sender, RoutedEventArgs e)
         {
             Notebook notebook = this.SelectedNotebook;
@@ -589,7 +594,7 @@ namespace EvernoteCloneGUI.ViewModels
             NotebookRepository notebookRep = new NotebookRepository();
 
 
-
+            //Deleted all the notes in the notebook
             List<INote> notesToRemove = notebook.Notes;
             foreach (Note note in notesToRemove)
             {
