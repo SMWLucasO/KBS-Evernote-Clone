@@ -10,7 +10,11 @@ namespace EvernoteCloneLibrary.Users
 {
     public class UserRepository : IRepository<UserModel>
     {
-        //Deletes user
+        /// <summary>
+        /// Delete the user by its Id, uses a UserModel to identify the user.
+        /// </summary>
+        /// <param name="toDelete"></param>
+        /// <returns></returns>
         public bool Delete(UserModel toDelete)
         {
             if (toDelete != null)
@@ -19,12 +23,18 @@ namespace EvernoteCloneLibrary.Users
                 {
                     {"@Id", toDelete.Id }
                 };
+
                 return DataAccess.Instance.Execute("DELETE FROM [User] WHERE Id = @Id", parameters);
             }
+
             return false;
         }
-        
-        //Gets data from database
+
+        /// <summary>
+        /// Generate the query parameters for usage when executing sql queries
+        /// </summary>
+        /// <param name="toExtractFrom"></param>
+        /// <returns></returns>
         public Dictionary<string, object> GenerateQueryParameters(UserModel toExtractFrom)
         {
             if (toExtractFrom != null)
@@ -38,25 +48,38 @@ namespace EvernoteCloneLibrary.Users
                 };
 
                 if (!string.IsNullOrWhiteSpace(toExtractFrom.FirstName))
+                {
                     parameters.Add("@FirstName", toExtractFrom.FirstName);
+                }
+
                 if (!string.IsNullOrWhiteSpace(toExtractFrom.LastName))
+                {
                     parameters.Add("@LastName", toExtractFrom.LastName);
+                }
+
                 if (toExtractFrom.LastLogin != null)
+                {
                     parameters.Add("@LastLogin", toExtractFrom.LastLogin);
+                }
 
                 return parameters;
             }
             return null;
         }
 
-        public Dictionary<string, object> GenerateLoginParameters(UserModel ToExtractFrom)
+        /// <summary>
+        /// Generate the parameters for the login query 
+        /// </summary>
+        /// <param name="toExtractFrom"></param>
+        /// <returns></returns>
+        public Dictionary<string, object> GenerateLoginParameters(UserModel toExtractFrom)
         {
-            if (ToExtractFrom != null)
+            if (toExtractFrom != null)
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>()
                 {
-                    { "@Username", ToExtractFrom.Username },
-                    { "@Password", ToExtractFrom.Password }
+                    { "@Username", toExtractFrom.Username },
+                    { "@Password", toExtractFrom.Password }
 
                 };
 
@@ -65,7 +88,12 @@ namespace EvernoteCloneLibrary.Users
             return null;
         }
 
-        //Fetch data
+        /// <summary>
+        /// Select user models based upon given conditions
+        /// </summary>
+        /// <param name="conditions"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
         public IEnumerable<UserModel> GetBy(string[] conditions, Dictionary<string, object> parameters)
         {
             List<User> usersList = new List<User>();
@@ -96,22 +124,29 @@ namespace EvernoteCloneLibrary.Users
 
                 usersList.Add(user);
             }
+
             DataAccess.Instance.CloseSqlConnection();
             fetchedSqlDataReader.Close();
 
             return usersList.AsEnumerable();
         }
 
-        // Insert data in database
+        /// <summary>
+        /// Insert a new user into the database, where the UserModel represents the data to insert
+        /// </summary>
+        /// <param name="toInsert"></param>
+        /// <returns></returns>
         public bool Insert(UserModel toInsert)
         {
             if (toInsert != null)
             {
                 if (string.IsNullOrEmpty(toInsert.Username) || string.IsNullOrEmpty(toInsert.Password) || toInsert.CreationDate == null)
+                {
                     return false;
+                }
 
                 Dictionary<string, object> parameters = GenerateQueryParameters(toInsert);
-                
+
                 int id = DataAccess.Instance.ExecuteAndReturnId(
                     "INSERT INTO [User] ([Username], [Password]," +
                         (string.IsNullOrWhiteSpace(toInsert.FirstName) ? "" : " [FirstName],") +
@@ -126,19 +161,28 @@ namespace EvernoteCloneLibrary.Users
                         ")", parameters);
 
                 if (id != -1)
+                {
                     toInsert.Id = id;
+                }
+
                 return id != -1;
             }
             return false;
         }
 
-        //Update user
+        /// <summary>
+        /// Update the given user by its UserModel
+        /// </summary>
+        /// <param name="toUpdate"></param>
+        /// <returns></returns>
         public bool Update(UserModel toUpdate)
         {
             if (toUpdate != null)
             {
                 if (string.IsNullOrEmpty(toUpdate.FirstName) || string.IsNullOrEmpty(toUpdate.LastName) || string.IsNullOrEmpty(toUpdate.Password) || string.IsNullOrEmpty(toUpdate.Username))
+                {
                     return false;
+                }
 
                 Dictionary<string, object> parameters = GenerateQueryParameters(toUpdate);
                 parameters.Add("@Id", toUpdate.Id);
@@ -146,24 +190,34 @@ namespace EvernoteCloneLibrary.Users
                 return DataAccess.Instance.Execute("UPDATE [User] SET [FirstName] = @FirstName, [LastName] = @LastName, "
                     + "[Username] = @Username, [Password] = @Password WHERE Id = @Id", parameters);
             }
+
             return false;
         }
 
+        /// <summary>
+        /// @Chino TODO add summary
+        /// </summary>
+        /// <param name="Comparedb"></param>
+        /// <returns></returns>
         public UserModel CompareDB(UserModel Comparedb)
         {
             if (Comparedb != null)
             {
                 if (string.IsNullOrEmpty(Comparedb.Username) || string.IsNullOrEmpty(Comparedb.Password))
+                {
                     return null;
-                
+                }
+                    
                 Dictionary<string, object> parameters = GenerateLoginParameters(Comparedb);
                 var user = this.GetBy(new[] { "Username = @Username", "Password = @Password" }, parameters).ToList();
 
                 if (user.Count > 0)
+                {
                     return user[0];
-                return null;
+                }
 
             }
+
             return null;
         }
     }

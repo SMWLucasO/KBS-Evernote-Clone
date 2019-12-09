@@ -23,7 +23,10 @@ namespace EvernoteCloneLibrary.Notebooks
             if (toInsert != null)
             {
                 if (string.IsNullOrEmpty(toInsert.Title))
+                {
                     toInsert.Title = "Nameless notebook";
+                }
+
                 Dictionary<string, object> parameters = GenerateQueryParameters(toInsert);
 
                 int id = DataAccess.Instance.ExecuteAndReturnId(
@@ -31,7 +34,10 @@ namespace EvernoteCloneLibrary.Notebooks
                         + " VALUES (@UserID, @LocationID, @Title, @CreationDate, @LastUpdated, @Deleted)", parameters);
 
                 if (id != -1)
+                {
                     toInsert.Id = id;
+                }
+
                 return id != -1;
             }
             return false;
@@ -61,7 +67,7 @@ namespace EvernoteCloneLibrary.Notebooks
                     Title = (string)fetchedSqlDataReader["Title"],
                     CreationDate = (DateTime)fetchedSqlDataReader["CreationDate"],
                     LastUpdated = (DateTime)fetchedSqlDataReader["LastUpdated"],
-                    IsDeleted = (bool) fetchedSqlDataReader["Deleted"],
+                    IsDeleted = (bool)fetchedSqlDataReader["Deleted"],
                     Notes = new List<INote>(),
                 };
 
@@ -115,7 +121,10 @@ namespace EvernoteCloneLibrary.Notebooks
             if (toUpdate != null)
             {
                 if (string.IsNullOrEmpty(toUpdate.Title))
+                {
                     toUpdate.Title = "Nameless title";
+                }
+
 
                 Dictionary<string, object> parameters = GenerateQueryParameters(toUpdate);
                 parameters.Add("@Id", toUpdate.Id);

@@ -22,13 +22,17 @@ namespace EvernoteCloneLibrary.Files.Parsers
                 string fullPath = $"{filePath}/{fileName}";
 
                 if (TryGeneratePath(filePath))
+                {
                     File.WriteAllLines(fullPath, parseableObject.ToXmlRepresentation());
+                }
+
                 return ValidateFileExists(fullPath);
             }
             return false;
         }
 
         #region Validation
+
         /// <summary>
         /// Validate if the input parameters aren't null (or empty)
         /// </summary>
@@ -36,7 +40,7 @@ namespace EvernoteCloneLibrary.Files.Parsers
         /// <param name="filename"></param>
         /// <param name="parseableObject"></param>
         /// <returns></returns>
-        private static bool ValidateExportParameters(string filePath, string filename, IParseable parseableObject) => 
+        private static bool ValidateExportParameters(string filePath, string filename, IParseable parseableObject) =>
             (!(string.IsNullOrEmpty(filePath) || string.IsNullOrEmpty(filename)) && parseableObject != null);
 
         /// <summary>
@@ -46,8 +50,11 @@ namespace EvernoteCloneLibrary.Files.Parsers
         /// <returns></returns>
         private static bool ValidateFileExists(string fullPath) =>
             File.Exists(fullPath) && Path.HasExtension(fullPath);
+
         #endregion
+
         #region Export path generation
+
         /// <summary>
         /// Try to generate the path. If it errors, return false.
         /// </summary>
@@ -55,8 +62,14 @@ namespace EvernoteCloneLibrary.Files.Parsers
         /// <returns></returns>
         private static bool TryGeneratePath(string filePath)
         {
-            try { return GeneratePath(filePath); }
-            catch (Exception) { return false; }
+            try
+            {
+                return GeneratePath(filePath);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -67,11 +80,21 @@ namespace EvernoteCloneLibrary.Files.Parsers
         private static bool GeneratePath(string filePath)
         {
             if (!(Directory.Exists(filePath)))
+            {
                 Directory.CreateDirectory(filePath);
+            }
+
             return Directory.Exists(filePath);
         }
         #endregion
 
+        /// <summary>
+        /// Exports the content[] into the filePath/fileName file.
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="fileName"></param>
+        /// <param name="content"></param>
+        /// <returns></returns>
         public static bool Export(string filePath, string fileName, string[] content)
         {
             if (!(string.IsNullOrEmpty(filePath) || string.IsNullOrEmpty(fileName)))
@@ -79,9 +102,10 @@ namespace EvernoteCloneLibrary.Files.Parsers
                 string fullPath = $"{filePath}/{fileName}";
                 if (Path.HasExtension(fullPath))
                 {
-                    if (!(Directory.Exists(filePath)))
-                        Directory.CreateDirectory(filePath);
-                    File.WriteAllLines(fullPath, content);
+                    if (GeneratePath(filePath))
+                    {
+                        File.WriteAllLines(fullPath, content);
+                    }
 
                     return File.Exists(fullPath);
                 }

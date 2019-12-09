@@ -31,7 +31,10 @@ namespace EvernoteCloneLibrary.Notebooks
             {
                 // If we do Title = null, then it will give the default title.
                 if (_title == null)
+                {
                     Title = null;
+                }
+
                 return _title;
             }
             set => _title = string.IsNullOrEmpty(value) ? "Nameless notebook" : value;
@@ -120,7 +123,6 @@ namespace EvernoteCloneLibrary.Notebooks
                     }
                     else
                     {
-
                         if (notebooksFromFileSystem != null && (notebooksFromDatabase == null || notebooksFromDatabase.Count == 0))
                         {
                             notebooksToReturn.AddRange(notebooksFromFileSystem);
@@ -128,7 +130,9 @@ namespace EvernoteCloneLibrary.Notebooks
                             {
                                 // Update the records in the database 
                                 foreach (Notebook notebook in notebooksFromFileSystem)
+                                {
                                     notebook.Save(userId);
+                                }
                             }
                         }
                         else if (notebooksFromDatabase != null && (notebooksFromFileSystem == null || notebooksFromFileSystem.Count == 0))
@@ -149,26 +153,42 @@ namespace EvernoteCloneLibrary.Notebooks
                 {
                     // Update the records in the database 
                     foreach (Notebook notebook in notebooksFromFileSystem)
+                    {
                         notebook.Save(userId);
+                    }
+
                     notebooksToReturn.AddRange(notebooksFromFileSystem);
                 }
             }
             else if (notebooksFromFileSystem != null)
+            {
                 notebooksToReturn.AddRange(notebooksFromFileSystem);
+            }
+
             return notebooksToReturn;
         }
 
+        /// <summary>
+        /// Update the path of the notebook
+        /// </summary>
+        /// <param name="userId"></param>
         public void UpdatePathId(int userId)
         {
             if (userId != -1)
             {
                 if (Path.Id == -1)
+                {
                     Path = NotebookLocation.GetNotebookLocationByPath(Path.Path, userId);
+                }
+
                 else
                 {
                     NotebookLocation notebookLocation = NotebookLocation.GetNotebookLocationByPath(Path.Path, userId);
                     if (Path.Id != notebookLocation.Id)
+                    {
                         Path = notebookLocation;
+                    }
+
                 }
             }
         }
@@ -186,11 +206,19 @@ namespace EvernoteCloneLibrary.Notebooks
         {
             // If they both have the same Id, we load the last updated one.
             if (dbNotebook.Id == fsNotebook.Id)
+            {
                 listToAddTo.AddIfNotPresent(fsNotebook);
+            }
+
             else if (dbNotebook.Path.Equals(fsNotebook.Path))
+            {
                 listToAddTo.AddIfNotPresent(fsNotebook.Update(dbNotebook.Id));
+            }
+
             else if (dbNotebook.Path.Path == fsNotebook.Path.Path && dbNotebook.Title == fsNotebook.Title)
+            {
                 listToAddTo.AddIfNotPresent(fsNotebook.Update(dbNotebook.Id, userId));
+            }
         }
 
         private Notebook Update(int newId, int userId = -1)
@@ -199,7 +227,9 @@ namespace EvernoteCloneLibrary.Notebooks
 
             // If Path.Id equals -1 (and Id != -1, and thus the notebook is also stored in the database), update this to the database version
             if (Path.Id == -1 && Id != -1)
+            {
                 Path = NotebookLocation.GetNotebookLocationByPath(Path.Path, userId);
+            }
 
             return XmlExporter.Export(GetNotebookStoragePath(), FsName, this) ? this : null;
         }
@@ -207,7 +237,10 @@ namespace EvernoteCloneLibrary.Notebooks
         public static int AddNewNotebookToDatabaseAndGetId(Notebook notebook, int userId)
         {
             if (userId != -1)
+            {
                 new NotebookRepository().Insert(notebook);
+            }
+
             return notebook.Id;
         }
 
@@ -241,7 +274,10 @@ namespace EvernoteCloneLibrary.Notebooks
                 }
             }
             else
+            {
                 storedLocally = UpdateLocalStorage(this);
+            }
+
             bool storedInTheCloud = false;
 
             if (userId != -1)
@@ -280,20 +316,28 @@ namespace EvernoteCloneLibrary.Notebooks
                             if (!storedInTheCloud) // the note is (probably) removed on another client TODO: do something with the bin here!
                             {
                                 if (!Title.EndsWith(" (notebook is removed)"))
+                                {
                                     Title += " (notebook is removed)";
+                                }
                             }
                         }
                         else
+                        {
                             storedInTheCloud = notebookRepository.Insert(this);
+                        }
 
                         foreach (Note note in Notes)
                         {
                             // Set the note's notebookID to the id of this notebook, in case it was -1 before.
                             note.NotebookId = Id;
                             if (note.Id == -1)
+                            {
                                 noteRepository.Insert(note);
+                            }
                             else
+                            {
                                 noteRepository.Update(note);
+                            }
                         }
                     }
                 }
@@ -338,7 +382,10 @@ namespace EvernoteCloneLibrary.Notebooks
             if (notebook != null)
             {
                 if (notebook.FsName == null)
+                {
                     notebook.FsName = $"{Guid.NewGuid()}";
+                }
+
                 return XmlExporter.Export(GetNotebookStoragePath(), $@"{notebook.FsName}.enex", notebook);
             }
             return false;
@@ -360,7 +407,6 @@ namespace EvernoteCloneLibrary.Notebooks
                     notes.Add(note);
                 }
             }
-
 
             return notes;
         }
@@ -398,7 +444,10 @@ namespace EvernoteCloneLibrary.Notebooks
         public override int GetHashCode()
         {
             if (Id != -1)
+            {
                 return Id;
+            }
+
             return base.GetHashCode();
         }
         #endregion
@@ -425,7 +474,10 @@ namespace EvernoteCloneLibrary.Notebooks
             };
 
             foreach (var note in Notes)
+            {
                 xmlRepresentation.AddRange(note.ToXmlRepresentation());
+            }
+
             xmlRepresentation.Add("</en-export>");
 
             return xmlRepresentation.ToArray();

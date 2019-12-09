@@ -24,7 +24,10 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
             {
                 // If we do Title = null, then it will give the default title.
                 if (_title == null)
+                {
                     Title = null;
+                }
+                    
                 return _title;
             }
             set => _title = string.IsNullOrEmpty(value) ? "Nameless note" : value;
@@ -39,7 +42,10 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
             get
             {
                 if (Content == null)
+                {
                     Content = _newContent;
+                }
+                    
                 return _newContent;
             }
             set => _newContent = value;
@@ -57,7 +63,9 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
             LastUpdated = DateTime.Now;
 
             if (Id == -1)
+            {
                 CreationDate = DateTime.Now.Date;
+            }
         }
 
         /// <summary>
@@ -68,7 +76,7 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
         public void DeletePermanently()
         {
             NoteRepository repository = new NoteRepository();
-            if(this.Id != -1)
+            if(Id != -1)
             {
                 repository.Delete(this);
             }
@@ -85,7 +93,9 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
         public override string ToString()
         {
             if (string.IsNullOrWhiteSpace(Author))
+            {
                 throw new InvalidOperationException("Author must exist and cannot be empty.");
+            }
             return $"{Title} by {Author}";
         }
 
@@ -95,7 +105,6 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
         /// <returns></returns>
         public string[] ToXmlRepresentation()
         {
-            // TODO: add tag nodes
             return new[] {
                    "<note>",
                        $"<title>{Title}</title>",

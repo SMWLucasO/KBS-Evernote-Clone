@@ -12,7 +12,12 @@ namespace EvernoteCloneLibrary.Users
     {
         public List<Notebook> Notebooks { get; set; }
 
-
+        /// <summary>
+        /// Log the user in
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
         public static UserModel Login(string username, string password)
         {
             UserRepository userRepositoryLogin = new UserRepository();
@@ -26,7 +31,11 @@ namespace EvernoteCloneLibrary.Users
 
         #region Password encrypter
 
-        //Encrypt password md5
+        /// <summary>
+        /// Encrypt the password of the user
+        /// </summary>
+        /// <param name="password"></param>
+        /// <returns></returns>
         public static string Encryption(String password)
         {
             MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
@@ -48,7 +57,14 @@ namespace EvernoteCloneLibrary.Users
         #endregion
 
 
-        //Inserts user data in database
+        /// <summary>
+        /// Store the account in the database
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="password"></param>
+        /// <param name="firstName"></param>
+        /// <param name="lastName"></param>
+        /// <returns></returns>
         public static bool Register(string username, string password, string firstName, string lastName)
         {
             UserRepository userRepository = new UserRepository();

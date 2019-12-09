@@ -23,15 +23,21 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
                 if (CheckIfDataIsCorrect(toInsert))
                 {
                     if (string.IsNullOrEmpty(toInsert.Title))
+                    {
                         toInsert.Title = "Nameless note";
+                    }
+
 
                     Dictionary<string, object> parameters = GenerateQueryParameters(toInsert);
 
                     int id = DataAccess.Instance.ExecuteAndReturnId("INSERT INTO [Note] ([NotebookID], [Title], [Content], [Author], [CreationDate], [LastUpdated], [Deleted])"
                             + " VALUES (@NotebookID, @Title, @Content, @Author, @CreationDate, @LastUpdated, @Deleted)", parameters);
-                    
-                    if(id != -1)
+
+                    if (id != -1)
+                    {
                         toInsert.Id = id;
+                    }
+
                     return id != -1;
                 }
             }
@@ -67,7 +73,7 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
                     Author = (string)sqlDataReader["Author"],
                     CreationDate = (DateTime)sqlDataReader["CreationDate"],
                     LastUpdated = (DateTime)sqlDataReader["LastUpdated"],
-                    IsDeleted = (bool) sqlDataReader["Deleted"]
+                    IsDeleted = (bool)sqlDataReader["Deleted"]
                 });
             }
 
@@ -85,7 +91,6 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
         /// <returns>bool to determine if the update was a success</returns>
         public bool Update(NoteModel toUpdate)
         {
-            // TODO: Make sure the note is actually from the author before saving it.
             if (toUpdate != null)
             {
                 if (CheckIfDataIsCorrect(toUpdate))
@@ -108,7 +113,7 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
         /// <returns></returns>
         public bool Delete(NoteModel toDelete)
         {
-            if(toDelete != null)
+            if (toDelete != null)
             {
                 Dictionary<string, object> parameter = new Dictionary<string, object>
                 {

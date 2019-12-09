@@ -11,8 +11,6 @@ namespace EvernoteCloneLibrary.Database
     /// </summary>
     public class DataAccess
     {
-        // TODO: Concurrency breaks the _connection, because it can be closed by one thread whilst another is
-        // sending a message. TODO: fix.
 
         /// <summary>
         /// The Singleton accessor to this class.
@@ -53,9 +51,11 @@ namespace EvernoteCloneLibrary.Database
         private T Query<T>(string queryString, Dictionary<string, object> parameters, Func<SqlCommand, T> returnType)
         {
             SqlConnection sqlConnection = OpenSqlConnection();
-            
+
             using (SqlCommand sqlCommand = GenerateParameteredCommand(queryString, sqlConnection, parameters))
+            {
                 return returnType(sqlCommand);
+            }
         }
 
         /// <summary>
@@ -74,13 +74,17 @@ namespace EvernoteCloneLibrary.Database
             for (int i = 0; i < conditions.Length; i++)
             {
                 if (i == 0)
+                {
                     conditionBuilder.Append("WHERE ");
+                }
                 else
+                {
                     conditionBuilder.Append("AND ");
+                }
+
                 conditionBuilder.Append(conditions[i]).Append(" ");
             }
 
-            // Query the database using the specified data
             return Query($"SELECT * FROM [{table}] {conditionBuilder}",
                 parameters, SqlDataReaderReturnType);
         }
@@ -109,7 +113,7 @@ namespace EvernoteCloneLibrary.Database
         {
             int id = -1;
             SqlDataReader data = this.Query($"{query} SELECT NewID = SCOPE_IDENTITY()", parameters, SqlDataReaderReturnType);
-            
+
             if (data.Read())
                 id = Convert.ToInt32(Math.Truncate(((decimal)data["NewID"])));
 
@@ -127,10 +131,14 @@ namespace EvernoteCloneLibrary.Database
         private SqlCommand GenerateParameteredCommand(string queryString, SqlConnection connection, Dictionary<string, object> parameters)
         {
             SqlCommand command = new SqlCommand(queryString, connection);
-            
+
             if (parameters != null)
+            {
                 foreach (string key in parameters.Keys)
+                {
                     command.Parameters.AddWithValue(key, parameters[key]);
+                }
+            }
 
             return command;
         }

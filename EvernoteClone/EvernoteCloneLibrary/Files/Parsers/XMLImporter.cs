@@ -26,7 +26,8 @@ namespace EvernoteCloneLibrary.Files.Parsers
             try
             {
                 return ImportNotebooks(filePath);
-            } catch(DirectoryNotFoundException) { }
+            }
+            catch (DirectoryNotFoundException) { }
 
             return null;
         }
@@ -73,7 +74,11 @@ namespace EvernoteCloneLibrary.Files.Parsers
             return null;
         }
 
-        // TODO: add summary
+        /// <summary>
+        /// Retrieve the notebook locations from a given filePath
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
         public static List<NotebookLocation> ImportNotebookLocations(string filePath)
         {
             if (!(string.IsNullOrEmpty(filePath)))
@@ -90,7 +95,7 @@ namespace EvernoteCloneLibrary.Files.Parsers
                 {
                     notebookLocations.Add(new NotebookLocation
                     {
-                        Id = Convert.ToInt32(xElement.Descendants().First(element => element.Name == "id").Value), 
+                        Id = Convert.ToInt32(xElement.Descendants().First(element => element.Name == "id").Value),
                         Path = xElement.Descendants().First(element => element.Name == "path").Value
                     });
                 }
@@ -108,40 +113,35 @@ namespace EvernoteCloneLibrary.Files.Parsers
         /// <returns></returns>
         private static Notebook GenerateNotebookFromFile(string fullPath, XDocument xDocument)
         {
-            if (fullPath != null && xDocument != null)
+            if (fullPath != null && xDocument != null && xDocument.Descendants("en-export") != null)
             {
-
-                if (xDocument.Descendants("en-export") != null)
+                foreach (XElement node in xDocument.Descendants("en-export").ToList())
                 {
-                    foreach (XElement node in xDocument.Descendants("en-export").ToList())
+                    // Check if the required elements are not null
+                    if (ValidationUtil.AreNotNull(node.Element("id")?.Value, node.Element("title")?.Value,
+                        node.Element("path")?.Value, node.Element("path-id")?.Value,
+                        node.Element("created")?.Value, node.Element("updated")?.Value,
+                        node.Element("deleted")?.Value))
                     {
-                        if (ValidationUtil.AreNotNull(node.Element("id")?.Value, node.Element("title")?.Value,
-                            node.Element("path")?.Value, node.Element("path-id")?.Value,
-                            node.Element("created")?.Value, node.Element("updated")?.Value,
-                            node.Element("deleted")?.Value))
+                        return new Notebook
                         {
-                            return new Notebook
+                            // The Id of the notebook, might be -1 if the notebook doesn't exist in the database
+                            Id = int.Parse(node.Element("id").Value),
+                            Title = node.Element("title").Value,
+                            // location data
+                            Path = new NotebookLocation()
                             {
-                                // The Id of the notebook, might be -1 if the notebook doesn't exist in the database
-                                Id = int.Parse(node.Element("id").Value),
-                                Title = node.Element("title").Value,
-                                // location data
-                                Path = new NotebookLocation()
-                                {
-                                    Id = int.Parse(node.Element("path-id").Value),
-                                    Path = node.Element("path").Value
-                                },
-                                LocationId = int.Parse(node.Element("path-id").Value),
-                                // File data which applies to the notebook.
-                                CreationDate = DateTime.Parse(FormatDateTime(node.Element("created").Value)),
-                                LastUpdated = DateTime.Parse(FormatDateTime(node.Element("updated").Value)),
-                                IsDeleted = bool.Parse(node.Element("deleted").Value),
-                                FsName = Path.GetFileNameWithoutExtension(fullPath)
-                            };
-                        }
-
+                                Id = int.Parse(node.Element("path-id").Value),
+                                Path = node.Element("path").Value
+                            },
+                            LocationId = int.Parse(node.Element("path-id").Value),
+                            // File data which applies to the notebook.
+                            CreationDate = DateTime.Parse(FormatDateTime(node.Element("created").Value)),
+                            LastUpdated = DateTime.Parse(FormatDateTime(node.Element("updated").Value)),
+                            IsDeleted = bool.Parse(node.Element("deleted").Value),
+                            FsName = Path.GetFileNameWithoutExtension(fullPath)
+                        };
                     }
-
                 }
             }
             return null;
@@ -177,10 +177,10 @@ namespace EvernoteCloneLibrary.Files.Parsers
 
                         // fetch the content of the note
                         note.Content = note.NewContent = GetStrippedContent(node.Element("content")?.Value) ?? "";
-                        
+
                         // fetch the date the note was created, needed to change it from 'T00000000Z000000' where '0' is an arbitrary value
                         note.CreationDate = DateTime.Parse(FormatDateTime(node.Element("created").Value));
-                        
+
                         // fetch the date the note was last updated, needed to change it from 'T00000000Z000000' where '0' is an arbitrary value
                         note.LastUpdated = DateTime.Parse(FormatDateTime(node.Element("updated").Value));
 
@@ -211,7 +211,7 @@ namespace EvernoteCloneLibrary.Files.Parsers
                         {
                             notes.Add(note);
                         }
-                        
+
                     }
 
                 }

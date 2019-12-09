@@ -38,6 +38,7 @@ namespace EvernoteCloneGUI.ViewModels
                     // We need to validate if the input is correct, otherwise we need to make it unable to submit.
                     int output = int.Parse(inputBox.Text);
 
+                    // the user may only submit if the amount of columns and rows is more than 0 (a table cannot have 0 rows or columns)
                     _canSubmit = output > 0 && ColumnCount > 0 && RowCount > 0;
                 }
 

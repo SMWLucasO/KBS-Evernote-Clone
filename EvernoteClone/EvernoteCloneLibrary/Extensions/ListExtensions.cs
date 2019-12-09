@@ -7,9 +7,12 @@ namespace EvernoteCloneLibrary.Extensions
         public static bool AddIfNotPresent<T>(this List<T> list, T toAdd)
         {
             if (list.Contains(toAdd))
+            {
                 return false;
+            }
+
             list.Add(toAdd);
             return true;
         }
-    }   
+    }
 }

@@ -14,10 +14,17 @@ namespace EvernoteCloneLibrary.Utils
         /// <returns></returns>
         private static bool ValidateMultiple(Func<object, bool> validator, params object[] objects)
         {
-            bool result = false;
-            
+            bool result = true;
+
             foreach (object obj in objects)
-                result = validator?.Invoke(obj) ?? false;
+            {
+                bool outputResult = validator?.Invoke(obj) ?? false;
+                if (!outputResult)
+                {
+                    result = false;
+                }
+            }
+
             return result;
         }
 

@@ -2,6 +2,9 @@
 
 namespace EvernoteCloneLibrary.Notebooks.Location
 {
+    /// <summary>
+    /// The class representation of the 'NotebookLocation' table.
+    /// </summary>
     public class NotebookLocationModel : IModel
     {
         public int Id { get; set; } = -1;

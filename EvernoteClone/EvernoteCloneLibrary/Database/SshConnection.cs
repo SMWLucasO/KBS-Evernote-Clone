@@ -55,11 +55,11 @@ namespace EvernoteCloneLibrary.Database
             if (!_keepSshAliveTimer.Enabled)
             {
                 (_sshClient, _localPort) = ConnectSsh(
-                    sshHostName: (Constant.TEST_MODE ? 
-                        Constant.TEST_SSH_HOST : 
+                    sshHostName: (Constant.TEST_MODE ?
+                        Constant.TEST_SSH_HOST :
                         Constant.SSH_HOST),
-                    sshUserName: (Constant.TEST_MODE ? 
-                        Constant.TEST_SSH_USERNAME : 
+                    sshUserName: (Constant.TEST_MODE ?
+                        Constant.TEST_SSH_USERNAME :
                         Constant.SSH_USERNAME),
                     sshKeyFile: (Constant.TEST_MODE ?
                         (Constant.TEST_SSH_USE_PUBLIC_KEY ? Constant.TEST_SSH_KEY_PATH : null) :
@@ -70,11 +70,11 @@ namespace EvernoteCloneLibrary.Database
                     sshPassword: (Constant.TEST_MODE ?
                         (Constant.TEST_SSH_USE_PUBLIC_KEY ? null : Constant.TEST_SSH_PASSWORD) :
                         (Constant.SSH_USE_PUBLIC_KEY ? null : Constant.SSH_PASSWORD)),
-                    databaseServer: (Constant.TEST_MODE ? 
-                        Constant.TEST_DATABASE_HOST : 
+                    databaseServer: (Constant.TEST_MODE ?
+                        Constant.TEST_DATABASE_HOST :
                         Constant.DATABASE_HOST),
-                    databasePort: (Constant.TEST_MODE ? 
-                        Constant.TEST_DATABASE_PORT : 
+                    databasePort: (Constant.TEST_MODE ?
+                        Constant.TEST_DATABASE_PORT :
                         Constant.DATABASE_PORT));
             }
             else
@@ -89,14 +89,14 @@ namespace EvernoteCloneLibrary.Database
         /// </summary>
         /// <param name="source"></param>
         /// <param name="e"></param>
-        private static void OnTimedEvent(object source, ElapsedEventArgs e) => 
+        private static void OnTimedEvent(object source, ElapsedEventArgs e) =>
             _sshClient.Disconnect();
 
         /// <summary>
         /// Returns true of the _sshClient is still allive_
         /// </summary>
         /// <returns></returns>
-        public static bool IsAlive() => 
+        public static bool IsAlive() =>
             _sshClient.IsConnected;
 
         /// <summary>
@@ -117,21 +117,38 @@ namespace EvernoteCloneLibrary.Database
         {
             // check arguments
             if (string.IsNullOrEmpty(sshHostName))
+            {
                 throw new ArgumentException($"{nameof(sshHostName)} must be specified.", nameof(sshHostName));
+            }
+
             if (string.IsNullOrEmpty(sshHostName))
+            {
                 throw new ArgumentException($"{nameof(sshUserName)} must be specified.", nameof(sshUserName));
+            }
+
             if (string.IsNullOrEmpty(sshPassword) && string.IsNullOrEmpty(sshKeyFile))
+            {
                 throw new ArgumentException($"One of {nameof(sshPassword)} and {nameof(sshKeyFile)} must be specified.");
+            }
+
             if (string.IsNullOrEmpty(databaseServer))
+            {
                 throw new ArgumentException($"{nameof(databaseServer)} must be specified.", nameof(databaseServer));
+            }
+
 
             // define the authentication methods to use (in order)
             var authenticationMethods = new List<AuthenticationMethod>();
             if (!string.IsNullOrEmpty(sshKeyFile))
+            {
                 authenticationMethods.Add(new PrivateKeyAuthenticationMethod(sshUserName,
-                    new PrivateKeyFile(sshKeyFile, string.IsNullOrEmpty(sshPassPhrase) ? null : sshPassPhrase)));
+                                    new PrivateKeyFile(sshKeyFile, string.IsNullOrEmpty(sshPassPhrase) ? null : sshPassPhrase)));
+            }
+
             if (!string.IsNullOrEmpty(sshPassword))
+            {
                 authenticationMethods.Add(new PasswordAuthenticationMethod(sshUserName, sshPassword));
+            }
 
             // connect to the SSH server
             var sshClient = new SshClient(new ConnectionInfo(sshHostName, sshPort, sshUserName, authenticationMethods.ToArray()));
@@ -143,6 +160,6 @@ namespace EvernoteCloneLibrary.Database
             forwardedPort.Start();
 
             return (sshClient, forwardedPort.BoundPort);
-        } 
+        }
     }
 }

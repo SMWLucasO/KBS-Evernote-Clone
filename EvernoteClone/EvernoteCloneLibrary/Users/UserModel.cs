@@ -3,6 +3,9 @@ using System;
 
 namespace EvernoteCloneLibrary.Users
 {
+    /// <summary>
+    /// The class(OOP) representation of the 'User' table.
+    /// </summary>
     public class UserModel : IModel
     {
         public int Id { get; set; } = -1;
