@@ -67,6 +67,7 @@ namespace EvernoteCloneGUI.ViewModels
             if (user != null)
             {
                 MessageBox.Show("You've been logged in with success!");
+                (GetView() as Window)?.Close();
             }
             else 
             {
