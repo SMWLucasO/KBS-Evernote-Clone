@@ -92,7 +92,7 @@
                         <ContextMenu>
                             <MenuItem Header="Table" cal:Message.Attach="[Event Click] = [OnInsertTable]" />
                             <MenuItem Header="Horizontal line" cal:Message.Attach="[Event Click] = [OnInsertHorizontalLine]" />
-                            <MenuItem Header="Codeblocks"></MenuItem>
+                            <MenuItem Header="Codeblocks" cal:Message.Attach="[Event Click] = [OnInsertCodeBlocks]"></MenuItem>
                             <MenuItem Header="Ordered list" Command="EditingCommands.ToggleBullets"></MenuItem>
                             <MenuItem Header="Unordered list" Command="EditingCommands.ToggleNumbering"></MenuItem>
                         </ContextMenu>
@@ -118,7 +118,7 @@
         </StackPanel>
         <StackPanel>
             <RichTextBox Height="669" x:Name="TextEditor" cal:Message.Attach="[Event TextChanged] = [StoreRichTextBoxContent($eventArgs)]" 
-                         SpellCheck.IsEnabled="True" AcceptsTab="True">
+                         SpellCheck.IsEnabled="True" IsDocumentEnabled="True" AcceptsTab="True">
                 <FlowDocument>
                     
                 </FlowDocument>
