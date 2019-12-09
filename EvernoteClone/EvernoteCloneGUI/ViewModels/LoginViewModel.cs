@@ -118,19 +118,19 @@ namespace EvernoteCloneGUI.ViewModels
         /// <returns></returns>
         public async Task GoogleLoginAsync()
         {
-            string state = randomDataBase64url(32);
-            string codeVerifier = randomDataBase64url(32);
-            string codeChallenge = base64urlencodeNoPadding(sha256(codeVerifier));
+            string state = RandomDataBase64Url(32);
+            string codeVerifier = RandomDataBase64Url(32);
+            string codeChallenge = Base64UrlencodeNoPadding(Sha256(codeVerifier));
             const string codeChallengeMethod = "S256";
 
             // Creates a redirect URI using an available port on the loopback address.
             string redirectUri = $"http://{IPAddress.Loopback}:{GetRandomUnusedPort()}/";
-            output("redirect URI: " + redirectUri);
+            Output("redirect URI: " + redirectUri);
 
             // Creates an HttpListener to listen for requests on that redirect URI.
             var http = new HttpListener();
             http.Prefixes.Add(redirectUri);
-            output("Listening..");
+            Output("Listening..");
             http.Start();
 
             // Creates the OAuth 2.0 authorization request.
@@ -157,19 +157,19 @@ namespace EvernoteCloneGUI.ViewModels
             {
                 responseOutput.Close();
                 http.Stop();
-                Console.WriteLine("HTTP server stopped.");
+                Console.WriteLine(@"HTTP server stopped.");
             });
 
             // Checks for errors.
             if (context.Request.QueryString.Get("error") != null)
             {
-                output($"OAuth authorization error: {context.Request.QueryString.Get("error")}.");
+                Output($"OAuth authorization error: {context.Request.QueryString.Get("error")}.");
                 return;
             }
             if (context.Request.QueryString.Get("code") == null
                 || context.Request.QueryString.Get("state") == null)
             {
-                output("Malformed authorization response. " + context.Request.QueryString);
+                Output("Malformed authorization response. " + context.Request.QueryString);
                 return;
             }
 
@@ -181,13 +181,13 @@ namespace EvernoteCloneGUI.ViewModels
             // this app made the request which resulted in authorization.
             if (incomingState != state)
             {
-                output($"Received request with invalid state ({incomingState})");
+                Output($"Received request with invalid state ({incomingState})");
                 return;
             }
-            output("Authorization code: " + code);
+            Output("Authorization code: " + code);
 
             // Starts the code exchange at the Token Endpoint.
-            performCodeExchange(code, codeVerifier, redirectUri);
+            PerformCodeExchange(code, codeVerifier, redirectUri);
 
         }
         
@@ -200,64 +200,59 @@ namespace EvernoteCloneGUI.ViewModels
         /// Tokens are needed to make a call to a Google API
         /// </summary>
         /// <param name="code"></param>
-        /// <param name="code_verifier"></param>
-        /// <param name="redirectURI"></param>
-        async void performCodeExchange(string code, string code_verifier, string redirectURI)
+        /// <param name="codeVerifier"></param>
+        /// <param name="redirectUri"></param>
+        async void PerformCodeExchange(string code, string codeVerifier, string redirectUri)
         {
-            output("Exchanging code for tokens...");
+            Output("Exchanging code for tokens...");
 
             // Setup token request
             string tokenRequestURI = "https://www.googleapis.com/oauth2/v4/token";
-            string tokenRequestBody = string.Format("code={0}&redirect_uri={1}&client_id={2}&code_verifier={3}&client_secret={4}&grant_type=authorization_code",
-                code,
-                System.Uri.EscapeDataString(redirectURI),
-                _clientId,
-                code_verifier,
-                _clientSecret
-                );
+            string tokenRequestBody =
+                $"code={code}&redirect_uri={System.Uri.EscapeDataString(redirectUri)}&client_id={_clientId}&code_verifier={codeVerifier}&client_secret={_clientSecret}&grant_type=authorization_code";
 
             // Sends the actually token request
             HttpWebRequest tokenRequest = (HttpWebRequest)WebRequest.Create(tokenRequestURI);
             tokenRequest.Method = "POST";
             tokenRequest.ContentType = "application/x-www-form-urlencoded";
             tokenRequest.Accept = "Accept=text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
-            byte[] _byteVersion = Encoding.ASCII.GetBytes(tokenRequestBody);
-            tokenRequest.ContentLength = _byteVersion.Length;
+            byte[] byteVersion = Encoding.ASCII.GetBytes(tokenRequestBody);
+            tokenRequest.ContentLength = byteVersion.Length;
             Stream stream = tokenRequest.GetRequestStream();
-            await stream.WriteAsync(_byteVersion, 0, _byteVersion.Length);
+            await stream.WriteAsync(byteVersion, 0, byteVersion.Length);
             stream.Close();
 
             try
             {
                 // Receive the token.
                 WebResponse tokenResponse = await tokenRequest.GetResponseAsync();
-                using (StreamReader reader = new StreamReader(tokenResponse.GetResponseStream()))
+                using (StreamReader reader = new StreamReader(tokenResponse.GetResponseStream() ?? throw new NullReferenceException()))
                 {
                     // Reads the output of the token.
                     string responseText = await reader.ReadToEndAsync();
-                    output(responseText);
+                    Output(responseText);
 
                     //Converts the JSON output and puts this in a string dictionary.
                     Dictionary<string, string> tokenEndpointDecoded = JsonConvert.DeserializeObject<Dictionary<string, string>>(responseText);
 
-                    string access_token = tokenEndpointDecoded["access_token"];
-                    UserInfoCall(access_token);
+                    string accessToken = tokenEndpointDecoded["access_token"];
+                    UserInfoCall(accessToken);
                 }
             }
+            
             //Handles error when tokens are not received.
             catch (WebException ex)
             {
                 if (ex.Status == WebExceptionStatus.ProtocolError)
                 {
-                    var response = ex.Response as HttpWebResponse;
-                    if (response != null)
+                    if (ex.Response is HttpWebResponse response)
                     {
-                        output("HTTP: " + response.StatusCode);
-                        using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                        Output("HTTP: " + response.StatusCode);
+                        using (StreamReader reader = new StreamReader(response.GetResponseStream() ?? throw new NullReferenceException()))
                         {
                             // reads response body
                             string responseText = await reader.ReadToEndAsync();
-                            output(responseText);
+                            Output(responseText);
                         }
                     }
 
@@ -272,58 +267,51 @@ namespace EvernoteCloneGUI.ViewModels
         /// Makes the whole API call to get user information. You have to explicitly tell the application
         /// what user information you wanna receive. 
         /// </summary>
-        /// <param name="access_token"></param>
-        private async void UserInfoCall(string access_token)
+        /// <param name="accessToken"></param>
+        private async void UserInfoCall(string accessToken)
         {
-            //Local variables used to insert a new Google account if needed.
-            string[] userInfo;
+            // Local variables used to insert a new Google account if needed.
             ArrayList userData = new ArrayList();
-            string username;
-            string googleId;
-            string firstName;
-            string lastName;
-            string googlePassword;
-            bool isGoogleAccount = true;
+            const bool isGoogleAccount = true;
             
             
 
-            //Prepartion to make the API call.
-            string userinfoRequestURI = "https://www.googleapis.com/userinfo/v2/me";
+            // Preparation to make the API call.
+            string userInfoRequestUri = "https://www.googleapis.com/userinfo/v2/me";
 
             //Sends the API call and formats it.
-            HttpWebRequest userinfoRequest = (HttpWebRequest)WebRequest.Create(userinfoRequestURI);
-            userinfoRequest.Method = "GET";
-            userinfoRequest.Headers.Add(string.Format("Authorization: Bearer {0}", access_token));
-            userinfoRequest.ContentType = "application/x-www-form-urlencoded";
-            userinfoRequest.Accept = "Accept=text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
+            HttpWebRequest userInfoRequest = (HttpWebRequest)WebRequest.Create(userInfoRequestUri);
+            userInfoRequest.Method = "GET";
+            userInfoRequest.Headers.Add($"Authorization: Bearer {accessToken}");
+            userInfoRequest.ContentType = "application/x-www-form-urlencoded";
+            userInfoRequest.Accept = "Accept=text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
 
             //Receive the info that was requested
-            WebResponse userinfoResponse = await userinfoRequest.GetResponseAsync();
-            using (StreamReader userinfoResponseReader = new StreamReader(userinfoResponse.GetResponseStream()))
+            WebResponse userInfoResponse = await userInfoRequest.GetResponseAsync();
+            using (StreamReader userInfoResponseReader = new StreamReader(userInfoResponse.GetResponseStream() ?? throw new NullReferenceException()))
             {
                 //Reads the full info and adds the details to a list. 
-                string userinfoResponseText = await userinfoResponseReader.ReadToEndAsync();
-
-                char test = '"';
-                userInfo = userinfoResponseText.Split(test);
+                string userInfoResponseText = await userInfoResponseReader.ReadToEndAsync();
+                
+                var userInfo = userInfoResponseText.Split('"');
 
                 foreach(string k in userInfo)
                 {
                     userData.Add(k);
                 }
 
-                //Getting specific user information from the list
+                // Getting specific user information from the list
                 var arUserMail = userData[7];
                 var arName = userData[13];
                 var arLastName = userData[21];
                 var arGoogleId = userData[3];
 
                 //Converting information objects to string
-                username = Convert.ToString(arUserMail);
-                firstName = Convert.ToString(arName);
-                lastName = Convert.ToString(arLastName);
-                googleId = Convert.ToString(arGoogleId);
-                googlePassword = makeGooglePassword(googleId);
+                var username = Convert.ToString(arUserMail);
+                var firstName = Convert.ToString(arName);
+                var lastName = Convert.ToString(arLastName);
+                var googleId = Convert.ToString(arGoogleId);
+                var googlePassword = makeGooglePassword(googleId);
                 googlePassword = User.Encryption(googlePassword);
 
                 //Check if the Google user already is registered to the application or not.
@@ -350,29 +338,28 @@ namespace EvernoteCloneGUI.ViewModels
         /// <summary>
         /// Appends the given string to the on-screen log, and the debug console.
         /// </summary>
-        public void output(string output)
+        public void Output(string output)
         {
-            //textBoxOutput.Text = textBoxOutput.Text + output + Environment.NewLine;
             Console.WriteLine(output);
         }
 
         /// <summary>
         /// Returns URI-safe data with a given input length.
         /// </summary>
-        public static string randomDataBase64url(uint length)
+        public static string RandomDataBase64Url(uint length)
         {
             RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
             byte[] bytes = new byte[length];
             rng.GetBytes(bytes);
-            return base64urlencodeNoPadding(bytes);
+            return Base64UrlencodeNoPadding(bytes);
         }
 
         /// <summary>
         /// Returns the SHA256 hash of the input string.
         /// </summary>
-        public static byte[] sha256(string inputStirng)
+        public static byte[] Sha256(string inputString)
         {
-            byte[] bytes = Encoding.ASCII.GetBytes(inputStirng);
+            byte[] bytes = Encoding.ASCII.GetBytes(inputString);
             SHA256Managed sha256 = new SHA256Managed();
             return sha256.ComputeHash(bytes);
         }
@@ -380,7 +367,7 @@ namespace EvernoteCloneGUI.ViewModels
         /// <summary>
         /// Base64url no-padding encodes the given input buffer.
         /// </summary>
-        public static string base64urlencodeNoPadding(byte[] buffer)
+        public static string Base64UrlencodeNoPadding(byte[] buffer)
         {
             string base64 = Convert.ToBase64String(buffer);
 
