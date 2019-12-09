@@ -14,7 +14,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using EvernoteCloneLibrary.Users;
 
-// TODO add summary
 namespace EvernoteCloneGUI.ViewModels
 {
     /// <summary>
@@ -105,24 +104,34 @@ namespace EvernoteCloneGUI.ViewModels
             // Load all Notebooks
             Notebooks = Notebook.Load(_userId);
 
+            // if we're doing the initial loading, load the note and notebook if there is not already a selected note/notebook.
             if (Notebooks.Count > 0)
             {
                 Notebook tempNotebook = Notebooks.First();
                 Note tempNote = null;
 
                 if (tempNotebook.Notes.Count > 0)
+                {
                     tempNote = (Note)tempNotebook.Notes.First();
 
+                }
+
                 if (initialLoad && SelectedNotebook == null)
+                {
                     SelectedNotebook = tempNotebook;
+                }
+
                 if (tempNote != null && initialLoad && SelectedNote == null)
+                {
                     SelectedNote = tempNote;
+                }
+
             }
         }
 
         #endregion
-        
-        // JA
+
+
         #region Treeview impl. for notes and notebooks
 
         /// <summary>
@@ -149,16 +158,22 @@ namespace EvernoteCloneGUI.ViewModels
             // Load all Folders (LoadFolders) and attach Notebooks to them (LoadNotebooksIntoFolderStructure)
             // Now, loop over them all, and add them to the root TreeViewItem
             foreach (TreeViewItem treeViewItem in LoadNotebooksIntoFolderStructure(LoadFolders()))
+            {
                 rootTreeViewItem.Items.Add(treeViewItem);
+            }
+
 
             // Clear the NotebooksTreeView and add the folder and notebook structure (also save the currently selected folder, and select it again)
             if (SelectedTreeViewItem != null)
+            {
                 SelectPath(ref rootTreeViewItem, GetPath(SelectedTreeViewItem) + "/" + GetHeader(SelectedTreeViewItem));
+            }
 
             NotebooksTreeView.Clear();
             NotebooksTreeView.Add(rootTreeViewItem);
         }
 
+        // @joris add summary & comments in code
         private void SelectPath(ref TreeViewItem rootTreeViewItem, string path)
         {
             rootTreeViewItem.IsExpanded = true;
@@ -167,20 +182,31 @@ namespace EvernoteCloneGUI.ViewModels
             foreach (string directory in path.Split('/'))
             {
                 if (currentNode != null)
+                {
                     currentNode.IsExpanded = true;
+                }
 
                 if (currentNode == null)
                 {
                     if (rootTreeViewItem.Items.Cast<TreeViewItem>().Any(treeViewItem => GetHeader(treeViewItem) == directory))
+                    {
                         currentNode = rootTreeViewItem.Items.Cast<TreeViewItem>().First(treeViewItem => GetHeader(treeViewItem) == directory);
+                    }
                     else
+                    {
                         break;
+                    }
+
                 }
                 else if (currentNode.Items.Cast<TreeViewItem>().Any(treeViewItem => GetHeader(treeViewItem) == directory))
+                {
                     currentNode = currentNode.Items.Cast<TreeViewItem>().First(treeViewItem => GetHeader(treeViewItem) == directory);
+                }
+
             }
         }
 
+        // @joris add summary & comments in code
         private List<TreeViewItem> LoadFolders()
         {
             List<NotebookLocation> notebookLocations = NotebookLocation.Load(_userId); // TODO: change UserID
@@ -193,9 +219,15 @@ namespace EvernoteCloneGUI.ViewModels
                     if (currentNode == null)
                     {
                         if (treeViewItems.Any(treeViewItem => GetHeader(treeViewItem) == directory))
+                        {
                             currentNode = treeViewItems.First(treeViewItem => GetHeader(treeViewItem) == directory);
+                        }
+
                         else
+                        {
                             treeViewItems.Add(currentNode = CreateTreeNode(directory, FolderContext));
+                        }
+
                     }
                     else if (currentNode.Items.Cast<TreeViewItem>().Any(treeViewItem => GetHeader(treeViewItem) == directory))
                     {
@@ -213,6 +245,7 @@ namespace EvernoteCloneGUI.ViewModels
             return treeViewItems;
         }
 
+        // @joris add summary & comments in code
         private List<TreeViewItem> LoadNotebooksIntoFolderStructure(List<TreeViewItem> treeViewItems)
         {
             LoadNotebooks();
@@ -222,9 +255,14 @@ namespace EvernoteCloneGUI.ViewModels
                 foreach (string directory in notebook.Path.Path.Split('/'))
                 {
                     if (currentNode == null)
+                    {
                         currentNode = treeViewItems.First(treeViewItem => GetHeader(treeViewItem) == directory);
+                    }
+
                     else
+                    {
                         currentNode = currentNode.Items.Cast<TreeViewItem>().First(treeViewItem => GetHeader(treeViewItem) == directory);
+                    }
                 }
 
                 currentNode?.Items.Add(CreateTreeNode(notebook.Title, NotebookContext));
@@ -233,29 +271,39 @@ namespace EvernoteCloneGUI.ViewModels
             return treeViewItems;
         }
 
+        // @joris add summary
         private TreeViewItem CreateTreeNode(string header, ContextMenu contextMenu, int notebookId = -1)
         {
-            TreeViewItem treeViewItem = new TreeViewItem();
-            treeViewItem.Header = CreateTreeHeader(header, contextMenu, notebookId);
-            treeViewItem.Foreground = Brushes.White;
-            treeViewItem.IsExpanded = false;
-            treeViewItem.FontSize = 14;
-            treeViewItem.ContextMenu = contextMenu;
-            return treeViewItem;
+            return new TreeViewItem
+            {
+                Header = CreateTreeHeader(header, contextMenu, notebookId),
+                Foreground = Brushes.White,
+                IsExpanded = false,
+                FontSize = 14,
+                ContextMenu = contextMenu
+            };
         }
 
+        // @joris add summary & comments in code
         private StackPanel CreateTreeHeader(string header, ContextMenu contextMenu, int notebookId = -1)
         {
             StackPanel stackPanel = new StackPanel { Orientation = Orientation.Horizontal };
 
-            Image image = new Image();
-            image.Height = 16;
-            image.Width = 16;
+            Image image = new Image
+            {
+                Height = 16,
+                Width = 16
+            };
 
             if (contextMenu == FolderContext || contextMenu == RootContext)
+            {
                 image.Source = FolderImage;
+            }
             else if (contextMenu == NotebookContext)
+            {
                 image.Source = NotebookImage;
+            }
+
             stackPanel.Children.Add(image);
 
             TextBlock textBlock = new TextBlock();
@@ -273,6 +321,7 @@ namespace EvernoteCloneGUI.ViewModels
             return stackPanel;
         }
 
+        // @joris add summary & comments in code
         public void AddFolder(object sender, RoutedEventArgs routedEventArgs)
         {
             if (routedEventArgs.Source is MenuItem menuItem)
@@ -293,6 +342,7 @@ namespace EvernoteCloneGUI.ViewModels
             }
         }
 
+        // @joris add summary & comments in code
         public void AddFolderToRoot(object sender, RoutedEventArgs e)
         {
             string newFolderName = GetUserInput("Create new folder", "What do you want your new folder to be called:");
@@ -305,46 +355,64 @@ namespace EvernoteCloneGUI.ViewModels
             }
         }
 
+        // @joris add summary & comments in code
         private string GetPath(TreeViewItem treeViewItem, bool isNotebook = false)
         {
             if (GetHeader(treeViewItem) == "My Notebooks")
+            {
                 return "";
+            }
 
             string path = isNotebook ? "" : GetHeader(treeViewItem);
             while (treeViewItem.Parent is TreeViewItem item)
             {
                 treeViewItem = item;
                 if (GetHeader(treeViewItem) == "My Notebooks")
+                {
                     break;
+                }
+
                 path = GetHeader(treeViewItem) + "/" + path;
             }
             return isNotebook ? path.Substring(0, path.Length - 1) : path;
         }
 
+        // @joris add summary & comments in code
         private int GetNotebookId(TreeViewItem treeViewItem)
         {
             if (treeViewItem.Header is StackPanel stackPanel)
+            {
                 if (stackPanel.Children[2] is Label label)
+                {
                     return Convert.ToInt32(label.Content);
+                }
+            }
+
             return -1;
         }
 
         private bool IsNotebook(TreeViewItem treeViewItem)
             => treeViewItem.ContextMenu == NotebookContext;
 
+        // @joris add summary & comments in code
         private string GetHeader(TreeViewItem treeViewItem)
         {
             if (treeViewItem.Header is StackPanel stackPanel)
+            {
                 if (stackPanel.Children[1] is TextBlock textBlock)
+                {
                     return textBlock.Text;
+                }
+            }
+
             return treeViewItem.Header.ToString();
         }
 
         #endregion
-        
-        // NEE
+
         #region Treeview context menu, including pop-ups
 
+        // @joris add summary & comments in code
         public void AddNotebook(object sender, RoutedEventArgs e)
         {
             if (e.Source is MenuItem menuItem)
@@ -367,9 +435,11 @@ namespace EvernoteCloneGUI.ViewModels
             }
         }
 
+        // @joris add summary & comments in code
         public void AddNote(object sender, RoutedEventArgs e) =>
             OpenNewNotePopupView();
 
+        // @joris add summary & comments in code
         public string GetUserInput(string dialogTitle, string dialogValueRequestText, int minCharacters = 2, int maxCharacters = 64)
         {
             IWindowManager windowManager = new WindowManager();
@@ -380,6 +450,7 @@ namespace EvernoteCloneGUI.ViewModels
                 DialogTitle = dialogTitle,
                 DialogValueRequestText = dialogValueRequestText
             };
+
             valueRequestViewModel.Submission += HandleSubmit;
             valueRequestViewModel.Cancellation += HandleCancel;
 
@@ -403,8 +474,11 @@ namespace EvernoteCloneGUI.ViewModels
             return string.IsNullOrWhiteSpace(valueRequestViewModel.Value) ? null : valueRequestViewModel.Value.Trim();
         }
 
+        // @joris add summary & comments in code
         public void HandleSubmit(ValueRequestViewModel valueRequestViewModel) =>
             (valueRequestViewModel.GetView() as Window)?.Close();
+
+        // @joris add summary & comments in code
         public void HandleCancel(ValueRequestViewModel valueRequestViewModel)
         {
             valueRequestViewModel.Value = null;
@@ -412,9 +486,13 @@ namespace EvernoteCloneGUI.ViewModels
         }
 
         #endregion
-        
-        // NEE
+
         #region Loading and opening views
+
+        /// <summary>
+        /// Load the note view using the viewmodel's note and notebook
+        /// </summary>
+        /// <param name="showDeletedNotes"></param>
         public void LoadNoteViewIfNoteExists(bool showDeletedNotes = false)
         {
             if (SelectedNotebook != null)
@@ -423,6 +501,7 @@ namespace EvernoteCloneGUI.ViewModels
                 NewNoteViewModel newNoteViewModel = null;
 
 
+                // if we aren't showing deleted notes, we need to alter the note count to only show the count of those not deleted
                 if (!showDeletedNotes)
                 {
                     if (SelectedNotebook.Notes.Count > 0)
@@ -459,6 +538,7 @@ namespace EvernoteCloneGUI.ViewModels
                     }
                 };
 
+                // load the selected note and the note elements, afterwards, activate the view.
                 NotebookViewModel.NewNoteViewModel?.LoadNote();
                 NotebookViewModel.NotebookNotesMenu.LoadNotesIntoNotebookMenu(showDeletedNotes);
 
@@ -471,11 +551,13 @@ namespace EvernoteCloneGUI.ViewModels
         /// </summary>
         public void OpenNewNotePopupView()
         {
-            // it will get confusing if I don't use an '==' here (It is placed for readability purposes)
-            if (SelectedNotebook == null || SelectedNotebook.IsNotNoteOwner == false)
+            // check if a notebook is selected, and it is not a special notebook (all notes, bin, etc.)
+            // if so, show a pop-up where a new note can be created.
+            if (SelectedNotebook != null && SelectedNotebook.IsNotNoteOwner == false)
             {
                 IWindowManager windowManager = new WindowManager();
 
+                // settings object which contains the width, height and sizing for the view.
                 dynamic settings = new ExpandoObject();
                 settings.Height = 600;
                 settings.Width = 800;
@@ -486,16 +568,21 @@ namespace EvernoteCloneGUI.ViewModels
                     Parent = this,
                     NoteOwner = SelectedNotebook
                 };
+
                 windowManager.ShowDialog(newNoteViewModel, null, settings);
             }
             else
+            {
                 MessageBox.Show("Cannot add new notes whilst not in a notebook", "Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
         }
 
         public void OpenRegisterView()
         {
             IWindowManager windowManagerUser = new WindowManager();
 
+            // settings object which contains the width, height and sizing for the view.
             dynamic size = new ExpandoObject();
             size.Height = 600;
             size.Width = 800;
@@ -523,6 +610,7 @@ namespace EvernoteCloneGUI.ViewModels
                     IsNotNoteOwner = true
                 };
 
+                // get all notes from all notebooks, where the notes haven't been deleted
                 List<INote> notes = new List<INote>();
                 foreach (Notebook notebook in Notebooks)
                 {
@@ -557,6 +645,7 @@ namespace EvernoteCloneGUI.ViewModels
 
             List<INote> deletedNotes = new List<INote>();
 
+            // get the deleted notes of all notebooks
             foreach (Notebook notebook in Notebooks)
             {
                 deletedNotes.AddRange(
@@ -572,12 +661,18 @@ namespace EvernoteCloneGUI.ViewModels
             }
 
         }
+        /// <summary>
+        /// Open the view for the login popup
+        /// </summary>
         public void OpenLoginPopupView()
         {
             IWindowManager windowManager = new WindowManager();
 
             LoginViewModel loginViewModel = new LoginViewModel();
             windowManager.ShowDialog(loginViewModel, null);
+
+            loginUser = loginViewModel.user;
+            _userId = loginUser?.Id ?? -1;
         }
 
         /// <summary>
@@ -606,6 +701,7 @@ namespace EvernoteCloneGUI.ViewModels
             return false;
         }
 
+        // @joris add summary
         public void SelectNotebook(int notebookId)
         {
             SelectedNotebook = Notebooks.First(notebook => notebook.Id == notebookId);
@@ -613,6 +709,7 @@ namespace EvernoteCloneGUI.ViewModels
         }
 
 
+        // @joris add summary
         public void SelectNotebook(string path, string title)
         {
             SelectedNotebook = Notebooks.First(notebook => notebook.Path.Path == path && notebook.Title == title);
@@ -621,30 +718,15 @@ namespace EvernoteCloneGUI.ViewModels
 
         #endregion
 
-        // NEE
-        #region Login
-        
-        public void Login()
-        {
-            IWindowManager windowManager = new WindowManager();
-
-            LoginViewModel loginViewModel = new LoginViewModel();
-            windowManager.ShowDialog(loginViewModel);
-
-            loginUser = loginViewModel.user;
-            _userId = loginUser?.Id ?? -1;
-        }
-
-        #endregion
-        
+        // @joris add summary
         public void Synchronize()
         {
-            
+
         }
 
-        // NEE
         #region Events
 
+        // @joris add summary
         public void TreeViewSelectedItemChanged(RoutedPropertyChangedEventArgs<object> routedPropertyChangedEventArgs)
         {
             if (routedPropertyChangedEventArgs.NewValue is TreeViewItem treeViewItem)
@@ -652,13 +734,21 @@ namespace EvernoteCloneGUI.ViewModels
                 SelectedTreeViewItem = treeViewItem;
 
                 if (!IsNotebook(treeViewItem))
+                {
                     return;
+                }
 
                 int notebookId = GetNotebookId(treeViewItem);
                 if (notebookId != -1)
+                {
                     SelectNotebook(notebookId);
+                }
+
                 else
+                {
                     SelectNotebook(GetPath(treeViewItem, true), GetHeader(treeViewItem));
+                }
+
             }
         }
 
@@ -669,10 +759,10 @@ namespace EvernoteCloneGUI.ViewModels
         protected override void OnActivate()
         {
             // Show login popup
-            Login();
-            
+            OpenLoginPopupView();
+
             // If user closed login window without logging in or clicking the 'Use locally' button, close application
-            if(loginUser == null)
+            if (loginUser == null)
                 Environment.Exit(0);
 
             // First load context menu's
