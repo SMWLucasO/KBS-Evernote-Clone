@@ -117,6 +117,14 @@ namespace EvernoteCloneGUI.ViewModels
 
         #endregion
 
+        public void SimulateRightClick(RoutedEventArgs routedEventArgs)
+        {
+            if (routedEventArgs.Source is Button button)
+            {
+                button.ContextMenu.IsOpen = true;
+            }
+        }
+        
         #region Properties
 
         /// <summary>

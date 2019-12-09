@@ -390,7 +390,8 @@ namespace EvernoteCloneGUI.ViewModels
         {
             user = new User
             {
-                Id = -1
+                Id = -1,
+                Username = "LocalUser"
             };
             
             (GetView() as Window)?.Close();
