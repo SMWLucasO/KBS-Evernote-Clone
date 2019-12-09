@@ -101,7 +101,7 @@ namespace EvernoteCloneGUI.ViewModels.Commands
                     CellSpacing = 5
                 };
 
-                
+
                 for (int i = 0; i < columns; i++)
                 {
                     table.Columns.Add(new TableColumn
@@ -325,7 +325,7 @@ namespace EvernoteCloneGUI.ViewModels.Commands
                         Int32.Parse(model.Value, System.Globalization.NumberStyles.HexNumber);
 
                         output = $"#{model.Value}";
-                        model.TryClose();
+                        model.TryClose(true);
                         return;
                     }
 
@@ -337,10 +337,10 @@ namespace EvernoteCloneGUI.ViewModels.Commands
                 MessageBox.Show("Please provide a valid hexadecimal color.", "Note Fever", MessageBoxButton.OK, MessageBoxImage.Error);
             };
 
-            valueRequestViewModel.Cancellation += (model) => model.TryClose();
-            windowManager.ShowDialog(valueRequestViewModel);
+            valueRequestViewModel.Cancellation += (model) => model.TryClose(false);
+            bool success = windowManager.ShowDialog(valueRequestViewModel) ?? false;
 
-            return output;
+            return (success ? output : null);
         }
 
         /// <summary>
