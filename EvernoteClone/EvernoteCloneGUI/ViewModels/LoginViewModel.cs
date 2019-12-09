@@ -36,6 +36,15 @@ namespace EvernoteCloneGUI.ViewModels
 
         #endregion
 
+        #region Constructor
+
+        public LoginViewModel(User user)
+        {
+            this.user = user;
+        }
+        
+        #endregion
+        
         #region Register window
         
         /// <summary>
@@ -59,6 +68,13 @@ namespace EvernoteCloneGUI.ViewModels
         /// </summary>
         public void Login()
         {
+            User backupUser = user;
+            
+            if (string.IsNullOrWhiteSpace(EmailLogin) || string.IsNullOrWhiteSpace(PasswordLogin))
+            {
+                MessageBox.Show("Fields can't be empty!","NoteFever | Error",MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                return;
+            }
             
             string usernameLogin = EmailLogin; 
             string passwordLogin = User.Encryption(PasswordLogin);
@@ -73,7 +89,8 @@ namespace EvernoteCloneGUI.ViewModels
             {
                 MessageBox.Show("Password or Username is not correct. Please check again.");
             }
-            
+
+            user = backupUser;
         }
         
         #endregion

@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Windows;
 using System.Text.RegularExpressions;
 using System.Security.Cryptography;
+using Caliburn.Micro;
 using EvernoteCloneLibrary.Users;
 
 // TODO: see next comments
@@ -13,7 +14,7 @@ using EvernoteCloneLibrary.Users;
 // Error message under Password 2
 namespace EvernoteCloneGUI.ViewModels
 {
-    public class RegisterViewModel : IDataErrorInfo
+    public class RegisterViewModel : Screen, IDataErrorInfo
     {
         #region Variables
         
@@ -141,6 +142,7 @@ namespace EvernoteCloneGUI.ViewModels
                 if (User.Register(Email, tbPassword, FirstName, LastName))
                 {
                     MessageBox.Show("Registration succesful!");
+                    (GetView() as Window)?.Close();
                 }
                 else
                 {

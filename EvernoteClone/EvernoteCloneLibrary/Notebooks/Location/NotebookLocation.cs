@@ -46,6 +46,17 @@ namespace EvernoteCloneLibrary.Notebooks.Location
             return null;
         }
 
+        public bool Delete() =>
+            Delete(new NotebookLocationRepository());
+        
+        public bool Delete(NotebookLocationRepository notebookLocationRepository)
+        {
+            bool removedCloud = notebookLocationRepository.Delete(this);
+            bool removedLocally = RemoveNotebookLocationFromLocalStorage(this);
+            
+            return removedCloud || removedLocally;
+        }
+
         public static string GetNotebookLocationPathById(int id, int userId) =>
             GetNotebookLocationById(id, userId)?.Path;
 
@@ -104,6 +115,10 @@ namespace EvernoteCloneLibrary.Notebooks.Location
             XmlExporter.Export(GetUserDataStoragePath(), "NotebookLocations.enex",
                 GetNewXmlRepresentation(notebookLocation));
 
+        public static bool RemoveNotebookLocationFromLocalStorage(NotebookLocation notebookLocation) =>
+            XmlExporter.Export(GetUserDataStoragePath(), "NotebookLocations.enex",
+                GetXmlRepresentationWithout(notebookLocation));
+
         private static string[] GetNewXmlRepresentation(NotebookLocation notebookLocation) => 
             GetXmlRepresentation(XmlImporter.ImportNotebookLocations(GetUserDataStoragePath() + @"/NotebookLocations.enex"), notebookLocation);
         
@@ -117,14 +132,31 @@ namespace EvernoteCloneLibrary.Notebooks.Location
             };
 
             if (notebookLocations != null)
+            {
                 foreach (NotebookLocation nbLocation in notebookLocations)
+                {
                     xmlRepresentation.AddRange(nbLocation.ToXmlRepresentation());
+                }
+            }
 
             if (newNotebookLocation != null) 
                 xmlRepresentation.AddRange(newNotebookLocation.ToXmlRepresentation());
             xmlRepresentation.Add("</en-export>");
 
             return xmlRepresentation.ToArray();
+        }
+
+        private static string[] GetXmlRepresentationWithout(NotebookLocation notebookLocation)
+        {
+            List<NotebookLocation> notebookLocations =
+                XmlImporter.ImportNotebookLocations(GetUserDataStoragePath() + @"/NotebookLocations.enex");
+                
+            if (notebookLocations.Any(location => location.Path == notebookLocation.Path))
+            {
+                notebookLocations.Remove(notebookLocations.First(location => location.Path == notebookLocation.Path));
+            }
+
+            return GetXmlRepresentation(notebookLocations);
         }
 
         public static List<NotebookLocation> Load(int userId = -1)

@@ -101,8 +101,6 @@ namespace EvernoteCloneLibrary.Notebooks.Location
                 {
                     { "@Id", toDelete.Id }
                 };
-                
-                
 
                 return DataAccess.Instance.Execute("DELETE FROM [NotebookLocation] WHERE Id = @Id", parameter);
             }
