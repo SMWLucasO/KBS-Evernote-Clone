@@ -20,7 +20,7 @@ using System.Collections;
 
 namespace EvernoteCloneGUI.ViewModels
 {
-    class LoginViewModel : Window
+    class LoginViewModel : Screen
     {
         private string emailLogin;
         private string passwordLog;
@@ -76,8 +76,7 @@ namespace EvernoteCloneGUI.ViewModels
 
             if (user != null)
             {
-                MessageBox.Show("Succes!");
-                
+                (GetView() as Window)?.Close();
             }
             else 
             {
