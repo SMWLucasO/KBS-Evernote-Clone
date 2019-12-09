@@ -123,43 +123,49 @@ namespace EvernoteCloneGUI.ViewModels
                     // the last note inside of said notebook.
                     permanentNoteDeletionMenuItem.Click += (sender, arg) =>
                     {
-
-                        // If the note we are deleting is the currently selected note, we delete it.
-                        if (Container.SelectedNote.Equals(Note))
+                        if (MessageBox.Show("Are you sure that you want to permanently delete this note?", "Note Fever | Warning", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                         {
-                            Container.SelectedNote = null;
-                        }
-
-                        // Delete the note entirely (from database & local)
-                        Note.DeletePermanently();
-
-                        // just in case
-                        if (Note.NoteOwner.Notes.Contains(Note))
-                        {
-                            // TODO delete notebook perm if the notebook IsDeleted is also true & this was the last note of it.
-                            if (Note.NoteOwner.IsDeleted)
+                            // If the note we are deleting is the currently selected note, we delete it.
+                            if (Container.SelectedNote.Equals(Note))
                             {
-                                // Honestly should not be possible, but you never know.
-                                if (Container.SelectedNotebook.Equals(Note.NoteOwner))
-                                {
-                                    Container.SelectedNotebook = null;
-                                }
-
-                                if (Note.NoteOwner.Notes.Count == 1)
-                                {
-                                    // Remove notebook from the synchronizable notebook list
-                                    Container.Notebooks.Remove(Note.NoteOwner);
-
-                                    // Delete notebook from local storage and database
-                                    Note.NoteOwner.DeletePermanently();
-
-                                }
+                                Container.SelectedNote = null;
                             }
 
-                        }
+                            // Delete the note entirely (from database & local)
+                            Note.DeletePermanently();
 
-                        // Refresh the view
-                        Container.OpenDeletedNotesView();
+                            if (Note.NoteOwner.Notes.Contains(Note))
+                            {
+                                
+                                if (Note.NoteOwner.IsDeleted)
+                                {
+                                    // Honestly should not be possible, but you never know.
+                                    if (Container.SelectedNotebook.Equals(Note.NoteOwner))
+                                    {
+                                        Container.SelectedNotebook = null;
+                                    }
+
+                                    if (Note.NoteOwner.Notes.Count == 1)
+                                    {
+                                        // Remove notebook from the synchronizable notebook list
+                                        Container.Notebooks.Remove(Note.NoteOwner);
+
+                                        // Delete notebook from local storage and database
+                                        Note.NoteOwner.DeletePermanently();
+
+                                        // remove it from the noteowner
+                                        Note.NoteOwner.Notes.Remove(Note);
+
+                                    }
+                                }
+
+                                Note.NoteOwner.Notes.Remove(Note);
+                            }
+
+                            // Refresh the view
+                            Container.OpenDeletedNotesView();
+                        }
+                        
                     };
 
                     menu.Items.Add(restoreNoteMenuItem);
