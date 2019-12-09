@@ -130,8 +130,7 @@ namespace EvernoteCloneGUI.ViewModels
         }
 
         #endregion
-
-
+        
         #region Treeview impl. for notes and notebooks
 
         /// <summary>
@@ -204,6 +203,57 @@ namespace EvernoteCloneGUI.ViewModels
                 }
 
             }
+        }
+
+        private List<NotebookLocation> GetSubFolders(NotebookLocation notebookLocation)
+        {
+            TreeViewItem currentNode = new TreeViewItem();
+
+            foreach (string directory in notebookLocation.Path.Split('/'))
+            {
+                if (currentNode == null)
+                {
+                    if (NotebooksTreeView.Cast<TreeViewItem>()
+                        .Any(treeViewItem => GetHeader(treeViewItem) == directory))
+                    {
+                        currentNode = NotebooksTreeView.Cast<TreeViewItem>()
+                            .First(treeViewItem => GetHeader(treeViewItem) == directory);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                else if (currentNode.Items.Cast<TreeViewItem>()
+                    .Any(treeViewItem => GetHeader(treeViewItem) == directory))
+                {
+                    currentNode = currentNode.Items.Cast<TreeViewItem>()
+                        .First(treeViewItem => GetHeader(treeViewItem) == directory);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+
+            return RecursiveGetSubFolders(currentNode);
+        }
+
+        private List<NotebookLocation> RecursiveGetSubFolders(TreeViewItem rootTreeViewItem)
+        {
+            List<NotebookLocation> notebookLocations = new List<NotebookLocation>();
+            foreach (TreeViewItem treeViewItem in rootTreeViewItem.Items.Cast<TreeViewItem>())
+            {
+                notebookLocations.Add(new NotebookLocation{Path = GetPath(treeViewItem)});
+                notebookLocations.AddRange(RecursiveGetSubFolders(rootTreeViewItem));
+            }
+
+            if (notebookLocations.Count > 1)
+            {
+                return notebookLocations;
+            }
+
+            return null;
         }
 
         // @joris add summary & comments in code
@@ -721,7 +771,8 @@ namespace EvernoteCloneGUI.ViewModels
         // @joris add summary
         public void Synchronize()
         {
-
+            LoadNotebooksTreeView();
+            LoadNoteViewIfNoteExists();
         }
 
         #region Events
