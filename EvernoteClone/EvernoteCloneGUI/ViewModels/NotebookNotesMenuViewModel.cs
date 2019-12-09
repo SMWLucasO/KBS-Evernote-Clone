@@ -120,6 +120,10 @@ namespace EvernoteCloneGUI.ViewModels
 
         #region Helper methods
 
+        /// <summary>
+        /// Load the specified notes into the notebook notes menu
+        /// </summary>
+        /// <param name="notes"></param>
         public void LoadAllNotesIntoNotebookMenu(List<INote> notes)
         {
             if (notes != null)
@@ -128,6 +132,11 @@ namespace EvernoteCloneGUI.ViewModels
             }
         }
 
+        /// <summary>
+        /// Load all notes of the notebook into the notebook notes menu, whilst also determining wheter it should 
+        /// show deleted notes too.
+        /// </summary>
+        /// <param name="showDeletedNotes"></param>
         public void LoadNotesIntoNotebookMenu(bool showDeletedNotes = false)
         {
             this.ShowDeletedNotes = showDeletedNotes;
@@ -141,8 +150,10 @@ namespace EvernoteCloneGUI.ViewModels
         /// <returns></returns>
         public ObservableCollection<NoteElementViewModel> GenerateNoteElementsFromNotebook(List<INote> notes)
         {
-            ObservableCollection<NoteElementViewModel> noteElementViewModels = new ObservableCollection<NoteElementViewModel>();
+            ObservableCollection<NoteElementViewModel> noteElementViewModels 
+                = new ObservableCollection<NoteElementViewModel>();
             
+            // Generate Note elements, if the bool for showing deleted notes is true, we will show those too. 
             if (notes != null)
             {
                 if (Parent is NoteFeverViewModel noteFeverViewModel)
@@ -158,9 +169,12 @@ namespace EvernoteCloneGUI.ViewModels
                                 Title = note.Title ?? "",
                                 NoteCreationDate = note.CreationDate.Date.ToString("dd-MM-yyyy") ?? "Unknown"
                             };
-
+                            
+                            // Set the default selected note element for the notebook view
                             if (note.Equals(noteFeverViewModel.SelectedNote) && noteFeverViewModel.NotebookViewModel != null)
+                            {
                                 noteFeverViewModel.NotebookViewModel.SelectedNoteElement = noteElementView;
+                            }
                             noteElementViewModels.Add(noteElementView);
                         }
 
