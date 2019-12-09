@@ -7,7 +7,7 @@
              xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              xmlns:cal="http://www.caliburnproject.org"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="1200" d:DesignWidth="800">
     <StackPanel Margin="0,0,-0.5,0">
         <Menu>
             <MenuItem Header="File">
@@ -50,25 +50,35 @@
         <ToolBarTray>
             <ToolBar>
                 <Label>Font</Label>
-                <ComboBox Margin="5 0 10 0" x:Name="Fonts" SelectedItem="{Binding SelectedFont}">
-                    
-                </ComboBox>
+                <ComboBox Margin="5 0 10 0" x:Name="Fonts" SelectedItem="{Binding SelectedFont}" />
+                
                 <Label>Font Size</Label>
                 <ComboBox Margin="5 0 10 0" SelectedItem="{Binding SelectedFontSize}" x:Name="FontSizes" IsEditable="True"/>
+                
                 <Separator/>
-                <Button FontWeight="Bold" cal:Message.Attach="[Event Click] = [OnToggleBold]" Margin="5 0 5 0">B</Button>
-                <Button FontStyle="Italic" cal:Message.Attach="[Event Click] = [OnToggleItalics]"  Margin="5 0 5 0">I</Button>
-                <Button Margin="5 0 5 0" cal:Message.Attach="[Event Click] = [OnToggleUnderline]">
+                
+                <Button FontWeight="Bold" cal:Message.Attach="[Event Click] = [OnToggleBold]" Width="20">B</Button>
+                <Button FontStyle="Italic" cal:Message.Attach="[Event Click] = [OnToggleItalics]"  Width="20">I</Button>
+                <Button Width="20" cal:Message.Attach="[Event Click] = [OnToggleUnderline]">
                     <TextBlock TextDecorations="Underline">U</TextBlock>
                 </Button>
-                <Button Margin="5 0 5 0" cal:Message.Attach="[Event Click] = [OnToggleStrikethrough]">
+                <Button Width="20" cal:Message.Attach="[Event Click] = [OnToggleStrikethrough]">
                     <TextBlock TextDecorations="Strikethrough">S</TextBlock>
                 </Button>
-                <Separator></Separator>
+
+                <Separator />
+
                 <Button Margin="5 0 5 0" cal:Message.Attach="[Event Click] = [OnSetLeftAlignment]">Left</Button>
                 <Button Margin="5 0 5 0" cal:Message.Attach="[Event Click] = [OnSetCenterAlignment]">Center</Button>
                 <Button Margin="5 0 5 0" cal:Message.Attach="[Event Click] = [OnSetRightAlignment]">Right</Button>
-                <Separator Margin="5 0 5 0"></Separator>
+
+                <Separator Margin="5 0 5 0" />
+
+                <Button Margin="5 0 5 0" Foreground="Black" Command="EditingCommands.DecreaseIndentation">Undent</Button>
+                <Button Margin="5 0 5 0" Foreground="Black" Command="EditingCommands.IncreaseIndentation">Indent</Button>
+                
+                <Separator/>
+
                 <Button Margin="5 0 5 0" Foreground="Red" cal:Message.Attach="[Event Click] = [OnSetTextColor]">
                     <TextBlock FontWeight="Bold">TC</TextBlock>
                 </Button>
@@ -77,10 +87,11 @@
                 </Button>
                 <Separator/>
                 <Button Margin="5 0 5 0">
-                    <TextBlock FontWeight="Bold">Insert</TextBlock>
+                    <TextBlock>Insert</TextBlock>
                     <Button.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Table"></MenuItem>
+                            <MenuItem Header="Table" cal:Message.Attach="[Event Click] = [OnInsertTable]" />
+                            <MenuItem Header="Horizontal line" cal:Message.Attach="[Event Click] = [OnInsertHorizontalLine]" />
                             <MenuItem Header="Codeblocks"></MenuItem>
                             <MenuItem Header="Ordered list"></MenuItem>
                             <MenuItem Header="Unordered list"></MenuItem>
@@ -107,7 +118,7 @@
         </StackPanel>
         <StackPanel>
             <RichTextBox Height="669" x:Name="TextEditor" cal:Message.Attach="[Event TextChanged] = [StoreRichTextBoxContent($eventArgs)]" 
-                         SpellCheck.IsEnabled="True">
+                         SpellCheck.IsEnabled="True" AcceptsTab="True">
                 <FlowDocument>
                     
                 </FlowDocument>

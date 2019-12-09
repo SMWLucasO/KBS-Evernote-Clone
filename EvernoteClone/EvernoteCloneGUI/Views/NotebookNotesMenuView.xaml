@@ -49,8 +49,8 @@
                                         VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                                     <!-- Example for context menu -->
                                     <Button.ContextMenu>
-                                        <ContextMenu StaysOpen="true">
-                                            <MenuItem Header="Remove" cal:Message.Attach="[Event Click] = [RemoveNote($eventArgs)]"/>
+                                        <ContextMenu StaysOpen="true" cal:Message.Attach="[Event Opened] = [LoadNoteContext($eventArgs)]">
+                                            <!--<MenuItem Header="Remove" cal:Message.Attach="[Event Click] = [RemoveNote($eventArgs)]"/>-->
                                         </ContextMenu>
                                     </Button.ContextMenu>
                                     <Button.Template>

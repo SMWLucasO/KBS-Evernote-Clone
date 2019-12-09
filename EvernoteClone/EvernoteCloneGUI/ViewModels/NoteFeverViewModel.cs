@@ -23,7 +23,7 @@ namespace EvernoteCloneGUI.ViewModels
     public class NoteFeverViewModel : Conductor<object>
     {
         #region Properties
-        
+
         LoginViewModel loginViewModel = new LoginViewModel();
         User loginUser = null;
 
@@ -87,7 +87,7 @@ namespace EvernoteCloneGUI.ViewModels
         /// SelectedTreeViewItem contains the currently selected tree view item
         /// </summary>
         public TreeViewItem SelectedTreeViewItem;
-        
+
         #endregion
 
         // <User object stuff here>
@@ -95,7 +95,7 @@ namespace EvernoteCloneGUI.ViewModels
         // </User object stuff here>
 
         #region Notebook loading
-        
+
         /// <summary>
         /// This loads all the notebooks from the filesystem (and from the database as well, if UserID != 1)
         /// </summary>
@@ -419,10 +419,25 @@ namespace EvernoteCloneGUI.ViewModels
         {
             if (SelectedNotebook != null)
             {
+                string notebookCountString = "0 note(s)";
                 NewNoteViewModel newNoteViewModel = null;
+
+
+                if (!showDeletedNotes)
+                {
+                    if (SelectedNotebook.Notes.Count > 0)
+                    {
+                        IEnumerable<INote> notes = SelectedNotebook.Notes.Where((note) => !((Note)note).IsDeleted);
+                        notebookCountString = $"{notes.ToList().Count} note(s)";
+                    }
+                }
+                else
+                {
+                    notebookCountString = $"{SelectedNotebook.Notes.Count} note(s)";
+                }
+
                 if (SelectedNote != null)
                 {
-
                     newNoteViewModel = new NewNoteViewModel(true)
                     {
                         Note = SelectedNote,
@@ -430,6 +445,7 @@ namespace EvernoteCloneGUI.ViewModels
                         Parent = this
                     };
                 }
+
                 // Create the notebook view with the required data.
                 NotebookViewModel = new NotebookViewModel()
                 {
@@ -438,7 +454,7 @@ namespace EvernoteCloneGUI.ViewModels
                     {
                         Notebook = SelectedNotebook,
                         NotebookName = SelectedNotebook.Title,
-                        NotebookNoteCount = $"{SelectedNotebook.Notes.Count} note(s)",
+                        NotebookNoteCount = notebookCountString,
                         Parent = this
                     }
                 };
@@ -552,6 +568,7 @@ namespace EvernoteCloneGUI.ViewModels
             if (!(ValidateAndLoadNotebookView(trashNotebook, true)))
             {
                 MessageBox.Show("There are no deleted notes.", "Note Fever", MessageBoxButton.OK, MessageBoxImage.Information);
+
             }
 
         }
@@ -570,15 +587,20 @@ namespace EvernoteCloneGUI.ViewModels
         /// <param name="showDeletedNotes"></param>
         private bool ValidateAndLoadNotebookView(Notebook notebook, bool showDeletedNotes = false)
         {
-            if (notebook != null && notebook.Notes.Count > 0)
+            if (notebook != null)
             {
                 SelectedNotebook = notebook;
-                SelectedNote = (Note)notebook.Notes.First();
-                if (SelectedNote != null)
+                if (notebook.Notes.Count > 0)
                 {
-                    LoadNoteViewIfNoteExists(showDeletedNotes);
-                    return true;
+                    SelectedNote = (Note)notebook.Notes.First();
                 }
+                else
+                {
+                    SelectedNote = null;
+                }
+
+                LoadNoteViewIfNoteExists(showDeletedNotes);
+                return SelectedNote != null;
             }
 
             return false;
@@ -596,7 +618,7 @@ namespace EvernoteCloneGUI.ViewModels
             SelectedNotebook = Notebooks.First(notebook => notebook.Path.Path == path && notebook.Title == title);
             LoadNoteViewIfNoteExists();
         }
-        
+
         #endregion
 
         // NEE
@@ -604,7 +626,7 @@ namespace EvernoteCloneGUI.ViewModels
         
         public void Login()
         {
-            IWindowManager windowManager = new WindowManager();     
+            IWindowManager windowManager = new WindowManager();
 
             LoginViewModel loginViewModel = new LoginViewModel();
             windowManager.ShowDialog(loginViewModel);
