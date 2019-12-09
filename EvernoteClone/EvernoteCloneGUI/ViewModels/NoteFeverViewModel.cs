@@ -332,21 +332,25 @@ namespace EvernoteCloneGUI.ViewModels
             LoadNotebooks();
             foreach (Notebook notebook in Notebooks)
             {
-                TreeViewItem currentNode = null;
-                foreach (string directory in notebook.Path.Path.Split('/'))
+                if (!notebook.IsDeleted)
                 {
-                    if (currentNode == null)
+
+                    TreeViewItem currentNode = null;
+                    foreach (string directory in notebook.Path.Path.Split('/'))
                     {
-                        currentNode = treeViewItems.First(treeViewItem => GetHeader(treeViewItem) == directory);
+                        if (currentNode == null)
+                        {
+                            currentNode = treeViewItems.First(treeViewItem => GetHeader(treeViewItem) == directory);
+                        }
+
+                        else
+                        {
+                            currentNode = currentNode.Items.Cast<TreeViewItem>().First(treeViewItem => GetHeader(treeViewItem) == directory);
+                        }
                     }
 
-                    else
-                    {
-                        currentNode = currentNode.Items.Cast<TreeViewItem>().First(treeViewItem => GetHeader(treeViewItem) == directory);
-                    }
+                    currentNode?.Items.Add(CreateTreeNode(notebook.Title, NotebookContext));
                 }
-
-                currentNode?.Items.Add(CreateTreeNode(notebook.Title, NotebookContext));
             }
 
             return treeViewItems;
@@ -415,6 +419,22 @@ namespace EvernoteCloneGUI.ViewModels
 
             return stackPanel;
         }
+
+        //@joris, ty!!
+        /* public void RemoveFolder(object sender, RoutedEventArgs e)
+       {
+           NotebookLocation notebookLoc; < deze @joris, ty!!
+           List<NotebookLocation> subLocations = GetSubFolders(notebookLoc);
+           NotebookLocationRepository notebookLocRep = new NotebookLocationRepository();
+
+           foreach(NotebookLocation subLocation in subLocations)
+           {
+               notebookLocRep.Delete(subLocation);
+           }
+
+           notebookLocRep.Delete(notebookLoc);
+           LoadFolders();
+       }*/
 
         /// <summary>
         /// Add a folder to the folder structure
@@ -560,6 +580,26 @@ namespace EvernoteCloneGUI.ViewModels
                     }
                 }
             }
+        }
+
+        public void RemoveNotebook(Object sender, RoutedEventArgs e)
+        {
+            Notebook notebook = this.SelectedNotebook;
+            NoteRepository noteRep = new NoteRepository();
+            NotebookRepository notebookRep = new NotebookRepository();
+
+
+
+            List<INote> notesToRemove = notebook.Notes;
+            foreach (Note note in notesToRemove)
+            {
+                note.IsDeleted = true;
+                noteRep.Update(note);
+            }
+
+            notebook.IsDeleted = true;
+            notebookRep.Update(notebook);
+            LoadNotebooksTreeView();
         }
 
         /// <summary>
@@ -915,8 +955,11 @@ namespace EvernoteCloneGUI.ViewModels
             // First load context menu's
             RootContext.Items.Add(CreateMenuItem("Add Folder", AddFolderToRoot));
             FolderContext.Items.Add(CreateMenuItem("Add Folder", AddFolder));
+            //nog niet gemaakt
+            //FolderContext.Items.Add(CreateMenuItem("Remove", RemoveFolder));
             FolderContext.Items.Add(CreateMenuItem("Add Notebook", AddNotebook));
             NotebookContext.Items.Add(CreateMenuItem("Add Note", AddNote));
+            NotebookContext.Items.Add(CreateMenuItem("Remove", RemoveNotebook));
 
             // Load all folders, notebooks and add them all to the view
             LoadNotebooksTreeView();
