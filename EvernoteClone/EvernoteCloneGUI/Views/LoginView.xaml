@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EvernoteCloneGUI.Helpers"
+        xmlns:cal="http://www.caliburnproject.org"
         mc:Ignorable="d" ResizeMode="NoResize"
         Title="LoginView" Height="450" Width="550">
     <Grid>
@@ -29,6 +30,15 @@
         <Button x:Name="Register" Grid.Row="3" Content="Register" Background="#0052cc" Foreground="White" Margin="33.5,26.5,103,10" Grid.Column="2" Grid.ColumnSpan="2"/>
         <Button x:Name="GoogleLoginAsync" Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="2" Margin="68,10,69.5,34.5" BorderThickness="0" Padding="0" Background="Transparent">
             <Image Source="Images/btn_google_sign-in.png" Stretch="UniformToFill" Height="30" Width="135" ></Image>
+        </Button>
+        <Label Content="Or you can use it " Grid.ColumnSpan="2" Grid.Column="1" Margin="68,49,68,-49.5" Grid.Row="4" />
+        <Button Margin="32,54,70,12.5" Grid.Column="2" Grid.Row="4" x:Name="UseLocally" Width="35" Height="18">
+            <Button.Template>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <ContentPresenter />
+                </ControlTemplate>
+            </Button.Template>
+            <Hyperlink Foreground="DodgerBlue">locally</Hyperlink>
         </Button>
     </Grid>
 </Window>
