@@ -119,11 +119,5 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\EvernoteCloneGUI\EvernoteCloneGUI.csproj">
-      <Project>{cd82e836-9cac-4839-a5fe-8aba15517d59}</Project>
-      <Name>EvernoteCloneGUI</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

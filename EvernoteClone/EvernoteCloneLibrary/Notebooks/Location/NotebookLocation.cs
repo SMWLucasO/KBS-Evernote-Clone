@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using EvernoteCloneGUI.ViewModels;
 using EvernoteCloneLibrary.Constants;
 using EvernoteCloneLibrary.Extensions;
 using EvernoteCloneLibrary.Files.Parsers;
@@ -221,7 +220,7 @@ namespace EvernoteCloneLibrary.Notebooks.Location
 
             if (splittedPath.Length == 3)
             {
-                splittedPath[1] = NoteFeverViewModel.LoginUser.Username;
+                splittedPath[1] = Constant.User.Username;
 
                 return splittedPath[0] + splittedPath[1] + splittedPath[2];
             }

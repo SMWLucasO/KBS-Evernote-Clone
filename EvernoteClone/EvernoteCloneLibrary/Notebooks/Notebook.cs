@@ -7,8 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using EvernoteCloneLibrary.Extensions;
 using System.IO;
-using EvernoteCloneGUI.ViewModels;
-using EvernoteCloneGUI.Views;
 
 namespace EvernoteCloneLibrary.Notebooks
 {
@@ -223,6 +221,18 @@ namespace EvernoteCloneLibrary.Notebooks
             }
         }
 
+        public bool Update()
+        {
+            NotebookRepository notebookRepository = new NotebookRepository();
+            
+            bool updatedCloud = notebookRepository.Update(this);
+            bool updatedLocally = XmlExporter.Export(GetNotebookStoragePath(), $@"{FsName}.enex", this);
+
+            Console.WriteLine($"local: {updatedLocally} & cloud: {updatedCloud}");
+            
+            return updatedCloud || updatedLocally;
+        }
+
         private Notebook Update(int newId, int userId = -1)
         {
             Id = newId;
@@ -233,7 +243,7 @@ namespace EvernoteCloneLibrary.Notebooks
                 Path = NotebookLocation.GetNotebookLocationByPath(Path.Path, userId);
             }
 
-            return XmlExporter.Export(GetNotebookStoragePath(), FsName, this) ? this : null;
+            return XmlExporter.Export(GetNotebookStoragePath(), $@"{FsName}.enex", this) ? this : null;
         }
 
         public static int AddNewNotebookToDatabaseAndGetId(Notebook notebook, int userId)
@@ -360,7 +370,7 @@ namespace EvernoteCloneLibrary.Notebooks
         public void DeletePermanently()
         {
             NotebookRepository notebookRepository = new NotebookRepository();
-            if (this.Id != -1)
+            if (Id != -1)
             {
                 notebookRepository.Delete(this);
             }
@@ -424,7 +434,7 @@ namespace EvernoteCloneLibrary.Notebooks
 
             if (splittedPath.Length == 3)
             {
-                splittedPath[1] = NoteFeverViewModel.LoginUser.Username;
+                splittedPath[1] = Constant.User.Username;
 
                 return splittedPath[0] + splittedPath[1] + splittedPath[2];
             }

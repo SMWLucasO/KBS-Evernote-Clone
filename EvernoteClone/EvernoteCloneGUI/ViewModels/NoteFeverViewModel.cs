@@ -11,6 +11,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using EvernoteCloneLibrary.Constants;
 using EvernoteCloneLibrary.Users;
 
 namespace EvernoteCloneGUI.ViewModels
@@ -446,9 +447,12 @@ namespace EvernoteCloneGUI.ViewModels
                     List<NotebookLocation> subLocations = GetSubFolders(notebookLoc);
                     NotebookLocationRepository notebookLocRep = new NotebookLocationRepository();
 
-                    foreach (NotebookLocation subLocation in subLocations)
+                    if (subLocations != null)
                     {
-                        notebookLocRep.Delete(subLocation);
+                        foreach (NotebookLocation subLocation in subLocations)
+                        {
+                            notebookLocRep.Delete(subLocation);
+                        }
                     }
 
                     notebookLocRep.Delete(notebookLoc);
@@ -608,30 +612,26 @@ namespace EvernoteCloneGUI.ViewModels
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void RemoveNotebook(Object sender, RoutedEventArgs e)
+        public void RemoveNotebook(object sender, RoutedEventArgs e)
         {
-            Notebook notebook = this.SelectedNotebook;
-            NoteRepository noteRep = new NoteRepository();
-            NotebookRepository notebookRep = new NotebookRepository();
-
-
+            Notebook notebook = SelectedNotebook;
+            NoteRepository noteRepository = new NoteRepository();
+            
             //Deleted all the notes in the notebook
             List<INote> notesToRemove = notebook.Notes;
             foreach (Note note in notesToRemove)
             {
                 note.IsDeleted = true;
-                noteRep.Update(note);
+                noteRepository.Update(note);
             }
 
             notebook.IsDeleted = true;
-            notebookRep.Update(notebook);
+            notebook.Update();
 
             SelectedNotebook = null;
             LoadNoteViewIfNoteExists();
 
             LoadNotebooksTreeView();
-
-
         }
 
         /// <summary>
@@ -874,6 +874,7 @@ namespace EvernoteCloneGUI.ViewModels
             windowManager.ShowDialog(loginViewModel, null);
 
             LoginUser = loginViewModel.user;
+            Constant.User = LoginUser;
         }
 
         /// <summary>
