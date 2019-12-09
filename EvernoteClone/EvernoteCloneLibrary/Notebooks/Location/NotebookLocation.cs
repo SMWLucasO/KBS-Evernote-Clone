@@ -60,8 +60,13 @@ namespace EvernoteCloneLibrary.Notebooks.Location
             return null;
         }
 
-        public static bool AddNewNotebookLocation(NotebookLocation notebookLocation, int userId) =>
-            AddNewNotebookLocationToDatabaseAndGetId(notebookLocation, userId) != 1 || AddNotebookLocationToLocalStorage(notebookLocation);
+        public static bool AddNewNotebookLocation(NotebookLocation notebookLocation, int userId)
+        {
+            bool addedToDatabase = AddNewNotebookLocationToDatabaseAndGetId(notebookLocation, userId) != -1;
+            bool addedLocally = AddNotebookLocationToLocalStorage(notebookLocation);
+
+            return addedToDatabase || addedLocally;
+        }
 
         public static int AddNewNotebookLocationAndGetId(NotebookLocation notebookLocation, int userId)
         {
@@ -96,7 +101,8 @@ namespace EvernoteCloneLibrary.Notebooks.Location
         }
 
         public static bool AddNotebookLocationToLocalStorage(NotebookLocation notebookLocation) =>
-            XmlExporter.Export(GetUserDataStoragePath(), "NotebookLocations.enex", GetNewXmlRepresentation(notebookLocation));
+            XmlExporter.Export(GetUserDataStoragePath(), "NotebookLocations.enex",
+                GetNewXmlRepresentation(notebookLocation));
 
         private static string[] GetNewXmlRepresentation(NotebookLocation notebookLocation) => 
             GetXmlRepresentation(XmlImporter.ImportNotebookLocations(GetUserDataStoragePath() + @"/NotebookLocations.enex"), notebookLocation);

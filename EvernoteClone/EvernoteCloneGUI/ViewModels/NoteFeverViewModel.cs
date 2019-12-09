@@ -457,7 +457,7 @@ namespace EvernoteCloneGUI.ViewModels
             if (newFolderName != null)
             {
                 if (!NotebookLocation.AddNewNotebookLocation(
-                    new NotebookLocation() {Path = newFolderName}, loginUser.Id))
+                    new NotebookLocation {Path = newFolderName}, loginUser.Id))
                 {
                     MessageBox.Show("Something happened while adding the folder, does it already exist?","NoteFever | Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 }
