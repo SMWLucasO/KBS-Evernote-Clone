@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using Newtonsoft.Json;
 using System.Collections;
+using EvernoteCloneLibrary.Constants;
 
 namespace EvernoteCloneGUI.ViewModels
 {
@@ -32,21 +33,6 @@ namespace EvernoteCloneGUI.ViewModels
         /// This contains the user object (null if not logged in)
         /// </value>
         public User user { get; private set; }
-        
-        /// <value>
-        /// This contains the clientId which is used for the Google API
-        /// </value>
-        private const string _clientId = "IsSecret";
-        
-        /// <value>
-        /// This contains the clientSecret which is also used for the Google API
-        /// </value>
-        private const string _clientSecret = "IsSecret";
-        
-        /// <value>
-        /// The endpoint used for authorization (google)
-        /// </value>
-        private const string _authorizationEndpoint = "https://accounts.google.com/o/oauth2/v2/auth";
 
         #endregion
 
@@ -134,7 +120,7 @@ namespace EvernoteCloneGUI.ViewModels
 
             // Creates the OAuth 2.0 authorization request.
             string authorizationRequest =
-                $"{_authorizationEndpoint}?response_type=code&scope=openid%20email%20profile&redirect_uri={System.Uri.EscapeDataString(redirectUri)}&client_id={_clientId}&state={state}&code_challenge={codeChallenge}&code_challenge_method={codeChallengeMethod}";
+                $"{GoogleConstant.AUTHORIZATION_ENDPOINT}?response_type=code&scope=openid%20email%20profile&redirect_uri={System.Uri.EscapeDataString(redirectUri)}&client_id={GoogleConstant.CLIENT_ID}&state={state}&code_challenge={codeChallenge}&code_challenge_method={codeChallengeMethod}";
 
             // Opens request in the browser.
             System.Diagnostics.Process.Start(authorizationRequest);
@@ -148,11 +134,12 @@ namespace EvernoteCloneGUI.ViewModels
 
             // Sends an HTTP response to the browser.
             var response = context.Response;
-            string responseString = string.Format("<html><head><meta http-equiv='refresh' content='10;url=https://google.com'></head><body>Please return to the app.</body></html>");
-            var buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
+            string responseString = "<html><head><meta http-equiv='refresh' content='10;url=https://google.com'></head><body>Please return to the app.</body></html>";
+            var buffer = Encoding.UTF8.GetBytes(responseString);
             response.ContentLength64 = buffer.Length;
             var responseOutput = response.OutputStream;
-            Task responseTask = responseOutput.WriteAsync(buffer, 0, buffer.Length).ContinueWith((task) =>
+            
+            await responseOutput.WriteAsync(buffer, 0, buffer.Length).ContinueWith(task =>
             {
                 responseOutput.Close();
                 http.Stop();
@@ -208,7 +195,7 @@ namespace EvernoteCloneGUI.ViewModels
             // Setup token request
             string tokenRequestURI = "https://www.googleapis.com/oauth2/v4/token";
             string tokenRequestBody =
-                $"code={code}&redirect_uri={System.Uri.EscapeDataString(redirectUri)}&client_id={_clientId}&code_verifier={codeVerifier}&client_secret={_clientSecret}&grant_type=authorization_code";
+                $"code={code}&redirect_uri={System.Uri.EscapeDataString(redirectUri)}&client_id={GoogleConstant.CLIENT_ID}&code_verifier={codeVerifier}&client_secret={GoogleConstant.CLIENT_SECRET}&grant_type=authorization_code";
 
             // Sends the actually token request
             HttpWebRequest tokenRequest = (HttpWebRequest)WebRequest.Create(tokenRequestURI);

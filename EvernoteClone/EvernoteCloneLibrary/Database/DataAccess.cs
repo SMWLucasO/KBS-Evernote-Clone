@@ -150,11 +150,11 @@ namespace EvernoteCloneLibrary.Database
         private SqlConnection OpenSqlConnection()
         {
             string connectionString = "" +
-                $"Server=tcp:{(Constant.TEST_MODE ? Constant.TEST_DATABASE_HOST : Constant.DATABASE_HOST)},{SshConnection.Instance.GetSshPort()};" +
-                $"Database={(Constant.TEST_MODE ? Constant.TEST_DATABASE_CATALOG : Constant.DATABASE_CATALOG)};" +
-                $"UID={(Constant.TEST_MODE ? Constant.TEST_DATABASE_USERNAME : Constant.DATABASE_USERNAME)};" +
-                $"Password={(Constant.TEST_MODE ? Constant.TEST_DATABASE_PASSWORD : Constant.DATABASE_PASSWORD)};" +
-                $"Integrated Security={(Constant.TEST_MODE ? Constant.TEST_DATABASE_INTEGRATED_SECURITY : Constant.DATABASE_INTEGRATED_SECURITY)}";
+                $"Server=tcp:{(Constant.TEST_MODE ? DatabaseConstant.TEST_DATABASE_HOST : DatabaseConstant.DATABASE_HOST)},{SshConnection.Instance.GetSshPort()};" +
+                $"Database={(Constant.TEST_MODE ? DatabaseConstant.TEST_DATABASE_CATALOG : DatabaseConstant.DATABASE_CATALOG)};" +
+                $"UID={(Constant.TEST_MODE ? DatabaseConstant.TEST_DATABASE_USERNAME : DatabaseConstant.DATABASE_USERNAME)};" +
+                $"Password={(Constant.TEST_MODE ? DatabaseConstant.TEST_DATABASE_PASSWORD : DatabaseConstant.DATABASE_PASSWORD)};" +
+                $"Integrated Security={(Constant.TEST_MODE ? DatabaseConstant.TEST_DATABASE_INTEGRATED_SECURITY : DatabaseConstant.DATABASE_INTEGRATED_SECURITY)}";
 
             _connection = new SqlConnection(connectionString);
             _connection.Open();

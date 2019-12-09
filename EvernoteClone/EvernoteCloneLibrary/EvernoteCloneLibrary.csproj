@@ -70,6 +70,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constants\Constant.cs" />
+    <Compile Include="Constants\DatabaseConstant.cs" />
+    <Compile Include="Constants\GoogleConstant.cs" />
+    <Compile Include="Constants\SshConstant.cs" />
     <Compile Include="Database\DataAccess.cs" />
     <Compile Include="Database\IModel.cs" />
     <Compile Include="Database\IRepository.cs" />
