@@ -6,6 +6,7 @@ using System.Windows;
 using EvernoteCloneLibrary.Utils;
 using Caliburn.Micro;
 using System.Linq;
+using System.Windows.Shapes;
 
 namespace EvernoteCloneGUI.ViewModels.Commands
 {
@@ -18,6 +19,38 @@ namespace EvernoteCloneGUI.ViewModels.Commands
         #region Graphical (tables, separators, codeblocks)
 
 
+        public static void InsertCodeBlocks(RichTextBox textEditor)
+        {
+            TextBox codeBlock = new TextBox()
+            {
+                Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#dddddd")),
+                BorderBrush = Brushes.Black,
+                BorderThickness = new Thickness(1, 1, 1, 1),
+                MinWidth = 500,
+                MinHeight = 200,
+                Padding = new Thickness(5, 5, 5, 5),
+
+            };
+
+            Block nearest = GetNearestPosition(textEditor);
+
+            Paragraph paragraph = new Paragraph();
+            InlineUIContainer container = new InlineUIContainer(codeBlock);
+
+            paragraph.Inlines.Add(container);
+            if (nearest != null)
+            {
+                textEditor.Document.Blocks.InsertAfter(nearest, paragraph);
+                textEditor.Document.Blocks.InsertAfter(paragraph, new Paragraph(new Run("")));
+            }
+            else
+            {
+                textEditor.Document.Blocks.Add(paragraph);
+                textEditor.Document.Blocks.Add(new Paragraph(new Run("")));
+            }
+
+        }
+
         public static void InsertHorizontalLine(RichTextBox textEditor)
         {
             // create the horizontal line and find the nearest position to the cursor
@@ -28,6 +61,7 @@ namespace EvernoteCloneGUI.ViewModels.Commands
                 Height = 2,
                 MinWidth = 500
             };
+
             Block nearest = GetNearestPosition(textEditor);
 
             // create a paragraph and insert the separator in it
@@ -66,6 +100,7 @@ namespace EvernoteCloneGUI.ViewModels.Commands
                 {
                     CellSpacing = 5
                 };
+
 
                 for (int i = 0; i < columns; i++)
                 {
@@ -121,7 +156,7 @@ namespace EvernoteCloneGUI.ViewModels.Commands
                 else
                 {
                     textEditor.Document.Blocks.Add(table);
-                    
+
                     // Add a newline after the table (we can already assume it is on the last line)
                     textEditor.Document.Blocks.Add(new Paragraph(new Run("")));
                 }
@@ -290,7 +325,7 @@ namespace EvernoteCloneGUI.ViewModels.Commands
                         Int32.Parse(model.Value, System.Globalization.NumberStyles.HexNumber);
 
                         output = $"#{model.Value}";
-                        model.TryClose();
+                        model.TryClose(true);
                         return;
                     }
 
@@ -302,10 +337,10 @@ namespace EvernoteCloneGUI.ViewModels.Commands
                 MessageBox.Show("Please provide a valid hexadecimal color.", "Note Fever", MessageBoxButton.OK, MessageBoxImage.Error);
             };
 
-            valueRequestViewModel.Cancellation += (model) => model.TryClose();
-            windowManager.ShowDialog(valueRequestViewModel);
+            valueRequestViewModel.Cancellation += (model) => model.TryClose(false);
+            bool success = windowManager.ShowDialog(valueRequestViewModel) ?? false;
 
-            return output;
+            return (success ? output : null);
         }
 
         /// <summary>

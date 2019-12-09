@@ -256,12 +256,16 @@ namespace EvernoteCloneGUI.ViewModels
             if (textChangedEventArgs.Source is RichTextBox richTextBox)
             {
                 // Get the text from the richtextbox and create/read from a stream to get the data
+                
                 TextRange range = new TextRange(richTextBox.Document.ContentStart, richTextBox.Document.ContentEnd);
+                
+
                 MemoryStream stream = new MemoryStream();
                 range.Save(stream, DataFormats.Xaml);
 
                 // Generate the XaML content
                 NewContent = Encoding.Default.GetString(stream.ToArray());
+                
             }
         }
 
@@ -304,6 +308,11 @@ namespace EvernoteCloneGUI.ViewModels
         }
 
         #region Toolbar events
+
+        public void OnInsertCodeBlocks()
+        {
+            RichTextEditorCommands.InsertCodeBlocks(_textEditor);
+        }
 
         public void OnInsertTable()
         {
@@ -348,6 +357,9 @@ namespace EvernoteCloneGUI.ViewModels
             // validate whether the xaml string is empty or not, since if it is, it would throw an error if we were to continue.
             if (!(string.IsNullOrEmpty(xamlString.Trim())))
             {
+
+                MessageBox.Show(xamlString);
+
                 StringReader stringReader = new StringReader(xamlString);
                 XmlReaderSettings xmlReaderSettings = new XmlReaderSettings
                 {
