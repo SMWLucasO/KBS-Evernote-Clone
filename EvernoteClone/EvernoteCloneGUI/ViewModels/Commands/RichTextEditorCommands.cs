@@ -15,10 +15,9 @@ namespace EvernoteCloneGUI.ViewModels.Commands
     public static class RichTextEditorCommands
     {
 
-
         #region Graphical (tables, separators, codeblocks)
 
-        
+
         public static void InsertHorizontalLine(RichTextBox textEditor)
         {
             // create the horizontal line and find the nearest position to the cursor
@@ -83,6 +82,7 @@ namespace EvernoteCloneGUI.ViewModels.Commands
                 for (int i = 0; i < rows; i++)
                 {
                     TableRow tableRow = new TableRow();
+                    // make even table rows light gray and uneven table rows white.
                     if (i % 2 == 0)
                     {
                         tableRow.Background = Brushes.LightGray;
@@ -98,7 +98,7 @@ namespace EvernoteCloneGUI.ViewModels.Commands
                         table.RowGroups[0].Rows[i].Cells.Add(new TableCell(new Paragraph(new Run("")))
                         {
                             FontSize = 12,
-                            Padding = new Thickness(1, 1, 1, 1)
+                            Padding = new Thickness(1, 1, 1, 1) // Add a small padding so the cursor can be seen
                         }
                         );
                     }
@@ -114,7 +114,6 @@ namespace EvernoteCloneGUI.ViewModels.Commands
                     // Add a newline after the table if it is the last element.
                     if (textEditor.Document.Blocks.LastBlock.Equals(table))
                     {
-
                         textEditor.Document.Blocks.Add(new Paragraph(new Run("")));
                     }
 
@@ -122,7 +121,7 @@ namespace EvernoteCloneGUI.ViewModels.Commands
                 else
                 {
                     textEditor.Document.Blocks.Add(table);
-
+                    
                     // Add a newline after the table (we can already assume it is on the last line)
                     textEditor.Document.Blocks.Add(new Paragraph(new Run("")));
                 }
@@ -141,16 +140,15 @@ namespace EvernoteCloneGUI.ViewModels.Commands
         /// <param name="textEditor"></param>
         public static void SetTextColor(RichTextBox textEditor)
         {
+            // get the hex color value and generate a brush using it
             string hexadecimalColor = OpenColorPickRequest();
             if (hexadecimalColor != null)
             {
                 Brush brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(hexadecimalColor));
-                ApplyChange(textEditor, (obj) =>
+
+                ApplyChange(textEditor, (run) =>
                 {
-                    if (obj is TextSelection run)
-                    {
-                        run.ApplyPropertyValue(TextElement.ForegroundProperty, brush);
-                    }
+                    run.ApplyPropertyValue(TextElement.ForegroundProperty, brush);
                 });
             }
 
@@ -237,6 +235,7 @@ namespace EvernoteCloneGUI.ViewModels.Commands
         {
             if (ValidationUtil.AreNotNull(textEditor, textEditor.Selection, change))
             {
+                // Prepare a paragraph to apply changes upon if there is none yet.
                 if (textEditor.Selection.Start.Paragraph == null)
                 {
                     Paragraph paragraph = new Paragraph();
@@ -245,6 +244,7 @@ namespace EvernoteCloneGUI.ViewModels.Commands
                     textEditor.Document.Blocks.Add(paragraph);
                 }
 
+                // apply the changes to the selection. 
                 change(textEditor.Selection);
             }
         }
@@ -291,20 +291,18 @@ namespace EvernoteCloneGUI.ViewModels.Commands
 
                         output = $"#{model.Value}";
                         model.TryClose();
+                        return;
                     }
-                    else
-                    {
-                        MessageBox.Show("Please provide a valid hexadecimal color.", "Note Fever", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
+
+
+
                 }
-                catch (Exception)
-                {
-                    MessageBox.Show("Please provide a valid hexadecimal color.", "Note Fever", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                catch (Exception) { }
+                // When an error occurs or when the hex value is an improper value, show this error message.
+                MessageBox.Show("Please provide a valid hexadecimal color.", "Note Fever", MessageBoxButton.OK, MessageBoxImage.Error);
             };
 
             valueRequestViewModel.Cancellation += (model) => model.TryClose();
-
             windowManager.ShowDialog(valueRequestViewModel);
 
             return output;
@@ -323,6 +321,7 @@ namespace EvernoteCloneGUI.ViewModels.Commands
 
             bool closed = windowManager.ShowDialog(rowColumnSpecifierViewModel) ?? false;
 
+            // Validate whether the model submission was successful, if so, return the (row, col) tuple.
             if (closed && rowColumnSpecifierViewModel.Submitted && !rowColumnSpecifierViewModel.Cancelled)
             {
                 return (rowColumnSpecifierViewModel.RowCount, rowColumnSpecifierViewModel.ColumnCount);
@@ -330,6 +329,7 @@ namespace EvernoteCloneGUI.ViewModels.Commands
 
             return (0, 0);
         }
+
         #endregion
 
 
