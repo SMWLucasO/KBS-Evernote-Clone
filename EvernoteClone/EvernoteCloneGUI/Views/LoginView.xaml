@@ -27,5 +27,8 @@
         <PasswordBox Name="PasswordLogin" local:PasswordHelper.Attach="False" local:PasswordHelper.Password="{Binding Path=PasswordLogin, Mode=TwoWay, ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged,ValidatesOnExceptions=True}" Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="4" Margin="104,32,103,28.5"/>
         <Button x:Name="Login" Grid.Row="3" Content="Login" Background="#0052cc" Foreground="White" Margin="104,26.5,32.5,10" Grid.ColumnSpan="2"/>
         <Button x:Name="Register" Grid.Row="3" Content="Register" Background="#0052cc" Foreground="White" Margin="33.5,26.5,103,10" Grid.Column="2" Grid.ColumnSpan="2"/>
+        <Button x:Name="GoogleLoginAsync" Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="2" Margin="68,10,69.5,34.5" BorderThickness="0" Padding="0" Background="Transparent">
+            <Image Source="Images/btn_google_sign-in.png" Stretch="UniformToFill" Height="30" Width="135" ></Image>
+        </Button>
     </Grid>
 </Window>
