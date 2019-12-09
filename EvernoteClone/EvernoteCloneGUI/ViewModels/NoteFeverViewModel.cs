@@ -105,33 +105,26 @@ namespace EvernoteCloneGUI.ViewModels
             Notebooks = Notebook.Load(_userId);
 
             // if we're doing the initial loading, load the note and notebook if there is not already a selected note/notebook.
-            if (Notebooks.Count > 0)
-            {
-                Notebook tempNotebook = Notebooks.First();
-                Note tempNote = null;
-
-                if (tempNotebook.Notes.Count > 0)
-                {
-                    tempNote = (Note)tempNotebook.Notes.First();
-
-                }
-
-                if (initialLoad && SelectedNotebook == null)
-                {
-                    SelectedNotebook = tempNotebook;
-                }
-
-                if (tempNote != null && initialLoad && SelectedNote == null)
-                {
-                    SelectedNote = tempNote;
-                }
-
-            }
+            SelectFirst();
         }
 
+        private void SelectFirst()
+        {
+            SelectFirstNotebook();
+            SelectFirstNote(Notebooks.FirstOrDefault());
+        }
+
+        private void SelectFirstNotebook() =>
+            SelectedNotebook = Notebooks.FirstOrDefault();
+
+        private void SelectFirstNoteFromSelectedNotebook() =>
+            SelectFirstNote(SelectedNotebook);
+        
+        private void SelectFirstNote(Notebook notebook) =>
+            SelectedNote = (Note)notebook?.Notes.FirstOrDefault();
+
         #endregion
-
-
+        
         #region Treeview impl. for notes and notebooks
 
         /// <summary>
@@ -204,6 +197,57 @@ namespace EvernoteCloneGUI.ViewModels
                 }
 
             }
+        }
+
+        private List<NotebookLocation> GetSubFolders(NotebookLocation notebookLocation)
+        {
+            TreeViewItem currentNode = new TreeViewItem();
+
+            foreach (string directory in notebookLocation.Path.Split('/'))
+            {
+                if (currentNode == null)
+                {
+                    if (NotebooksTreeView.Cast<TreeViewItem>()
+                        .Any(treeViewItem => GetHeader(treeViewItem) == directory))
+                    {
+                        currentNode = NotebooksTreeView.Cast<TreeViewItem>()
+                            .First(treeViewItem => GetHeader(treeViewItem) == directory);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                else if (currentNode.Items.Cast<TreeViewItem>()
+                    .Any(treeViewItem => GetHeader(treeViewItem) == directory))
+                {
+                    currentNode = currentNode.Items.Cast<TreeViewItem>()
+                        .First(treeViewItem => GetHeader(treeViewItem) == directory);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+
+            return RecursiveGetSubFolders(currentNode);
+        }
+
+        private List<NotebookLocation> RecursiveGetSubFolders(TreeViewItem rootTreeViewItem)
+        {
+            List<NotebookLocation> notebookLocations = new List<NotebookLocation>();
+            foreach (TreeViewItem treeViewItem in rootTreeViewItem.Items.Cast<TreeViewItem>())
+            {
+                notebookLocations.Add(new NotebookLocation{Path = GetPath(treeViewItem)});
+                notebookLocations.AddRange(RecursiveGetSubFolders(rootTreeViewItem));
+            }
+
+            if (notebookLocations.Count > 1)
+            {
+                return notebookLocations;
+            }
+
+            return null;
         }
 
         // @joris add summary & comments in code
@@ -721,7 +765,10 @@ namespace EvernoteCloneGUI.ViewModels
         // @joris add summary
         public void Synchronize()
         {
-
+            LoadNotebooksTreeView();
+            SelectedNotebook = Notebooks.FirstOrDefault(notebooks => notebooks.FsName == SelectedNotebook.FsName);
+            SelectFirstNoteFromSelectedNotebook();
+            LoadNoteViewIfNoteExists();
         }
 
         #region Events
