@@ -105,29 +105,23 @@ namespace EvernoteCloneGUI.ViewModels
             Notebooks = Notebook.Load(_userId);
 
             // if we're doing the initial loading, load the note and notebook if there is not already a selected note/notebook.
-            if (Notebooks.Count > 0)
-            {
-                Notebook tempNotebook = Notebooks.First();
-                Note tempNote = null;
-
-                if (tempNotebook.Notes.Count > 0)
-                {
-                    tempNote = (Note)tempNotebook.Notes.First();
-
-                }
-
-                if (initialLoad && SelectedNotebook == null)
-                {
-                    SelectedNotebook = tempNotebook;
-                }
-
-                if (tempNote != null && initialLoad && SelectedNote == null)
-                {
-                    SelectedNote = tempNote;
-                }
-
-            }
+            SelectFirst();
         }
+
+        private void SelectFirst()
+        {
+            SelectFirstNotebook();
+            SelectFirstNote(Notebooks.FirstOrDefault());
+        }
+
+        private void SelectFirstNotebook() =>
+            SelectedNotebook = Notebooks.FirstOrDefault();
+
+        private void SelectFirstNoteFromSelectedNotebook() =>
+            SelectFirstNote(SelectedNotebook);
+        
+        private void SelectFirstNote(Notebook notebook) =>
+            SelectedNote = (Note)notebook?.Notes.FirstOrDefault();
 
         #endregion
         
@@ -772,6 +766,8 @@ namespace EvernoteCloneGUI.ViewModels
         public void Synchronize()
         {
             LoadNotebooksTreeView();
+            SelectedNotebook = Notebooks.FirstOrDefault(notebooks => notebooks.FsName == SelectedNotebook.FsName);
+            SelectFirstNoteFromSelectedNotebook();
             LoadNoteViewIfNoteExists();
         }
 
