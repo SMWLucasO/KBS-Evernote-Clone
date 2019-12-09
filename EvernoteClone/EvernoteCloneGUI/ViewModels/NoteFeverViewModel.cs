@@ -12,6 +12,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.ComponentModel;
+using EvernoteCloneLibrary.Users;
 
 // TODO add summary
 namespace EvernoteCloneGUI.ViewModels
@@ -21,6 +25,9 @@ namespace EvernoteCloneGUI.ViewModels
     /// </summary>
     public class NoteFeverViewModel : Conductor<object>
     {
+        LoginViewModel loginViewModel = new LoginViewModel();
+        User loginUser = null;
+
         /// <value>
         /// Notebooks contains all the local notebooks (and online notebooks, if UserID != 1)
         /// </value>
@@ -591,6 +598,18 @@ namespace EvernoteCloneGUI.ViewModels
 
         #endregion
 
+        public void Login()
+        {
+            IWindowManager windowManager = new WindowManager();     
+
+            LoginViewModel loginViewModel = new LoginViewModel();
+            windowManager.ShowDialog(loginViewModel, null);
+
+            loginUser = loginViewModel.user;
+            _userId = loginUser?.Id ?? -1;
+        }
+        
+
         #region Events
 
         public void TreeView_SelectedItemChanged(RoutedPropertyChangedEventArgs<object> routedPropertyChangedEventArgs)
@@ -616,12 +635,19 @@ namespace EvernoteCloneGUI.ViewModels
         /// </summary>
         protected override void OnActivate()
         {
-            // Set UserID equal to user input, this is for testing purposes only!
-            var userInputReturn = GetUserInput("UserID",
-                "Input UserID for testing purposes! -1 is offline, 3 is online:", 1, 2);
-            if (userInputReturn == null)
+            Login();
+            if(loginUser == null)
+            {
                 Environment.Exit(0);
-            _userId = int.Parse(userInputReturn);
+            }
+
+            // Set UserID equal to user input, this is for testing purposes only!
+            //var userInputReturn = GetUserInput("UserID",
+            //    "Input UserID for testing purposes! -1 is offline, 3 is online:", 1, 2);
+            //if (userInputReturn == null)
+            //    Environment.Exit(0);
+            //_userId = int.Parse(userInputReturn);
+
 
             // First load contextmenu's
             RootContext.Items.Add(CreateMenuItem("Add Folder", AddFolderToRoot));
