@@ -43,8 +43,7 @@ namespace EvernoteCloneGUI.ViewModels
         {
             
             string usernameLogin = EmailLogin;
-            Console.WriteLine("Pass: "+ passwordLog.ToString());
-            string passwordLogin = User.Encryption(PasswordLogin.ToString());
+            string passwordLogin = User.Encryption(PasswordLogin);
             user = (User)User.Login(usernameLogin, passwordLogin);
 
             if (user != null)

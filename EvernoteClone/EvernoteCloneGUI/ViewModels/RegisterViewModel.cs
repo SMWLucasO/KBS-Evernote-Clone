@@ -161,7 +161,7 @@ namespace EvernoteCloneGUI.ViewModels
             string tbFirstName = FirstName;
             string tbLastName = LastName;
             string tbEmail = Email;
-            string tbPassword = User.Encryption(Password.ToString());
+            string tbPassword = User.Encryption(Password);
 
             if (IsValidEmail(Email) && ValidatePassword(Password) && PasswordTheSame(PasswordConfirm, Password))
             {

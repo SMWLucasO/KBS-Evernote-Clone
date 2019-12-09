@@ -121,7 +121,8 @@ namespace EvernoteCloneGUI.ViewModels
         }
 
         #endregion
-
+        
+        // JA
         #region Treeview impl. for notes and notebooks
 
         /// <summary>
@@ -340,7 +341,8 @@ namespace EvernoteCloneGUI.ViewModels
         }
 
         #endregion
-
+        
+        // NEE
         #region Treeview context menu, including pop-ups
 
         public void AddNotebook(object sender, RoutedEventArgs e)
@@ -410,7 +412,8 @@ namespace EvernoteCloneGUI.ViewModels
         }
 
         #endregion
-
+        
+        // NEE
         #region Loading and opening views
         public void LoadNoteViewIfNoteExists(bool showDeletedNotes = false)
         {
@@ -618,20 +621,31 @@ namespace EvernoteCloneGUI.ViewModels
 
         #endregion
 
+        // NEE
+        #region Login
+        
         public void Login()
         {
             IWindowManager windowManager = new WindowManager();
 
             LoginViewModel loginViewModel = new LoginViewModel();
-            windowManager.ShowDialog(loginViewModel, null);
+            windowManager.ShowDialog(loginViewModel);
 
             loginUser = loginViewModel.user;
             _userId = loginUser?.Id ?? -1;
         }
 
+        #endregion
+        
+        public void Synchronize()
+        {
+            
+        }
+
+        // NEE
         #region Events
 
-        public void TreeView_SelectedItemChanged(RoutedPropertyChangedEventArgs<object> routedPropertyChangedEventArgs)
+        public void TreeViewSelectedItemChanged(RoutedPropertyChangedEventArgs<object> routedPropertyChangedEventArgs)
         {
             if (routedPropertyChangedEventArgs.NewValue is TreeViewItem treeViewItem)
             {
@@ -654,21 +668,14 @@ namespace EvernoteCloneGUI.ViewModels
         /// </summary>
         protected override void OnActivate()
         {
+            // Show login popup
             Login();
-            if (loginUser == null)
-            {
+            
+            // If user closed login window without logging in or clicking the 'Use locally' button, close application
+            if(loginUser == null)
                 Environment.Exit(0);
-            }
 
-            // Set UserID equal to user input, this is for testing purposes only!
-            //var userInputReturn = GetUserInput("UserID",
-            //    "Input UserID for testing purposes! -1 is offline, 3 is online:", 1, 2);
-            //if (userInputReturn == null)
-            //    Environment.Exit(0);
-            //_userId = int.Parse(userInputReturn);
-
-
-            // First load contextmenu's
+            // First load context menu's
             RootContext.Items.Add(CreateMenuItem("Add Folder", AddFolderToRoot));
             FolderContext.Items.Add(CreateMenuItem("Add Folder", AddFolder));
             FolderContext.Items.Add(CreateMenuItem("Add Notebook", AddNotebook));
