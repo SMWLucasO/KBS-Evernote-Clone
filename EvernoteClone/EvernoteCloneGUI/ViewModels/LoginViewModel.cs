@@ -81,7 +81,6 @@ namespace EvernoteCloneGUI.ViewModels
             if (user != null)
             {
                 MessageBox.Show("You've been logged in with success!");
-                (GetView() as Window)?.Close();
             }
             else 
             {
@@ -328,7 +327,6 @@ namespace EvernoteCloneGUI.ViewModels
                     if (user.Id != -1)
                     {
                         MessageBox.Show("You've been logged in with a Google account.","NoteFever | Google login", MessageBoxButton.OK, MessageBoxImage.Information);
-                        (GetView() as Window)?.Close();
                     }
                 }
             }
