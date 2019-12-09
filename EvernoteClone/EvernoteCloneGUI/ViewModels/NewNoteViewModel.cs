@@ -366,8 +366,6 @@ namespace EvernoteCloneGUI.ViewModels
             if (!(string.IsNullOrEmpty(xamlString.Trim())))
             {
 
-                MessageBox.Show(xamlString);
-
                 StringReader stringReader = new StringReader(xamlString);
                 XmlReaderSettings xmlReaderSettings = new XmlReaderSettings
                 {

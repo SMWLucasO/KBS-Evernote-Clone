@@ -81,7 +81,6 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
                 repository.Delete(this);
             }
            
-            NoteOwner.Notes.Remove(this);
             NoteOwner.Save();
         }
 
