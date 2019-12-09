@@ -25,7 +25,7 @@ namespace EvernoteCloneGUI.ViewModels
         /// <value>
         /// This contains the user object
         /// </value>
-        private User loginUser;
+        public static User LoginUser;
 
         /// <value>
         /// Notebooks contains all the local notebooks (and online notebooks, if UserID != 1)
@@ -94,7 +94,7 @@ namespace EvernoteCloneGUI.ViewModels
         private void LoadNotebooks(bool initialLoad = false)
         {
             // Load all Notebooks
-            Notebooks = Notebook.Load(loginUser.Id);
+            Notebooks = Notebook.Load(LoginUser.Id);
 
             // if we're doing the initial loading, load the note and notebook if there is not already a selected note/notebook.
             SelectFirst();
@@ -298,7 +298,7 @@ namespace EvernoteCloneGUI.ViewModels
         /// <returns>Returns a list with TreeViewItems</returns>
         private List<TreeViewItem> GetFolders()
         {
-            List<NotebookLocation> notebookLocations = NotebookLocation.Load(loginUser.Id);
+            List<NotebookLocation> notebookLocations = NotebookLocation.Load(LoginUser.Id);
             List<TreeViewItem> treeViewItems = new List<TreeViewItem>();
             foreach (string path in notebookLocations.Select(notebookLocation => notebookLocation.Path))
             {
@@ -432,21 +432,30 @@ namespace EvernoteCloneGUI.ViewModels
             return stackPanel;
         }
 
-        //@joris, ty!!
-        /* public void RemoveFolder(object sender, RoutedEventArgs e)
-       {
-           NotebookLocation notebookLoc; < deze @joris, ty!!
-           List<NotebookLocation> subLocations = GetSubFolders(notebookLoc);
-           NotebookLocationRepository notebookLocRep = new NotebookLocationRepository();
+        
+        public void RemoveFolder(object sender, RoutedEventArgs routedEventArgs)
+        {
+            if (routedEventArgs.Source is MenuItem menuItem)
+            {
+                if (menuItem.Parent is ContextMenu contextMenu)
+                {
+                    TreeViewItem treeViewItem = contextMenu.PlacementTarget as TreeViewItem;
+                    string path = GetPath(treeViewItem) + "/" + GetHeader(treeViewItem);
+                    
+                    NotebookLocation notebookLoc = new NotebookLocation {Path=path};
+                    List<NotebookLocation> subLocations = GetSubFolders(notebookLoc);
+                    NotebookLocationRepository notebookLocRep = new NotebookLocationRepository();
 
-           foreach(NotebookLocation subLocation in subLocations)
-           {
-               notebookLocRep.Delete(subLocation);
-           }
+                    foreach (NotebookLocation subLocation in subLocations)
+                    {
+                        notebookLocRep.Delete(subLocation);
+                    }
 
-           notebookLocRep.Delete(notebookLoc);
-           LoadFolders();
-       }*/
+                    notebookLocRep.Delete(notebookLoc);
+                    LoadNotebooksTreeView();
+                }
+            }
+        }
 
         /// <summary>
         /// Add a folder to the folder structure
@@ -465,7 +474,7 @@ namespace EvernoteCloneGUI.ViewModels
                     if (newFolderName != null)
                     {
                         if (!NotebookLocation.AddNewNotebookLocation(
-                            new NotebookLocation() { Path = path + "/" + newFolderName }, loginUser.Id))
+                            new NotebookLocation() {Path = path + "/" + newFolderName}, LoginUser.Id))
                         {
                             MessageBox.Show("Something happened while adding the folder, does it already exist?", "NoteFever | Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                         }
@@ -489,7 +498,7 @@ namespace EvernoteCloneGUI.ViewModels
             if (newFolderName != null)
             {
                 if (!NotebookLocation.AddNewNotebookLocation(
-                    new NotebookLocation { Path = newFolderName }, loginUser.Id))
+                    new NotebookLocation {Path = newFolderName}, LoginUser.Id))
                 {
                     MessageBox.Show("Something happened while adding the folder, does it already exist?", "NoteFever | Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 }
@@ -578,10 +587,10 @@ namespace EvernoteCloneGUI.ViewModels
 
                     if (newNotebookName != null)
                     {
-                        NotebookLocation notebookLocation = NotebookLocation.GetNotebookLocationByPath(path, loginUser.Id);
-                        Notebook notebook = new Notebook() { UserId = loginUser.Id, LocationId = notebookLocation.Id, Title = newNotebookName, CreationDate = DateTime.Now.Date, LastUpdated = DateTime.Now, Path = notebookLocation };
+                        NotebookLocation notebookLocation = NotebookLocation.GetNotebookLocationByPath(path, LoginUser.Id);
+                        Notebook notebook = new Notebook() { UserId = LoginUser.Id, LocationId = notebookLocation.Id, Title = newNotebookName, CreationDate = DateTime.Now.Date, LastUpdated = DateTime.Now, Path = notebookLocation };
 
-                        if (!notebook.Save(loginUser.Id))
+                        if (!notebook.Save(LoginUser.Id))
                         {
                             MessageBox.Show("Something happened while adding the notebook, does it already exist?", "NoteFever | Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                         }
@@ -864,7 +873,7 @@ namespace EvernoteCloneGUI.ViewModels
             LoginViewModel loginViewModel = new LoginViewModel();
             windowManager.ShowDialog(loginViewModel, null);
 
-            loginUser = loginViewModel.user;
+            LoginUser = loginViewModel.user;
         }
 
         /// <summary>
@@ -969,7 +978,7 @@ namespace EvernoteCloneGUI.ViewModels
             OpenLoginPopupView();
 
             // If user closed login window without logging in or clicking the 'Use locally' button, close application
-            if (loginUser == null)
+            if (LoginUser == null)
             {
                 Environment.Exit(0);
             }
@@ -977,10 +986,11 @@ namespace EvernoteCloneGUI.ViewModels
 
             // First load context menu's
             RootContext.Items.Add(CreateMenuItem("Add Folder", AddFolderToRoot));
+            
             FolderContext.Items.Add(CreateMenuItem("Add Folder", AddFolder));
-            //nog niet gemaakt
-            //FolderContext.Items.Add(CreateMenuItem("Remove", RemoveFolder));
             FolderContext.Items.Add(CreateMenuItem("Add Notebook", AddNotebook));
+            FolderContext.Items.Add(CreateMenuItem("Remove", RemoveFolder));
+            
             NotebookContext.Items.Add(CreateMenuItem("Add Note", AddNote));
             NotebookContext.Items.Add(CreateMenuItem("Remove", RemoveNotebook));
 

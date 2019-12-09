@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using EvernoteCloneGUI.ViewModels;
 using EvernoteCloneLibrary.Constants;
 using EvernoteCloneLibrary.Extensions;
 using EvernoteCloneLibrary.Files.Parsers;
@@ -213,7 +214,19 @@ namespace EvernoteCloneLibrary.Notebooks.Location
         public override int GetHashCode() =>
             (Path != null ? Path.GetHashCode() : 0);
 
-        private static string GetUserDataStoragePath() => 
-            Constant.TEST_MODE ? Constant.TEST_USERDATA_STORAGE_PATH : Constant.PRODUCTION_USERDATA_STORAGE_PATH;
+        private static string GetUserDataStoragePath()
+        {
+            string path = Constant.TEST_MODE ? Constant.TEST_USERDATA_STORAGE_PATH : Constant.PRODUCTION_USERDATA_STORAGE_PATH;
+            string[] splittedPath = path.Split('<', '>');
+
+            if (splittedPath.Length == 3)
+            {
+                splittedPath[1] = NoteFeverViewModel.LoginUser.Username;
+
+                return splittedPath[0] + splittedPath[1] + splittedPath[2];
+            }
+
+            return null;
+        }
     }
 }
