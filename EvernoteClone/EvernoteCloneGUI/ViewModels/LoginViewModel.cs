@@ -14,7 +14,7 @@ using System.Collections;
 
 namespace EvernoteCloneGUI.ViewModels
 {
-    class LoginViewModel
+    class LoginViewModel : Screen
     {
         #region Properties
         
@@ -31,7 +31,7 @@ namespace EvernoteCloneGUI.ViewModels
         /// <value>
         /// This contains the user object (null if not logged in)
         /// </value>
-        public User user { get; set; }
+        public User user { get; private set; }
         
         /// <value>
         /// This contains the clientId which is used for the Google API
@@ -61,7 +61,6 @@ namespace EvernoteCloneGUI.ViewModels
 
             RegisterViewModel registerViewModel = new RegisterViewModel();
             windowManager.ShowDialog(registerViewModel);
-            
         }
         
         #endregion
@@ -69,7 +68,7 @@ namespace EvernoteCloneGUI.ViewModels
         #region Handles login click event
 
         /// <summary>
-        /// Passess username and password, which is encrypted. Checks if the credentials are valid. 
+        /// Passes username and password, which is encrypted. Checks if the credentials are valid. 
         /// If they are valid it shows a message that it was successful, else an error message.
         /// </summary>
         public void Login()
@@ -82,15 +81,15 @@ namespace EvernoteCloneGUI.ViewModels
             if (user != null)
             {
                 MessageBox.Show("You've been logged in with success!");
-                
+                (GetView() as Window)?.Close();
             }
             else 
             {
                 MessageBox.Show("Password or Username is not correct. Please check again.");
-
             }
             
         }
+        
         #endregion
 
         #region Get ports
@@ -100,7 +99,7 @@ namespace EvernoteCloneGUI.ViewModels
         /// and can be run in multiple instance on the same machine
         /// </summary>
         /// <returns></returns>
-        public static int GetRandomUnusedPort()
+        private static int GetRandomUnusedPort()
         {
             var listener = new TcpListener(IPAddress.Loopback, 0);
             listener.Start();
@@ -114,34 +113,29 @@ namespace EvernoteCloneGUI.ViewModels
         #region Request authorization
         
         /// <summary>
-        /// Handles the full communcation to get authorization with Google.
+        /// Handles the full communication to get authorization with Google.
         /// </summary>
         /// <returns></returns>
         public async Task GoogleLoginAsync()
         {
             string state = randomDataBase64url(32);
-            string code_verifier = randomDataBase64url(32);
-            string code_challenge = base64urlencodeNoPadding(sha256(code_verifier));
-            const string code_challenge_method = "S256";
+            string codeVerifier = randomDataBase64url(32);
+            string codeChallenge = base64urlencodeNoPadding(sha256(codeVerifier));
+            const string codeChallengeMethod = "S256";
 
             // Creates a redirect URI using an available port on the loopback address.
-            string redirectURI = string.Format("http://{0}:{1}/", IPAddress.Loopback, GetRandomUnusedPort());
-            output("redirect URI: " + redirectURI);
+            string redirectUri = $"http://{IPAddress.Loopback}:{GetRandomUnusedPort()}/";
+            output("redirect URI: " + redirectUri);
 
             // Creates an HttpListener to listen for requests on that redirect URI.
             var http = new HttpListener();
-            http.Prefixes.Add(redirectURI);
+            http.Prefixes.Add(redirectUri);
             output("Listening..");
             http.Start();
 
             // Creates the OAuth 2.0 authorization request.
-            string authorizationRequest = string.Format("{0}?response_type=code&scope=openid%20email%20profile&redirect_uri={1}&client_id={2}&state={3}&code_challenge={4}&code_challenge_method={5}",
-                _authorizationEndpoint,
-                System.Uri.EscapeDataString(redirectURI),
-                _clientId,
-                state,
-                code_challenge,
-                code_challenge_method);
+            string authorizationRequest =
+                $"{_authorizationEndpoint}?response_type=code&scope=openid%20email%20profile&redirect_uri={System.Uri.EscapeDataString(redirectUri)}&client_id={_clientId}&state={state}&code_challenge={codeChallenge}&code_challenge_method={codeChallengeMethod}";
 
             // Opens request in the browser.
             System.Diagnostics.Process.Start(authorizationRequest);
@@ -169,7 +163,7 @@ namespace EvernoteCloneGUI.ViewModels
             // Checks for errors.
             if (context.Request.QueryString.Get("error") != null)
             {
-                output(String.Format("OAuth authorization error: {0}.", context.Request.QueryString.Get("error")));
+                output($"OAuth authorization error: {context.Request.QueryString.Get("error")}.");
                 return;
             }
             if (context.Request.QueryString.Get("code") == null
@@ -181,21 +175,22 @@ namespace EvernoteCloneGUI.ViewModels
 
             // Extracts the code
             var code = context.Request.QueryString.Get("code");
-            var incoming_state = context.Request.QueryString.Get("state");
+            var incomingState = context.Request.QueryString.Get("state");
 
             // Compares the received state to the expected value, to ensure that
             // this app made the request which resulted in authorization.
-            if (incoming_state != state)
+            if (incomingState != state)
             {
-                output(String.Format("Received request with invalid state ({0})", incoming_state));
+                output($"Received request with invalid state ({incomingState})");
                 return;
             }
             output("Authorization code: " + code);
 
             // Starts the code exchange at the Token Endpoint.
-            performCodeExchange(code, code_verifier, redirectURI);
+            performCodeExchange(code, codeVerifier, redirectUri);
 
         }
+        
         #endregion
 
         #region Exchange auth code for tokens
@@ -331,13 +326,22 @@ namespace EvernoteCloneGUI.ViewModels
                 googlePassword = makeGooglePassword(googleId);
                 googlePassword = User.Encryption(googlePassword);
 
-                //Check if the Google user already is registeren to the application or not.
+                //Check if the Google user already is registered to the application or not.
                 user = (User)User.Login(username,googlePassword);
 
                 if (user == null)
                 {
                     User.Register(username, googlePassword, firstName, lastName, isGoogleAccount);
                     user = (User)User.Login(username,googlePassword);
+                }
+
+                if (user != null)
+                {
+                    if (user.Id != -1)
+                    {
+                        MessageBox.Show("You've been logged in with a Google account.","NoteFever | Google login", MessageBoxButton.OK, MessageBoxImage.Information);
+                        (GetView() as Window)?.Close();
+                    }
                 }
             }
         }
@@ -404,6 +408,20 @@ namespace EvernoteCloneGUI.ViewModels
            return password + "!@#45";
         }
 
+        #endregion
+
+        #region For local use only
+        
+        public void UseLocally()
+        {
+            user = new User
+            {
+                Id = -1
+            };
+            
+            (GetView() as Window)?.Close();
+        }
+        
         #endregion
     }
 }
