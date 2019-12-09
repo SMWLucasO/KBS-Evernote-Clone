@@ -16,89 +16,80 @@ namespace EvernoteCloneGUI.ViewModels
     public class RegisterViewModel : IDataErrorInfo
     {
         #region Variables
-        // TODO change variable names according to coding conventions
-        private string _firstName;
-        private string _lastName;
-        private string _email;
-        private string _password;
-        private string _passwordConfirm;
-        private static int _minimumLength = 5;
-        private static int _upperLength = 1;
-        private static int _lowerLength = 1;
-        private static int _specialChar = 1;
-        private static int _numericLength = 2;
+        
+        private static readonly int _minimumLength = 5;
+        private static readonly int _upperLength = 1;
+        private static readonly int _lowerLength = 1;
+        private static readonly int _specialChar = 1;
+        private static readonly int _numericLength = 2;
+        
         #endregion
+        
         #region Properties
-        //Email property
-        public string Email
-        {
-            get => _email;
-            set => _email = value;
-        }
+        
+        public string Email { get; set; }
 
-        //Password property
-        public string Password
-        {
-            get => _password;
-            set => _password = value;
-        }
+        public string Password { get; set; }
 
-        //Password confirm property
-        public string PasswordConfirm
-        {
-            get => _passwordConfirm;
-            set => _passwordConfirm = value;
-        }
+        public string PasswordConfirm { get; set; }
 
-        //First name property
-        public string FirstName
-        {
-            get => _firstName;
-            set => _firstName = value;
-        }
+        public string FirstName { get; set; }
 
-        //Last name property
-        public string LastName
-        {
-            get => _lastName;
-            set => _lastName = value;
-        }
+        public string LastName { get; set; }
+
         #endregion
+        
         #region Show error messages
-        //Show error message
+        
         public string this[string propertyName]
         {
             get
             {
                 string result = null;
 
-                // Email
                 if (propertyName == "Email")
+                {
                     if (string.IsNullOrEmpty(Email) || IsValidEmail(Email) == false)
+                    {
                         result = "Please enter your email!";
-                
-                // Password
+                    }
+
+                }
+
                 if (propertyName == "Password")
+                {
                     if (!string.IsNullOrWhiteSpace(Password))
+                    {
                         if (ValidatePassword(Password) == false)
+                        {
                             result = "Please enter valid password!";
-                
-                // PasswordConfirm
+                        }
+                    }
+                }
+
+
                 if (propertyName == "PasswordConfirm")
+                {
                     if (PasswordConfirm != null)
-                        if (PasswordTheSame(PasswordConfirm,Password) == false)
+                    {
+                        if (ComparePasswordEquality(PasswordConfirm, Password) == false)
+                        {
                             result = "Password are not equal!";
+                        }
+                    }
+                }
 
                 return result;
             }
         }
 
-        //Throws Error
-        public string Error => 
+        public string Error =>
             throw new NotImplementedException();
+
         #endregion
-        #region Method to check if email is valid
-        //Check if email is valid 
+        #region Validation
+
+
         bool IsValidEmail(string email)
         {
             try
@@ -108,72 +99,60 @@ namespace EvernoteCloneGUI.ViewModels
             }
             catch { return false; }
         }
-        #endregion
-        #region Validates password
-        //method to validate inserted password
+
         public bool ValidatePassword(string password)
         {
-            if (password.Length < _minimumLength)
-                return false;
-            if (UpperCount(password) < _upperLength)
-                return false;
-            if (LowerCount(password) < _lowerLength)
-                return false;
-            if (NumericCount(password) < _numericLength)
-                return false;
-            if (SpecialCharCount(password) < _specialChar)
-                return false;
-            return true;
+            return password.Length >= _minimumLength && CountUpperCharacters(password) >= _upperLength && CountLowerCharacters(password) >= _lowerLength
+                && CountNumericCharacters(password) >= _numericLength && CountSpecialCharacters(password) >= _specialChar;
         }
 
-        // Checks if password are the same
-        public bool PasswordTheSame (string password1, string password2)
+        public bool ComparePasswordEquality(string password, string confirmationPassword)
         {
-            if (password1.Equals(password2))
-                return true;
-            return false;
+            return (password.Equals(confirmationPassword));
         }
-        #endregion
-        #region Methods to count specifics in password
-        //Counts uppercase characters in password
-        private static int UpperCount(string password) =>
+
+        #region Validation helpers
+
+        private static int CountUpperCharacters(string password) =>
             Regex.Matches(password, "[A-Z]").Count;
 
-        //Counts lowercase characters in password
-        private static int LowerCount(string password) =>
+        private static int CountLowerCharacters(string password) =>
             Regex.Matches(password, "[a-z]").Count;
 
-        //Counts numeric characters in password
-        private static int NumericCount(string password) =>
+        private static int CountNumericCharacters(string password) =>
             Regex.Matches(password, "[0-9]").Count;
 
-        //Counts special characters in password
 
-        private static int SpecialCharCount(string password) =>
+        private static int CountSpecialCharacters(string password) =>
             Regex.Matches(password, @"[^0-9a-zA-Z\._]").Count;
+
         #endregion
 
-        #region Register button
-        //Register button event
+        #endregion
+
+        #region Registration event handling
+        
         public void Register()
         {
-            User user = new User();
-            string tbFirstName = FirstName;
-            string tbLastName = LastName;
-            string tbEmail = Email;
             string tbPassword = User.Encryption(Password);
 
-            if (IsValidEmail(Email) && ValidatePassword(Password) && PasswordTheSame(PasswordConfirm, Password))
+            if (IsValidEmail(Email) && ValidatePassword(Password) && ComparePasswordEquality(PasswordConfirm, Password))
             {
-                if (User.Register(tbEmail, tbPassword, tbFirstName, tbLastName))
+                if (User.Register(Email, tbPassword, FirstName, LastName))
+                {
                     MessageBox.Show("Registration succesful!");
+                }
                 else
+                {
                     MessageBox.Show("Registration failed! Please try again.");
+                }
             }
             else
-                MessageBox.Show("Please fill the fields with errors");
-
+            {
+                MessageBox.Show("Please fill in the fields with errors");
+            }
         }
+
         #endregion
     }
 }
