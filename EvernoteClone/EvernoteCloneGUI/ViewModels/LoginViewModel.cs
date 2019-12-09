@@ -1,12 +1,8 @@
 ﻿using Caliburn.Micro;
-using EvernoteCloneLibrary.Notebooks;
-using EvernoteCloneLibrary.Notebooks.Notes;
 using EvernoteCloneLibrary.Users;
 using System;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Security.Cryptography;
@@ -14,20 +10,48 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using Newtonsoft.Json;
-using Google.Apis;
 using System.Collections;
-
 
 namespace EvernoteCloneGUI.ViewModels
 {
     class LoginViewModel
     {
-        private string emailLogin;
-        private string passwordLog;
-        public User user=null;
+        #region Properties
+        
+        /// <value>
+        /// This contains the email
+        /// </value>
+        public string EmailLogin { get; set; }
+        
+        /// <value>
+        /// This contains the password
+        /// </value>
+        public string PasswordLogin { get; set; }
 
+        /// <value>
+        /// This contains the user object (null if not logged in)
+        /// </value>
+        public User user { get; set; }
+        
+        /// <value>
+        /// This contains the clientId which is used for the Google API
+        /// </value>
+        private const string _clientId = "IsSecret";
+        
+        /// <value>
+        /// This contains the clientSecret which is also used for the Google API
+        /// </value>
+        private const string _clientSecret = "IsSecret";
+        
+        /// <value>
+        /// The endpoint used for authorization (google)
+        /// </value>
+        private const string _authorizationEndpoint = "https://accounts.google.com/o/oauth2/v2/auth";
+
+        #endregion
 
         #region Register window
+        
         /// <summary>
         /// Show register window when the button is clicked to register.
         /// </summary>
@@ -36,29 +60,10 @@ namespace EvernoteCloneGUI.ViewModels
             IWindowManager windowManager = new WindowManager();
 
             RegisterViewModel registerViewModel = new RegisterViewModel();
-            windowManager.ShowDialog(registerViewModel, null);
+            windowManager.ShowDialog(registerViewModel);
             
         }
-        #endregion
-
-        #region Properties for password and email
-
-        /// <summary>
-        /// Properties that are used to check whether someone can login with their credentials.
-        /// </summary>
-        public string EmailLogin
-        {
-            get { return emailLogin; }
-            set { emailLogin = value; }
-        }
-
         
-        public string PasswordLogin
-        {
-            get { return passwordLog; }
-            set { passwordLog = value; }
-        }
-
         #endregion
 
         #region Handles login click event
@@ -71,33 +76,25 @@ namespace EvernoteCloneGUI.ViewModels
         {
             
             string usernameLogin = EmailLogin; 
-            string passwordLogin = User.Encryption(PasswordLogin.ToString());
+            string passwordLogin = User.Encryption(PasswordLogin);
             user = (User)User.Login(usernameLogin, passwordLogin);
 
             if (user != null)
             {
-                MessageBox.Show("Succes!");
+                MessageBox.Show("You've been logged in with success!");
                 
             }
             else 
             {
-                MessageBox.Show("Failed!");
+                MessageBox.Show("Password or Username is not correct. Please check again.");
 
             }
             
         }
         #endregion
 
-        #region Local variables
-        /// <summary>
-        /// Local variables needed to connect to client for Google Oauth2.0.
-        /// </summary>
-        const string clientID = "IsSecret";
-        const string clientSecret = "IsSecret";
-        const string authorizationEndpoint = "https://accounts.google.com/o/oauth2/v2/auth";
-        #endregion
-
         #region Get ports
+        
         /// <summary>
         /// This method is used so that webpages can be served internally
         /// and can be run in multiple instance on the same machine
@@ -115,6 +112,7 @@ namespace EvernoteCloneGUI.ViewModels
         #endregion
 
         #region Request authorization
+        
         /// <summary>
         /// Handles the full communcation to get authorization with Google.
         /// </summary>
@@ -138,9 +136,9 @@ namespace EvernoteCloneGUI.ViewModels
 
             // Creates the OAuth 2.0 authorization request.
             string authorizationRequest = string.Format("{0}?response_type=code&scope=openid%20email%20profile&redirect_uri={1}&client_id={2}&state={3}&code_challenge={4}&code_challenge_method={5}",
-                authorizationEndpoint,
+                _authorizationEndpoint,
                 System.Uri.EscapeDataString(redirectURI),
-                clientID,
+                _clientId,
                 state,
                 code_challenge,
                 code_challenge_method);
@@ -152,7 +150,8 @@ namespace EvernoteCloneGUI.ViewModels
             var context = await http.GetContextAsync();
 
             // Brings this app back to the foreground.
-            this.Activate();
+            // TODO make this work!
+            //this.Activate();
 
             // Sends an HTTP response to the browser.
             var response = context.Response;
@@ -200,6 +199,7 @@ namespace EvernoteCloneGUI.ViewModels
         #endregion
 
         #region Exchange auth code for tokens
+        
         /// <summary>
         /// Exchanges the authorization codes that are return to tokens
         /// Tokens are needed to make a call to a Google API
@@ -216,9 +216,9 @@ namespace EvernoteCloneGUI.ViewModels
             string tokenRequestBody = string.Format("code={0}&redirect_uri={1}&client_id={2}&code_verifier={3}&client_secret={4}&grant_type=authorization_code",
                 code,
                 System.Uri.EscapeDataString(redirectURI),
-                clientID,
+                _clientId,
                 code_verifier,
-                clientSecret
+                _clientSecret
                 );
 
             // Sends the actually token request
@@ -246,7 +246,7 @@ namespace EvernoteCloneGUI.ViewModels
                     Dictionary<string, string> tokenEndpointDecoded = JsonConvert.DeserializeObject<Dictionary<string, string>>(responseText);
 
                     string access_token = tokenEndpointDecoded["access_token"];
-                    userinfoCall(access_token);
+                    UserInfoCall(access_token);
                 }
             }
             //Handles error when tokens are not received.
@@ -272,12 +272,13 @@ namespace EvernoteCloneGUI.ViewModels
         #endregion
 
         #region Make API call for Google user
+        
         /// <summary>
         /// Makes the whole API call to get user information. You have to explicitly tell the application
         /// what user information you wanna receive. 
         /// </summary>
         /// <param name="access_token"></param>
-        async void userinfoCall(string access_token)
+        private async void UserInfoCall(string access_token)
         {
             //Local variables used to insert a new Google account if needed.
             string[] userInfo;
@@ -391,6 +392,7 @@ namespace EvernoteCloneGUI.ViewModels
         #endregion
 
         #region Make new password
+        
         /// <summary>
         /// Receives unique google ID passes this through to make it the password
         /// for this account.
