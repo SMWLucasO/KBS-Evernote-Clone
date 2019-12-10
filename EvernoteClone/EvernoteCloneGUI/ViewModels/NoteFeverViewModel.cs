@@ -136,7 +136,11 @@ namespace EvernoteCloneGUI.ViewModels
         {
             if (notebook?.Notes.Count > 0)
             {
-                SelectedNote = (Note)notebook?.Notes.Where((note) => !((Note)note).IsDeleted).FirstOrDefault();
+                SelectedNote = (Note)(notebook?.Notes).FirstOrDefault(note => !((Note)note).IsDeleted);
+            }
+            else
+            {
+                SelectedNote = null;
             }
         }
 
@@ -941,6 +945,7 @@ namespace EvernoteCloneGUI.ViewModels
         public void SelectNotebook(int notebookId)
         {
             SelectedNotebook = Notebooks.FirstOrDefault(notebook => notebook.Id == notebookId);
+            SelectFirstNote(SelectedNotebook);
             LoadNoteViewIfNoteExists();
         }
 
@@ -953,6 +958,7 @@ namespace EvernoteCloneGUI.ViewModels
         public void SelectNotebook(string path, string title)
         {
             SelectedNotebook = Notebooks.FirstOrDefault(notebook => notebook.Path.Path == path && notebook.Title == title);
+            SelectFirstNote(SelectedNotebook);
             LoadNoteViewIfNoteExists();
         }
 

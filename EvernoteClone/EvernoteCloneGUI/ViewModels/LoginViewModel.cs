@@ -88,9 +88,8 @@ namespace EvernoteCloneGUI.ViewModels
             else 
             {
                 MessageBox.Show("Password or Username is not correct. Please check again.");
+                user = backupUser;
             }
-
-            user = backupUser;
         }
         
         #endregion
