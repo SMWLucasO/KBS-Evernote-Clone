@@ -4,6 +4,7 @@ using EvernoteCloneLibrary.Utils;
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using EvernoteCloneGUI.ViewModels.Controls;
 
 namespace EvernoteCloneGUI.ViewModels
 {
@@ -69,9 +70,9 @@ namespace EvernoteCloneGUI.ViewModels
 
                 // validate whether we should show deleted notes
                 bool showDeletedNotes = false;
-                if (ValidationUtil.AreNotNull(Container.NotebookViewModel, Container.NotebookViewModel.NotebookNotesMenu))
+                if (ValidationUtil.AreNotNull(Container.NotebookViewModelProp, Container.NotebookViewModelProp.NotebookNotesMenu))
                 {
-                    showDeletedNotes = Container.NotebookViewModel.NotebookNotesMenu.ShowDeletedNotes;
+                    showDeletedNotes = Container.NotebookViewModelProp.NotebookNotesMenu.ShowDeletedNotes;
                 }
 
                 // load the note into view.
@@ -91,7 +92,7 @@ namespace EvernoteCloneGUI.ViewModels
                 // Load the appropriate context menu
                 // If this note is a deleted note, we want a context menu to delete it permanently or restore it, otherwise we only want a 'remove'
                 // context menu element
-                if (Note.IsDeleted && menu.Items.Count != 2 && Container.NotebookViewModel.NotebookNotesMenu.ShowDeletedNotes)
+                if (Note.IsDeleted && menu.Items.Count != 2 && Container.NotebookViewModelProp.NotebookNotesMenu.ShowDeletedNotes)
                 {
                     // Clear the previous items, because it might already have previous ones.
                     menu.Items.Clear();
@@ -172,7 +173,7 @@ namespace EvernoteCloneGUI.ViewModels
                     menu.Items.Add(permanentNoteDeletionMenuItem);
 
                 }
-                else if (!Note.IsDeleted && menu.Items.Count != 1 && !Container.NotebookViewModel.NotebookNotesMenu.ShowDeletedNotes)
+                else if (!Note.IsDeleted && menu.Items.Count != 1 && !Container.NotebookViewModelProp.NotebookNotesMenu.ShowDeletedNotes)
                 {
                     menu.Items.Clear();
                     MenuItem removeNoteMenuItem = new MenuItem()
@@ -186,7 +187,7 @@ namespace EvernoteCloneGUI.ViewModels
                         UpdateNoteDeletion(true);
 
                         // reload the notebook with the new notes
-                        Container.NotebookViewModel.NotebookNotesMenu.LoadNotesIntoNotebookMenu();
+                        Container.NotebookViewModelProp.NotebookNotesMenu.LoadNotesIntoNotebookMenu();
 
                         // Remove note from text editor if that is the one we're removing.
                         if (Container.SelectedNote != null && Container.SelectedNote.Equals(Note))
@@ -221,9 +222,9 @@ namespace EvernoteCloneGUI.ViewModels
 
 
                 Note.NoteOwner.Save();
+                
                 // reload notebook treeview
-                Container.LoadNotebooksTreeView();
-
+                NoteFeverViewModel.NoteFeverTreeViewModel.LoadNotebooksTreeView();
             }
         }
     }

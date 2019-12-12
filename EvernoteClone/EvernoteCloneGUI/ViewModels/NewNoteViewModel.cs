@@ -60,9 +60,9 @@ namespace EvernoteCloneGUI.ViewModels
                 }
                 else
                 {
-                    if (Parent is NoteFeverViewModel container && container.NotebookViewModel?.SelectedNoteElement != null)
+                    if (Parent is NoteFeverViewModel container && container.NotebookViewModelProp?.SelectedNoteElement != null)
                     {
-                        container.NotebookViewModel.SelectedNoteElement.Title = _title;
+                        container.NotebookViewModelProp.SelectedNoteElement.Title = _title;
                     }
                 }
             }
@@ -196,7 +196,7 @@ namespace EvernoteCloneGUI.ViewModels
                     }
                 }
 
-                noteFeverViewModel.NotebookViewModel?.NotebookNotesMenu?.LoadNotesIntoNotebookMenu(showDeletedNotes);
+                noteFeverViewModel.NotebookViewModelProp?.NotebookNotesMenu?.LoadNotesIntoNotebookMenu(showDeletedNotes);
             }
 
             // If the NoteOwner isn't null, we fetch the Id of the user it contains
@@ -222,9 +222,9 @@ namespace EvernoteCloneGUI.ViewModels
             if (Parent != null && Parent is NoteFeverViewModel)
             {
                 parent = (NoteFeverViewModel)Parent;
-                if (ValidationUtil.AreNotNull(parent.NotebookViewModel, parent.NotebookViewModel.NotebookNotesMenu))
+                if (ValidationUtil.AreNotNull(parent.NotebookViewModelProp, parent.NotebookViewModelProp.NotebookNotesMenu))
                 {
-                    shouldShowDeleted = parent.NotebookViewModel.NotebookNotesMenu.ShowDeletedNotes;
+                    shouldShowDeleted = parent.NotebookViewModelProp.NotebookNotesMenu.ShowDeletedNotes;
                 }
             }
 
