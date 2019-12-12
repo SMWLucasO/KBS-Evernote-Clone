@@ -15,8 +15,8 @@ namespace EvernoteCloneLibraryTests.Files.Parsers
     class XmlExporterTests
     {
 
-        [TestCase(Constant.TEST_NOTEBOOK_STORAGE_PATH + "/testcases/", "file.enex", 1)]
-        [TestCase(Constant.TEST_NOTEBOOK_STORAGE_PATH + "/testcases/", "file2.enex", 3)]
+        [TestCase(Constant.TESTS_STORAGE_PATH, "file.enex", 1)]
+        [TestCase(Constant.TESTS_STORAGE_PATH, "file2.enex", 3)]
         public void Export_ShouldExport(string filePath, string filename, int notes)
         {
             // Arrange
@@ -63,7 +63,7 @@ namespace EvernoteCloneLibraryTests.Files.Parsers
         public void Import_ShouldImportNotebooks()
         {
             // Act
-            List<Notebook> loaded = XmlImporter.TryImportNotebooks(Constant.TEST_NOTEBOOK_STORAGE_PATH + "/testcases/");
+            List<Notebook> loaded = XmlImporter.TryImportNotebooks(Constant.TESTS_STORAGE_PATH);
 
             // Assert
             Assert.IsNotNull(loaded);
@@ -95,9 +95,9 @@ namespace EvernoteCloneLibraryTests.Files.Parsers
         [OneTimeTearDown]
         public void Remove_TestCaseFolder()
         {
-            if(Directory.Exists(Constant.TEST_NOTEBOOK_STORAGE_PATH + "/testcases/"))
+            if(Directory.Exists(Constant.TESTS_STORAGE_PATH))
             {
-                Directory.Delete(Constant.TEST_NOTEBOOK_STORAGE_PATH + "/testcases/", true);
+                Directory.Delete(Constant.TESTS_STORAGE_PATH, true);
             }
         }
 
