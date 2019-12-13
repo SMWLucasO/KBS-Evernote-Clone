@@ -372,7 +372,7 @@ namespace EvernoteCloneGUI.ViewModels.Controls
         /// <returns>Returns a list with TreeViewItems</returns>
         private List<TreeViewItem> GetFolders()
         {
-            List<NotebookLocation> notebookLocations = NotebookLocation.Load(NoteFeverViewModel.LoginUser.Id);
+            List<NotebookLocation> notebookLocations = NotebookLocation.Load();
             List<TreeViewItem> treeViewItems = new List<TreeViewItem>();
             
             // For all NotebookLocations create a treeViewItem
@@ -467,7 +467,7 @@ namespace EvernoteCloneGUI.ViewModels.Controls
                     if (newFolderName != null)
                     {
                         if (!NotebookLocation.AddNewNotebookLocation(
-                            new NotebookLocation {Path = notebookLocation.Path + "/" + newFolderName}, NoteFeverViewModel.LoginUser.Id))
+                            new NotebookLocation {Path = notebookLocation.Path + "/" + newFolderName}))
                         {
                             MessageBox.Show("Something happened while adding the folder, does it already exist?", "NoteFever | Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                         }
@@ -491,7 +491,7 @@ namespace EvernoteCloneGUI.ViewModels.Controls
             if (newFolderName != null)
             {
                 if (!NotebookLocation.AddNewNotebookLocation(
-                    new NotebookLocation {Path = newFolderName}, NoteFeverViewModel.LoginUser.Id))
+                    new NotebookLocation {Path = newFolderName}))
                 {
                     MessageBox.Show("Something happened while adding the folder, does it already exist?", "NoteFever | Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 }
@@ -528,7 +528,7 @@ namespace EvernoteCloneGUI.ViewModels.Controls
                             Path = notebookLocation
                         };
 
-                        if (!notebook.Save(NoteFeverViewModel.LoginUser.Id))
+                        if (!notebook.Save())
                         {
                             MessageBox.Show("Something happened while adding the notebook, does it already exist?", "NoteFever | Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                         }

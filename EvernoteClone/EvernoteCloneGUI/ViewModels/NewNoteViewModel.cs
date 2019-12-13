@@ -203,7 +203,7 @@ namespace EvernoteCloneGUI.ViewModels
             // though NoteOwner should never be null
             if (NoteOwner != null)
             {
-                return NoteOwner.Save(NoteOwner.UserId);
+                return NoteOwner.Save();
             }
                 
             return false;

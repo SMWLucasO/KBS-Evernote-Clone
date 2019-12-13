@@ -68,7 +68,7 @@ namespace EvernoteCloneGUI.ViewModels
         public void LoadNotebooks(bool initialLoad = false)
         {
             // Load all Notebooks
-            Notebooks = Notebook.Load(LoginUser.Id);
+            Notebooks = Notebook.Load();
 
             // if we're doing the initial loading, load the note and notebook if there is not already a selected note/notebook.
             SelectFirst();

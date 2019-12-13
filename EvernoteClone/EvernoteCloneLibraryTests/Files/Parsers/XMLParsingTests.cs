@@ -1,10 +1,8 @@
 ﻿using EvernoteCloneLibrary.Constants;
 using EvernoteCloneLibrary.Files.Parsers;
 using EvernoteCloneLibrary.Notebooks;
-using EvernoteCloneLibrary.Notebooks.Notes;
 using EvernoteCloneLibraryTests.TestHelpers;
 using NUnit.Framework;
-using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -27,7 +25,7 @@ namespace EvernoteCloneLibraryTests.Files.Parsers
             bool actual = XmlExporter.Export(filePath, filename, parseable);
 
             // Assert
-            Assert.That(actual, Is.True);
+            Assert.IsTrue(actual);
         }
 
         [TestCase("", "", -1)]
@@ -49,7 +47,7 @@ namespace EvernoteCloneLibraryTests.Files.Parsers
             bool actual = XmlExporter.Export(filePath, filename, parseable);
 
             // Assert
-            Assert.That(actual, Is.False);
+            Assert.IsFalse(actual);
         }
 
     }

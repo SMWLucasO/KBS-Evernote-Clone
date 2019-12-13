@@ -9,10 +9,10 @@ using EvernoteCloneLibrary.Database;
 namespace EvernoteCloneLibraryTests.Users
 {
 
-    [TestFixture]
+    [TestFixture, Order(2)]
     public class UserRepositoryTest
     {
-        private static List<UserModel> storedUsers = new List<UserModel>
+        private static List<UserModel> _storedUsers = new List<UserModel>
         {
             new UserModel
             {
@@ -33,7 +33,7 @@ namespace EvernoteCloneLibraryTests.Users
         };
 
         [Order(1)]
-        [TestCaseSource(nameof(storedUsers))]
+        [TestCaseSource(nameof(_storedUsers))]
         public void Insert_ShouldInsert(UserModel user)
         {
             //Arrange
@@ -47,7 +47,7 @@ namespace EvernoteCloneLibraryTests.Users
         }
 
         [Order(2)]
-        [TestCaseSource(nameof(storedUsers))]
+        [TestCaseSource(nameof(_storedUsers))]
         public void Update_ShouldReturn(UserModel user)
         {
             //Arrange
@@ -63,7 +63,7 @@ namespace EvernoteCloneLibraryTests.Users
         }
         
         [Order(3)]
-        [TestCaseSource(nameof(storedUsers))]
+        [TestCaseSource(nameof(_storedUsers))]
         public void GetBy_ShouldReturn(UserModel expectedUser)
         {
             //Arrange
@@ -80,7 +80,7 @@ namespace EvernoteCloneLibraryTests.Users
         }
 
         [Order(4)]
-        [TestCaseSource(nameof(storedUsers))]
+        [TestCaseSource(nameof(_storedUsers))]
         public void Delete_ShouldReturn(UserModel user)
         {
             // Arrange

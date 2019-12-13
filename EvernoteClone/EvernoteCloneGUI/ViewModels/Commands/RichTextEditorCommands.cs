@@ -6,7 +6,7 @@ using System.Windows;
 using EvernoteCloneLibrary.Utils;
 using Caliburn.Micro;
 using System.Linq;
-using System.Windows.Shapes;
+// ReSharper disable PossibleNullReferenceException
 
 namespace EvernoteCloneGUI.ViewModels.Commands
 {
@@ -199,12 +199,13 @@ namespace EvernoteCloneGUI.ViewModels.Commands
         {
             ApplyChange(textEditor, (selection) =>
             {
-                if (selection.GetPropertyValue(TextElement.BackgroundProperty) != Brushes.Yellow)
+                if (!Equals(selection.GetPropertyValue(TextElement.BackgroundProperty), Brushes.Yellow))
                 {
                     selection.ApplyPropertyValue(TextElement.BackgroundProperty, Brushes.Yellow);
                 }
                 else
                 {
+                    // ReSharper disable once AssignNullToNotNullAttribute
                     selection.ApplyPropertyValue(TextElement.BackgroundProperty, null);
                 }
             });
@@ -220,12 +221,13 @@ namespace EvernoteCloneGUI.ViewModels.Commands
         {
             ApplyChange(textEditor, (selection) =>
             {
-                if (selection.GetPropertyValue(Inline.TextDecorationsProperty) != TextDecorations.Strikethrough)
+                if (!Equals(selection.GetPropertyValue(Inline.TextDecorationsProperty), TextDecorations.Strikethrough))
                 {
                     selection.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Strikethrough);
                 }
                 else
                 {
+                    // ReSharper disable once AssignNullToNotNullAttribute
                     selection.ApplyPropertyValue(Inline.TextDecorationsProperty, null);
                 }
             });
@@ -296,8 +298,7 @@ namespace EvernoteCloneGUI.ViewModels.Commands
         private static Block GetNearestPosition(RichTextBox textEditor)
         {
             return textEditor.Document.Blocks
-                .Where(x => x.ContentStart.CompareTo(textEditor.CaretPosition) == -1 && x.ContentEnd.CompareTo(textEditor.CaretPosition) == 1)
-                .FirstOrDefault();
+                .FirstOrDefault(x => x.ContentStart.CompareTo(textEditor.CaretPosition) == -1 && x.ContentEnd.CompareTo(textEditor.CaretPosition) == 1);
         }
 
         /// <summary>
@@ -332,7 +333,11 @@ namespace EvernoteCloneGUI.ViewModels.Commands
 
 
                 }
-                catch (Exception) { }
+                catch (Exception)
+                {
+                    // ignored
+                }
+
                 // When an error occurs or when the hex value is an improper value, show this error message.
                 MessageBox.Show("Please provide a valid hexadecimal color.", "Note Fever", MessageBoxButton.OK, MessageBoxImage.Error);
             };
@@ -344,7 +349,7 @@ namespace EvernoteCloneGUI.ViewModels.Commands
         }
 
         /// <summary>
-        /// Open a window and return a tuple containing: (rowcount, columncount)
+        /// Open a window and return a tuple containing: (row count, column count)
         /// </summary>
         /// <returns></returns>
         private static (uint, uint) OpenTableDataSpecifier()
