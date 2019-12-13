@@ -345,9 +345,9 @@ namespace EvernoteCloneGUI.ViewModels
         /// </summary>
         /// <param name="path">The path that should contain the notebook</param>
         /// <param name="title">The title of the notebook that we want to select</param>
-        public void SelectNotebook(string path, string title)
+        public void SelectNotebook(NotebookLocation notebookLocation, string title)
         {
-            SelectedNotebook = Notebooks.FirstOrDefault(notebook => notebook.Path.Path == path && notebook.Title == title);
+            SelectedNotebook = Notebooks.FirstOrDefault(notebook => notebook.Path.Path == notebookLocation.Path && notebook.Title == title);
             SelectFirstNote(SelectedNotebook);
             LoadNoteViewIfNoteExists();
         }
