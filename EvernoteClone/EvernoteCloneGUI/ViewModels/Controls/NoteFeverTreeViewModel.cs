@@ -4,24 +4,16 @@ using EvernoteCloneLibrary.Notebooks.Location;
 using EvernoteCloneLibrary.Notebooks.Notes;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Dynamic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using EvernoteCloneLibrary.Constants;
-using EvernoteCloneLibrary.Users;
 
-// TODO add summary's
 namespace EvernoteCloneGUI.ViewModels.Controls
 {
     public class NoteFeverTreeViewModel
     {
-        private static NoteFeverViewModel _noteFeverViewModel;
-        
         #region Properties
 
         /// <value>
@@ -49,20 +41,30 @@ namespace EvernoteCloneGUI.ViewModels.Controls
         /// </value>
         public BitmapImage NotebookImage { get; } = new BitmapImage(new Uri("pack://application:,,,/EvernoteCloneGUI;component/Resources/journal.png"));
         
-        /// <summary>
+        /// <value>
         /// SelectedTreeViewItem contains the currently selected tree view item
-        /// </summary>
+        /// </value>
         public TreeViewItem SelectedTreeViewItem;
+        
+        /// <value>
+        /// _noteFeverViewModel contains the (only) instance of NoteFeverViewModel.
+        /// </value>
+        private static NoteFeverViewModel _noteFeverViewModel;
         
         #endregion
 
         #region Constructor
 
+        /// <summary>
+        /// This is the constructor of NoteFeverTreeViewModel. This class needs an instance of NoteFeverViewModel to function.
+        /// In the constructor method it builds all the necessary context menu's and Loads the TreeView.
+        /// </summary>
+        /// <param name="noteFeverViewModel"></param>
         public NoteFeverTreeViewModel(NoteFeverViewModel noteFeverViewModel)
         {
             _noteFeverViewModel = noteFeverViewModel;
             
-            // First load context menu's
+            // First create/build context menu's
             RootContext.Items.Add(CreateMenuItem("Add Folder", AddFolderToRoot));
             
             FolderContext.Items.Add(CreateMenuItem("Add Folder", AddFolder));
@@ -86,7 +88,7 @@ namespace EvernoteCloneGUI.ViewModels.Controls
         public void LoadNotebooksTreeView()
         {
             // Create a root TreeViewItem
-            TreeViewItem rootTreeViewItem = CreateTreeNode("My Notebooks", RootContext);
+            TreeViewItem rootTreeViewItem = CreateTreeNode("My Notebooks", RootContext, null);
 
             // Load all Folders (LoadFolders) and attach Notebooks to them (LoadNotebooksIntoFolderStructure)
             // Now, loop over them all, and add them to the root TreeViewItem
@@ -94,14 +96,14 @@ namespace EvernoteCloneGUI.ViewModels.Controls
             {
                 rootTreeViewItem.Items.Add(treeViewItem);
             }
-
-
-            // Clear the NotebooksTreeView and add the folder and notebook structure (also save the currently selected folder, and select it again)
+            
+            // Select the currently selected folder again in the new TreeView
             if (SelectedTreeViewItem != null)
             {
-                SelectPath(ref rootTreeViewItem, GetPath(SelectedTreeViewItem) + "/" + GetHeader(SelectedTreeViewItem));
+                SelectPath(ref rootTreeViewItem, GetPath(SelectedTreeViewItem) + "/" + SelectedTreeViewItem.Header);
             }
 
+            // Clear the NotebooksTreeView and add the folder and notebook structure
             NoteFeverViewModel.NotebooksTreeView.Clear();
             NoteFeverViewModel.NotebooksTreeView.Add(rootTreeViewItem);
         }
@@ -111,47 +113,46 @@ namespace EvernoteCloneGUI.ViewModels.Controls
         #region TreeView Helpers
         
         /// <summary>
-        /// Returns a string that represents the path of a TreeViewItem
+        /// Returns a NotebookLocation that represents the path of a TreeViewItem
         /// </summary>
         /// <param name="treeViewItem">The TreeViewItem from which the path should be extracted</param>
         /// <param name="isNotebook">A boolean that indicates if the TreeViewItem is a notebook or not</param>
-        /// <returns>Returns the path of a TreeViewItem (folder) or the folder which the notebook is located in</returns>
-        private string GetPath(TreeViewItem treeViewItem, bool isNotebook = false)
+        /// <returns>Returns a NotebookLocation object containing the folder path (or path to the notebook, if it is a notebook)</returns>
+        private static NotebookLocation GetPath(HeaderedItemsControl treeViewItem, bool isNotebook = false)
         {
-            if (GetHeader(treeViewItem) == "My Notebooks")
+            // Check if header of treeViewItem is 'My Notebooks', if this is true, it is the root TreeViewItem and thus we should return null.
+            if (treeViewItem.Header.ToString() == "My Notebooks")
             {
-                return "";
+                return null;
             }
 
-            string path = isNotebook ? "" : GetHeader(treeViewItem);
-            while (treeViewItem.Parent is TreeViewItem item)
+            if (!isNotebook)
             {
-                treeViewItem = item;
-                if (GetHeader(treeViewItem) == "My Notebooks")
-                {
-                    break;
-                }
-
-                path = GetHeader(treeViewItem) + "/" + path;
+                return (NotebookLocation) treeViewItem.Tag;
             }
-            return isNotebook ? path.Substring(0, path.Length - 1) : path;
+            
+            // If isNotebook equals true, we should get the parent (which should be a folder) and return it's Tag (NotebookLocation)
+            if (treeViewItem.Parent is TreeViewItem folder)
+            {
+                return (NotebookLocation) folder.Tag;
+            }
+
+            return (NotebookLocation)treeViewItem.Tag;
         }
 
-        // @joris add summary & comments in code
-        private int GetNotebookId(TreeViewItem treeViewItem)
-        {
-            if (treeViewItem.Header is StackPanel stackPanel)
-            {
-                if (stackPanel.Children[2] is Label label)
-                {
-                    return Convert.ToInt32(label.Content);
-                }
-            }
-
-            return -1;
-        }
-
-        // @joris add summary & comments in code
+        /// <summary>
+        /// Returns the id of the notebook selected.
+        /// </summary>
+        /// <param name="treeViewItem">The selected 'notebook'</param>
+        /// <returns>Notebook Id</returns>
+        private int GetNotebookId(TreeViewItem treeViewItem) =>
+            ((Notebook)treeViewItem.Tag).Id;
+        
+        /// <summary>
+        /// Returns the header of a folder or notebook that is selected
+        /// </summary>
+        /// <param name="treeViewItem">The selected item</param>
+        /// <returns>The header as a string</returns>
         private string GetHeader(TreeViewItem treeViewItem)
         {
             if (treeViewItem.Header is StackPanel stackPanel)
@@ -164,7 +165,7 @@ namespace EvernoteCloneGUI.ViewModels.Controls
 
             return treeViewItem.Header.ToString();
         }
-        
+
         /// <summary>
         /// Set the IsExpanded property of every TreeViewItem that is included in the given path
         /// </summary>
@@ -175,6 +176,7 @@ namespace EvernoteCloneGUI.ViewModels.Controls
             rootTreeViewItem.IsExpanded = true;
             TreeViewItem currentNode = null;
 
+            // Foreach folder in path
             foreach (string directory in path.Split('/'))
             {
                 if (currentNode != null)
@@ -202,6 +204,11 @@ namespace EvernoteCloneGUI.ViewModels.Controls
             }
         }
         
+        /// <summary>
+        /// Checks if the selected item is a Notebook
+        /// </summary>
+        /// <param name="treeViewItem">The selected item</param>
+        /// <returns>Returns a boolean indicating if the selected item is a Notebook or not</returns>
         private bool IsNotebook(TreeViewItem treeViewItem)
             => treeViewItem.ContextMenu == NotebookContext;
         
@@ -216,6 +223,7 @@ namespace EvernoteCloneGUI.ViewModels.Controls
         {
             TreeViewItem currentNode = null;
 
+            // Foreach folder in path
             foreach (string directory in notebookLocation.Path.Split('/'))
             {
                 if (currentNode == null)
@@ -241,6 +249,8 @@ namespace EvernoteCloneGUI.ViewModels.Controls
                 }
             }
 
+            // This boolean is used to check if there are notebooks in the (sub)folders.
+            // If this is the case the folder shouldn't be deleted.
             bool notebookIsPartOfSubfolders = false;
             List<NotebookLocation> notebookLocations = RecursiveGetSubFolders(currentNode, ref notebookIsPartOfSubfolders);
 
@@ -270,7 +280,7 @@ namespace EvernoteCloneGUI.ViewModels.Controls
                         notebookIsPartOfSubfolders = true;
                     }
 
-                    notebookLocations.Add(new NotebookLocation {Path = GetPath(treeViewItem)});
+                    notebookLocations.Add((NotebookLocation)treeViewItem.Tag);
 
                     List<NotebookLocation> tmpNotebookLocations =
                         RecursiveGetSubFolders(treeViewItem, ref notebookIsPartOfSubfolders);
@@ -281,7 +291,7 @@ namespace EvernoteCloneGUI.ViewModels.Controls
             }
             else
             {
-                notebookLocations.Add(new NotebookLocation {Path = GetPath(rootTreeViewItem)});
+                notebookLocations.Add((NotebookLocation)rootTreeViewItem.Tag);
             }
 
             if (notebookLocations.Count > 0)
@@ -302,16 +312,15 @@ namespace EvernoteCloneGUI.ViewModels.Controls
         /// </summary>
         /// <param name="header">Display name</param>
         /// <param name="contextMenu">This is the menu that is shown when right clicked</param>
-        /// <param name="notebookId">The id of the notebook (if it is a notebook)</param>
+        /// <param name="tag">An object that should be either a Notebook or a NotebookLocation</param>
         /// <returns>TreeViewItem that represents a notebook or folder</returns>
-        private TreeViewItem CreateTreeNode(string header, ContextMenu contextMenu, int notebookId = -1)
+        private TreeViewItem CreateTreeNode(string header, ContextMenu contextMenu, object tag)
         {
             return new TreeViewItem
             {
-                Header = CreateTreeHeader(header, contextMenu, notebookId),
+                Header = CreateTreeHeader(header, contextMenu),
+                Tag = tag,
                 Foreground = Brushes.White,
-                //HorizontalContentAlignment = HorizontalAlignment.Stretch,
-                //VerticalContentAlignment = VerticalAlignment.Stretch,
                 IsExpanded = false,
                 FontSize = 14,
                 ContextMenu = contextMenu
@@ -323,10 +332,10 @@ namespace EvernoteCloneGUI.ViewModels.Controls
         /// </summary>
         /// <param name="header">Display name</param>
         /// <param name="contextMenu">This is the menu that is shown when right clicked</param>
-        /// <param name="notebookId">The id of the notebook (if it is a notebook)</param>
         /// <returns>Returns a StackPanel containing all the required data</returns>
-        private StackPanel CreateTreeHeader(string header, ContextMenu contextMenu, int notebookId = -1)
+        private StackPanel CreateTreeHeader(string header, ContextMenu contextMenu)
         {
+            // This StackPanel contains the image and header
             StackPanel stackPanel = new StackPanel { Orientation = Orientation.Horizontal };
 
             Image image = new Image
@@ -350,16 +359,6 @@ namespace EvernoteCloneGUI.ViewModels.Controls
             textBlock.Inlines.Add(header);
             stackPanel.Children.Add(textBlock);
 
-            if (contextMenu == NotebookContext)
-            {
-                Label label = new Label
-                {
-                    Content = notebookId + "",
-                    Visibility = Visibility.Collapsed
-                };
-                stackPanel.Children.Add(label);
-            }
-
             return stackPanel;
         }
         
@@ -375,10 +374,12 @@ namespace EvernoteCloneGUI.ViewModels.Controls
         {
             List<NotebookLocation> notebookLocations = NotebookLocation.Load(NoteFeverViewModel.LoginUser.Id);
             List<TreeViewItem> treeViewItems = new List<TreeViewItem>();
-            foreach (string path in notebookLocations.Select(notebookLocation => notebookLocation.Path))
+            
+            // For all NotebookLocations create a treeViewItem
+            foreach (NotebookLocation notebookLocation in notebookLocations)
             {
                 TreeViewItem currentNode = null;
-                foreach (string directory in path.Split('/'))
+                foreach (string directory in notebookLocation.Path.Split('/'))
                 {
                     if (currentNode == null)
                     {
@@ -389,7 +390,7 @@ namespace EvernoteCloneGUI.ViewModels.Controls
 
                         else
                         {
-                            treeViewItems.Add(currentNode = CreateTreeNode(directory, FolderContext));
+                            treeViewItems.Add(currentNode = CreateTreeNode(directory, FolderContext, notebookLocation));
                         }
 
                     }
@@ -399,7 +400,7 @@ namespace EvernoteCloneGUI.ViewModels.Controls
                     }
                     else
                     {
-                        var newNode = CreateTreeNode(directory, FolderContext);
+                        var newNode = CreateTreeNode(directory, FolderContext, notebookLocation);
                         currentNode.Items.Add(newNode);
                         currentNode = newNode;
                     }
@@ -417,6 +418,8 @@ namespace EvernoteCloneGUI.ViewModels.Controls
         private List<TreeViewItem> AddNotebooksToFolders(List<TreeViewItem> treeViewItems)
         {
             _noteFeverViewModel.LoadNotebooks();
+            
+            // For all Notebooks add them to the corresponding path (folder)
             foreach (Notebook notebook in _noteFeverViewModel.Notebooks)
             {
                 if (!notebook.IsDeleted)
@@ -436,7 +439,7 @@ namespace EvernoteCloneGUI.ViewModels.Controls
                         }
                     }
 
-                    currentNode?.Items.Add(CreateTreeNode(notebook.Title, NotebookContext));
+                    currentNode?.Items.Add(CreateTreeNode(notebook.Title, NotebookContext, notebook));
                 }
             }
 
@@ -458,13 +461,13 @@ namespace EvernoteCloneGUI.ViewModels.Controls
             {
                 if (menuItem.Parent is ContextMenu contextMenu)
                 {
-                    string path = GetPath(contextMenu.PlacementTarget as TreeViewItem);
+                    NotebookLocation notebookLocation = GetPath(contextMenu.PlacementTarget as TreeViewItem);
                     string newFolderName = GetUserInput("Create new folder", "What do you want your new folder to be called:");
 
                     if (newFolderName != null)
                     {
                         if (!NotebookLocation.AddNewNotebookLocation(
-                            new NotebookLocation() {Path = path + "/" + newFolderName}, NoteFeverViewModel.LoginUser.Id))
+                            new NotebookLocation {Path = notebookLocation.Path + "/" + newFolderName}, NoteFeverViewModel.LoginUser.Id))
                         {
                             MessageBox.Show("Something happened while adding the folder, does it already exist?", "NoteFever | Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                         }
@@ -510,13 +513,20 @@ namespace EvernoteCloneGUI.ViewModels.Controls
             {
                 if (menuItem.Parent is ContextMenu contextMenu)
                 {
-                    string path = GetPath(contextMenu.PlacementTarget as TreeViewItem);
+                    NotebookLocation notebookLocation = GetPath(contextMenu.PlacementTarget as TreeViewItem);
                     string newNotebookName = GetUserInput("Create new notebook", "What do you want your new notebook to be called:");
 
                     if (newNotebookName != null)
                     {
-                        NotebookLocation notebookLocation = NotebookLocation.GetNotebookLocationByPath(path, NoteFeverViewModel.LoginUser.Id);
-                        Notebook notebook = new Notebook() { UserId = NoteFeverViewModel.LoginUser.Id, LocationId = notebookLocation.Id, Title = newNotebookName, CreationDate = DateTime.Now.Date, LastUpdated = DateTime.Now, Path = notebookLocation };
+                        Notebook notebook = new Notebook
+                        {
+                            UserId = NoteFeverViewModel.LoginUser.Id, 
+                            LocationId = notebookLocation.Id, 
+                            Title = newNotebookName, 
+                            CreationDate = DateTime.Now.Date, 
+                            LastUpdated = DateTime.Now, 
+                            Path = notebookLocation
+                        };
 
                         if (!notebook.Save(NoteFeverViewModel.LoginUser.Id))
                         {
@@ -549,12 +559,12 @@ namespace EvernoteCloneGUI.ViewModels.Controls
             Notebook notebook = _noteFeverViewModel.SelectedNotebook;
             NoteRepository noteRepository = new NoteRepository();
             
-            //Deleted all the notes in the notebook
+            // Deleted all the notes in the notebook
             List<INote> notesToRemove = notebook.Notes;
 
             if (notesToRemove.Count > 0)
             {
-                foreach (Note note in notesToRemove)
+                foreach (Note note in notesToRemove.Cast<Note>())
                 {
                     note.IsDeleted = true;
                     noteRepository.Update(note);
@@ -568,14 +578,17 @@ namespace EvernoteCloneGUI.ViewModels.Controls
                 notebook.DeletePermanently();
             }
 
-            
-
             _noteFeverViewModel.SelectedNotebook = null;
             _noteFeverViewModel.LoadNoteViewIfNoteExists();
 
             LoadNotebooksTreeView();
         }
         
+        /// <summary>
+        /// Remove the selected folder
+        /// </summary>
+        /// <param name="sender">The object that fired the event</param>
+        /// <param name="routedEventArgs">Containing information about the fired event</param>
         public void RemoveFolder(object sender, RoutedEventArgs routedEventArgs)
         {
             if (routedEventArgs.Source is MenuItem menuItem)
@@ -583,11 +596,10 @@ namespace EvernoteCloneGUI.ViewModels.Controls
                 if (menuItem.Parent is ContextMenu contextMenu)
                 {
                     TreeViewItem treeViewItem = contextMenu.PlacementTarget as TreeViewItem;
-                    string path = GetPath(treeViewItem);
-                    
-                    NotebookLocation notebookLocation = new NotebookLocation {Path=path};
-                    List<NotebookLocation> subLocations = GetSubFolders(notebookLocation);
                     NotebookLocationRepository notebookLocationRepository = new NotebookLocationRepository();
+                    
+                    NotebookLocation notebookLocation = GetPath(treeViewItem);
+                    List<NotebookLocation> subLocations = GetSubFolders(notebookLocation);
 
                     if (subLocations != null)
                     {
@@ -707,12 +719,10 @@ namespace EvernoteCloneGUI.ViewModels.Controls
                 {
                     _noteFeverViewModel.SelectNotebook(notebookId);
                 }
-
                 else
                 {
                     _noteFeverViewModel.SelectNotebook(GetPath(treeViewItem, true), GetHeader(treeViewItem));
                 }
-
             }
         }
         
