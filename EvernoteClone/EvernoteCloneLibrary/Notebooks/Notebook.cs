@@ -232,8 +232,6 @@ namespace EvernoteCloneLibrary.Notebooks
             bool updatedCloud = notebookRepository.Update(this);
             bool updatedLocally = XmlExporter.Export(GetNotebookStoragePath(), $@"{FsName}.enex", this);
 
-            Console.WriteLine($"local: {updatedLocally} & cloud: {updatedCloud}");
-            
             return updatedCloud || updatedLocally;
         }
 

@@ -139,8 +139,7 @@ namespace EvernoteCloneGUI.ViewModels
         public Notebook NoteOwner { get; set; }
 
         #endregion
-
-        // TODO add all bindings
+        
         public NewNoteViewModel(bool loadNote = false)
         {
             DisplayName = "Note Fever | Nameless note";
@@ -185,16 +184,6 @@ namespace EvernoteCloneGUI.ViewModels
 
             if (Parent != null && Parent is NoteFeverViewModel noteFeverViewModel)
             {
-                // Dirty test code
-                // TODO remove this code and make sure everytinh still works.
-                if (Constant.TEST_MODE && NoteOwner != null)
-                {
-                    if (noteFeverViewModel.SelectedNotebook == null)
-                    {
-                        noteFeverViewModel.Notebooks.Add(NoteOwner);
-                        noteFeverViewModel.SelectedNotebook = NoteOwner;
-                    }
-                }
 
                 noteFeverViewModel.NotebookViewModelProp?.NotebookNotesMenu?.LoadNotesIntoNotebookMenu(showDeletedNotes);
             }
