@@ -85,7 +85,7 @@ namespace EvernoteCloneGUI.ViewModels.Controls
         /// <summary>
         /// (Re)loads the folder structure and notebooks
         /// </summary>
-        public void LoadNotebooksTreeView()
+        public void LoadNotebooksTreeView(string pathToBeSelected = null)
         {
             // Create a root TreeViewItem
             TreeViewItem rootTreeViewItem = CreateTreeNode("My Notebooks", RootContext, null);
@@ -96,11 +96,21 @@ namespace EvernoteCloneGUI.ViewModels.Controls
             {
                 rootTreeViewItem.Items.Add(treeViewItem);
             }
-            
+
             // Select the currently selected folder again in the new TreeView
             if (SelectedTreeViewItem != null)
             {
-                SelectPath(ref rootTreeViewItem, GetPath(SelectedTreeViewItem) + "/" + SelectedTreeViewItem.Header);
+                if (pathToBeSelected == null)
+                {
+                    SelectPath(ref rootTreeViewItem,
+                        GetPath(SelectedTreeViewItem, IsNotebook(SelectedTreeViewItem)) + "/" +
+                        SelectedTreeViewItem.Header);
+                }
+                else
+                {
+                    SelectPath(ref rootTreeViewItem,
+                        pathToBeSelected);
+                }
             }
 
             // Clear the NotebooksTreeView and add the folder and notebook structure
@@ -467,13 +477,13 @@ namespace EvernoteCloneGUI.ViewModels.Controls
                     if (newFolderName != null)
                     {
                         if (!NotebookLocation.AddNewNotebookLocation(
-                            new NotebookLocation {Path = notebookLocation.Path + "/" + newFolderName}))
+                            new NotebookLocation {Path = notebookLocation.Path + "/" + newFolderName }))
                         {
                             MessageBox.Show("Something happened while adding the folder, does it already exist?", "NoteFever | Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                         }
                         else // TODO fix refresh (for now, delete and add)
                         {
-                            LoadNotebooksTreeView();
+                            LoadNotebooksTreeView(notebookLocation.Path + "/" + newFolderName);
                         }
                     }
                 }
@@ -663,15 +673,25 @@ namespace EvernoteCloneGUI.ViewModels.Controls
             // If valueRequestViewModel.Value == null, cancel button is pressed
             if (valueRequestViewModel.Value != null)
             {
-                while (!((valueRequestViewModel.Value = valueRequestViewModel.Value.Trim()).Length >=
-                       minCharacters
-                       && valueRequestViewModel.Value.Length <= maxCharacters))
+                while (valueRequestViewModel.Value.ToCharArray().Contains('/') ||
+                       (valueRequestViewModel.Value = valueRequestViewModel.Value.Trim()).Length < minCharacters
+                       && valueRequestViewModel.Value.Length > maxCharacters)
                 {
-                    valueRequestViewModel.Value = "";
-                    if (MessageBox.Show($"Text should be between {minCharacters} and {maxCharacters} characters long.",
-                            "NoteFever | Error", MessageBoxButton.OKCancel, MessageBoxImage.Error) ==
-                        MessageBoxResult.Cancel)
+                    if (MessageBox.Show(
+                            $"Text should be between {minCharacters} and {maxCharacters} characters long. Also it can't contain the '/' character.",
+                            "NoteFever | Error", 
+                            MessageBoxButton.OKCancel, 
+                            MessageBoxImage.Error) 
+                        == MessageBoxResult.Cancel)
+                    {
                         break;
+                    }
+                    
+                    windowManager.ShowDialog(valueRequestViewModel);
+                    if (valueRequestViewModel.Value != null)
+                    {
+                        break;
+                    }
                 }
             }
 
