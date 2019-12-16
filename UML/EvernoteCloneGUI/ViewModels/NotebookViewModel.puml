@@ -1,0 +1,11 @@
+@startuml
+class NotebookViewModel {
+    + NotebookViewModel()
+    + <<sealed>> <<override>> ActivateItem(item:object) : void
+}
+class "Conductor`1"<T> {
+}
+NotebookViewModel --> "NotebookNotesMenu" NotebookNotesMenuViewModel
+NotebookViewModel --> "NewNoteViewModel" NewNoteViewModel
+NotebookViewModel --> "SelectedNoteElement" NoteElementViewModel
+@enduml

@@ -1,0 +1,7 @@
+@startuml
+class NotebookLocationModel {
+    + Id : int <<get>> <<set>>
+    + <<virtual>> Path : string <<get>> <<set>>
+}
+IModel <|-- NotebookLocationModel
+@enduml

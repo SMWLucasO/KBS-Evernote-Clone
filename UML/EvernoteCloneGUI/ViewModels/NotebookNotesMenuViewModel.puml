@@ -1,0 +1,18 @@
+@startuml
+class NotebookNotesMenuViewModel {
+    - _notebookNoteCount : string = "0 note(s)"
+    + NotebookName : string <<get>> <<set>>
+    + NotebookNoteCount : string <<get>> <<set>>
+    + NotebookNotesMenuViewModel()
+    + SearchNoteInNotebook(eventArgs:TextChangedEventArgs) : void
+    + LoadNotesIntoNotebookMenu() : void
+    + GenerateNoteElementsFromNotebook(notes:List<INote>) : ObservableCollection<NoteElementViewModel>
+}
+class "Conductor`1"<T> {
+}
+class "ObservableCollection`1"<T> {
+}
+NotebookNotesMenuViewModel --> "_noteElementViews<NoteElementViewModel>" "ObservableCollection`1"
+NotebookNotesMenuViewModel --> "NoteElementViews<NoteElementViewModel>" "ObservableCollection`1"
+NotebookNotesMenuViewModel --> "Notebook" Notebook
+@enduml

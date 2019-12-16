@@ -1,0 +1,10 @@
+@startuml
+class User {
+    + {static} Login(username:string, password:string) : User
+    + {static} Register(username:string, password:string, firstName:string, lastName:string) : bool
+}
+class "List`1"<T> {
+}
+UserModel <|-- User
+User --> "Notebooks<Notebook>" "List`1"
+@enduml

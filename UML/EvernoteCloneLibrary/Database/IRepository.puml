@@ -1,0 +1,9 @@
+@startuml
+interface "IRepository`1"<T> {
+    GetBy(conditions:string[], parameters:Dictionary<string, object>) : IEnumerable<T>
+    Insert(toInsert:T) : bool
+    Update(toUpdate:T) : bool
+    Delete(toDelete:T) : bool
+    GenerateQueryParameters(toExtractFrom:T) : Dictionary<string, object>
+}
+@enduml

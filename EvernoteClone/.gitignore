@@ -348,3 +348,11 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+/.idea/.idea.EvernoteClone/.idea/contentModel.xml
+/.idea/.idea.EvernoteClone/.idea/encodings.xml
+/.idea/.idea.EvernoteClone/.idea/indexLayout.xml
+/.idea/.idea.EvernoteClone/.idea/modules.xml
+/.idea/.idea.EvernoteClone/.idea/projectSettingsUpdater.xml
+/.idea/.idea.EvernoteClone/riderModule.iml
+/.idea/.idea.EvernoteClone/.idea/vcs.xml
+/.idea/.idea.EvernoteClone/.idea/.gitignore

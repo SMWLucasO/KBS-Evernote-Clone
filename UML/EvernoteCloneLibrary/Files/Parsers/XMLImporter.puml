@@ -1,0 +1,12 @@
+@startuml
+class XmlImporter <<static>> {
+    + {static} TryImportNotebooks(filePath:string) : List<Notebook>
+    + {static} ImportNotebooks(filePath:string) : List<Notebook>
+    + {static} ImportNotebookLocations(filePath:string) : List<NotebookLocation>
+    - {static} GenerateNotebookFromFile(fullPath:string, xDocument:XDocument) : Notebook
+    - {static} GenerateNotesFromXml(xDocument:XDocument, notebook:Notebook) : List<Note>
+    - {static} ValidateFolderExistsNotEmpty(filePath:string) : bool
+    - {static} GetStrippedContent(value:string) : string
+    - {static} FormatDateTime(datetime:string) : string
+}
+@enduml

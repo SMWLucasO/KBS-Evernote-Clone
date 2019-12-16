@@ -1,0 +1,12 @@
+@startuml
+class NoteElementViewModel {
+    - _title : string
+    + Title : string <<get>> <<set>>
+    + NoteCreationDate : string <<get>> <<set>>
+    + LoadOnClick(clickedEventArgs:EventArgs) : void
+    - SwitchNoteView() : void
+}
+PropertyChangedBase <|-- NoteElementViewModel
+NoteElementViewModel --> "Note" Note
+NoteElementViewModel --> "Container" NoteFeverViewModel
+@enduml

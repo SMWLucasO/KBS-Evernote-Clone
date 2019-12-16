@@ -1,0 +1,12 @@
+@startuml
+class NoteModel {
+    + Id : int <<get>> <<set>>
+    + NotebookId : int <<get>> <<set>>
+    + <<virtual>> Title : string <<get>> <<set>> = ""
+    + Content : string <<get>> <<set>> = ""
+    + Author : string <<get>> <<set>>
+}
+IModel <|-- NoteModel
+NoteModel --> "CreationDate" DateTime
+NoteModel --> "LastUpdated" DateTime
+@enduml

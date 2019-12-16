@@ -1,0 +1,30 @@
+@startuml
+class RegisterViewModel {
+    - _firstName : string
+    - _lastName : string
+    - _email : string
+    - _password : string
+    - _passwordConfirm : string
+    - {static} _minimumLength : int = 5
+    - {static} _upperLength : int = 1
+    - {static} _lowerLength : int = 1
+    - {static} _specialChar : int = 1
+    - {static} _numericLength : int = 2
+    + Email : string <<get>> <<set>>
+    + Password : string <<get>> <<set>>
+    + PasswordConfirm : string <<get>> <<set>>
+    + FirstName : string <<get>> <<set>>
+    + LastName : string <<get>> <<set>>
+    + Error : string <<get>>
+    IsValidEmail(email:string) : bool
+    + ValidatePassword(password:string) : bool
+    + PasswordTheSame(password1:string, password2:string) : bool
+    - {static} UpperCount(password:string) : int
+    - {static} LowerCount(password:string) : int
+    - {static} NumericCount(password:string) : int
+    - {static} SpecialCharCount(password:string) : int
+    + Encryption(password:string) : string
+    + Register() : void
+}
+IDataErrorInfo <|-- RegisterViewModel
+@enduml

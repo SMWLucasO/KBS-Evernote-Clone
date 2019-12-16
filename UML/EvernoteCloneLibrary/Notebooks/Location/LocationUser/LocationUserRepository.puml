@@ -1,0 +1,12 @@
+@startuml
+class LocationUserRepository {
+    + Insert(toInsert:LocationUserModel) : bool
+    + GetBy(conditions:string[], parameters:Dictionary<string, object>) : IEnumerable<LocationUserModel>
+    + Update(toUpdate:LocationUserModel) : bool
+    + Delete(toDelete:LocationUserModel) : bool
+    + GenerateQueryParameters(toExtractFrom:LocationUserModel) : Dictionary<string, object>
+}
+class "IRepository`1"<T> {
+}
+"IRepository`1" "<LocationUserModel>" <|-- LocationUserRepository
+@enduml

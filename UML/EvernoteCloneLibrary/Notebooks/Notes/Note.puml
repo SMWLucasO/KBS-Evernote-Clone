@@ -1,0 +1,18 @@
+@startuml
+class Note {
+    - _title : string = "Nameless note"
+    - _newContent : string = ""
+    + <<override>> Title : string <<get>> <<set>>
+    + NewContent : string <<get>> <<set>>
+    + Note()
+    + Save() : void
+    + <<override>> ToString() : string
+    + ToXmlRepresentation() : string[]
+}
+class "List`1"<T> {
+}
+NoteModel <|-- Note
+INote <|-- Note
+Note --> "Tags<string>" "List`1"
+Note --> "NoteOwner" Notebook
+@enduml
