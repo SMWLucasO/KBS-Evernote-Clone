@@ -68,7 +68,7 @@ namespace EvernoteCloneGUI.ViewModels
         public void LoadNotebooks(bool initialLoad = false)
         {
             // Load all Notebooks
-            Notebooks = Notebook.Load(LoginUser.Id);
+            Notebooks = Notebook.Load();
 
             // if we're doing the initial loading, load the note and notebook if there is not already a selected note/notebook.
             SelectFirst();
@@ -295,7 +295,7 @@ namespace EvernoteCloneGUI.ViewModels
             LoginViewModel loginViewModel = new LoginViewModel(LoginUser);
             windowManager.ShowDialog(loginViewModel);
 
-            LoginUser = loginViewModel.user;
+            LoginUser = loginViewModel.User;
             Constant.User = LoginUser;
             
             if (!suppressSynchronize) 
@@ -345,9 +345,9 @@ namespace EvernoteCloneGUI.ViewModels
         /// </summary>
         /// <param name="path">The path that should contain the notebook</param>
         /// <param name="title">The title of the notebook that we want to select</param>
-        public void SelectNotebook(string path, string title)
+        public void SelectNotebook(NotebookLocation notebookLocation, string title)
         {
-            SelectedNotebook = Notebooks.FirstOrDefault(notebook => notebook.Path.Path == path && notebook.Title == title);
+            SelectedNotebook = Notebooks.FirstOrDefault(notebook => notebook.Path.Path == notebookLocation.Path && notebook.Title == title);
             SelectFirstNote(SelectedNotebook);
             LoadNoteViewIfNoteExists();
         }

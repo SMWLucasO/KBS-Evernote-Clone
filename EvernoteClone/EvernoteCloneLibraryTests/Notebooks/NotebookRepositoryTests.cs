@@ -7,10 +7,10 @@ using System.Linq;
 
 namespace EvernoteCloneLibraryTests.Notebooks
 {
-    [TestFixture, Order(3)]
+    [TestFixture, Order(7)]
     class NotebookRepositoryTests
     {
-        static List<Notebook> _insertedNotebooks = new List<Notebook>();
+        private static readonly List<Notebook> InsertedNotebooks = new List<Notebook>();
 
         [Order(1)]
         [TestCase("", true)]
@@ -35,7 +35,7 @@ namespace EvernoteCloneLibraryTests.Notebooks
 
             // Should only add the Id if it got inserted.
             if (actual)
-                _insertedNotebooks.Add(notebook);
+                InsertedNotebooks.Add(notebook);
 
             // Assert
             Assert.That(expected, Is.EqualTo(actual));
@@ -51,7 +51,7 @@ namespace EvernoteCloneLibraryTests.Notebooks
             NotebookRepository repository = new NotebookRepository();
 
             // act and assert
-            foreach (Notebook notebook in _insertedNotebooks)
+            foreach (Notebook notebook in InsertedNotebooks)
             {
                 notebook.Title = title;
                 Assert.That(repository.Update(notebook), Is.EqualTo(expected));
@@ -67,7 +67,7 @@ namespace EvernoteCloneLibraryTests.Notebooks
             NotebookRepository notebookRepository = new NotebookRepository();
 
             // Act and Assert
-            foreach (Notebook notebook in _insertedNotebooks)
+            foreach (Notebook notebook in InsertedNotebooks)
             {
                 Assert.That(
                     notebookRepository.GetBy(
@@ -85,7 +85,7 @@ namespace EvernoteCloneLibraryTests.Notebooks
             NotebookRepository noteRepository = new NotebookRepository();
 
             // Act and Assert
-            foreach (Notebook notebook in _insertedNotebooks)
+            foreach (Notebook notebook in InsertedNotebooks)
             {
                 Assert.That(noteRepository.Delete(notebook), Is.True);
             }

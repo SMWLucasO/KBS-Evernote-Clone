@@ -6,7 +6,7 @@ using EvernoteCloneLibrary.Notebooks.Location;
 
 namespace EvernoteCloneLibraryTests.Notebooks.Location
 {
-    [TestFixture]
+    [TestFixture, Order(3)]
     class NotebookLocationRepositoryTests
     {
         private static List<NotebookLocation> _testNotebookLocations = new List<NotebookLocation>
@@ -17,8 +17,8 @@ namespace EvernoteCloneLibraryTests.Notebooks.Location
             new NotebookLocation {Path = "TestNBL_4"},
             new NotebookLocation {Path = "TestNBL_5"},
         };
-        private static Random random = new Random();
-        private static bool updateToNull = false;
+        private static readonly Random Random = new Random();
+        private static bool _updateToNull = false;
 
         [Order(1)]
         [TestCaseSource(nameof(_testNotebookLocations))]
@@ -40,7 +40,7 @@ namespace EvernoteCloneLibraryTests.Notebooks.Location
         {
             // Arrange
             NotebookLocationRepository notebookLocationRepository = new NotebookLocationRepository();
-            toUpdate.Path = updateToNull ? null : random.Next().ToString();
+            toUpdate.Path = _updateToNull ? null : Random.Next().ToString();
             
             // Act
             bool actualResult = notebookLocationRepository.Update(toUpdate);

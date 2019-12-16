@@ -32,7 +32,7 @@ namespace EvernoteCloneGUI.ViewModels
         /// <value>
         /// This contains the user object (null if not logged in)
         /// </value>
-        public User user { get; private set; }
+        public User User { get; private set; }
 
         #endregion
 
@@ -40,7 +40,7 @@ namespace EvernoteCloneGUI.ViewModels
 
         public LoginViewModel(User user)
         {
-            this.user = user;
+            User = user;
         }
         
         #endregion
@@ -68,7 +68,7 @@ namespace EvernoteCloneGUI.ViewModels
         /// </summary>
         public void Login()
         {
-            User backupUser = user;
+            User backupUser = User;
             
             if (string.IsNullOrWhiteSpace(EmailLogin) || string.IsNullOrWhiteSpace(PasswordLogin))
             {
@@ -78,9 +78,9 @@ namespace EvernoteCloneGUI.ViewModels
             
             string usernameLogin = EmailLogin; 
             string passwordLogin = User.Encryption(PasswordLogin);
-            user = (User)User.Login(usernameLogin, passwordLogin);
+            User = (User)User.Login(usernameLogin, passwordLogin);
 
-            if (user != null)
+            if (User != null)
             {
                 MessageBox.Show("You've been logged in with success!");
                 (GetView() as Window)?.Close();
@@ -88,7 +88,7 @@ namespace EvernoteCloneGUI.ViewModels
             else 
             {
                 MessageBox.Show("Password or Username is not correct. Please check again.");
-                user = backupUser;
+                User = backupUser;
             }
         }
         
@@ -314,21 +314,21 @@ namespace EvernoteCloneGUI.ViewModels
                 var firstName = Convert.ToString(arName);
                 var lastName = Convert.ToString(arLastName);
                 var googleId = Convert.ToString(arGoogleId);
-                var googlePassword = makeGooglePassword(googleId);
+                var googlePassword = MakeGooglePassword(googleId);
                 googlePassword = User.Encryption(googlePassword);
 
                 //Check if the Google user already is registered to the application or not.
-                user = (User)User.Login(username,googlePassword);
+                User = (User)User.Login(username,googlePassword);
 
-                if (user == null)
+                if (User == null)
                 {
                     User.Register(username, googlePassword, firstName, lastName, isGoogleAccount);
-                    user = (User)User.Login(username,googlePassword);
+                    User = (User)User.Login(username,googlePassword);
                 }
 
-                if (user != null)
+                if (User != null)
                 {
-                    if (user.Id != -1)
+                    if (User.Id != -1)
                     {
                         MessageBox.Show("You've been logged in with a Google account.","NoteFever | Google login", MessageBoxButton.OK, MessageBoxImage.Information);
                         (GetView() as Window)?.Close();
@@ -393,7 +393,7 @@ namespace EvernoteCloneGUI.ViewModels
         /// </summary>
         /// <param name="password"></param>
         /// <returns></returns>
-        public string makeGooglePassword (string password)
+        public string MakeGooglePassword(string password)
         {
            return password + "!@#45";
         }
@@ -404,7 +404,7 @@ namespace EvernoteCloneGUI.ViewModels
         
         public void UseLocally()
         {
-            user = new User
+            User = new User
             {
                 Id = -1,
                 Username = "LocalUser"
