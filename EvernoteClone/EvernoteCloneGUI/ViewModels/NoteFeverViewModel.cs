@@ -295,7 +295,7 @@ namespace EvernoteCloneGUI.ViewModels
             LoginViewModel loginViewModel = new LoginViewModel(LoginUser);
             windowManager.ShowDialog(loginViewModel);
 
-            LoginUser = loginViewModel.user;
+            LoginUser = loginViewModel.User;
             Constant.User = LoginUser;
             
             if (!suppressSynchronize) 

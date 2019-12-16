@@ -6,7 +6,6 @@ using EvernoteCloneLibrary.Notebooks.Location;
 using EvernoteCloneLibrary.Users;
 using EvernoteCloneLibraryTests.TestHelpers;
 
-// TODO maybe rewrite this test (look at NotebookLocationRepositoryTests)
 namespace EvernoteCloneLibraryTests.Notebooks.Location
 {
     [TestFixture, Order(4)]
