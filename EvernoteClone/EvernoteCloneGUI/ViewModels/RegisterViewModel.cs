@@ -7,7 +7,7 @@ using System.Security.Cryptography;
 using Caliburn.Micro;
 using EvernoteCloneLibrary.Users;
 
-// TODO: see next comments
+// TODO: see next comments @Chino
 // Password 1: Test123
 // Password 2: Test123!
 // Password 1: Test123!
@@ -71,7 +71,7 @@ namespace EvernoteCloneGUI.ViewModels
 
                 if (propertyName == "PasswordConfirm")
                 {
-                    if (PasswordConfirm != null)
+                    if (!string.IsNullOrWhiteSpace(PasswordConfirm))
                     {
                         if (ComparePasswordEquality(PasswordConfirm, Password) == false)
                         {
@@ -85,9 +85,10 @@ namespace EvernoteCloneGUI.ViewModels
         }
 
         public string Error =>
-            throw new NotImplementedException();
+            "An unknown error occured!";
 
         #endregion
+
         #region Validation
 
 
@@ -96,7 +97,12 @@ namespace EvernoteCloneGUI.ViewModels
             try
             {
                 var address = new System.Net.Mail.MailAddress(email);
-                return address.Address == email;
+
+                string[] splittedAtDotAfterAt = email.Split('@')[1].Split('.');
+                bool containsValidDomain = splittedAtDotAfterAt.Length > 1 
+                                           && !splittedAtDotAfterAt[splittedAtDotAfterAt.Length-1].EndsWith(".");
+                
+                return address.Address == email && containsValidDomain;
             }
             catch { return false; }
         }
@@ -141,7 +147,7 @@ namespace EvernoteCloneGUI.ViewModels
             {
                 if (User.Register(Email, tbPassword, FirstName, LastName))
                 {
-                    MessageBox.Show("Registration succesful!");
+                    MessageBox.Show("Registration successful!");
                     (GetView() as Window)?.Close();
                 }
                 else
