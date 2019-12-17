@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
+// TODO add summarys
+// TODO remove 'int userId' and replace with Constant.User
 namespace EvernoteCloneLibrary.Notebooks.Location.LocationUser
 {
     public class LocationUser : LocationUserModel
