@@ -367,6 +367,17 @@ namespace EvernoteCloneGUI.ViewModels
             LoadNoteViewIfNoteExists();
         }
         
+        /// <summary>
+        /// This will open the SettingsView when this button is clicked
+        /// </summary>
+        public void OpenSettingsView()
+        {
+            IWindowManager windowManager = new WindowManager();
+            
+            SettingsViewModel settingsViewModel = new SettingsViewModel();
+            windowManager.ShowDialog(settingsViewModel);
+        }
+        
         #endregion
 
         #region Events

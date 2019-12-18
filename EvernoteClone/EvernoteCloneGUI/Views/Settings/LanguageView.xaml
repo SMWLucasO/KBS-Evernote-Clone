@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:behaviors="clr-namespace:EvernoteCloneGUI.Helpers"
         xmlns:cal="http://www.caliburnproject.org"
         mc:Ignorable="d"
         d:DesignHeight="400" d:DesignWidth="640">
@@ -16,10 +17,22 @@
         </Grid.RowDefinitions>
 
         <Label Grid.Column="0" Grid.Row="0" Content="Display language:" HorizontalAlignment="Right"/>
-        <ComboBox Grid.Column="1" Grid.Row="0" Margin="5,5,5,5" ItemsSource="{Binding Path=Languages}">
+        <ComboBox 
+            x:Name="LanguageComboBox"
+            Grid.Column="1" 
+            Grid.Row="0" 
+            HorizontalAlignment="Left" 
+            Margin="5,5,5,5" 
+            ItemsSource="{Binding Path=Languages}"
+            cal:Message.Attach="[Event SelectionChanged] = [ComboBoxSelectedIndexChanged($this, $eventArgs)]"
+            behaviors:ComboBoxWidthFromItemsBehavior.ComboBoxWidthFromItems="True">
+            
+            <ComboBoxItem Content="TESTJEUH"/>
+            <ComboBoxItem Content="hi"/>
+            <ComboBoxItem Content="IK WIL OOK WEL"/>
             <ComboBox.ItemTemplate>
                 <DataTemplate>
-                    <ComboBoxItem Content="Test?"/>
+                    <ComboBoxItem Content="{Binding LanguageTitle}" Tag="{Binding /}"/>
                 </DataTemplate>
             </ComboBox.ItemTemplate>
         </ComboBox>
