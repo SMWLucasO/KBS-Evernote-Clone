@@ -51,10 +51,10 @@
             <ToolBar>
                 <Label>Font</Label>
                 <ComboBox Margin="5 0 10 0" x:Name="Fonts" SelectedItem="{Binding SelectedFont}" />
-                
+
                 <Label>Font Size</Label>
                 <ComboBox Margin="5 0 10 0" SelectedItem="{Binding SelectedFontSize}" x:Name="FontSizes" IsEditable="True"/>
-                
+
                 <Separator/>
 
                 <Button FontWeight="Bold" Command="EditingCommands.ToggleBold" Width="20">B</Button>
@@ -76,7 +76,7 @@
 
                 <Button Margin="5 0 5 0" Foreground="Black" Command="EditingCommands.DecreaseIndentation">Undent</Button>
                 <Button Margin="5 0 5 0" Foreground="Black" Command="EditingCommands.IncreaseIndentation">Indent</Button>
-                
+
                 <Separator/>
 
                 <Button Margin="5 0 5 0" Foreground="Red" cal:Message.Attach="[Event Click] = [OnSetTextColor]">
@@ -117,12 +117,22 @@
             </Grid>
         </StackPanel>
         <StackPanel>
-            <RichTextBox Height="669" x:Name="TextEditor" cal:Message.Attach="[Event TextChanged] = [StoreRichTextBoxContent($eventArgs)]" 
-                         SpellCheck.IsEnabled="True" IsDocumentEnabled="True" AcceptsTab="True">
+            <RichTextBox Height="200" x:Name="TextEditor" cal:Message.Attach="[Event TextChanged] = [StoreRichTextBoxContent($eventArgs)]" 
+                         SpellCheck.IsEnabled="True" IsDocumentEnabled="True" AcceptsTab="True" Margin="0,0,-0.2,0">
                 <FlowDocument>
-                    
                 </FlowDocument>
             </RichTextBox>
         </StackPanel>
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+            <StackPanel x:Name="LabelsStackPanel" Height="40" Background="Pink" Orientation="Horizontal" HorizontalAlignment="Stretch">
+                <!--<ItemsControl x:Name="Labels">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Label Content="{Binding Title}"></Label>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>-->
+            </StackPanel>
+        </ScrollViewer>
     </StackPanel>
 </UserControl>

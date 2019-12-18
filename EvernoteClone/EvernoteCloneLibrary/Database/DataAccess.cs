@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Text;
 using EvernoteCloneLibrary.Constants;
+using EvernoteCloneLibrary.Notebooks.Notes.Labels;
 
 namespace EvernoteCloneLibrary.Database
 {
@@ -12,6 +13,29 @@ namespace EvernoteCloneLibrary.Database
     public class DataAccess
     {
 
+        public List<LabelModel> GetLabels(int labelSize = 10)
+        {
+            List<LabelModel> labelOutput = new List<LabelModel>();
+
+            for(int i = 0; i < labelSize; i++)
+            {
+                labelOutput.Add(GetLabel(i + 1));
+            }
+
+            return labelOutput;
+        }
+
+        public LabelModel GetLabel(int id)
+        {
+            LabelModel labelModel = new LabelModel();
+
+            labelModel.Id = id;
+            labelModel.Title = id.ToString();
+
+            return labelModel;
+        }
+
+        
         /// <summary>
         /// The Singleton accessor to this class.
         /// The only way to access this class' object is through here.

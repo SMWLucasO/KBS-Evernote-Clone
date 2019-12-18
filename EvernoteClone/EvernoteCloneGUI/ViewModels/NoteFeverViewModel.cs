@@ -1013,7 +1013,11 @@ namespace EvernoteCloneGUI.ViewModels
         protected override void OnActivate()
         {
             // Show login popup
-            OpenLoginPopupView(true);
+            //OpenLoginPopupView(true);
+            LoginUser = new User { Id = -1, Username = "LocalUser" };
+            Constant.User = LoginUser;
+
+            //TODO CHANGE THIS BACKK!!!!!
 
             // If user closed login window without logging in or clicking the 'Use locally' button, close application
             if (LoginUser == null)

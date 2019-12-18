@@ -16,6 +16,9 @@ using System.Windows.Documents;
 using System.Windows.Markup;
 using System.Xml;
 using System.Linq;
+using EvernoteCloneLibrary.Database;
+using EvernoteCloneLibrary.Notebooks.Notes.Labels;
+using System.Collections.ObjectModel;
 
 namespace EvernoteCloneGUI.ViewModels
 {
@@ -27,6 +30,8 @@ namespace EvernoteCloneGUI.ViewModels
 
         #region Instance variables
         private readonly bool _loadNote;
+
+        public StackPanel LabelsStackPanel { get; set; }
 
         private string _font = "";
         private int _fontSize = 12;
@@ -136,7 +141,7 @@ namespace EvernoteCloneGUI.ViewModels
         /// <summary>
         /// Every note is part of a notebook, therefore we need the object when saving.
         /// </summary>
-        public Notebook NoteOwner { get; set; }
+        public Notebook NoteOwner { get; set; } 
 
         #endregion
 
@@ -145,6 +150,22 @@ namespace EvernoteCloneGUI.ViewModels
         {
             DisplayName = "Note Fever | Nameless note";
             _loadNote = loadNote;
+        }
+
+        public void LoadLabels()
+        {
+            foreach (LabelModel labelModel in DataAccess.Instance.GetLabels())
+            {
+                Button label = new Button
+                {
+                    Content = labelModel.Title,
+                    FontSize = 10,
+                    Height = 20,
+                    Margin = new Thickness(5,0,0,0),
+                    Padding = new Thickness(5,0,5,0)
+                };
+                LabelsStackPanel.Children.Add(label);
+            }
         }
 
         #region Saving and loading
@@ -309,10 +330,29 @@ namespace EvernoteCloneGUI.ViewModels
             if (view is NewNoteView newNoteView)
             {
                 _textEditor = newNoteView.TextEditor;
-                _textEditor.MinHeight = SystemParameters.FullPrimaryScreenHeight;
+                _textEditor.MinHeight = SystemParameters.FullPrimaryScreenHeight-207;
                 SetupTextEditor(newNoteView);
+
+                if (GetView() is UserControl userControl)
+                    userControl.SizeChanged += OnSizeChanged;
+                else
+                    (GetView() as Window).SizeChanged += OnSizeChanged;
+                LabelsStackPanel = newNoteView.LabelsStackPanel;
+                LoadLabels();
             }
 
+        }
+
+        public void OnSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (GetView() is UserControl userControl)
+            {
+                _textEditor.MinHeight = userControl.ActualHeight - 122;
+            }
+            else if (GetView() is Window window)
+            {
+                _textEditor.MinHeight = window.Height - 161;
+            }
         }
 
         #region Toolbar events
