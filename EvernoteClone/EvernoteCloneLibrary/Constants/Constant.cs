@@ -13,7 +13,7 @@ namespace EvernoteCloneLibrary.Constants
         public const bool   TEST_MODE = true;
 
         /// <value>
-        /// This contains the path to the testcases storage
+        /// This contains the path to the test cases storage
         /// </value>
         public const string TESTS_STORAGE_PATH = "test/local/testcases";
 
