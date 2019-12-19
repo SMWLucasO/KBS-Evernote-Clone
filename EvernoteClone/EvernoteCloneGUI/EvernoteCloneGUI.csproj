@@ -144,6 +144,7 @@
     <Compile Include="ViewModels\NoteFeverViewModel.cs" />
     <Compile Include="ViewModels\RegisterViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
+    <Compile Include="ViewModels\Settings\SettingViewModel.cs" />
     <Compile Include="ViewModels\Settings\LayoutViewModel.cs" />
     <Compile Include="ViewModels\Settings\EditorViewModel.cs" />
     <Compile Include="ViewModels\Settings\LanguageViewModel.cs" />

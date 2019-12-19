@@ -1,6 +1,4 @@
-﻿using Caliburn.Micro;
-using System.Windows;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using EvernoteCloneGUI.ViewModels.Controls.Settings;
 using EvernoteCloneGUI.Views.Settings;
 using EvernoteCloneLibrary.Constants;
@@ -8,7 +6,7 @@ using EvernoteCloneLibrary.Settings.Locales;
 
 namespace EvernoteCloneGUI.ViewModels.Settings
 {
-    public class LanguageViewModel : Screen
+    public class LanguageViewModel : SettingViewModel
     {
         #region Variables
 
@@ -16,33 +14,6 @@ namespace EvernoteCloneGUI.ViewModels.Settings
         /// The ComboBox that contains all languages
         /// </value>
         public ComboBox LanguageComboBox;
-
-        /// <value>
-        /// This bool indicates if this instance of the view is loaded once before or not.
-        /// </value>
-        private bool _loaded = false;
-        
-        #endregion
-
-        #region Button handlers
-        
-        /// <summary>
-        /// Saves all changes locally
-        /// </summary>
-        public void ApplyChanges()
-        {
-            if (EvernoteCloneLibrary.Settings.Setting.SaveSettings())
-            {
-                MessageBox.Show("Settings successfully saved!", "NoteFever | Settings", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            else
-            {
-                MessageBox.Show("Something went wrong while trying to save settings.", "NoteFever | Settings", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            
-            // Update colors of Settings view
-            ((SettingsViewModel) Parent).UpdateLayout();
-        }
         
         #endregion
         
@@ -62,6 +33,8 @@ namespace EvernoteCloneGUI.ViewModels.Settings
             
             // Select standard language
             ComboBoxHelper.SelectComboBoxItemByTag(ref LanguageComboBox, SettingsConstant.LANGUAGE);
+            
+            LanguageViewModel tmp = new LanguageViewModel();
         }
         
         #endregion
@@ -80,20 +53,15 @@ namespace EvernoteCloneGUI.ViewModels.Settings
                 LanguageComboBox = languageView.LanguageComboBox;
             }
             
-            if (!_loaded)
+            if (!Loaded)
             {
                 LoadLanguageComboBox();
-                _loaded = true;
+                Loaded = true;
             }
         }
-
-        /// <summary>
-        /// Fired when the index of the selected item changes
-        /// </summary>
-        /// <param name="sender">The newly selected ComboBoxItem</param>
-        public void ComboBoxSelectedIndexChanged(object sender) =>
-            ComboBoxHelper.ComboBoxSelectedIndexChanged(sender);
         
+        
+
         #endregion
     }
 }

@@ -122,6 +122,10 @@ namespace EvernoteCloneLibrary.Settings
                             }
                         }
                     }
+                    else
+                    {
+                        SaveSettings();
+                    }
                 }
             }
 
