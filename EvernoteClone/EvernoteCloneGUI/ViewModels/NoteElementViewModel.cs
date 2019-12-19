@@ -5,6 +5,10 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using EvernoteCloneGUI.ViewModels.Controls;
+using Microsoft.VisualBasic;
+using EvernoteCloneLibrary.Users;
+using System.Collections.Generic;
+using EvernoteCloneLibrary.SharedNotes;
 
 namespace EvernoteCloneGUI.ViewModels
 {
@@ -14,6 +18,8 @@ namespace EvernoteCloneGUI.ViewModels
     public class NoteElementViewModel : PropertyChangedBase
     {
         private string _title;
+        public User _user { get; private set; }
+
         public string Title
         {
             get => _title;
@@ -87,6 +93,7 @@ namespace EvernoteCloneGUI.ViewModels
         /// <param name="args"></param>
         public void LoadNoteContext(RoutedEventArgs args)
         {
+            // TODO redo this
             if (args.Source is ContextMenu menu && Note != null)
             {
                 // Load the appropriate context menu
@@ -202,6 +209,51 @@ namespace EvernoteCloneGUI.ViewModels
 
                     menu.Items.Add(removeNoteMenuItem);
                 }
+
+                MenuItem shareNote = new MenuItem
+                {
+                    Header = "Share Note"
+                };
+
+                shareNote.Click += ShareNote;
+                menu.Items.Add(shareNote);
+            }
+        }
+
+        /// <summary>
+        /// Makes a new note inserts them into list of notes of shared user
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="arg"></param>
+        public void ShareNote(object sender, RoutedEventArgs arg)
+        {
+            UserRepository userRepositoryLogin = new UserRepository();
+            Note sharedNote = Note;
+            string userInput = "";
+            sharedNote.Id = -1;
+            sharedNote.NotebookId = -1;
+
+            // Checks in field that is insert is not empty.
+            userInput = Interaction.InputBox("Share Note", "Please enter a valid username", userInput);
+            if (string.IsNullOrEmpty(userInput))
+            {
+                MessageBox.Show("Field cannot be empty");
+                return;
+            }
+            
+
+            // If field has been filled, it will check if it exist in database of users.
+            // If the user exist it will add the note to the new user. 
+            User sharedUser = (User)userRepositoryLogin.CheckIfUserExists(userInput);
+            if (sharedUser != null)
+            {
+                
+                new NoteRepository().Insert(sharedNote);
+                SharedNote.SaveNewRecord(sharedNote.Id, sharedUser.Id);
+            }
+            else
+            {
+                MessageBox.Show("Username does not exist");
             }
         }
 

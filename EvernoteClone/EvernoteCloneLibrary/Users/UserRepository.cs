@@ -195,20 +195,25 @@ namespace EvernoteCloneLibrary.Users
         }
 
         /// <summary>
-        /// @Chino TODO add summary
+        /// Checkes whether the username or password fields are filled, if not return nothing.
+        /// If they are both filled, username and password credentials will be compared in the database.
+        /// If the credentials are valid return the user.
         /// </summary>
         /// <param name="Comparedb"></param>
         /// <returns></returns>
-        public UserModel CompareDB(UserModel Comparedb)
+        public UserModel CompareDB(UserModel compareDb)
         {
-            if (Comparedb != null)
+
+            // Checks if both one of them fields are empty or not.
+            if (compareDb != null)
             {
-                if (string.IsNullOrEmpty(Comparedb.Username) || string.IsNullOrEmpty(Comparedb.Password))
+                if (string.IsNullOrEmpty(compareDb.Username) || string.IsNullOrEmpty(compareDb.Password))
                 {
                     return null;
                 }
-                    
-                Dictionary<string, object> parameters = GenerateLoginParameters(Comparedb);
+
+                // If both fields are filled compares the credentials with the database and returns user if they are correct.
+                Dictionary<string, object> parameters = GenerateLoginParameters(compareDb);
                 var user = this.GetBy(new[] { "Username = @Username", "Password = @Password" }, parameters).ToList();
 
                 if (user.Count > 0)
@@ -216,6 +221,35 @@ namespace EvernoteCloneLibrary.Users
                     return user[0];
                 }
 
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Checks if username exist in the database.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
+        public UserModel CheckIfUserExists(string username)
+        {
+            // Makes sure there is a username inserted
+            if (string.IsNullOrWhiteSpace(username))
+            {
+                return null;
+            }
+
+            // Checks the inserted username with usernames in database. 
+            // If it exist in the database it returns that user.
+            Dictionary<string, object> parameters = new Dictionary<string, object>()
+            {
+                { "@Username", username }
+
+            };
+            var user = this.GetBy(new[] { "Username = @Username" }, parameters).ToList();
+
+            if (user.Count > 0)
+            {
+                return user[0];
             }
 
             return null;

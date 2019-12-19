@@ -30,8 +30,8 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
 
                     Dictionary<string, object> parameters = GenerateQueryParameters(toInsert);
 
-                    int id = DataAccess.Instance.ExecuteAndReturnId("INSERT INTO [Note] ([NotebookID], [Title], [Content], [Author], [CreationDate], [LastUpdated], [Deleted])"
-                            + " VALUES (@NotebookID, @Title, @Content, @Author, @CreationDate, @LastUpdated, @Deleted)", parameters);
+                    int id = DataAccess.Instance.ExecuteAndReturnId("INSERT INTO [Note] (" + (toInsert.NotebookId == -1 ? "": "[NotebookID], ") + "[Title], [Content], [Author], [CreationDate], [LastUpdated], [Deleted])"
+                            + " VALUES (" + (toInsert.NotebookId == -1 ? "" : "@NotebookID, ") + "@Title, @Content, @Author, @CreationDate, @LastUpdated, @Deleted)", parameters);
 
                     if (id != -1)
                     {
