@@ -22,7 +22,7 @@ namespace EvernoteCloneLibrary.Notebooks
         {
             if (toInsert != null)
             {
-                if (string.IsNullOrEmpty(toInsert.Title))
+                if (string.IsNullOrWhiteSpace(toInsert.Title))
                 {
                     toInsert.Title = "Nameless notebook";
                 }
@@ -120,7 +120,7 @@ namespace EvernoteCloneLibrary.Notebooks
         {
             if (toUpdate != null)
             {
-                if (string.IsNullOrEmpty(toUpdate.Title))
+                if (string.IsNullOrWhiteSpace(toUpdate.Title))
                 {
                     toUpdate.Title = "Nameless title";
                 }

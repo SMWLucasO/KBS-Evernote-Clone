@@ -76,7 +76,7 @@ namespace EvernoteCloneLibrary.Notebooks.Location
             // TODO: Make sure the note is actually from the author before saving it. @Lucas don't think this should be here...
             if (toUpdate != null)
             {
-                if (!string.IsNullOrEmpty(toUpdate.Path) && toUpdate.Id != -1)
+                if (!string.IsNullOrWhiteSpace(toUpdate.Path) && toUpdate.Id != -1)
                 {
                     Dictionary<string, object> parameters = GenerateQueryParameters(toUpdate);
                     parameters.Add("@Id", toUpdate.Id);

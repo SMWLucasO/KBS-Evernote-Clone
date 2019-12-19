@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="EvernoteCloneGUI.Views.Settings.ColorsView"
+﻿<UserControl x:Class="EvernoteCloneGUI.Views.Settings.StandardsView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -20,26 +20,26 @@
         </Grid.RowDefinitions>
 
         <!-- Row 1 -->
-        <Label Grid.Column="0" Grid.Row="0" Content="Button background color:" HorizontalAlignment="Right"/>
+        <Label Grid.Column="0" Grid.Row="0" Content="Default note title:" HorizontalAlignment="Right"/>
 
-        <TextBox x:Name="ButtonBackground" 
+        <TextBox x:Name="DefaultNoteTitle" 
                  Grid.Column="1" 
                  Grid.Row="0" 
                  HorizontalAlignment="Left" 
                  MinWidth="50"
-                 Text="#ffffff"
+                 Text="Nameless note"
                  Margin="5,5,5,5"
                  cal:Message.Attach="[Event TextChanged] = [TextBoxTextChanged($source)]"></TextBox>
 
         <!-- Row 2 -->
-        <Label Grid.Column="0" Grid.Row="1" Content="Active button background color:" HorizontalAlignment="Right"/>
+        <Label Grid.Column="0" Grid.Row="1" Content="Default notebook title:" HorizontalAlignment="Right"/>
 
-        <TextBox x:Name="ButtonBackgroundActive" 
+        <TextBox x:Name="DefaultNotebookTitle" 
                  Grid.Column="1" 
                  Grid.Row="1" 
                  HorizontalAlignment="Left" 
                  MinWidth="50"
-                 Text="#ffffff"
+                 Text="Nameless notebook"
                  Margin="5,5,5,5"
                  cal:Message.Attach="[Event TextChanged] = [TextBoxTextChanged($source)]"></TextBox>
         

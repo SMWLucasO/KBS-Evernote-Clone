@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using EvernoteCloneLibrary.Constants;
 
 namespace EvernoteCloneLibrary.Notebooks.Notes
 {
@@ -22,9 +23,9 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
             {
                 if (CheckIfDataIsCorrect(toInsert))
                 {
-                    if (string.IsNullOrEmpty(toInsert.Title))
+                    if (string.IsNullOrWhiteSpace(toInsert.Title))
                     {
-                        toInsert.Title = "Nameless note";
+                        toInsert.Title = SettingsConstant.DEFAULT_NOTE_TITLE;
                     }
 
 
@@ -45,7 +46,7 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
         }
 
         private static bool CheckIfDataIsCorrect(NoteModel noteModel) =>
-            !(string.IsNullOrEmpty(noteModel.Author));
+            !(string.IsNullOrWhiteSpace(noteModel.Author));
 
         /// <summary>
         /// The method for selecting Note records which satisfy the conditions.

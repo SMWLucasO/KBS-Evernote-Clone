@@ -68,7 +68,7 @@ namespace EvernoteCloneGUI.ViewModels
             {
                 // Acceptance criteria specifies that the text should have at least 2 characters.
                 if (searchBar.Text.Trim().Length >= 2 &&
-                    !(string.IsNullOrWhiteSpace(searchBar.Text) || string.IsNullOrEmpty(searchBar.Text)))
+                    !string.IsNullOrWhiteSpace(searchBar.Text))
                 {
                     if (Notebook != null && Notebook.Notes != null)
                     {

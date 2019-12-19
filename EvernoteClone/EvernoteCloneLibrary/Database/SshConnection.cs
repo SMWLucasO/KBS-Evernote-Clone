@@ -116,22 +116,22 @@ namespace EvernoteCloneLibrary.Database
             string sshKeyFile = null, string sshPassPhrase = null, int sshPort = 22, string databaseServer = "localhost", int databasePort = 3306)
         {
             // check arguments
-            if (string.IsNullOrEmpty(sshHostName))
+            if (string.IsNullOrWhiteSpace(sshHostName))
             {
                 throw new ArgumentException($"{nameof(sshHostName)} must be specified.", nameof(sshHostName));
             }
 
-            if (string.IsNullOrEmpty(sshHostName))
+            if (string.IsNullOrWhiteSpace(sshHostName))
             {
                 throw new ArgumentException($"{nameof(sshUserName)} must be specified.", nameof(sshUserName));
             }
 
-            if (string.IsNullOrEmpty(sshPassword) && string.IsNullOrEmpty(sshKeyFile))
+            if (string.IsNullOrWhiteSpace(sshPassword) && string.IsNullOrWhiteSpace(sshKeyFile))
             {
                 throw new ArgumentException($"One of {nameof(sshPassword)} and {nameof(sshKeyFile)} must be specified.");
             }
 
-            if (string.IsNullOrEmpty(databaseServer))
+            if (string.IsNullOrWhiteSpace(databaseServer))
             {
                 throw new ArgumentException($"{nameof(databaseServer)} must be specified.", nameof(databaseServer));
             }
@@ -139,13 +139,13 @@ namespace EvernoteCloneLibrary.Database
 
             // define the authentication methods to use (in order)
             var authenticationMethods = new List<AuthenticationMethod>();
-            if (!string.IsNullOrEmpty(sshKeyFile))
+            if (!string.IsNullOrWhiteSpace(sshKeyFile))
             {
                 authenticationMethods.Add(new PrivateKeyAuthenticationMethod(sshUserName,
-                                    new PrivateKeyFile(sshKeyFile, string.IsNullOrEmpty(sshPassPhrase) ? null : sshPassPhrase)));
+                                    new PrivateKeyFile(sshKeyFile, string.IsNullOrWhiteSpace(sshPassPhrase) ? null : sshPassPhrase)));
             }
 
-            if (!string.IsNullOrEmpty(sshPassword))
+            if (!string.IsNullOrWhiteSpace(sshPassword))
             {
                 authenticationMethods.Add(new PasswordAuthenticationMethod(sshUserName, sshPassword));
             }

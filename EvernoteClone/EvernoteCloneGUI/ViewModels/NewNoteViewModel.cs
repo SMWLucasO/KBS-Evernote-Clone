@@ -49,13 +49,13 @@ namespace EvernoteCloneGUI.ViewModels
                 if (!_loadNote)
                 {
                     // Dynamically set the title of the window.
-                    if (!(string.IsNullOrEmpty(_title)))
+                    if (!(string.IsNullOrWhiteSpace(_title)))
                     {
                         DisplayName = $"Note Fever | {_title}";
                     }
                     else
                     {
-                        DisplayName = $"Note Fever | Nameless note";
+                        DisplayName = $"Note Fever | {SettingsConstant.DEFAULT_NOTE_TITLE}";
                     }
                 }
                 else
@@ -352,7 +352,7 @@ namespace EvernoteCloneGUI.ViewModels
         private FlowDocument SetRtf(string xamlString)
         {
             // validate whether the xaml string is empty or not, since if it is, it would throw an error if we were to continue.
-            if (!(string.IsNullOrEmpty(xamlString.Trim())))
+            if (!(string.IsNullOrWhiteSpace(xamlString.Trim())))
             {
 
                 StringReader stringReader = new StringReader(xamlString);

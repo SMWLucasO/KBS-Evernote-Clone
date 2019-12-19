@@ -30,8 +30,8 @@
             </Grid>
 
             <Button FontFamily="Lato" FontWeight="Light" Content="Editor" Background="{Binding Path=EditorButtonBackground}" Foreground="White" FontSize="16" Grid.Row="1" Grid.ColumnSpan="1" x:Name="OpenEditorSettings"/>
-            <Button FontFamily="Lato" FontWeight="Light" Content="Layout" Background="{Binding Path=LayoutButtonBackground}" Foreground="White" FontSize="16" Grid.Row="2" Grid.ColumnSpan="1" x:Name="OpenLayoutSettings"/>
-            <Button FontFamily="Lato" FontWeight="Light" Content="Colors" Background="{Binding Path=ColorsButtonBackground}" Foreground="White" FontSize="16" Grid.Row="3" Grid.ColumnSpan="1" x:Name="OpenColorsSettings"/>
+            <Button FontFamily="Lato" FontWeight="Light" Content="Standards" Background="{Binding Path=StandardsButtonBackground}" Foreground="White" FontSize="16" Grid.Row="2" Grid.ColumnSpan="1" x:Name="OpenStandardsSettings"/>
+            <Button FontFamily="Lato" FontWeight="Light" Content="Layout" Background="{Binding Path=LayoutButtonBackground}" Foreground="White" FontSize="16" Grid.Row="3" Grid.ColumnSpan="1" x:Name="OpenLayoutSettings"/>
             <Button FontFamily="Lato" FontWeight="Light" Content="Language" Background="{Binding Path=LanguageButtonBackground}" Foreground="White" FontSize="16" Grid.Row="4" Grid.ColumnSpan="1" x:Name="OpenLanguageSettings"/>
 
             <Grid.Effect>

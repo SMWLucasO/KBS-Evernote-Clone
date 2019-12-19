@@ -88,7 +88,7 @@ namespace EvernoteCloneGUI.ViewModels
 
                 if (propertyName == "Email")
                 {
-                    if (string.IsNullOrEmpty(Email) || IsValidEmail(Email) == false)
+                    if (string.IsNullOrWhiteSpace(Email) || IsValidEmail(Email) == false)
                     {
                         result = "Please enter your email!";
                     }

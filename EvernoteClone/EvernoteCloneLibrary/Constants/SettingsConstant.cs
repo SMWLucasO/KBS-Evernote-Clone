@@ -4,15 +4,23 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using EvernoteCloneLibrary.Files.Parsers;
 
+// TODO add summaries
 namespace EvernoteCloneLibrary.Constants
 {
     public class SettingsConstant : IParseable
     {
+        // Language
         public static string LANGUAGE = "en-US";
 
+        // Layout
         public static string BUTTON_BACKGROUND = "#404040";
 
         public static string BUTTON_BACKGROUND_ACTIVE = "#0052cc";
+        
+        // Standards
+        public static string DEFAULT_NOTE_TITLE = "Nameless note";
+
+        public static string DEFAULT_NOTEBOOK_TITLE = "Nameless notebook";
         
         //THEME
         

@@ -42,7 +42,7 @@ namespace EvernoteCloneLibrary.Files.Parsers
         /// <returns></returns>
         public static List<Notebook> ImportNotebooks(string filePath)
         {
-            if (!(string.IsNullOrEmpty(filePath)))
+            if (!(string.IsNullOrWhiteSpace(filePath)))
             {
                 List<Notebook> notebooks = new List<Notebook>();
                 if (!(ValidateFolderExistsNotEmpty(filePath)))

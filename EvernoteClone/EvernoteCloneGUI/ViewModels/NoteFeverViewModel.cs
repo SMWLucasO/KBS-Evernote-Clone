@@ -10,6 +10,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using EvernoteCloneGUI.ViewModels.Controls;
+using EvernoteCloneLibrary;
 using EvernoteCloneLibrary.Constants;
 using EvernoteCloneLibrary.Users;
 using EvernoteCloneLibrary.Files.Parsers;
@@ -439,7 +440,7 @@ namespace EvernoteCloneGUI.ViewModels
             }
 
             // Load settings (if exist)
-            XmlImporter.ImportSettings(GetUserDataStoragePath() + @"/Settings.enex");
+            XmlImporter.ImportSettings(StaticMethods.GetUserDataStoragePath() + @"/Settings.enex");
 
             ButtonBackground = SettingsConstant.BUTTON_BACKGROUND;
             ButtonBackgroundActive = SettingsConstant.BUTTON_BACKGROUND_ACTIVE;
@@ -465,22 +466,6 @@ namespace EvernoteCloneGUI.ViewModels
         #endregion
 
         #region HelperMethods
-
-        // TODO make this a general class somewhere
-        private static string GetUserDataStoragePath()
-        {
-            string path = Constant.TEST_MODE ? Constant.TEST_USERDATA_STORAGE_PATH : Constant.PRODUCTION_USERDATA_STORAGE_PATH;
-            string[] splittedPath = path.Split('<', '>');
-
-            if (splittedPath.Length == 3)
-            {
-                splittedPath[1] = Constant.User.Username;
-
-                return splittedPath[0] + splittedPath[1] + splittedPath[2];
-            }
-
-            return null;
-        }
 
         public void UpdateColors()
         {

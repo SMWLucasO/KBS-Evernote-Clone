@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using EvernoteCloneLibrary.Constants;
 
 namespace EvernoteCloneLibrary.Notebooks.Notes
 {
@@ -8,7 +9,7 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
     /// </summary>
     public class Note : NoteModel, INote
     {
-        private string _title = "Nameless note";
+        private string _title = SettingsConstant.DEFAULT_NOTE_TITLE;
         private string _newContent = "";
 
         public List<string> Tags { get; set; }
@@ -30,7 +31,7 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
                     
                 return _title;
             }
-            set => _title = string.IsNullOrEmpty(value) ? "Nameless note" : value;
+            set => _title = string.IsNullOrWhiteSpace(value) ? "Nameless note" : value;
         }
 
         /// <summary>

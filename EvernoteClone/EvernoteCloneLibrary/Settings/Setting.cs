@@ -37,7 +37,7 @@ namespace EvernoteCloneLibrary.Settings
 
         public static bool SaveSettings()
         {
-            bool savedLocally = XmlExporter.Export(GetUserDataStoragePath(), "Settings.enex",
+            bool savedLocally = XmlExporter.Export(StaticMethods.GetUserDataStoragePath(), "Settings.enex",
                 SettingsConstant.ToXmlRepresentation());
             bool savedInCloud = false;
 
@@ -119,29 +119,6 @@ namespace EvernoteCloneLibrary.Settings
         /// <returns>A boolean indicating if the update was successful or not</returns>
         public static bool Update(SettingModel setting) =>
             new SettingRepository().Update(setting);
-        
-        #endregion
-
-        #region Helper methods
-        
-        /// <summary>
-        /// Returns the storage path for all data
-        /// </summary>
-        /// <returns>string</returns>
-        private static string GetUserDataStoragePath()
-        {
-            string path = Constant.TEST_MODE ? Constant.TEST_USERDATA_STORAGE_PATH : Constant.PRODUCTION_USERDATA_STORAGE_PATH;
-            string[] splittedPath = path.Split('<', '>');
-
-            if (splittedPath.Length == 3)
-            {
-                splittedPath[1] = Constant.User.Username;
-
-                return splittedPath[0] + splittedPath[1] + splittedPath[2];
-            }
-
-            return null;
-        }
         
         #endregion
     }

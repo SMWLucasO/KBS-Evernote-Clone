@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using EvernoteCloneLibrary;
 using EvernoteCloneLibrary.Users;
 
 namespace EvernoteCloneLibraryTests.Notebooks
@@ -47,7 +48,7 @@ namespace EvernoteCloneLibraryTests.Notebooks
         {
             // Arrange
             Constant.User.Id = userId;
-            List<Notebook> notebooksFromFs = XmlImporter.TryImportNotebooks(GetNotebookStoragePath());
+            List<Notebook> notebooksFromFs = XmlImporter.TryImportNotebooks(StaticMethods.GetNotebookStoragePath());
             
             // Act
             List<Notebook> actual = Notebook.Load();
@@ -86,25 +87,10 @@ namespace EvernoteCloneLibraryTests.Notebooks
         public void ImportExport_ClearGeneratedFiles()
         {
             // Clean up the testing location.
-            foreach (string file in Directory.GetFiles(GetNotebookStoragePath()))
+            foreach (string file in Directory.GetFiles(StaticMethods.GetNotebookStoragePath()))
             {
                 File.Delete(file);
             }
-        }
-
-        private static string GetNotebookStoragePath()
-        {
-            string path = Constant.TEST_MODE ? Constant.TEST_NOTEBOOK_STORAGE_PATH : Constant.PRODUCTION_NOTEBOOK_STORAGE_PATH;
-            string[] splittedPath = path.Split('<', '>');
-
-            if (splittedPath.Length == 3)
-            {
-                splittedPath[1] = Constant.User.Username;
-
-                return splittedPath[0] + splittedPath[1] + splittedPath[2];
-            }
-
-            return null;
         }
     }
 }

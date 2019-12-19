@@ -140,7 +140,7 @@ namespace EvernoteCloneLibrary.Users
         {
             if (toInsert != null)
             {
-                if (string.IsNullOrEmpty(toInsert.Username) || string.IsNullOrEmpty(toInsert.Password) || toInsert.CreationDate == null)
+                if (string.IsNullOrWhiteSpace(toInsert.Username) || string.IsNullOrWhiteSpace(toInsert.Password) || toInsert.CreationDate == null)
                 {
                     return false;
                 }
@@ -179,7 +179,7 @@ namespace EvernoteCloneLibrary.Users
         {
             if (toUpdate != null)
             {
-                if (string.IsNullOrEmpty(toUpdate.FirstName) || string.IsNullOrEmpty(toUpdate.LastName) || string.IsNullOrEmpty(toUpdate.Password) || string.IsNullOrEmpty(toUpdate.Username))
+                if (string.IsNullOrWhiteSpace(toUpdate.FirstName) || string.IsNullOrWhiteSpace(toUpdate.LastName) || string.IsNullOrWhiteSpace(toUpdate.Password) || string.IsNullOrWhiteSpace(toUpdate.Username))
                 {
                     return false;
                 }
@@ -203,7 +203,7 @@ namespace EvernoteCloneLibrary.Users
         {
             if (Comparedb != null)
             {
-                if (string.IsNullOrEmpty(Comparedb.Username) || string.IsNullOrEmpty(Comparedb.Password))
+                if (string.IsNullOrWhiteSpace(Comparedb.Username) || string.IsNullOrWhiteSpace(Comparedb.Password))
                 {
                     return null;
                 }
