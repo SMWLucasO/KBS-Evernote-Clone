@@ -2,9 +2,13 @@
 using EvernoteCloneLibrary.Notebooks.Notes;
 using EvernoteCloneLibrary.Utils;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using EvernoteCloneGUI.ViewModels.Controls;
+using EvernoteCloneGUI.ViewModels.Popups;
+using EvernoteCloneLibrary.Notebooks;
 
 namespace EvernoteCloneGUI.ViewModels
 {
@@ -92,117 +96,158 @@ namespace EvernoteCloneGUI.ViewModels
                 // Load the appropriate context menu
                 // If this note is a deleted note, we want a context menu to delete it permanently or restore it, otherwise we only want a 'remove'
                 // context menu element
-                if (Note.IsDeleted && menu.Items.Count != 2 && Container.NotebookViewModelProp.NotebookNotesMenu.ShowDeletedNotes)
+                if (Note.IsDeleted && Container.NotebookViewModelProp.NotebookNotesMenu.ShowDeletedNotes)
                 {
                     // Clear the previous items, because it might already have previous ones.
                     menu.Items.Clear();
-                    MenuItem restoreNoteMenuItem = new MenuItem
-                    {
-                        Header = "Restore"
-                    };
+                    MenuItem restoreNoteMenuItem = new MenuItem() { Header = "Restore" };
 
                     // Set the 'IsDeleted' flag to false, same goes for the notebook if this flag was set to true.
-                    restoreNoteMenuItem.Click += (sender, arg) =>
-                    {
-                        // update the note and note's state.
-                        UpdateNoteDeletion(false);
-                        if (Container.SelectedNote.Equals(Note))
-                        {
-                            Container.SelectedNote = null;
-                        }
+                    restoreNoteMenuItem.Click += RestoreNote;
 
-                        // Refresh the view
-                        Container.OpenDeletedNotesView();
-                    };
-
-                    MenuItem permanentNoteDeletionMenuItem = new MenuItem
-                    {
-                        Header = "Delete permanently"
-                    };
+                    MenuItem permanentNoteDeletionMenuItem = new MenuItem() { Header = "Delete permanently" };
 
                     // Register 'delete permanently' click event, which deletes the note perm, and the notebook too if it is 
                     // the last note inside of said notebook.
-                    permanentNoteDeletionMenuItem.Click += (sender, arg) =>
-                    {
-                        if (MessageBox.Show("Are you sure that you want to permanently delete this note?", "Note Fever | Warning", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
-                        {
-                            // If the note we are deleting is the currently selected note, we delete it.
-                            if (Container.SelectedNote.Equals(Note))
-                            {
-                                Container.SelectedNote = null;
-                            }
-
-                            // Delete the note entirely (from database & local)
-                            Note.DeletePermanently();
-
-                            if (Note.NoteOwner.Notes.Contains(Note))
-                            {
-                                
-                                if (Note.NoteOwner.IsDeleted)
-                                {
-                                    // Honestly should not be possible, but you never know.
-                                    if (Container.SelectedNotebook.Equals(Note.NoteOwner))
-                                    {
-                                        Container.SelectedNotebook = null;
-                                    }
-
-                                    if (Note.NoteOwner.Notes.Count == 1)
-                                    {
-                                        // Remove notebook from the synchronizable notebook list
-                                        Container.Notebooks.Remove(Note.NoteOwner);
-
-                                        // Delete notebook from local storage and database
-                                        Note.NoteOwner.DeletePermanently();
-
-                                        // remove it from the noteowner
-                                        Note.NoteOwner.Notes.Remove(Note);
-
-                                    }
-                                }
-
-                                Note.NoteOwner.Notes.Remove(Note);
-                            }
-
-                            // Refresh the view
-                            Container.OpenDeletedNotesView();
-                        }
-                        
-                    };
+                    permanentNoteDeletionMenuItem.Click += PermanentlyDeleteNote;
 
                     menu.Items.Add(restoreNoteMenuItem);
                     menu.Items.Add(permanentNoteDeletionMenuItem);
 
                 }
-                else if (!Note.IsDeleted && menu.Items.Count != 1 && !Container.NotebookViewModelProp.NotebookNotesMenu.ShowDeletedNotes)
+                else if (!Note.IsDeleted && !Container.NotebookViewModelProp.NotebookNotesMenu.ShowDeletedNotes)
                 {
                     menu.Items.Clear();
-                    MenuItem removeNoteMenuItem = new MenuItem()
-                    {
-                        Header = "Remove"
-                    };
+                    
+                    MenuItem removeNoteMenuItem = new MenuItem { Header = "Remove" };
+                    MenuItem moveNoteMenuItem = new MenuItem { Header = "Move..." };
 
-                    removeNoteMenuItem.Click += (sender, arg) =>
-                    {
-                        // Set IsDeleted to true and update this in the database.
-                        UpdateNoteDeletion(true);
-
-                        // reload the notebook with the new notes
-                        Container.NotebookViewModelProp.NotebookNotesMenu.LoadNotesIntoNotebookMenu();
-
-                        // Remove note from text editor if that is the one we're removing.
-                        if (Container.SelectedNote != null && Container.SelectedNote.Equals(Note))
-                        {
-                            Container.SelectedNote = null;
-                        }
-
-                        // Load...
-                        // We know for sure that we do not want to load deleted notes, thus we can just insert false.
-                        Container.LoadNoteViewIfNoteExists(false);
-                    };
+                    moveNoteMenuItem.Click += MoveNoteToOtherNotebook;
+                    removeNoteMenuItem.Click += RemoveNote;
 
                     menu.Items.Add(removeNoteMenuItem);
+                    menu.Items.Add(moveNoteMenuItem);
                 }
             }
+        }
+
+        /// <summary>
+        /// Handler for the permanent deletion of notes.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void PermanentlyDeleteNote(object sender, RoutedEventArgs args)
+        {
+            if (MessageBox.Show("Are you sure that you want to permanently delete this note?", "Note Fever | Warning",
+                    MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            {
+                // If the note we are deleting is the currently selected note, we delete it.
+                if (Container.SelectedNote.Equals(Note))
+                {
+                    Container.SelectedNote = null;
+                }
+
+                // Delete the note entirely (from database & local)
+                Note.DeletePermanently();
+
+                if (Note.NoteOwner.Notes.Contains(Note))
+                {
+                    if (Note.NoteOwner.IsDeleted)
+                    {
+                        // Honestly should not be possible, but you never know.
+                        if (Container.SelectedNotebook.Equals(Note.NoteOwner))
+                        {
+                            Container.SelectedNotebook = null;
+                        }
+
+                        if (Note.NoteOwner.Notes.Count == 1)
+                        {
+                            // Remove notebook from the synchronizable notebook list
+                            Container.Notebooks.Remove(Note.NoteOwner);
+
+                            // Delete notebook from local storage and database
+                            Note.NoteOwner.DeletePermanently();
+
+                            // remove it from the noteowner
+                            Note.NoteOwner.Notes.Remove(Note);
+                        }
+                    }
+
+                    Note.NoteOwner.Notes.Remove(Note);
+                }
+
+                // Refresh the view
+                Container.OpenDeletedNotesView();
+            }
+        }
+
+        /// <summary>
+        /// Handler for the (soft) deletion of notes
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void RemoveNote(object sender, RoutedEventArgs e)
+        {
+            // Set IsDeleted to true and update this in the database.
+            UpdateNoteDeletion(true);
+            
+            // reload the notebook with the new notes
+            Container.NotebookViewModelProp.NotebookNotesMenu.LoadNotesIntoNotebookMenu();
+            
+            // Remove note from text editor if that is the one we're removing.
+            if (Container.SelectedNote != null && Container.SelectedNote.Equals(Note))
+            {
+                Container.SelectedNote = null;
+            }
+            
+            // Load...
+            // We know for sure that we do not want to load deleted notes, thus we can just insert false.
+            Container.LoadNoteViewIfNoteExists(false);
+        }
+
+        /// <summary>
+        /// Handler for the moving of a note to a notebook.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MoveNoteToOtherNotebook(object sender, RoutedEventArgs e)
+        {
+            // get all notes, except the one which the note is already part of.
+            List<Notebook> notebooks =
+                Container.Notebooks.Where((notebook) => !notebook.Equals((Note.NoteOwner))).ToList();
+            
+            NotebookPickerViewModel notebookPicker = new NotebookPickerViewModel()
+            {
+                Notebooks = notebooks, SelectedNotebook = Container.Notebooks.FirstOrDefault(),
+                PotentialMoveCandidate = Note
+            };
+
+            bool movedSuccessfully = new WindowManager().ShowDialog(notebookPicker) ?? false;
+            
+            if (movedSuccessfully)
+            {
+                // Remove the current note from view.
+                Container.SelectedNote = null;
+                
+                // Refresh the view.
+                Container.LoadNoteViewIfNoteExists(Container.NotebookViewModelProp.NotebookNotesMenu.ShowDeletedNotes);    
+            }
+        }
+        
+        /// <summary>
+        /// Update the note and its state, refresh the view afterwards.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void RestoreNote(object sender, RoutedEventArgs args)
+        {
+            UpdateNoteDeletion(false);
+            if (Container.SelectedNote.Equals(Note))
+            {
+                Container.SelectedNote = null;
+            }
+            
+            Container.OpenDeletedNotesView();
         }
 
         /// <summary>

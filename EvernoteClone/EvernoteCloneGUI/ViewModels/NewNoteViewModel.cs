@@ -1,11 +1,9 @@
 ﻿using Caliburn.Micro;
 using EvernoteCloneGUI.ViewModels.Commands;
 using EvernoteCloneGUI.Views;
-using EvernoteCloneLibrary.Constants;
 using EvernoteCloneLibrary.Notebooks;
 using EvernoteCloneLibrary.Notebooks.Notes;
 using EvernoteCloneLibrary.Utils;
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
