@@ -1,64 +1,66 @@
 ﻿using Caliburn.Micro;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using EvernoteCloneGUI.ViewModels.Controls.Settings;
 using EvernoteCloneGUI.Views.Settings;
 using EvernoteCloneLibrary.Constants;
+using EvernoteCloneLibrary.Settings.Locales;
 
 namespace EvernoteCloneGUI.ViewModels.Settings
 {
     public class LanguageViewModel : Screen
     {
-        // TODO change this class when merged with actual language
-        public ObservableCollection<string> Languages;
+        #region Variables
 
+        /// <value>
+        /// The ComboBox that contains all languages
+        /// </value>
         public ComboBox LanguageComboBox;
 
+        /// <value>
+        /// This bool indicates if this instance of the view is loaded once before or not.
+        /// </value>
+        private bool _loaded = false;
+        
+        #endregion
+
+        #region Button handlers
+        
         /// <summary>
-        /// When the selectedIndex is changed, change the language accordingly
+        /// Saves all changes locally
         /// </summary>
-        /// <param name="sender">ComboBoxItem</param>
-        /// <param name="args"></param>
-        public void ComboBoxSelectedIndexChanged(object sender, RoutedEventArgs args)
+        public void ApplyChanges()
         {
-            if (sender is ComboBoxItem comboBoxItem)
+            if (EvernoteCloneLibrary.Settings.Setting.SaveSettings())
             {
-                object selectedLanguage = comboBoxItem.Tag;
-                // TODO (make this work) Do something with language
-                //Constant.DefaultLanguage = comboBoxItem.Tag;
+                MessageBox.Show("Settings successfully saved!", "NoteFever | Settings", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("Something went wrong while trying to save settings.", "NoteFever | Settings", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+        
+        #endregion
+        
+        #region Language ComboBox
 
-        /// <summary>
-        /// Select a item in the given ComboBox
-        /// </summary>
-        /// <param name="toSelectFrom">The ComboBox to select from</param>
-        /// <param name="toSelect">The item that should be selected (comboBoxItem.Tag == toSelect)</param>
-        public void SelectComboBoxItemByTag(ref ComboBox toSelectFrom, object toSelect)
+        public void LoadLanguageComboBox()
         {
-            foreach (ComboBoxItem comboBoxItem in toSelectFrom.Items)
-            {
-                if (comboBoxItem.Tag == toSelect)
-                {
-                    toSelectFrom.SelectedItem = comboBoxItem;
-                }
-            }
-        }
-
-        /// <summary>
-        /// When this view is activated, load all languages
-        /// </summary>
-        protected override void OnActivate()
-        {
-            base.OnActivate();
+            // For all languages, add them to the ComboBox
+            foreach (Locale locale in Locale.GetAllLocales())
+                ComboBoxHelper.AddItemToComboBox(ref LanguageComboBox, locale.Language, nameof(SettingsConstant.LANGUAGE));
             
-            // TODO load Languages
+            // If used offline (or if something else happens) and no languages are added, add standard language
+            ComboBoxHelper.AddItemToComboBox(ref LanguageComboBox, nameof(SettingsConstant.LANGUAGE));
+            
+            // Select standard language
+            ComboBoxHelper.SelectComboBoxItemByTag(ref LanguageComboBox, SettingsConstant.LANGUAGE);
         }
+        
+        #endregion
+        
+        #region Events
 
         /// <summary>
         /// When the view is attached, prepare the settings view for usage
@@ -72,8 +74,20 @@ namespace EvernoteCloneGUI.ViewModels.Settings
                 LanguageComboBox = languageView.LanguageComboBox;
             }
             
-            // TODO make this work
-            //SelectComboBoxItemByTag(ref LanguageComboBox, Constant.DefaultLanguage);
+            if (!_loaded)
+            {
+                LoadLanguageComboBox();
+                _loaded = true;
+            }
         }
+
+        /// <summary>
+        /// Fired when the index of the selected item changes
+        /// </summary>
+        /// <param name="sender">The newly selected ComboBoxItem</param>
+        public void ComboBoxSelectedIndexChanged(object sender) =>
+            ComboBoxHelper.ComboBoxSelectedIndexChanged(sender);
+        
+        #endregion
     }
 }

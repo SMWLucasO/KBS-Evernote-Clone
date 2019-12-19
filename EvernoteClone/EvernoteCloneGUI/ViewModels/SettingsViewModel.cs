@@ -1,6 +1,7 @@
 ﻿using Caliburn.Micro;
 using EvernoteCloneGUI.ViewModels.Settings;
 using System;
+using EvernoteCloneLibrary.Constants;
 
 namespace EvernoteCloneGUI.ViewModels
 {
@@ -40,22 +41,54 @@ namespace EvernoteCloneGUI.ViewModels
         /// <value>
         /// The property that is used to update the background color of the 'Editor' button
         /// </value>
-        public string EditorButtonBackground { get => _editorBtnBackGround; set => _editorBtnBackGround = value; }
+        public string EditorButtonBackground
+        {
+            get => _editorBtnBackGround;
+            set
+            {
+                _editorBtnBackGround = value;
+                NotifyOfPropertyChange(nameof(EditorButtonBackground));
+            }
+        }
 
         /// <value>
         /// The property that is used to update the background color of the 'Layout' button
         /// </value>
-        public string LayoutButtonBackground { get => _layoutBtnBackGround; set => _layoutBtnBackGround = value; }
+        public string LayoutButtonBackground
+        {
+            get => _layoutBtnBackGround;
+            set
+            {
+                _layoutBtnBackGround = value;
+                NotifyOfPropertyChange(nameof(LayoutButtonBackground));
+            }
+        }
 
         /// <value>
         /// The property that is used to update the background color of the 'Colors' button
         /// </value>
-        public string ColorsButtonBackground { get => _colorsBtnBackGround; set => _colorsBtnBackGround = value; }
+        public string ColorsButtonBackground
+        {
+            get => _colorsBtnBackGround;
+            set
+            {
+                _colorsBtnBackGround = value;
+                NotifyOfPropertyChange(nameof(ColorsButtonBackground));
+            }
+        }
 
         /// <value>
         /// The property that is used to update the background color of the 'Language' button
         /// </value>
-        public string LanguageButtonBackground { get => _languageBtnBackGround; set => _languageBtnBackGround = value; }
+        public string LanguageButtonBackground
+        {
+            get => _languageBtnBackGround;
+            set
+            {
+                _languageBtnBackGround = value;
+                NotifyOfPropertyChange(nameof(LanguageButtonBackground));
+            }
+        }
 
         #endregion
 
@@ -83,6 +116,23 @@ namespace EvernoteCloneGUI.ViewModels
         /// </value>
         private string _languageBtnBackGround;
 
+        /// <value>
+        /// The NoteFeverViewModel
+        /// </value>
+        private NoteFeverViewModel _noteFeverViewModel;
+
+        /// <value>
+        /// The view that is selected
+        /// </value>
+        private string _selectedView;
+
+        #endregion
+
+        #region Constructor
+
+        public SettingsViewModel(NoteFeverViewModel noteFeverViewModel) =>
+            _noteFeverViewModel = noteFeverViewModel;
+
         #endregion
 
         #region Events
@@ -92,7 +142,6 @@ namespace EvernoteCloneGUI.ViewModels
         /// </summary>
         protected override void OnActivate()
         {
-            base.OnActivate();
             OpenLanguageSettings();
         }
 
@@ -107,20 +156,40 @@ namespace EvernoteCloneGUI.ViewModels
         /// <param name="selectedButton">The button the background should be changed of</param>
         private void ChangeBackground(ref string selectedButton)
         {
-            EditorButtonBackground = "#404040";
-            LayoutButtonBackground = "#404040";
-            ColorsButtonBackground = "#404040";
-            LanguageButtonBackground = "#404040";
+            EditorButtonBackground = SettingsConstant.BUTTON_BACKGROUND;
+            LayoutButtonBackground = SettingsConstant.BUTTON_BACKGROUND;
+            ColorsButtonBackground = SettingsConstant.BUTTON_BACKGROUND;
+            LanguageButtonBackground = SettingsConstant.BUTTON_BACKGROUND;
 
             if (selectedButton != null)
             {
-                selectedButton = "#0052cc";
+                selectedButton = SettingsConstant.BUTTON_BACKGROUND_ACTIVE;
             }
 
+            // This will update the GUI colors
             NotifyOfPropertyChange(nameof(EditorButtonBackground));
             NotifyOfPropertyChange(nameof(LayoutButtonBackground));
             NotifyOfPropertyChange(nameof(ColorsButtonBackground));
             NotifyOfPropertyChange(nameof(LanguageButtonBackground));
+        }
+
+        public void UpdateColors()
+        {
+            EditorButtonBackground = SettingsConstant.BUTTON_BACKGROUND;
+            LayoutButtonBackground = SettingsConstant.BUTTON_BACKGROUND;
+            ColorsButtonBackground = SettingsConstant.BUTTON_BACKGROUND;
+            LanguageButtonBackground = SettingsConstant.BUTTON_BACKGROUND;
+
+            if (_selectedView == nameof(_editorBtnBackGround))
+                EditorButtonBackground = SettingsConstant.BUTTON_BACKGROUND_ACTIVE;
+            if (_selectedView == nameof(_layoutBtnBackGround))
+                LayoutButtonBackground = SettingsConstant.BUTTON_BACKGROUND_ACTIVE;
+            if (_selectedView == nameof(_colorsBtnBackGround))
+                ColorsButtonBackground = SettingsConstant.BUTTON_BACKGROUND_ACTIVE;
+            if (_selectedView == nameof(_languageBtnBackGround))
+                LanguageButtonBackground = SettingsConstant.BUTTON_BACKGROUND_ACTIVE;
+
+            _noteFeverViewModel.UpdateColors();
         }
 
         /// <summary>
@@ -173,6 +242,7 @@ namespace EvernoteCloneGUI.ViewModels
         /// </summary>
         public void OpenEditorSettings()
         {
+            _selectedView = nameof(_editorBtnBackGround);
             ChangeBackground(ref _editorBtnBackGround);
             ChangeTab(typeof(EditorViewModel));
         }
@@ -183,6 +253,7 @@ namespace EvernoteCloneGUI.ViewModels
         /// </summary>
         public void OpenLayoutSettings()
         {
+            _selectedView = nameof(_layoutBtnBackGround);
             ChangeBackground(ref _layoutBtnBackGround);
             ChangeTab(typeof(LayoutViewModel));
         }
@@ -193,6 +264,7 @@ namespace EvernoteCloneGUI.ViewModels
         /// </summary>
         public void OpenColorsSettings()
         {
+            _selectedView = nameof(_colorsBtnBackGround);
             ChangeBackground(ref _colorsBtnBackGround);
             ChangeTab(typeof(ColorsViewModel));
         }
@@ -203,6 +275,7 @@ namespace EvernoteCloneGUI.ViewModels
         /// </summary>
         public void OpenLanguageSettings()
         {
+            _selectedView = nameof(_languageBtnBackGround);
             ChangeBackground(ref _languageBtnBackGround);
             ChangeTab(typeof(LanguageViewModel));
         }

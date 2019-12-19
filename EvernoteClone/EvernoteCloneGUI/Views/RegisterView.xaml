@@ -98,7 +98,7 @@
         <PasswordBox Grid.Row="3" Grid.ColumnSpan="4" Name="PasswordConfirm" local:PasswordHelper.Attach="False" local:PasswordHelper.Password="{Binding Path=PasswordConfirm, Mode=TwoWay, ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged,ValidatesOnExceptions=True}" Margin="73,41.5,111,20"/>
 
         <!-- Register Button -->
-        <Button Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" x:Name="Register" Background="#0052cc" Foreground="White" Content="Register" HorizontalAlignment="Left" Margin="73,20,0,0" VerticalAlignment="Top" Width="261" Height="25"/>
+        <Button Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" x:Name="Register" Background="{Binding Path=ButtonBackgroundActive}" Foreground="White" Content="Register" HorizontalAlignment="Left" Margin="73,20,0,0" VerticalAlignment="Top" Width="261" Height="25"/>
 
 
     </Grid>

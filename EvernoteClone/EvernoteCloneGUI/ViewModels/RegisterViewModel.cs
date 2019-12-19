@@ -5,6 +5,7 @@ using System.Windows;
 using System.Text.RegularExpressions;
 using System.Security.Cryptography;
 using Caliburn.Micro;
+using EvernoteCloneLibrary.Constants;
 using EvernoteCloneLibrary.Users;
 
 // TODO: see next comments @Chino
@@ -12,6 +13,7 @@ using EvernoteCloneLibrary.Users;
 // Password 2: Test123!
 // Password 1: Test123!
 // Error message under Password 2
+// TODO add summeries
 namespace EvernoteCloneGUI.ViewModels
 {
     public class RegisterViewModel : Screen, IDataErrorInfo
@@ -23,6 +25,16 @@ namespace EvernoteCloneGUI.ViewModels
         private static readonly int _lowerLength = 1;
         private static readonly int _specialChar = 1;
         private static readonly int _numericLength = 2;
+        
+        /// <value>
+        /// The background of buttons
+        /// </value>
+        private string _buttonBackground;
+        
+        /// <value>
+        /// The background of active buttons
+        /// </value>
+        private string _buttonBackGroundActive;
         
         #endregion
         
@@ -37,6 +49,32 @@ namespace EvernoteCloneGUI.ViewModels
         public string FirstName { get; set; }
 
         public string LastName { get; set; }
+        
+        /// <value>
+        /// The background color of all buttons
+        /// </value>
+        public string ButtonBackground
+        {
+            get => _buttonBackground;
+            set
+            {
+                _buttonBackground = value;
+                NotifyOfPropertyChange(nameof(ButtonBackground));
+            }
+        }
+
+        /// <value>
+        /// The background color of all active buttons
+        /// </value>
+        public string ButtonBackgroundActive
+        {
+            get => _buttonBackGroundActive;
+            set
+            {
+                _buttonBackGroundActive = value;
+                NotifyOfPropertyChange(nameof(ButtonBackgroundActive));
+            }
+        }
 
         #endregion
         
@@ -159,6 +197,16 @@ namespace EvernoteCloneGUI.ViewModels
             {
                 MessageBox.Show("Please fill in the fields with errors");
             }
+        }
+
+        #endregion
+
+        #region Events
+
+        protected override void OnActivate()
+        {
+            ButtonBackground = SettingsConstant.BUTTON_BACKGROUND;
+            ButtonBackgroundActive = SettingsConstant.BUTTON_BACKGROUND_ACTIVE;
         }
 
         #endregion

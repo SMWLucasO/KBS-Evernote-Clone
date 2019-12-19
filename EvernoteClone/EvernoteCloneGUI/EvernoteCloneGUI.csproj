@@ -133,6 +133,9 @@
     <Compile Include="Helpers\PasswordHelper.cs" />
     <Compile Include="ViewModels\Commands\RichTextEditorCommands.cs" />
     <Compile Include="ViewModels\Controls\NoteFeverTreeViewModel.cs" />
+    <Compile Include="ViewModels\Controls\Settings\ComboBoxHelper.cs" />
+    <Compile Include="ViewModels\Controls\Settings\Setting.cs" />
+    <Compile Include="ViewModels\Controls\Settings\TextBoxHelper.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\NewNoteViewModel.cs" />
     <Compile Include="ViewModels\NotebookNotesMenuViewModel.cs" />

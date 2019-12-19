@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:behaviors="clr-namespace:EvernoteCloneGUI.Helpers"
+        xmlns:helpers="clr-namespace:EvernoteCloneGUI.ViewModels.Controls.Settings"
         xmlns:cal="http://www.caliburnproject.org"
         mc:Ignorable="d"
         d:DesignHeight="400" d:DesignWidth="640">
@@ -14,6 +15,7 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
+            <RowDefinition />
         </Grid.RowDefinitions>
 
         <Label Grid.Column="0" Grid.Row="0" Content="Display language:" HorizontalAlignment="Right"/>
@@ -22,19 +24,25 @@
             Grid.Column="1" 
             Grid.Row="0" 
             HorizontalAlignment="Left" 
-            Margin="5,5,5,5" 
-            ItemsSource="{Binding Path=Languages}"
-            cal:Message.Attach="[Event SelectionChanged] = [ComboBoxSelectedIndexChanged($this, $eventArgs)]"
+            Margin="5,5,5,5"
+            cal:Message.Attach="[Event SelectionChanged] = [ComboBoxSelectedIndexChanged($this)]"
             behaviors:ComboBoxWidthFromItemsBehavior.ComboBoxWidthFromItems="True">
-            
-            <ComboBoxItem Content="TESTJEUH"/>
-            <ComboBoxItem Content="hi"/>
-            <ComboBoxItem Content="IK WIL OOK WEL"/>
-            <ComboBox.ItemTemplate>
+
+            <!--<ComboBox.ItemTemplate>
                 <DataTemplate>
                     <ComboBoxItem Content="{Binding LanguageTitle}" Tag="{Binding /}"/>
                 </DataTemplate>
-            </ComboBox.ItemTemplate>
+            </ComboBox.ItemTemplate>-->
         </ComboBox>
+
+        <Button 
+            Grid.Row="1" 
+            Grid.Column="0" 
+            HorizontalAlignment="Right" 
+            VerticalAlignment="Bottom" 
+            Margin="0,0,0,10"
+            Padding="5"
+            x:Name="ApplyChanges" 
+            Content="Apply changes"/>
     </Grid>
 </UserControl>

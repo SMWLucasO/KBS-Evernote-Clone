@@ -3,7 +3,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using EvernoteCloneLibrary.Database;
 
-namespace EvernoteCloneLibrary.Setting
+namespace EvernoteCloneLibrary.Settings
 {
     /// <summary>
     /// The repository(pattern) responsible for settings in the database.
@@ -48,12 +48,12 @@ namespace EvernoteCloneLibrary.Setting
         /// <returns>an enumerable containing all the settings selected from the database.</returns>
         public IEnumerable<SettingModel> GetBy(string[] conditions, Dictionary<string, object> parameters)
         {
-            List<Setting> settings = new List<Setting>();
+            List<Settings.Setting> settings = new List<Settings.Setting>();
             SqlDataReader fetchedSqlDataReader = DataAccess.Instance.ExecuteAndRead("Setting", conditions, parameters);
 
             while (fetchedSqlDataReader.Read())
             {
-                Setting setting = new Setting
+                Settings.Setting setting = new Settings.Setting
                 {
                     Id = (int)fetchedSqlDataReader["Id"],
                     UserId = (int)fetchedSqlDataReader["UserID"],
@@ -82,16 +82,15 @@ namespace EvernoteCloneLibrary.Setting
         {
             if (toUpdate != null)
             {
-                if (string.IsNullOrWhiteSpace(toUpdate.KeyWord) || toUpdate.Id == -1)
+                if (string.IsNullOrWhiteSpace(toUpdate.KeyWord))
                 {
                     return false;
                 }
                 
                 Dictionary<string, object> parameters = GenerateQueryParameters(toUpdate);
-                parameters.Add("@Id", toUpdate.Id);
 
-                return DataAccess.Instance.Execute("UPDATE [Setting] SET [UserID] = @UserID, [Keyword] = @Keyword, "
-                    + "[SettingValue] = @SettingValue WHERE Id = @Id", parameters);
+                return DataAccess.Instance.Execute("UPDATE [Setting] SET [SettingValue] = @SettingValue "
+                                                   + " WHERE UserID = @UserID AND Keyword = @Keyword", parameters);
             }
             return false;
         }

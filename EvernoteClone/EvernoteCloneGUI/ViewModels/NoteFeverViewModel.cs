@@ -9,11 +9,10 @@ using System.Dynamic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using EvernoteCloneGUI.ViewModels.Controls;
 using EvernoteCloneLibrary.Constants;
 using EvernoteCloneLibrary.Users;
+using EvernoteCloneLibrary.Files.Parsers;
 
 namespace EvernoteCloneGUI.ViewModels
 {
@@ -24,6 +23,35 @@ namespace EvernoteCloneGUI.ViewModels
     {
         #region Properties
 
+        /// <value>
+        /// The background color of all buttons
+        /// </value>
+        public string ButtonBackground
+        {
+            get => _buttonBackground;
+            set
+            {
+                _buttonBackground = value;
+                NotifyOfPropertyChange(nameof(ButtonBackground));
+            }
+        }
+
+        /// <value>
+        /// The background color of all active buttons
+        /// </value>
+        public string ButtonBackgroundActive
+        {
+            get => _buttonBackGroundActive;
+            set
+            {
+                _buttonBackGroundActive = value;
+                NotifyOfPropertyChange(nameof(ButtonBackgroundActive));
+            }
+        }
+        
+        /// <value>
+        /// The only instance of the NoteFeverTreeViewModel
+        /// </value>
         public static NoteFeverTreeViewModel NoteFeverTreeViewModel { get; private set; }
 
         /// <value>
@@ -56,6 +84,20 @@ namespace EvernoteCloneGUI.ViewModels
         /// That is used to display all the notes inside a Notebook
         /// </value>
         public NotebookViewModel NotebookViewModelProp { get; set; }
+
+        #endregion
+
+        #region Variables
+
+        /// <value>
+        /// The background of buttons
+        /// </value>
+        private string _buttonBackground;
+        
+        /// <value>
+        /// The background of active buttons
+        /// </value>
+        private string _buttonBackGroundActive;
 
         #endregion
 
@@ -138,7 +180,7 @@ namespace EvernoteCloneGUI.ViewModels
                 {
                     if (SelectedNotebook.Notes.Count > 0)
                     {
-                        IEnumerable<INote> notes = SelectedNotebook.Notes.Where((note) => !((Note)note).IsDeleted);
+                        IEnumerable<INote> notes = SelectedNotebook.Notes.Where(note => !((Note)note).IsDeleted);
                         notebookCountString = $"{notes.ToList().Count} note(s)";
                     }
                 }
@@ -158,10 +200,10 @@ namespace EvernoteCloneGUI.ViewModels
                 }
 
                 // Create the notebook view with the required data.
-                NotebookViewModelProp = new NotebookViewModel()
+                NotebookViewModelProp = new NotebookViewModel
                 {
                     NewNoteViewModel = newNoteViewModel,
-                    NotebookNotesMenu = new NotebookNotesMenuViewModel()
+                    NotebookNotesMenu = new NotebookNotesMenuViewModel
                     {
                         Notebook = SelectedNotebook,
                         NotebookName = SelectedNotebook.Title,
@@ -173,8 +215,7 @@ namespace EvernoteCloneGUI.ViewModels
                 // load the selected note and the note elements, afterwards, activate the view.
                 NotebookViewModelProp.NewNoteViewModel?.LoadNote();
                 NotebookViewModelProp.NotebookNotesMenu.LoadNotesIntoNotebookMenu(showDeletedNotes);
-
-                // Comment below and change ContentControl x:Name to ActiveItem and Change Class overerving to .OneActive and it works...
+                
                 ActivateItem(NotebookViewModelProp);
             }
             else
@@ -222,7 +263,7 @@ namespace EvernoteCloneGUI.ViewModels
         {
             if (Notebooks != null)
             {
-                Notebook allNotesNotebook = new Notebook()
+                Notebook allNotesNotebook = new Notebook
                 {
                     Id = -1,
                     LocationId = -1,
@@ -238,7 +279,7 @@ namespace EvernoteCloneGUI.ViewModels
                 foreach (Notebook notebook in Notebooks)
                 {
                     // We want to retrieve all notes which are not deleted.
-                    notes.AddRange(notebook.RetrieveNoteList((note) => (!((NoteModel)note).IsDeleted)));
+                    notes.AddRange(notebook.RetrieveNoteList(note => !((NoteModel)note).IsDeleted));
                 }
 
                 allNotesNotebook.Notes = notes;
@@ -255,7 +296,7 @@ namespace EvernoteCloneGUI.ViewModels
         /// </summary>
         public void OpenDeletedNotesView()
         {
-            Notebook trashNotebook = new Notebook()
+            Notebook trashNotebook = new Notebook
             {
                 Id = -1,
                 LocationId = -1,
@@ -343,7 +384,7 @@ namespace EvernoteCloneGUI.ViewModels
         /// <summary>
         /// Select the first notebook inside a path with a certain title
         /// </summary>
-        /// <param name="path">The path that should contain the notebook</param>
+        /// <param name="notebookLocation">The path that should contain the notebook</param>
         /// <param name="title">The title of the notebook that we want to select</param>
         public void SelectNotebook(NotebookLocation notebookLocation, string title)
         {
@@ -374,7 +415,7 @@ namespace EvernoteCloneGUI.ViewModels
         {
             IWindowManager windowManager = new WindowManager();
             
-            SettingsViewModel settingsViewModel = new SettingsViewModel();
+            SettingsViewModel settingsViewModel = new SettingsViewModel(this);
             windowManager.ShowDialog(settingsViewModel);
         }
         
@@ -397,6 +438,12 @@ namespace EvernoteCloneGUI.ViewModels
                 Environment.Exit(0);
             }
 
+            // Load settings (if exist)
+            XmlImporter.ImportSettings(GetUserDataStoragePath() + @"/Settings.enex");
+
+            ButtonBackground = SettingsConstant.BUTTON_BACKGROUND;
+            ButtonBackgroundActive = SettingsConstant.BUTTON_BACKGROUND_ACTIVE;
+
             NoteFeverTreeViewModel = new NoteFeverTreeViewModel(this);
 
             // Load Notebooks
@@ -413,6 +460,32 @@ namespace EvernoteCloneGUI.ViewModels
         public void TreeViewSelectedItemChanged(RoutedPropertyChangedEventArgs<object> routedPropertyChangedEventArgs)
         {
             NoteFeverTreeViewModel.TreeViewSelectedItemChanged(routedPropertyChangedEventArgs);
+        }
+
+        #endregion
+
+        #region HelperMethods
+
+        // TODO make this a general class somewhere
+        private static string GetUserDataStoragePath()
+        {
+            string path = Constant.TEST_MODE ? Constant.TEST_USERDATA_STORAGE_PATH : Constant.PRODUCTION_USERDATA_STORAGE_PATH;
+            string[] splittedPath = path.Split('<', '>');
+
+            if (splittedPath.Length == 3)
+            {
+                splittedPath[1] = Constant.User.Username;
+
+                return splittedPath[0] + splittedPath[1] + splittedPath[2];
+            }
+
+            return null;
+        }
+
+        public void UpdateColors()
+        {
+            ButtonBackground = SettingsConstant.BUTTON_BACKGROUND;
+            ButtonBackgroundActive = SettingsConstant.BUTTON_BACKGROUND_ACTIVE;
         }
 
         #endregion

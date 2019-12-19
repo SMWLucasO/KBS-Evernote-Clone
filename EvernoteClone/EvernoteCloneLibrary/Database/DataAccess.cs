@@ -90,6 +90,14 @@ namespace EvernoteCloneLibrary.Database
         }
 
         /// <summary>
+        /// Method for retrieving all records from table
+        /// </summary>
+        /// <param name="table">Table that all records should be retrieved from</param>
+        /// <returns></returns>
+        public SqlDataReader ExecuteAndRead(string table) =>
+            Query($"SELECT * FROM [{table}]", null, SqlDataReaderReturnType);
+
+        /// <summary>
         /// Method for INSERT/DELETE/UPDATE queries within repositories.
         /// </summary>
         /// <param name="query"></param>

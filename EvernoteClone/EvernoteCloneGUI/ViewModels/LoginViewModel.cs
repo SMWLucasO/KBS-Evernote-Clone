@@ -33,6 +33,46 @@ namespace EvernoteCloneGUI.ViewModels
         /// This contains the user object (null if not logged in)
         /// </value>
         public User User { get; private set; }
+        
+        /// <value>
+        /// The background color of all buttons
+        /// </value>
+        public string ButtonBackground
+        {
+            get => _buttonBackground;
+            set
+            {
+                _buttonBackground = value;
+                NotifyOfPropertyChange(nameof(ButtonBackground));
+            }
+        }
+
+        /// <value>
+        /// The background color of all active buttons
+        /// </value>
+        public string ButtonBackgroundActive
+        {
+            get => _buttonBackGroundActive;
+            set
+            {
+                _buttonBackGroundActive = value;
+                NotifyOfPropertyChange(nameof(ButtonBackgroundActive));
+            }
+        }
+
+        #endregion
+        
+        #region Variables
+
+        /// <value>
+        /// The background of buttons
+        /// </value>
+        private string _buttonBackground;
+        
+        /// <value>
+        /// The background of active buttons
+        /// </value>
+        private string _buttonBackGroundActive;
 
         #endregion
 
@@ -445,6 +485,16 @@ namespace EvernoteCloneGUI.ViewModels
             (GetView() as Window)?.Close();
         }
         
+        #endregion
+
+        #region Events
+
+        protected override void OnActivate()
+        {
+            ButtonBackground = SettingsConstant.BUTTON_BACKGROUND;
+            ButtonBackgroundActive = SettingsConstant.BUTTON_BACKGROUND_ACTIVE;
+        }
+
         #endregion
     }
 }

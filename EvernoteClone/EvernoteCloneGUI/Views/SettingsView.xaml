@@ -39,6 +39,6 @@
             </Grid.Effect>
         </Grid>
 
-        <ContentControl x:Name="ActiveItem" Grid.Column="1"/>
+        <ContentControl x:Name="ActiveItem" Grid.Column="1" Panel.ZIndex="-1"/>
     </Grid>
 </Window>

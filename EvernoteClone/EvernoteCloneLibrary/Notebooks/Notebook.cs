@@ -47,7 +47,6 @@ namespace EvernoteCloneLibrary.Notebooks
         /// <summary>
         /// Load all the notebooks belonging to the specified user.
         /// </summary>
-        /// <param name="userId"></param>
         /// <returns></returns>
         public static List<Notebook> Load()
         {
@@ -263,7 +262,6 @@ namespace EvernoteCloneLibrary.Notebooks
         /// <summary>
         /// Save all the notebooks belonging to the specified user.
         /// </summary>
-        /// <param name="userId"></param>
         /// <param name="forceInsert"></param>
         /// <returns></returns>
         public bool Save(bool forceInsert = false)
