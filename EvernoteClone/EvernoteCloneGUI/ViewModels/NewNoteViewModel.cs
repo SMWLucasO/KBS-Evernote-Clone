@@ -302,7 +302,6 @@ namespace EvernoteCloneGUI.ViewModels
             {
                 
                 // Register shortcuts for saving, inserting tables and changing text-color
-                
                 newNoteView.InputBindings.Add(
                     new KeyBinding(
                         new TextColorCommand() { NewNoteViewModel = this}, Key.C, ModifierKeys.Alt
