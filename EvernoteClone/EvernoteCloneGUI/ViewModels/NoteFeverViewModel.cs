@@ -10,10 +10,9 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using EvernoteCloneGUI.ViewModels.Controls;
-using EvernoteCloneLibrary;
 using EvernoteCloneLibrary.Constants;
 using EvernoteCloneLibrary.Users;
-using EvernoteCloneLibrary.Files.Parsers;
+using EvernoteCloneLibrary.Settings;
 
 namespace EvernoteCloneGUI.ViewModels
 {
@@ -339,9 +338,11 @@ namespace EvernoteCloneGUI.ViewModels
 
             LoginUser = loginViewModel.User;
             Constant.User = LoginUser;
-            
-            if (!suppressSynchronize) 
+
+            if (!suppressSynchronize)
                 Synchronize();
+            else
+                LoadSettings();
         }
 
         /// <summary>
@@ -407,6 +408,7 @@ namespace EvernoteCloneGUI.ViewModels
             SelectedNotebook = Notebooks.FirstOrDefault(notebooks => notebooks.FsName == SelectedNotebook?.FsName);
             SelectedNote = SelectedNotebook?.Notes.Cast<Note>().FirstOrDefault(notes => notes.Title == SelectedNote?.Title && notes.LastUpdated == SelectedNote?.LastUpdated);
             LoadNoteViewIfNoteExists();
+            LoadSettings();
         }
         
         /// <summary>
@@ -439,12 +441,6 @@ namespace EvernoteCloneGUI.ViewModels
                 Environment.Exit(0);
             }
 
-            // Load settings (if exist)
-            XmlImporter.ImportSettings(StaticMethods.GetUserDataStoragePath() + @"/Settings.enex");
-
-            ButtonBackground = SettingsConstant.BUTTON_BACKGROUND;
-            ButtonBackgroundActive = SettingsConstant.BUTTON_BACKGROUND_ACTIVE;
-
             NoteFeverTreeViewModel = new NoteFeverTreeViewModel(this);
 
             // Load Notebooks
@@ -469,6 +465,15 @@ namespace EvernoteCloneGUI.ViewModels
 
         public void UpdateColors()
         {
+            ButtonBackground = SettingsConstant.BUTTON_BACKGROUND;
+            ButtonBackgroundActive = SettingsConstant.BUTTON_BACKGROUND_ACTIVE;
+        }
+
+        public void LoadSettings()
+        {
+            // Load settings (if exist)
+            Setting.Load();
+
             ButtonBackground = SettingsConstant.BUTTON_BACKGROUND;
             ButtonBackgroundActive = SettingsConstant.BUTTON_BACKGROUND_ACTIVE;
         }

@@ -39,12 +39,18 @@ namespace EvernoteCloneGUI.ViewModels.Settings
             {
                 MessageBox.Show("Something went wrong while trying to save settings.", "NoteFever | Settings", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+            
+            // Update colors of Settings view
+            ((SettingsViewModel) Parent).UpdateLayout();
         }
         
         #endregion
         
         #region Language ComboBox
 
+        /// <summary>
+        /// Loads all settings into ComboBox
+        /// </summary>
         public void LoadLanguageComboBox()
         {
             // For all languages, add them to the ComboBox

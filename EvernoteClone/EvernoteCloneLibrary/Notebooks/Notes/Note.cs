@@ -31,7 +31,7 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
                     
                 return _title;
             }
-            set => _title = string.IsNullOrWhiteSpace(value) ? "Nameless note" : value;
+            set => _title = string.IsNullOrWhiteSpace(value) ? SettingsConstant.DEFAULT_NOTE_TITLE : value;
         }
 
         /// <summary>

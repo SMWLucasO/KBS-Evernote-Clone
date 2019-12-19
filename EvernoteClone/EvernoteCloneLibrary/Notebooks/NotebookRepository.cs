@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using EvernoteCloneLibrary.Constants;
 
 namespace EvernoteCloneLibrary.Notebooks
 {
@@ -24,7 +25,7 @@ namespace EvernoteCloneLibrary.Notebooks
             {
                 if (string.IsNullOrWhiteSpace(toInsert.Title))
                 {
-                    toInsert.Title = "Nameless notebook";
+                    toInsert.Title = SettingsConstant.DEFAULT_NOTEBOOK_TITLE;
                 }
 
                 Dictionary<string, object> parameters = GenerateQueryParameters(toInsert);

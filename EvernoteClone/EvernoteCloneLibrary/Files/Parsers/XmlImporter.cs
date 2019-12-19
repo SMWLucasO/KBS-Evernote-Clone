@@ -112,7 +112,7 @@ namespace EvernoteCloneLibrary.Files.Parsers
             if (!string.IsNullOrWhiteSpace(filePath) && ValidateFileExists(filePath))
             {
                 SettingsConstant settingsConstant = new SettingsConstant();
-                var settings = SettingsConstant.GetSettings();
+                Dictionary<string, object> settings = SettingsConstant.GetSettings();
                 
                 // load the XML from the path and parse it for usage
                 XDocument xDocument = XDocument.Load(filePath);
@@ -135,6 +135,7 @@ namespace EvernoteCloneLibrary.Files.Parsers
                         }
                     }
                 }
+
                 return true;
             }
             return false;

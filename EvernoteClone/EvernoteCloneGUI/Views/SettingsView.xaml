@@ -24,6 +24,7 @@
 
             <Grid Grid.Row="0" Background="#ffffff" Margin="0,0,0.5,0">
                 <TextBlock Margin="15,0,15,0" Text="Settings" Foreground="#0052cc" FontSize="28" VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="Lato" FontWeight="Medium"></TextBlock>
+                <Button Height="25" Width="25" VerticalAlignment="Bottom" HorizontalAlignment="Right"  Background="{Binding Path=ButtonBackgroundActive}" Foreground="White" Panel.ZIndex="1" x:Name="Synchronize">&#x27F3;</Button>
 
                 <!--<TextBlock Margin="15,0,0,0" Text="Settings" Foreground="#0052cc" FontSize="21" VerticalAlignment="Center" FontFamily="Lato" FontWeight="Light"></TextBlock>
                 <Image Margin="0,0,15,0" Source="Images/logotransparentv2.png" Width="54" Height="80" HorizontalAlignment="Right" Stretch="Fill"></Image>-->

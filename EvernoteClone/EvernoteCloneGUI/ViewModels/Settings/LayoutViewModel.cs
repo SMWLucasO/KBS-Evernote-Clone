@@ -1,9 +1,4 @@
 ﻿using Caliburn.Micro;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using EvernoteCloneGUI.ViewModels.Controls.Settings;
@@ -57,6 +52,9 @@ namespace EvernoteCloneGUI.ViewModels.Settings
         
         #region Load Textboxes
 
+        /// <summary>
+        /// Loads all settings into TextBoxes
+        /// </summary>
         public void LoadTextBoxes()
         {
             TextBoxHelper.SetTextBox(ref ButtonBackground, nameof(SettingsConstant.BUTTON_BACKGROUND));

@@ -38,7 +38,7 @@ namespace EvernoteCloneLibrary.Notebooks
 
                 return _title;
             }
-            set => _title = string.IsNullOrWhiteSpace(value) ? "Nameless notebook" : value;
+            set => _title = string.IsNullOrWhiteSpace(value) ? SettingsConstant.DEFAULT_NOTEBOOK_TITLE : value;
         }
 
         public Notebook() =>
@@ -172,7 +172,6 @@ namespace EvernoteCloneLibrary.Notebooks
         /// <summary>
         /// Update the path of the notebook
         /// </summary>
-        /// <param name="userId"></param>
         public void UpdatePathId()
         {
             int userId = Constant.User.Id;

@@ -9,6 +9,9 @@ namespace EvernoteCloneLibrary.Constants
 {
     public class SettingsConstant : IParseable
     {
+        // Used for synchronisation
+        public static DateTime LASTUPDATED = DateTime.Parse("01/01/2000 00:00:00");
+        
         // Language
         public static string LANGUAGE = "en-US";
 
@@ -28,6 +31,8 @@ namespace EvernoteCloneLibrary.Constants
         
         //STANDARD TEXT COLOR, FONT (STYLE, COLOR), ETC.
 
+        #region Methods
+        
         public static Dictionary<string, object> GetSettings()
         {
             Dictionary<string, object> settings = new Dictionary<string, object>();
@@ -65,5 +70,7 @@ namespace EvernoteCloneLibrary.Constants
 
             return xmlRepresentation.ToArray();
         }
+        
+        #endregion
     }
 }

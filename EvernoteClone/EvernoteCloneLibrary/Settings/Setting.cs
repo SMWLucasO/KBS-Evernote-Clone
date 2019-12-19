@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
+using System.Windows;
 using EvernoteCloneLibrary.Constants;
 using EvernoteCloneLibrary.Files.Parsers;
 
@@ -37,6 +38,8 @@ namespace EvernoteCloneLibrary.Settings
 
         public static bool SaveSettings()
         {
+            SettingsConstant.LASTUPDATED = DateTime.Now;
+
             bool savedLocally = XmlExporter.Export(StaticMethods.GetUserDataStoragePath(), "Settings.enex",
                 SettingsConstant.ToXmlRepresentation());
             bool savedInCloud = false;
@@ -65,6 +68,69 @@ namespace EvernoteCloneLibrary.Settings
             }
 
             return savedLocally || savedInCloud;
+        }
+
+        /// <summary>
+        /// Loads the settings locally, and from database
+        /// This is done based on last updated setting.
+        /// If last updated is not in database, settings are not loaded from the database
+        /// </summary>
+        /// <returns>boolean indicating whether loading the settings was a success or not</returns>
+        public static bool Load()
+        {
+            bool importedLocally = XmlImporter.ImportSettings(StaticMethods.GetUserDataStoragePath() + @"/Settings.enex");
+            bool importedFromDatabase = false;
+
+            if (Constant.User.Id != -1)
+            {
+                List<Setting> allSettingsFromDatabase = GetAllSettingsFromUser();
+                DateTime? lastUpdatedFromDatabase = null;
+                
+                foreach (Setting setting in allSettingsFromDatabase)
+                {
+                    if (setting.KeyWord == "LASTUPDATED")
+                    {
+                        lastUpdatedFromDatabase = Convert.ToDateTime(setting.SettingValue);
+                    }
+                }
+
+                if (lastUpdatedFromDatabase != null)
+                {
+                    if (lastUpdatedFromDatabase > SettingsConstant.LASTUPDATED)
+                    {
+                        SettingsConstant settingsConstant = new SettingsConstant();
+                        Dictionary<string, object> settings = SettingsConstant.GetSettings();
+                        importedFromDatabase = true;
+
+                        foreach (Setting setting in allSettingsFromDatabase)
+                        {
+                            try
+                            {
+                                settingsConstant.GetType().GetField(setting.KeyWord)
+                                    .SetValue(settingsConstant,
+                                        Convert.ChangeType(
+                                            setting.SettingValue,
+                                            settings[setting.KeyWord].GetType()));
+                            }
+                            catch (Exception)
+                            {
+                                MessageBox.Show(
+                                    "There went something wrong while importing the settings stored in the database. Contact product owner.",
+                                    "NoteFever | Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                importedFromDatabase = false;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (importedFromDatabase)
+            {
+                SaveSettings();
+            }
+
+            return importedLocally || importedFromDatabase;
         }
         
         /// <summary>

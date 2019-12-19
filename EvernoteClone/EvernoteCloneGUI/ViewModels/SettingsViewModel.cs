@@ -2,6 +2,7 @@
 using EvernoteCloneGUI.ViewModels.Settings;
 using System;
 using EvernoteCloneLibrary.Constants;
+using EvernoteCloneLibrary.Settings;
 
 namespace EvernoteCloneGUI.ViewModels
 {
@@ -37,6 +38,19 @@ namespace EvernoteCloneGUI.ViewModels
         #endregion
 
         #region Background's
+
+        /// <value>
+        /// The property that is used to update the background color of the 'Synchronize' button
+        /// </value>
+        public string ButtonBackgroundActive
+        {
+            get => _buttonBackgroundActive;
+            set
+            {
+                _buttonBackgroundActive = value;
+                NotifyOfPropertyChange(nameof(ButtonBackgroundActive));
+            }
+        }
 
         /// <value>
         /// The property that is used to update the background color of the 'Editor' button
@@ -97,6 +111,11 @@ namespace EvernoteCloneGUI.ViewModels
         #region Variables
 
         /// <value>
+        /// The variable that contains the background color of the 'Synchronize' button
+        /// </value>
+        private string _buttonBackgroundActive;
+
+        /// <value>
         /// The variable that contains the background color of the 'Editor' button
         /// </value>
         private string _editorBtnBackGround;
@@ -143,6 +162,7 @@ namespace EvernoteCloneGUI.ViewModels
         protected override void OnActivate()
         {
             OpenLanguageSettings();
+            ButtonBackgroundActive = SettingsConstant.BUTTON_BACKGROUND_ACTIVE;
         }
 
         #endregion
@@ -179,6 +199,7 @@ namespace EvernoteCloneGUI.ViewModels
             StandardsButtonBackground = SettingsConstant.BUTTON_BACKGROUND;
             LayoutButtonBackground = SettingsConstant.BUTTON_BACKGROUND;
             LanguageButtonBackground = SettingsConstant.BUTTON_BACKGROUND;
+            ButtonBackgroundActive = SettingsConstant.BUTTON_BACKGROUND_ACTIVE;
 
             if (_selectedView == nameof(_editorBtnBackGround))
                 EditorButtonBackground = SettingsConstant.BUTTON_BACKGROUND_ACTIVE;
@@ -235,7 +256,29 @@ namespace EvernoteCloneGUI.ViewModels
         #endregion
 
         #region Button handlers
-        
+
+        /// <summary>
+        /// This synchronizes and refreshes all the settings (with database if user is logged in)
+        /// </summary>
+        public void Synchronize()
+        {
+            Setting.Load();
+
+            EditorSettingsViewModel = null;
+            StandardsSettingsViewModel = null;
+            
+            if (_selectedView == nameof(_editorBtnBackGround))
+                OpenEditorSettings();
+            if (_selectedView == nameof(_standardsBtnBackGround))
+                OpenStandardsSettings();
+            if (_selectedView == nameof(_layoutBtnBackGround))
+                OpenLayoutSettings();
+            if (_selectedView == nameof(_languageBtnBackGround))
+                OpenLanguageSettings();
+            
+            _noteFeverViewModel.UpdateColors();
+        }
+
         /// <summary>
         /// This changes the background of the 'Editor' button
         /// This also activates the 'Editor' tab

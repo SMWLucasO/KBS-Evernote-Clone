@@ -142,7 +142,7 @@ namespace EvernoteCloneGUI.ViewModels
         
         public NewNoteViewModel(bool loadNote = false)
         {
-            DisplayName = "Note Fever | Nameless note";
+            DisplayName = $"Note Fever | {SettingsConstant.DEFAULT_NOTE_TITLE}";
             _loadNote = loadNote;
         }
 
