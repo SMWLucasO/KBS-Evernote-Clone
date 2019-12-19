@@ -210,6 +210,7 @@ namespace EvernoteCloneGUI.ViewModels
                     menu.Items.Add(removeNoteMenuItem);
                 }
 
+                // Makes new menu item share.
                 MenuItem shareNote = new MenuItem
                 {
                     Header = "Share Note"
