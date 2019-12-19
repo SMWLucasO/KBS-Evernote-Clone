@@ -130,6 +130,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Helpers\PasswordHelper.cs" />
+    <Compile Include="ViewModels\Commands\KeyGestures\InsertTableCommand.cs" />
+    <Compile Include="ViewModels\Commands\KeyGestures\SaveCommand.cs" />
+    <Compile Include="ViewModels\Commands\KeyGestures\TextColorCommand.cs" />
     <Compile Include="ViewModels\Commands\RichTextEditorCommands.cs" />
     <Compile Include="ViewModels\Controls\NoteFeverTreeViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />

@@ -14,6 +14,8 @@ using System.Windows.Documents;
 using System.Windows.Markup;
 using System.Xml;
 using System.Linq;
+using System.Windows.Input;
+using EvernoteCloneGUI.ViewModels.Commands.KeyGestures;
 
 namespace EvernoteCloneGUI.ViewModels
 {
@@ -298,6 +300,27 @@ namespace EvernoteCloneGUI.ViewModels
         {
             if (view is NewNoteView newNoteView)
             {
+                
+                // Register shortcuts for saving, inserting tables and changing text-color
+                
+                newNoteView.InputBindings.Add(
+                    new KeyBinding(
+                        new TextColorCommand() { NewNoteViewModel = this}, Key.C, ModifierKeys.Alt
+                    )
+                );
+                
+                newNoteView.InputBindings.Add(
+                    new KeyBinding(
+                        new InsertTableCommand() {NewNoteViewModel = this}, Key.T, ModifierKeys.Alt
+                    )
+                );
+                
+                newNoteView.InputBindings.Add(
+                    new KeyBinding(
+                        new SaveCommand() {NewNoteViewModel = this}, Key.S, ModifierKeys.Control
+                    )
+                );
+                
                 _textEditor = newNoteView.TextEditor;
                 _textEditor.MinHeight = SystemParameters.FullPrimaryScreenHeight;
                 SetupTextEditor(newNoteView);
