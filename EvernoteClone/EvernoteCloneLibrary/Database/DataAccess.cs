@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Text;
 using EvernoteCloneLibrary.Constants;
 using EvernoteCloneLibrary.Notebooks.Notes.Labels;
@@ -13,16 +14,32 @@ namespace EvernoteCloneLibrary.Database
     public class DataAccess
     {
 
-        public List<LabelModel> GetLabels(int labelSize = 10)
+        public List<LabelModel> GetLabels(int id)
         {
             List<LabelModel> labelOutput = new List<LabelModel>();
-
-            for(int i = 0; i < labelSize; i++)
+            LabelRepository labelRepository = new LabelRepository();
+            try
             {
-                labelOutput.Add(GetLabel(i + 1));
-            }
+                SqlConnection conn = new SqlConnection("ConnectionString");
+                conn.Open();
+                SqlCommand sqlCommand = new SqlCommand("SELECT COUNT (*) FROM Label", conn);
+                Int32 count = Convert.ToInt32(sqlCommand.ExecuteScalar());
 
-            return labelOutput;
+                for(int i = 0; i < count; i++)
+                {
+                    labelOutput.Add(GetLabel(i + 1));
+                }
+            } catch
+            {
+                Exception e;
+            }
+          
+            return labelRepository.GetBy(
+                new[] { "Id = @Id" },
+                new Dictionary<string, object>() { { "@Id", id } }
+
+                ).Select((el) => ((LabelModel)el)).ToList();
+
         }
 
         public LabelModel GetLabel(int id)
@@ -34,6 +51,14 @@ namespace EvernoteCloneLibrary.Database
 
             return labelModel;
         }
+
+        /*public bool InsertLabel(LabelModel labelModel)
+        {
+            LabelRepository labelRepository = new LabelRepository();
+
+                return labelRepository.Insert(labelModel);
+  
+        }*/
 
         
         /// <summary>

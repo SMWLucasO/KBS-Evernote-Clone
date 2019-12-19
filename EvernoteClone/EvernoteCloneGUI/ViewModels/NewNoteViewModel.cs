@@ -30,8 +30,15 @@ namespace EvernoteCloneGUI.ViewModels
 
         #region Instance variables
         private readonly bool _loadNote;
+        private LabelModel labelModel;
 
         public StackPanel LabelsStackPanel { get; set; }
+       /* public bool LabelsAdd { get
+            {
+                bool ba = DataAccess.Instance.InsertLabel(labelModel);
+                return ba;
+            }
+                 }*/
 
         private string _font = "";
         private int _fontSize = 12;
@@ -154,17 +161,20 @@ namespace EvernoteCloneGUI.ViewModels
 
         public void LoadLabels()
         {
-            foreach (LabelModel labelModel in DataAccess.Instance.GetLabels())
+            for (int i = 0; i < 10; i++)
             {
-                Button label = new Button
+                foreach (LabelModel labelModel in DataAccess.Instance.GetLabels(i))
                 {
-                    Content = labelModel.Title,
-                    FontSize = 10,
-                    Height = 20,
-                    Margin = new Thickness(5,0,0,0),
-                    Padding = new Thickness(5,0,5,0)
-                };
-                LabelsStackPanel.Children.Add(label);
+                    Button label = new Button
+                    {
+                        Content = labelModel.Title,
+                        FontSize = 10,
+                        Height = 20,
+                        Margin = new Thickness(5, 0, 0, 0),
+                        Padding = new Thickness(5, 0, 5, 0)
+                    };
+                    LabelsStackPanel.Children.Add(label);
+                }
             }
         }
 

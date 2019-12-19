@@ -132,6 +132,7 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>-->
+                <Button Width="50" FontSize="24" x:Name="LabelsAdd">+</Button>
             </StackPanel>
         </ScrollViewer>
     </StackPanel>

@@ -45,7 +45,7 @@ namespace EvernoteCloneLibrary.Notebooks.Notes.Labels
 
             while (sqlDataReader.Read())
             {
-                // Generate a model for each row of the Notes table.
+                // Generate a model for each row of the Labels table.
                 generatedModels.Add(new Label()
                 {
                     Id = (int)sqlDataReader["Id"],
