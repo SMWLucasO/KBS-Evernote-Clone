@@ -1,4 +1,5 @@
 ﻿using EvernoteCloneLibrary.Database;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
@@ -87,13 +88,10 @@ namespace EvernoteCloneLibrary.SharedNotes
             {
                 Dictionary<string, object> parameters = GenerateQueryParameters(toInsert);
 
+                bool insert = DataAccess.Instance.Execute("INSERT INTO [SharedNote] ([NoteId], [UserId])"
+                        + " VALUES (@NoteId, @UserId)", parameters);
 
-                int id = DataAccess.Instance.ExecuteAndReturnId("INSERT INTO [SharedNote] ([NoteId], [UserId])"
-                        + " VALUES (@UserId, @NoteId)", parameters);
-
-                if (id != -1)
-                    toInsert.UserId = id;
-                return id != -1;
+                return insert;
             }
             return false;
         }

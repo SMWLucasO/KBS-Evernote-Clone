@@ -47,7 +47,7 @@
                 cal:Message.Attach="[Event SelectedItemChanged] = [TreeViewSelectedItemChanged($eventArgs)]"
                 x:Name="NotebooksTreeView">
             </TreeView>
-            <Button FontFamily="Lato" FontWeight="Light" Content="Shared With Me" Background="#404040" Foreground="White" FontSize="16" Grid.Row="5" Grid.ColumnSpan="1" ></Button>
+            <Button FontFamily="Lato" FontWeight="Light" Content="Shared With Me" Background="#404040" Foreground="White" FontSize="16" x:Name="OpenSharedNotesView" Grid.Row="5" Grid.ColumnSpan="1" ></Button>
             <Button FontFamily="Lato" FontWeight="Light" Content="Bin" Background="#404040" Foreground="White" FontSize="16" x:Name="OpenDeletedNotesView" Grid.Row="6" Grid.ColumnSpan="1" ></Button>
             <Button FontFamily="Lato" FontWeight="Light" Content="Tags" Background="#404040" Foreground="White" FontSize="16" Grid.Row="7" Grid.ColumnSpan="1"></Button>
             <Button FontFamily="Lato" FontWeight="Light" Content="Search" Background="#404040" Foreground="White" FontSize="16" Grid.Row="8" Grid.ColumnSpan="1"></Button>
