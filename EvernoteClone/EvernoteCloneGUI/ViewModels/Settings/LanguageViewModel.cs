@@ -7,6 +7,9 @@ using EvernoteCloneLibrary.Settings.Locales;
 
 namespace EvernoteCloneGUI.ViewModels.Settings
 {
+    /// <summary>
+    /// Contains all logic specifically for Language settings
+    /// </summary>
     public class LanguageViewModel : SettingViewModel
     {
         #region Variables

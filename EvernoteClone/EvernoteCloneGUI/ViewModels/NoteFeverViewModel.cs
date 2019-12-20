@@ -28,26 +28,26 @@ namespace EvernoteCloneGUI.ViewModels
         /// <value>
         /// The background color of all buttons
         /// </value>
-        public string ButtonBackground
+        public string ButtonBackgroundColor
         {
-            get => _buttonBackground;
+            get => _buttonBackgroundColor;
             set
             {
-                _buttonBackground = value;
-                NotifyOfPropertyChange(nameof(ButtonBackground));
+                _buttonBackgroundColor = value;
+                NotifyOfPropertyChange(nameof(ButtonBackgroundColor));
             }
         }
 
         /// <value>
         /// The background color of all active buttons
         /// </value>
-        public string ButtonBackgroundActive
+        public string ButtonAccentColor
         {
-            get => _buttonBackGroundActive;
+            get => _buttonAccentColor;
             set
             {
-                _buttonBackGroundActive = value;
-                NotifyOfPropertyChange(nameof(ButtonBackgroundActive));
+                _buttonAccentColor = value;
+                NotifyOfPropertyChange(nameof(ButtonAccentColor));
             }
         }
         
@@ -94,12 +94,12 @@ namespace EvernoteCloneGUI.ViewModels
         /// <value>
         /// The background of buttons
         /// </value>
-        private string _buttonBackground;
+        private string _buttonBackgroundColor;
         
         /// <value>
         /// The background of active buttons
         /// </value>
-        private string _buttonBackGroundActive;
+        private string _buttonAccentColor;
 
         #endregion
 
@@ -468,8 +468,8 @@ namespace EvernoteCloneGUI.ViewModels
 
         public void UpdateColors()
         {
-            ButtonBackground = SettingsConstant.BUTTON_BACKGROUND;
-            ButtonBackgroundActive = SettingsConstant.BUTTON_BACKGROUND_ACTIVE;
+            ButtonBackgroundColor = SettingsConstant.BUTTON_BACKGROUND_COLOR;
+            ButtonAccentColor = SettingsConstant.ACCENT_COLOR;
         }
 
         public void LoadSettings()
@@ -477,8 +477,8 @@ namespace EvernoteCloneGUI.ViewModels
             // Load settings (if exist)
             Setting.Load();
 
-            ButtonBackground = SettingsConstant.BUTTON_BACKGROUND;
-            ButtonBackgroundActive = SettingsConstant.BUTTON_BACKGROUND_ACTIVE;
+            ButtonBackgroundColor = SettingsConstant.BUTTON_BACKGROUND_COLOR;
+            ButtonAccentColor = SettingsConstant.ACCENT_COLOR;
         }
 
         #endregion

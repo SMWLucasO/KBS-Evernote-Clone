@@ -6,8 +6,13 @@ using EvernoteCloneLibrary.Extensions;
 
 namespace EvernoteCloneGUI.Helpers
 {
+    /// <summary>
+    /// This class is used as a helper for ComboBoxes.
+    /// It's general use is setting the width of the given ComboBox to the width of the biggest item
+    /// </summary>
     public static class ComboBoxWidthFromItemsBehavior
     {
+        
         public static readonly DependencyProperty ComboBoxWidthFromItemsProperty =
             DependencyProperty.RegisterAttached
             (

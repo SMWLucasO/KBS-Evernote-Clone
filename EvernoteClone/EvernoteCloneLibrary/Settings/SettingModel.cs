@@ -2,6 +2,9 @@
 
 namespace EvernoteCloneLibrary.Settings
 {
+    /// <summary>
+    /// This is a 'blueprint' of how a setting should look like (according to the database)
+    /// </summary>
     public class SettingModel : IModel
     {
         public int Id { get; set; } = -1;

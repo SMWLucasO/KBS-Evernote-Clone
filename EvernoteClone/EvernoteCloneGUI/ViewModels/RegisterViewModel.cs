@@ -29,12 +29,12 @@ namespace EvernoteCloneGUI.ViewModels
         /// <value>
         /// The background of buttons
         /// </value>
-        private string _buttonBackground;
+        private string _buttonBackgroundColorColor;
         
         /// <value>
         /// The background of active buttons
         /// </value>
-        private string _buttonBackGroundActive;
+        private string _buttonAccentColor;
         
         #endregion
         
@@ -53,26 +53,26 @@ namespace EvernoteCloneGUI.ViewModels
         /// <value>
         /// The background color of all buttons
         /// </value>
-        public string ButtonBackground
+        public string ButtonBackgroundColor
         {
-            get => _buttonBackground;
+            get => _buttonBackgroundColorColor;
             set
             {
-                _buttonBackground = value;
-                NotifyOfPropertyChange(nameof(ButtonBackground));
+                _buttonBackgroundColorColor = value;
+                NotifyOfPropertyChange(nameof(ButtonBackgroundColor));
             }
         }
 
         /// <value>
         /// The background color of all active buttons
         /// </value>
-        public string ButtonBackgroundActive
+        public string ButtonAccentColor
         {
-            get => _buttonBackGroundActive;
+            get => _buttonAccentColor;
             set
             {
-                _buttonBackGroundActive = value;
-                NotifyOfPropertyChange(nameof(ButtonBackgroundActive));
+                _buttonAccentColor = value;
+                NotifyOfPropertyChange(nameof(ButtonAccentColor));
             }
         }
 
@@ -205,8 +205,8 @@ namespace EvernoteCloneGUI.ViewModels
 
         protected override void OnActivate()
         {
-            ButtonBackground = SettingsConstant.BUTTON_BACKGROUND;
-            ButtonBackgroundActive = SettingsConstant.BUTTON_BACKGROUND_ACTIVE;
+            ButtonBackgroundColor = SettingsConstant.BUTTON_BACKGROUND_COLOR;
+            ButtonAccentColor = SettingsConstant.ACCENT_COLOR;
         }
 
         #endregion

@@ -1,45 +1,115 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using EvernoteCloneLibrary.Files.Parsers;
 using System.Drawing;
 using System.Linq;
+using EvernoteCloneLibrary.Settings.Locales;
 
-// TODO add summaries
 namespace EvernoteCloneLibrary.Constants
 {
+    /// <summary>
+    /// This class contains all settings (and some logic to retrieve these settings
+    /// </summary>
     public class SettingsConstant : IParseable
     {
-        // Used for synchronisation
+        #region Settings
+        
+        /// <value>
+        /// This 'setting' is used to determine which setting is updated more recently.
+        /// This way we can override the database or local settings accordingly
+        /// </value>
         public static DateTime LASTUPDATED = DateTime.Parse("01/01/2000 00:00:00");
         
-        // Language
+        /// <value>
+        /// This sets the application language
+        /// </value>
         public static string LANGUAGE = "en-US";
 
-        // Layout
-        public static string BUTTON_BACKGROUND = "#404040";
+        /// <summary>
+        /// The background color of buttons.
+        /// Hexadecimal
+        /// </summary>
+        public static string BUTTON_BACKGROUND_COLOR = "#404040";
 
-        public static string BUTTON_BACKGROUND_ACTIVE = "#0052cc";
+        /// <value>
+        /// The accent color, used for active buttons and such.
+        /// Hexadecimal
+        /// </value>
+        public static string ACCENT_COLOR = "#0052cc";
+
+        /// <value>
+        /// The background color of the settings view
+        /// </value>
+        public static string BACKGROUND_COLOR_SETTINGS = "#ffbfcd";
         
-        // Standards
+        /// <value>
+        /// The default Note title
+        /// </value>
         public static string DEFAULT_NOTE_TITLE = "Nameless note";
 
+        /// <value>
+        /// The default Notebook title
+        /// </value>
         public static string DEFAULT_NOTEBOOK_TITLE = "Nameless notebook";
         
-        // Editor
+        /// <value>
+        /// The default Font
+        /// </value>
         public static string DEFAULT_FONT = FontFamily.Families.First(font => font.Name == "Arial").Name;
 
+        /// <value>
+        /// The default font size
+        /// </value>
         public static int DEFAULT_FONT_SIZE = 11;
         
-        //THEME
+        #endregion
+
+        #region Logic
+
+        #region Constructor
+
+        private SettingsConstant() { }
+
+        #endregion
         
-        //STANDARD NAMES (Nameless note, Nameless notebook, etc.)
+        #region Variables
         
-        //STANDARD TEXT COLOR, FONT (STYLE, COLOR), ETC.
+        /// <value>
+        /// The only instance of _settingsConstant.
+        /// This is needed to get variable settings and names dynamically
+        /// </value>
+        private static readonly SettingsConstant _settingsConstant = new SettingsConstant();
+        
+        #endregion
 
         #region Methods
         
+        /// <summary>
+        /// Returns the value of the setting
+        /// </summary>
+        /// <param name="settingName">The name of the variable</param>
+        /// <returns>An object (since these variables can be different types)</returns>
+        public static object GetValue(string settingName)
+        {
+            return _settingsConstant.GetType().GetField(settingName).GetValue(_settingsConstant);
+        }
+
+        /// <summary>
+        /// Sets the value of the setting
+        /// </summary>
+        /// <param name="settingName">The name of the variable</param>
+        /// <param name="settingValue">The value of the variable</param>
+        public static void SetValue(string settingName, object settingValue)
+        {
+            _settingsConstant.GetType().GetField(settingName)
+                .SetValue(_settingsConstant, settingValue is Locale ? settingValue.ToString() : settingValue);
+        }
+        
+        /// <summary>
+        /// Get all settings variables
+        /// </summary>
+        /// <returns></returns>
         public static Dictionary<string, object> GetSettings()
         {
             Dictionary<string, object> settings = new Dictionary<string, object>();
@@ -53,9 +123,17 @@ namespace EvernoteCloneLibrary.Constants
             return settings;
         }
 
+        /// <summary>
+        /// This is needed since we implement the IParseable interface
+        /// </summary>
+        /// <returns>Return static ToXmlRepresentation</returns>
         string[] IParseable.ToXmlRepresentation() =>
             ToXmlRepresentation();
 
+        /// <summary>
+        /// This creates an xml string array of all the settings
+        /// </summary>
+        /// <returns>A string array containing all xml that represents current settings</returns>
         public static string[] ToXmlRepresentation()
         {
             List<string> xmlRepresentation =  new List<string>
@@ -77,6 +155,8 @@ namespace EvernoteCloneLibrary.Constants
 
             return xmlRepresentation.ToArray();
         }
+        
+        #endregion
         
         #endregion
     }

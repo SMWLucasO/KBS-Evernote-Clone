@@ -1,10 +1,12 @@
 ﻿using System.Linq;
 using System.Windows.Controls;
 using EvernoteCloneLibrary.Constants;
-using EvernoteCloneLibrary.Settings.Locales;
 
 namespace EvernoteCloneGUI.ViewModels.Controls.Settings
 {
+    /// <summary>
+    /// This class contains all logic for ComboBoxes that are children of SettingsView.xaml
+    /// </summary>
     public static class ComboBoxHelper
     {
         #region Methods
@@ -40,13 +42,8 @@ namespace EvernoteCloneGUI.ViewModels.Controls.Settings
         /// </summary>
         /// <param name="toAddTo">The ComboBox the item should be added to</param>
         /// <param name="toAdd">The item that should be added</param>
-        public static void AddItemToComboBox(ref ComboBox toAddTo, string toAdd)
-        {
-            SettingsConstant settingsConstant = new SettingsConstant();
-            object value = settingsConstant.GetType().GetField(toAdd).GetValue(settingsConstant);
-            
-            AddItemToComboBox(ref toAddTo, value, toAdd);
-        }
+        public static void AddItemToComboBox(ref ComboBox toAddTo, string toAdd) =>
+            AddItemToComboBox(ref toAddTo, SettingsConstant.GetValue(toAdd), toAdd);
 
         /// <summary>
         /// Add an item to the ComboBox.
@@ -86,13 +83,8 @@ namespace EvernoteCloneGUI.ViewModels.Controls.Settings
         /// <param name="comboBox">The ComboBox that we should check on</param>
         /// <param name="toCheck">The Content of the ComboBoxItem that we should check for</param>
         /// <returns>A boolean indicating if the item already exists in comboBox</returns>
-        public static bool ItemExistsInComboBox(ref ComboBox comboBox, string toCheck)
-        {
-            SettingsConstant settingsConstant = new SettingsConstant();
-            object value = settingsConstant.GetType().GetField(toCheck).GetValue(settingsConstant);
-
-            return comboBox.Items.Cast<ComboBoxItem>().Any(comboBoxItem => comboBoxItem.Content == value);
-        }
+        public static bool ItemExistsInComboBox(ref ComboBox comboBox, string toCheck) =>
+            comboBox.Items.Cast<ComboBoxItem>().Any(comboBoxItem => comboBoxItem.Content == SettingsConstant.GetValue(toCheck));
         
         #endregion
         
@@ -107,10 +99,7 @@ namespace EvernoteCloneGUI.ViewModels.Controls.Settings
             if (sender is ComboBoxItem comboBoxItem)
             {
                 Setting selectedSetting = (Setting) comboBoxItem.Tag;
-
-                SettingsConstant settingsConstant = new SettingsConstant();
-                settingsConstant.GetType().GetField(selectedSetting.setting)
-                    .SetValue(settingsConstant, (selectedSetting.value is Locale ? selectedSetting.value.ToString() : selectedSetting.value));
+                SettingsConstant.SetValue(selectedSetting.setting, selectedSetting.value);
             }
         }
         

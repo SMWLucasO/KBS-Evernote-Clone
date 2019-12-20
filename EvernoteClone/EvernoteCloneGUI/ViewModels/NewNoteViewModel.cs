@@ -288,6 +288,9 @@ namespace EvernoteCloneGUI.ViewModels
                 NewNoteView newNoteView = (NewNoteView)view;
                 newNoteView.TextEditor.Document = SetRtf(NewContent);
             }
+            
+            _textEditor.FontFamily = new System.Windows.Media.FontFamily(SettingsConstant.DEFAULT_FONT);
+            _textEditor.FontSize = SettingsConstant.DEFAULT_FONT_SIZE;
 
             base.OnViewReady(view);
         }
@@ -328,9 +331,6 @@ namespace EvernoteCloneGUI.ViewModels
                 // TODO make SetDefault method with _textEditor as parameter
                 SelectedFont = SettingsConstant.DEFAULT_FONT;
                 SelectedFontSize = SettingsConstant.DEFAULT_FONT_SIZE;
-            
-                _textEditor.FontFamily = new System.Windows.Media.FontFamily(SettingsConstant.DEFAULT_FONT);
-                _textEditor.FontSize = SettingsConstant.DEFAULT_FONT_SIZE;
             }
 
         }

@@ -2,6 +2,7 @@
 using EvernoteCloneGUI.ViewModels.Settings;
 using System;
 using EvernoteCloneLibrary.Constants;
+using EvernoteCloneLibrary.Files.Parsers;
 using EvernoteCloneLibrary.Settings;
 
 namespace EvernoteCloneGUI.ViewModels
@@ -42,65 +43,65 @@ namespace EvernoteCloneGUI.ViewModels
         /// <value>
         /// The property that is used to update the background color of the 'Synchronize' button
         /// </value>
-        public string ButtonBackgroundActive
+        public string ButtonAccentColor
         {
-            get => _buttonBackgroundActive;
+            get => _buttonAccentColor;
             set
             {
-                _buttonBackgroundActive = value;
-                NotifyOfPropertyChange(nameof(ButtonBackgroundActive));
+                _buttonAccentColor = value;
+                NotifyOfPropertyChange(nameof(ButtonAccentColor));
             }
         }
 
         /// <value>
         /// The property that is used to update the background color of the 'Editor' button
         /// </value>
-        public string EditorButtonBackground
+        public string EditorButtonBackgroundColor
         {
             get => _editorBtnBackGround;
             set
             {
                 _editorBtnBackGround = value;
-                NotifyOfPropertyChange(nameof(EditorButtonBackground));
+                NotifyOfPropertyChange(nameof(EditorButtonBackgroundColor));
             }
         }
 
         /// <value>
         /// The property that is used to update the background color of the 'Standards' button
         /// </value>
-        public string StandardsButtonBackground
+        public string StandardsButtonBackgroundColor
         {
             get => _standardsBtnBackGround;
             set
             {
                 _standardsBtnBackGround = value;
-                NotifyOfPropertyChange(nameof(StandardsButtonBackground));
+                NotifyOfPropertyChange(nameof(StandardsButtonBackgroundColor));
             }
         }
 
         /// <value>
         /// The property that is used to update the background color of the 'Layout' button
         /// </value>
-        public string LayoutButtonBackground
+        public string LayoutButtonBackgroundColor
         {
             get => _layoutBtnBackGround;
             set
             {
                 _layoutBtnBackGround = value;
-                NotifyOfPropertyChange(nameof(LayoutButtonBackground));
+                NotifyOfPropertyChange(nameof(LayoutButtonBackgroundColor));
             }
         }
 
         /// <value>
         /// The property that is used to update the background color of the 'Language' button
         /// </value>
-        public string LanguageButtonBackground
+        public string LanguageButtonBackgroundColor
         {
             get => _languageBtnBackGround;
             set
             {
                 _languageBtnBackGround = value;
-                NotifyOfPropertyChange(nameof(LanguageButtonBackground));
+                NotifyOfPropertyChange(nameof(LanguageButtonBackgroundColor));
             }
         }
 
@@ -113,7 +114,7 @@ namespace EvernoteCloneGUI.ViewModels
         /// <value>
         /// The variable that contains the background color of the 'Synchronize' button
         /// </value>
-        private string _buttonBackgroundActive;
+        private string _buttonAccentColor;
 
         /// <value>
         /// The variable that contains the background color of the 'Editor' button
@@ -162,8 +163,16 @@ namespace EvernoteCloneGUI.ViewModels
         protected override void OnActivate()
         {
             OpenLanguageSettings();
-            ButtonBackgroundActive = SettingsConstant.BUTTON_BACKGROUND_ACTIVE;
+            ButtonAccentColor = SettingsConstant.ACCENT_COLOR;
         }
+
+        /// <summary>
+        /// Refresh settings (only load from local).
+        /// We have to do this, because the user may change some settings but not click on Apply Changes button
+        /// </summary>
+        /// <param name="close"></param>
+        protected override void OnDeactivate(bool close) =>
+            Setting.Load(true);
 
         #endregion
 
@@ -176,39 +185,48 @@ namespace EvernoteCloneGUI.ViewModels
         /// <param name="selectedButton">The button the background should be changed of</param>
         private void ChangeBackground(ref string selectedButton)
         {
-            EditorButtonBackground = SettingsConstant.BUTTON_BACKGROUND;
-            StandardsButtonBackground = SettingsConstant.BUTTON_BACKGROUND;
-            LayoutButtonBackground = SettingsConstant.BUTTON_BACKGROUND;
-            LanguageButtonBackground = SettingsConstant.BUTTON_BACKGROUND;
+            EditorButtonBackgroundColor = SettingsConstant.BUTTON_BACKGROUND_COLOR;
+            StandardsButtonBackgroundColor = SettingsConstant.BUTTON_BACKGROUND_COLOR;
+            LayoutButtonBackgroundColor = SettingsConstant.BUTTON_BACKGROUND_COLOR;
+            LanguageButtonBackgroundColor = SettingsConstant.BUTTON_BACKGROUND_COLOR;
 
             if (selectedButton != null)
             {
-                selectedButton = SettingsConstant.BUTTON_BACKGROUND_ACTIVE;
+                selectedButton = SettingsConstant.ACCENT_COLOR;
             }
 
             // This will update the GUI layout
-            NotifyOfPropertyChange(nameof(EditorButtonBackground));
-            NotifyOfPropertyChange(nameof(StandardsButtonBackground));
-            NotifyOfPropertyChange(nameof(LayoutButtonBackground));
-            NotifyOfPropertyChange(nameof(LanguageButtonBackground));
+            NotifyOfPropertyChange(nameof(EditorButtonBackgroundColor));
+            NotifyOfPropertyChange(nameof(StandardsButtonBackgroundColor));
+            NotifyOfPropertyChange(nameof(LayoutButtonBackgroundColor));
+            NotifyOfPropertyChange(nameof(LanguageButtonBackgroundColor));
         }
 
         public void UpdateLayout()
         {
-            EditorButtonBackground = SettingsConstant.BUTTON_BACKGROUND;
-            StandardsButtonBackground = SettingsConstant.BUTTON_BACKGROUND;
-            LayoutButtonBackground = SettingsConstant.BUTTON_BACKGROUND;
-            LanguageButtonBackground = SettingsConstant.BUTTON_BACKGROUND;
-            ButtonBackgroundActive = SettingsConstant.BUTTON_BACKGROUND_ACTIVE;
+            EditorButtonBackgroundColor = SettingsConstant.BUTTON_BACKGROUND_COLOR;
+            StandardsButtonBackgroundColor = SettingsConstant.BUTTON_BACKGROUND_COLOR;
+            LayoutButtonBackgroundColor = SettingsConstant.BUTTON_BACKGROUND_COLOR;
+            LanguageButtonBackgroundColor = SettingsConstant.BUTTON_BACKGROUND_COLOR;
+            ButtonAccentColor = SettingsConstant.ACCENT_COLOR;
 
             if (_selectedView == nameof(_editorBtnBackGround))
-                EditorButtonBackground = SettingsConstant.BUTTON_BACKGROUND_ACTIVE;
+                EditorButtonBackgroundColor = SettingsConstant.ACCENT_COLOR;
             if (_selectedView == nameof(_standardsBtnBackGround))
-                StandardsButtonBackground = SettingsConstant.BUTTON_BACKGROUND_ACTIVE;
+                StandardsButtonBackgroundColor = SettingsConstant.ACCENT_COLOR;
             if (_selectedView == nameof(_layoutBtnBackGround))
-                LayoutButtonBackground = SettingsConstant.BUTTON_BACKGROUND_ACTIVE;
+                LayoutButtonBackgroundColor = SettingsConstant.ACCENT_COLOR;
             if (_selectedView == nameof(_languageBtnBackGround))
-                LanguageButtonBackground = SettingsConstant.BUTTON_BACKGROUND_ACTIVE;
+                LanguageButtonBackgroundColor = SettingsConstant.ACCENT_COLOR;
+
+            if (EditorSettingsViewModel != null)
+                EditorSettingsViewModel.BackgroundColorSettings = SettingsConstant.BACKGROUND_COLOR_SETTINGS;
+            if (StandardsSettingsViewModel != null)
+                StandardsSettingsViewModel.BackgroundColorSettings = SettingsConstant.BACKGROUND_COLOR_SETTINGS;
+            if (LayoutSettingsViewModel != null)
+                LayoutSettingsViewModel.BackgroundColorSettings = SettingsConstant.BACKGROUND_COLOR_SETTINGS;
+            if (LanguageSettingsViewModel != null)
+                LanguageSettingsViewModel.BackgroundColorSettings = SettingsConstant.BACKGROUND_COLOR_SETTINGS;
 
             _noteFeverViewModel.UpdateColors();
         }
@@ -219,7 +237,7 @@ namespace EvernoteCloneGUI.ViewModels
         /// <param name="newViewModel">The type of the new settings window</param>
         public void ChangeTab(Type newViewModel)
         {
-            Screen screen;
+            SettingViewModel screen;
 
             if (newViewModel == typeof(EditorViewModel))
             {
@@ -250,6 +268,7 @@ namespace EvernoteCloneGUI.ViewModels
                     screen = LanguageSettingsViewModel;
             }
 
+            screen.BackgroundColorSettings = SettingsConstant.BACKGROUND_COLOR_SETTINGS;
             ActivateItem(screen);
         }
         

@@ -1,10 +1,4 @@
-﻿using Caliburn.Micro;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using EvernoteCloneGUI.Views.Settings;
 using System.Drawing;
 using EvernoteCloneGUI.ViewModels.Controls.Settings;
@@ -12,6 +6,9 @@ using EvernoteCloneLibrary.Constants;
 
 namespace EvernoteCloneGUI.ViewModels.Settings
 {
+    /// <summary>
+    /// Contains all logic specifically for Editor settings
+    /// </summary>
     public class EditorViewModel : SettingViewModel
     {
         #region Variables
@@ -30,12 +27,18 @@ namespace EvernoteCloneGUI.ViewModels.Settings
         
         #region ComboBoxes
 
+        /// <summary>
+        /// Loads all ComboBoxes
+        /// </summary>
         private void LoadComboBoxes()
         {
             LoadDefaultFontComboBox();
             LoadDefaultFontSizeComboBox();
         }
 
+        /// <summary>
+        /// Load the DefaultFontComboBox
+        /// </summary>
         private void LoadDefaultFontComboBox()
         {
             // Load all the fonts into the databound font list.
@@ -49,6 +52,9 @@ namespace EvernoteCloneGUI.ViewModels.Settings
             ComboBoxHelper.SelectComboBoxItemByTag(ref DefaultFont, SettingsConstant.DEFAULT_FONT);
         }
         
+        /// <summary>
+        /// Load the DefaultFontSizeComboBox
+        /// </summary>
         private void LoadDefaultFontSizeComboBox()
         {
             // Load all the fonts into the databound font size list.

@@ -36,6 +36,10 @@ namespace EvernoteCloneLibrary.Settings
 
         #region Static methods
 
+        /// <summary>
+        /// Save the settings (locally and in database (if logged in))
+        /// </summary>
+        /// <returns>A boolean indicating whether saving the settings was a success or not</returns>
         public static bool SaveSettings()
         {
             SettingsConstant.LASTUPDATED = DateTime.Now;
@@ -76,12 +80,12 @@ namespace EvernoteCloneLibrary.Settings
         /// If last updated is not in database, settings are not loaded from the database
         /// </summary>
         /// <returns>boolean indicating whether loading the settings was a success or not</returns>
-        public static bool Load()
+        public static bool Load(bool onlyLoadLocally = false)
         {
             bool importedLocally = XmlImporter.ImportSettings(StaticMethods.GetUserDataStoragePath() + @"/Settings.enex");
             bool importedFromDatabase = false;
 
-            if (Constant.User.Id != -1)
+            if (Constant.User.Id != -1 && !onlyLoadLocally)
             {
                 List<Setting> allSettingsFromDatabase = GetAllSettingsFromUser();
                 DateTime? lastUpdatedFromDatabase = null;
@@ -98,7 +102,6 @@ namespace EvernoteCloneLibrary.Settings
                 {
                     if (lastUpdatedFromDatabase > SettingsConstant.LASTUPDATED)
                     {
-                        SettingsConstant settingsConstant = new SettingsConstant();
                         Dictionary<string, object> settings = SettingsConstant.GetSettings();
                         importedFromDatabase = true;
 
@@ -106,11 +109,10 @@ namespace EvernoteCloneLibrary.Settings
                         {
                             try
                             {
-                                settingsConstant.GetType().GetField(setting.KeyWord)
-                                    .SetValue(settingsConstant,
-                                        Convert.ChangeType(
-                                            setting.SettingValue,
-                                            settings[setting.KeyWord].GetType()));
+                                SettingsConstant.SetValue(setting.KeyWord,
+                                    Convert.ChangeType(
+                                        setting.SettingValue,
+                                        settings[setting.KeyWord].GetType()));
                             }
                             catch (Exception)
                             {

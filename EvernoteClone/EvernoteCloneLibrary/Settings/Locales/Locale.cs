@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using EvernoteCloneLibrary.Constants;
 
 namespace EvernoteCloneLibrary.Settings.Locales
 {
@@ -25,6 +24,13 @@ namespace EvernoteCloneLibrary.Settings.Locales
         /// <returns>A boolean indicating whether Deleting this setting was successful or not</returns>
         public bool Delete() =>
             DeleteLocale(this);
+        
+        /// <summary>
+        /// Returns Locale
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString() =>
+            Locale;
 
         #endregion
 
@@ -70,8 +76,5 @@ namespace EvernoteCloneLibrary.Settings.Locales
             new LocaleRepository().Update(locale);
         
         #endregion
-
-        public override string ToString() =>
-            Locale;
     }
 }

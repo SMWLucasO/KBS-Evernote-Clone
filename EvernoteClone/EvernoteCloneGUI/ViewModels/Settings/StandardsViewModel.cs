@@ -5,6 +5,9 @@ using EvernoteCloneLibrary.Constants;
 
 namespace EvernoteCloneGUI.ViewModels.Settings
 {
+    /// <summary>
+    /// Contains all logic specifically for Standards settings
+    /// </summary>
     public class StandardsViewModel : SettingViewModel
     {
         #region Variables

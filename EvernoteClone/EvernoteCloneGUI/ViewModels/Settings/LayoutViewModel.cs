@@ -5,6 +5,9 @@ using EvernoteCloneLibrary.Constants;
 
 namespace EvernoteCloneGUI.ViewModels.Settings
 {
+    /// <summary>
+    /// Contains all logic specifically for Layout settings
+    /// </summary>
     public class LayoutViewModel : SettingViewModel
     {
         #region Variables
@@ -12,12 +15,17 @@ namespace EvernoteCloneGUI.ViewModels.Settings
         /// <value>
         /// The TextBox that contains the Button Background Color
         /// </value>
-        public TextBox ButtonBackground;
+        public TextBox ButtonBackgroundColor;
         
         /// <value>
         /// The TextBox that contains the Active Button Background Color
         /// </value>
-        public TextBox ButtonBackgroundActive;
+        public TextBox ButtonAccentColor;
+        
+        /// <value>
+        /// The TextBox that contains the Background Color for Settings view
+        /// </value>
+        public TextBox BackgroundColorSettingsTextBox;
         
         #endregion
         
@@ -28,8 +36,9 @@ namespace EvernoteCloneGUI.ViewModels.Settings
         /// </summary>
         public void LoadTextBoxes()
         {
-            TextBoxHelper.SetTextBox(ref ButtonBackground, nameof(SettingsConstant.BUTTON_BACKGROUND));
-            TextBoxHelper.SetTextBox(ref ButtonBackgroundActive, nameof(SettingsConstant.BUTTON_BACKGROUND_ACTIVE));
+            TextBoxHelper.SetTextBox(ref ButtonBackgroundColor, nameof(SettingsConstant.BUTTON_BACKGROUND_COLOR));
+            TextBoxHelper.SetTextBox(ref ButtonAccentColor, nameof(SettingsConstant.ACCENT_COLOR));
+            TextBoxHelper.SetTextBox(ref BackgroundColorSettingsTextBox, nameof(SettingsConstant.BACKGROUND_COLOR_SETTINGS));
         }
 
         #endregion
@@ -45,8 +54,9 @@ namespace EvernoteCloneGUI.ViewModels.Settings
         {
             if (view is LayoutView colorsView)
             {
-                ButtonBackground = colorsView.ButtonBackground;
-                ButtonBackgroundActive = colorsView.ButtonBackgroundActive;
+                ButtonBackgroundColor = colorsView.ButtonBackgroundColor;
+                ButtonAccentColor = colorsView.ButtonAccentColor;
+                BackgroundColorSettingsTextBox = colorsView.BackgroundColorSettingsTextBox;
             }
 
             if (!Loaded)

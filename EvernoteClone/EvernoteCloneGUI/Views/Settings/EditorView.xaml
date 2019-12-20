@@ -8,7 +8,7 @@
         xmlns:cal="http://www.caliburnproject.org"
         mc:Ignorable="d"
         d:DesignHeight="400" d:DesignWidth="640">
-    <Grid Background="Pink">
+    <Grid Background="{Binding Path=BackgroundColorSettings}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="30*"/>
             <ColumnDefinition Width="70*"/>
@@ -22,29 +22,33 @@
         <!-- Row 1 -->
         <Label Grid.Column="0" Grid.Row="0" Content="Default font:" HorizontalAlignment="Right"/>
 
-        <ComboBox 
-            x:Name="DefaultFont"
-            Grid.Column="1" 
-            Grid.Row="0" 
-            HorizontalAlignment="Left" 
-            Margin="5,5,5,5"
-            cal:Message.Attach="[Event SelectionChanged] = [ComboBoxSelectedIndexChanged($this)]"
-            behaviors:ComboBoxWidthFromItemsBehavior.ComboBoxWidthFromItems="True">
-        </ComboBox>
+        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="0">
+            <ComboBox 
+                x:Name="DefaultFont"
+                HorizontalAlignment="Left" 
+                Margin="5,5,5,5"
+                cal:Message.Attach="[Event SelectionChanged] = [ComboBoxSelectedIndexChanged($this)]"
+                behaviors:ComboBoxWidthFromItemsBehavior.ComboBoxWidthFromItems="True">
+            </ComboBox>
+            
+            <Label Content="Standard: Arial" HorizontalAlignment="Right"/>
+        </StackPanel>
 
         <!-- Row 2 -->
         <Label Grid.Column="0" Grid.Row="1" Content="Default font size:" HorizontalAlignment="Right"/>
 
-        <ComboBox 
-            x:Name="DefaultFontSize"
-            Grid.Column="1" 
-            Grid.Row="1" 
-            HorizontalAlignment="Left" 
-            Margin="5,5,5,5"
-            cal:Message.Attach="[Event SelectionChanged] = [ComboBoxSelectedIndexChanged($this)]"
-            behaviors:ComboBoxWidthFromItemsBehavior.ComboBoxWidthFromItems="True">
-        </ComboBox>
-        
+        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="1">
+            <ComboBox 
+                x:Name="DefaultFontSize"
+                HorizontalAlignment="Left" 
+                Margin="5,5,5,5"
+                cal:Message.Attach="[Event SelectionChanged] = [ComboBoxSelectedIndexChanged($this)]"
+                behaviors:ComboBoxWidthFromItemsBehavior.ComboBoxWidthFromItems="True">
+            </ComboBox>
+            
+            <Label Content="Standard: 11" HorizontalAlignment="Right"/>
+        </StackPanel>
+
         <Button 
             Grid.Row="2" 
             Grid.Column="0" 

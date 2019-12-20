@@ -10,7 +10,6 @@ using EvernoteCloneLibrary.Constants;
 using EvernoteCloneLibrary.Notebooks.Location;
 using EvernoteCloneLibrary.Utils;
 
-// TODO check summaries
 namespace EvernoteCloneLibrary.Files.Parsers
 {
     /// <summary>
@@ -107,11 +106,16 @@ namespace EvernoteCloneLibrary.Files.Parsers
             return null;
         }
 
+        /// <summary>
+        /// Import all the settings that are stored locally.
+        /// If a setting is not stored locally we keep the default
+        /// </summary>
+        /// <param name="filePath">The filePath where all settings are stored</param>
+        /// <returns>A boolean indicating whether importing the settings was successful</returns>
         public static bool ImportSettings(string filePath)
         {
             if (!string.IsNullOrWhiteSpace(filePath) && ValidateFileExists(filePath))
             {
-                SettingsConstant settingsConstant = new SettingsConstant();
                 Dictionary<string, object> settings = SettingsConstant.GetSettings();
                 
                 // load the XML from the path and parse it for usage
@@ -122,11 +126,10 @@ namespace EvernoteCloneLibrary.Files.Parsers
                     {
                         try
                         {
-                            settingsConstant.GetType().GetField(name)
-                                .SetValue(settingsConstant,
-                                    Convert.ChangeType(
-                                        xDocument.Descendants("en-export").Descendants()
-                                            .First(element => element.Name == name).Value, settings[name].GetType()));
+                            SettingsConstant.SetValue(name, 
+                                Convert.ChangeType(
+                                    xDocument.Descendants("en-export").Descendants()
+                                        .First(element => element.Name == name).Value, settings[name].GetType()));
                         }
                         catch (Exception)
                         {
