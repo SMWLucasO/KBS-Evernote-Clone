@@ -28,7 +28,7 @@ namespace EvernoteCloneGUI
         {
             SortedList<string, string> LangDown = _langLoader.DownloadLanguage(UserLang);
 
-            string path = "C:/git/EvernoteClone/EvernoteClone/EvernoteCloneGUI/Language.resx";
+            string path = "C:/git/KBS-Evernote-Clone/EvernoteClone/EvernoteCloneGUI/Language.resx";
             ResXResourceReader reader = new ResXResourceReader(path);
             var writer = new ResXResourceWriter(path);
 

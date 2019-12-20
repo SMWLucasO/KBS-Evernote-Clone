@@ -82,7 +82,7 @@
     <Compile Include="Files\Parsers\IParseable.cs" />
     <Compile Include="Files\Parsers\XMLExporter.cs" />
     <Compile Include="Files\Parsers\XMLImporter.cs" />
-    <Compile Include="Language_Loader.cs" />
+    <Compile Include="LanguageLoader.cs" />
     <Compile Include="Notebooks\Location\LocationUser\LocationUser.cs" />
     <Compile Include="Notebooks\Location\LocationUser\LocationUserModel.cs" />
     <Compile Include="Notebooks\Location\LocationUser\LocationUserRepository.cs" />

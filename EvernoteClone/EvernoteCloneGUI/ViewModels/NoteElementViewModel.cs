@@ -7,7 +7,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using EvernoteCloneGUI.ViewModels.Controls;
-<<<<<<< HEAD
 using Microsoft.VisualBasic;
 using EvernoteCloneLibrary.Users;
 using System.Collections.Generic;
