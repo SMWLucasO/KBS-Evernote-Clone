@@ -22,7 +22,7 @@ namespace EvernoteCloneGUI.ViewModels
     public class NoteElementViewModel : PropertyChangedBase
     {
         private string _title;
-        public User _user { get; private set; }
+        public User User { get; private set; }
 
         public string Title
         {
@@ -271,7 +271,7 @@ namespace EvernoteCloneGUI.ViewModels
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="arg"></param>
-        public void ShareNote(object sender, RoutedEventArgs arg)
+        public void ShareNote(object sender, RoutedEventArgs args)
         {
             UserRepository userRepositoryLogin = new UserRepository();
             Note sharedNote = Note;
