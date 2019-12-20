@@ -162,11 +162,11 @@ namespace EvernoteCloneLibrary.Database
             return _connection;
         }
 
-        public DataTable GetLanguageTable(string _parameter)
+        public DataTable GetLanguageTable(string langCode)
         {
             DataTable _language = new DataTable();
             SqlConnection conn = OpenSqlConnection();
-            string _query = $"SELECT * FROM LANGUAGE WHERE Language='{_parameter}'";
+            string _query = $"SELECT * FROM LANGUAGE WHERE Language='{langCode}'";
 
             SqlCommand cmd = new SqlCommand(_query, conn);
             SqlDataAdapter da = new SqlDataAdapter(cmd);

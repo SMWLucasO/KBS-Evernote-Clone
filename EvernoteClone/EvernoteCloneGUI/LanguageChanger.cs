@@ -12,14 +12,14 @@ using EvernoteCloneLibrary;
 
 namespace EvernoteCloneGUI
 {
-    public class Language_Changer
+    public class LanguageChanger
     {
         private string UserLang;
-        private Language_Loader Lang_load;
+        private LanguageLoader Lang_load;
 
-        public Language_Changer(string _lang)
+        public LanguageChanger(string _lang)
         {
-            Lang_load = new Language_Loader();
+            Lang_load = new LanguageLoader();
             UserLang = _lang;
             UpdateResxFile();
         }

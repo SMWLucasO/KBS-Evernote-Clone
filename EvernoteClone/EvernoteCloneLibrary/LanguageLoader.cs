@@ -12,15 +12,15 @@ using EvernoteCloneLibrary.Database;
 
 namespace EvernoteCloneLibrary
 {
-    public class Language_Loader
+    public class LanguageLoader
     {
 
-        public Language_Loader() { }
+        public LanguageLoader() { }
 
-        public SortedList<string, string> DownloadLanguage(string _string)
+        public SortedList<string, string> DownloadLanguage(string langCode)
         {
             SortedList<string, string> _result = new SortedList<string, string>();
-            DataTable _download = DataAccess.Instance.GetLanguageTable(_string);
+            DataTable _download = DataAccess.Instance.GetLanguageTable(langCode);
 
             foreach (DataRow row in _download.AsEnumerable())
                 _result.Add(row["Keyword"].ToString(), row["Translation"].ToString());

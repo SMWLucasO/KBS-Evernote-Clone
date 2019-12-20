@@ -379,7 +379,7 @@ namespace EvernoteCloneGUI.ViewModels
         /// </summary>
         protected override void OnActivate()
         {
-            Language_Changer lang = new Language_Changer("en-US");
+            LanguageChanger lang = new LanguageChanger("en-US");
             // Show login popup
             OpenLoginPopupView(true);
 
