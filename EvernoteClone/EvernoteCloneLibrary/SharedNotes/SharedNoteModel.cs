@@ -1,9 +1,4 @@
 ﻿using EvernoteCloneLibrary.Database;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EvernoteCloneLibrary.SharedNotes
 {
@@ -11,6 +6,5 @@ namespace EvernoteCloneLibrary.SharedNotes
     {
         public int UserId { get; set; }
         public int NoteId { get; set; }
-
     }
 }
