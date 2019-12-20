@@ -38,17 +38,11 @@
         <ComboBox 
             x:Name="DefaultFontSize"
             Grid.Column="1" 
-            Grid.Row="0" 
+            Grid.Row="1" 
             HorizontalAlignment="Left" 
             Margin="5,5,5,5"
             cal:Message.Attach="[Event SelectionChanged] = [ComboBoxSelectedIndexChanged($this)]"
             behaviors:ComboBoxWidthFromItemsBehavior.ComboBoxWidthFromItems="True">
-
-            <!--<ComboBox.ItemTemplate>
-                <DataTemplate>
-                    <ComboBoxItem Content="{Binding LanguageTitle}" Tag="{Binding /}"/>
-                </DataTemplate>
-            </ComboBox.ItemTemplate>-->
         </ComboBox>
         
         <Button 

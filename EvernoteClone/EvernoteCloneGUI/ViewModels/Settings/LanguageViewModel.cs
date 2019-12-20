@@ -22,7 +22,7 @@ namespace EvernoteCloneGUI.ViewModels.Settings
         /// <summary>
         /// Loads all settings into ComboBox
         /// </summary>
-        public void LoadLanguageComboBox()
+        private void LoadLanguageComboBox()
         {
             // For all languages, add them to the ComboBox
             foreach (Locale locale in Locale.GetAllLocales())
