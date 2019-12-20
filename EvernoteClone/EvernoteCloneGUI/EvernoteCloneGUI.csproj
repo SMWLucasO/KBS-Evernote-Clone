@@ -131,6 +131,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Helpers\PasswordHelper.cs" />
+    <Compile Include="ViewModels\Commands\KeyGestures\InsertTableCommand.cs" />
+    <Compile Include="ViewModels\Commands\KeyGestures\SaveCommand.cs" />
+    <Compile Include="ViewModels\Commands\KeyGestures\TextColorCommand.cs" />
     <Compile Include="ViewModels\Commands\RichTextEditorCommands.cs" />
     <Compile Include="ViewModels\Controls\NoteFeverTreeViewModel.cs" />
     <Compile Include="ViewModels\Controls\Settings\ComboBoxHelper.cs" />
@@ -142,6 +145,7 @@
     <Compile Include="ViewModels\NotebookViewModel.cs" />
     <Compile Include="ViewModels\NoteElementViewModel.cs" />
     <Compile Include="ViewModels\NoteFeverViewModel.cs" />
+    <Compile Include="ViewModels\Popups\NotebookPickerViewModel.cs" />
     <Compile Include="ViewModels\RegisterViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
     <Compile Include="ViewModels\Settings\SettingViewModel.cs" />
@@ -149,8 +153,8 @@
     <Compile Include="ViewModels\Settings\EditorViewModel.cs" />
     <Compile Include="ViewModels\Settings\LanguageViewModel.cs" />
     <Compile Include="ViewModels\Settings\StandardsViewModel.cs" />
-    <Compile Include="ViewModels\TableRowColumnSpecifierViewModel.cs" />
-    <Compile Include="ViewModels\ValueRequestViewModel.cs" />
+    <Compile Include="ViewModels\Popups\TableRowColumnSpecifierViewModel.cs" />
+    <Compile Include="ViewModels\Popups\ValueRequestViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bootstrapper.cs" />
@@ -187,6 +191,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Popups\NotebookPickerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\RegisterView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -211,11 +219,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\TableRowColumnSpecifierView.xaml">
+    <Page Include="Views\Popups\TableRowColumnSpecifierView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ValueRequestView.xaml">
+    <Page Include="Views\Popups\ValueRequestView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
