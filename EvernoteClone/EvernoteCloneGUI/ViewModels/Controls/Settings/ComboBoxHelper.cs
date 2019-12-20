@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Windows.Controls;
 using EvernoteCloneLibrary.Constants;
+using EvernoteCloneLibrary.Settings.Locales;
 
 namespace EvernoteCloneGUI.ViewModels.Controls.Settings
 {
@@ -44,18 +45,7 @@ namespace EvernoteCloneGUI.ViewModels.Controls.Settings
             SettingsConstant settingsConstant = new SettingsConstant();
             object value = settingsConstant.GetType().GetField(toAdd).GetValue(settingsConstant);
             
-            Setting setting = new Setting
-            {
-                setting = toAdd,
-                value = value
-            };
-
-            if (toAddTo.Items.Cast<ComboBoxItem>().Any(comboBoxItem => comboBoxItem.Content.ToString() == value.ToString()))
-            {
-                return;
-            }
-            
-            toAddTo.Items.Add(new ComboBoxItem { Content = value, Tag = setting });
+            AddItemToComboBox(ref toAddTo, value, toAdd);
         }
 
         /// <summary>
@@ -64,7 +54,17 @@ namespace EvernoteCloneGUI.ViewModels.Controls.Settings
         /// <param name="toAddTo">The ComboBox the item should be added to</param>
         /// <param name="toAdd">The item that should be added</param>
         /// <param name="settingRepresentation">The SettingConstant value that should be changed upon selection</param>
-        public static void AddItemToComboBox(ref ComboBox toAddTo, object toAdd, string settingRepresentation)
+        public static void AddItemToComboBox(ref ComboBox toAddTo, object toAdd, string settingRepresentation) =>
+            AddItemToComboBox(ref toAddTo, toAdd, settingRepresentation, toAdd.ToString());
+
+        /// <summary>
+        /// Add an item to the ComboBox.
+        /// </summary>
+        /// <param name="toAddTo">The ComboBox the item should be added to</param>
+        /// <param name="toAdd">The item that should be added</param>
+        /// <param name="settingRepresentation">The SettingConstant value that should be changed upon selection</param>
+        /// <param name="content">The comboBox display item content</param>
+        public static void AddItemToComboBox(ref ComboBox toAddTo, object toAdd, string settingRepresentation, string content)
         {
             Setting setting = new Setting
             {
@@ -77,7 +77,7 @@ namespace EvernoteCloneGUI.ViewModels.Controls.Settings
                 return;
             }
             
-            toAddTo.Items.Add(new ComboBoxItem { Content = toAdd, Tag = setting });
+            toAddTo.Items.Add(new ComboBoxItem { Content = content, Tag = setting });
         }
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace EvernoteCloneGUI.ViewModels.Controls.Settings
 
                 SettingsConstant settingsConstant = new SettingsConstant();
                 settingsConstant.GetType().GetField(selectedSetting.setting)
-                    .SetValue(settingsConstant, selectedSetting.value);
+                    .SetValue(settingsConstant, (selectedSetting.value is Locale ? selectedSetting.value.ToString() : selectedSetting.value));
             }
         }
         

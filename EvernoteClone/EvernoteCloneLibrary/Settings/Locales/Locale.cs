@@ -35,8 +35,16 @@ namespace EvernoteCloneLibrary.Settings.Locales
         /// </summary>
         /// <returns>A List from Locales</returns>
         public static List<Locale> GetAllLocales() =>
-             new LocaleRepository().GetAll().Select(el => (Locale)el).ToList();
+             new LocaleRepository().GetAll().Cast<Locale>().ToList();
 
+        /// <summary>
+        /// Get a Locale class by it's name
+        /// </summary>
+        /// <param name="locale"></param>
+        /// <returns></returns>
+        public static Locale GetLocaleByLocale(string locale) =>
+            GetAllLocales().FirstOrDefault(loc => loc.Locale == locale);
+        
         /// <summary>
         /// Insert a new Locale record
         /// </summary>
@@ -62,5 +70,8 @@ namespace EvernoteCloneLibrary.Settings.Locales
             new LocaleRepository().Update(locale);
         
         #endregion
+
+        public override string ToString() =>
+            Locale;
     }
 }

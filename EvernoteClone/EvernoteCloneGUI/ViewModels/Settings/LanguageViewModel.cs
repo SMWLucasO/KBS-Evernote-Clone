@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.Collections.Generic;
+using System.Windows.Controls;
 using EvernoteCloneGUI.ViewModels.Controls.Settings;
 using EvernoteCloneGUI.Views.Settings;
 using EvernoteCloneLibrary.Constants;
@@ -24,17 +25,24 @@ namespace EvernoteCloneGUI.ViewModels.Settings
         /// </summary>
         private void LoadLanguageComboBox()
         {
-            // For all languages, add them to the ComboBox
-            foreach (Locale locale in Locale.GetAllLocales())
-                ComboBoxHelper.AddItemToComboBox(ref LanguageComboBox, locale.Language, nameof(SettingsConstant.LANGUAGE));
-            
-            // If used offline (or if something else happens) and no languages are added, add standard language
-            ComboBoxHelper.AddItemToComboBox(ref LanguageComboBox, nameof(SettingsConstant.LANGUAGE));
-            
-            // Select standard language
-            ComboBoxHelper.SelectComboBoxItemByTag(ref LanguageComboBox, SettingsConstant.LANGUAGE);
-            
-            LanguageViewModel tmp = new LanguageViewModel();
+            List<Locale> locales = Locale.GetAllLocales();
+
+            if (locales.Count > 0)
+            {
+                // For all languages, add them to the ComboBox
+                foreach (Locale locale in locales)
+                    ComboBoxHelper.AddItemToComboBox(ref LanguageComboBox, locale, nameof(SettingsConstant.LANGUAGE),
+                        locale.Language);
+
+                // If used offline (or if something else happens) and no languages are added, add standard language
+
+                // Select standard language
+                ComboBoxHelper.SelectComboBoxItemByTag(ref LanguageComboBox, Locale.GetLocaleByLocale(SettingsConstant.LANGUAGE));
+            }
+            else
+            {
+                LanguageComboBox.IsEnabled = false;
+            }
         }
         
         #endregion
@@ -59,8 +67,6 @@ namespace EvernoteCloneGUI.ViewModels.Settings
                 Loaded = true;
             }
         }
-        
-        
 
         #endregion
     }

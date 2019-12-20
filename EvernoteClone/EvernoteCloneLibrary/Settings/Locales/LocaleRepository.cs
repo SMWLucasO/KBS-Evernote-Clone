@@ -19,7 +19,7 @@ namespace EvernoteCloneLibrary.Settings.Locales
         {
             if (toInsert != null)
             {
-                if (string.IsNullOrWhiteSpace(toInsert.Language))
+                if (string.IsNullOrWhiteSpace(toInsert.Language) || string.IsNullOrWhiteSpace(toInsert.Locale))
                 {
                     return false;
                 }
@@ -27,8 +27,8 @@ namespace EvernoteCloneLibrary.Settings.Locales
                 Dictionary<string, object> parameters = GenerateQueryParameters(toInsert);
 
                 int id = DataAccess.Instance.ExecuteAndReturnId(
-                    "INSERT INTO [Locale] ([Language])"
-                        + " VALUES (@Language)", parameters);
+                    "INSERT INTO [Locale] ([Locale], [Language])"
+                        + " VALUES (@Locale, @Language)", parameters);
 
                 if (id != -1)
                 {
@@ -56,6 +56,7 @@ namespace EvernoteCloneLibrary.Settings.Locales
                 Locale locale = new Locale
                 {
                     Id = (int)fetchedSqlDataReader["Id"],
+                    Locale = (string)fetchedSqlDataReader["Locale"],
                     Language = (string)fetchedSqlDataReader["Language"]
                 };
 
@@ -85,6 +86,7 @@ namespace EvernoteCloneLibrary.Settings.Locales
                 Locale locale = new Locale
                 {
                     Id = (int)fetchedSqlDataReader["Id"],
+                    Locale = (string)fetchedSqlDataReader["Locale"],
                     Language = (string)fetchedSqlDataReader["Language"]
                 };
 
@@ -109,7 +111,7 @@ namespace EvernoteCloneLibrary.Settings.Locales
         {
             if (toUpdate != null)
             {
-                if (string.IsNullOrWhiteSpace(toUpdate.Language) || toUpdate.Id == -1)
+                if (string.IsNullOrWhiteSpace(toUpdate.Language) || string.IsNullOrWhiteSpace(toUpdate.Locale) || toUpdate.Id == -1)
                 {
                     return false;
                 }
@@ -117,7 +119,7 @@ namespace EvernoteCloneLibrary.Settings.Locales
                 Dictionary<string, object> parameters = GenerateQueryParameters(toUpdate);
                 parameters.Add("@Id", toUpdate.Id);
 
-                return DataAccess.Instance.Execute("UPDATE [Locale] SET [Language] = @Language, "
+                return DataAccess.Instance.Execute("UPDATE [Locale] SET [Language] = @Language, [Locale] = @Locale "
                     + "WHERE Id = @Id", parameters);
             }
             return false;
@@ -153,6 +155,7 @@ namespace EvernoteCloneLibrary.Settings.Locales
             {
                 return new Dictionary<string, object>
                 {
+                    { "@Locale", toExtractFrom.Locale },
                     { "@Language", toExtractFrom.Language }
                 };
             }

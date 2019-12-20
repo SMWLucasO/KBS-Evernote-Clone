@@ -29,8 +29,8 @@ namespace EvernoteCloneGUI.ViewModels
         #region Instance variables
         private readonly bool _loadNote;
 
-        private string _font = "";
-        private int _fontSize = 12;
+        private string _font = SettingsConstant.DEFAULT_FONT;
+        private int _fontSize = SettingsConstant.DEFAULT_FONT_SIZE;
 
         private RichTextBox _textEditor = null;
         #endregion
@@ -324,6 +324,13 @@ namespace EvernoteCloneGUI.ViewModels
                 _textEditor = newNoteView.TextEditor;
                 _textEditor.MinHeight = SystemParameters.FullPrimaryScreenHeight;
                 SetupTextEditor(newNoteView);
+                
+                // TODO make SetDefault method with _textEditor as parameter
+                SelectedFont = SettingsConstant.DEFAULT_FONT;
+                SelectedFontSize = SettingsConstant.DEFAULT_FONT_SIZE;
+            
+                _textEditor.FontFamily = new System.Windows.Media.FontFamily(SettingsConstant.DEFAULT_FONT);
+                _textEditor.FontSize = SettingsConstant.DEFAULT_FONT_SIZE;
             }
 
         }

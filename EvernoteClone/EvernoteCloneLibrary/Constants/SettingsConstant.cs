@@ -28,7 +28,9 @@ namespace EvernoteCloneLibrary.Constants
         public static string DEFAULT_NOTEBOOK_TITLE = "Nameless notebook";
         
         // Editor
-        public static FontFamily DEFAULT_FONT = FontFamily.Families.First(font => font.Name == "Arial");
+        public static string DEFAULT_FONT = FontFamily.Families.First(font => font.Name == "Arial").Name;
+
+        public static int DEFAULT_FONT_SIZE = 11;
         
         //THEME
         
