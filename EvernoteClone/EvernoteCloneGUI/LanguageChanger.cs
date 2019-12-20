@@ -15,7 +15,7 @@ namespace EvernoteCloneGUI
     public class LanguageChanger
     {
         private string UserLang;
-        private LanguageLoader LangLoad;
+        private LanguageLoader langLoader;
 
         public LanguageChanger(string _lang)
         {
