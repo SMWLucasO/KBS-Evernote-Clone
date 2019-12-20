@@ -15,18 +15,18 @@ namespace EvernoteCloneGUI
     public class LanguageChanger
     {
         private string UserLang;
-        private LanguageLoader langLoader;
+        private LanguageLoader _langLoader;
 
-        public LanguageChanger(string _lang)
+        public LanguageChanger(string language)
         {
-            LangLoad = new LanguageLoader();
-            UserLang = _lang;
+            _langLoader = new LanguageLoader();
+            UserLang = language;
             UpdateResxFile();
         }
 
         private void UpdateResxFile()
         {
-            SortedList<string, string> LangDown = LangLoad.DownloadLanguage(UserLang);
+            SortedList<string, string> LangDown = _langLoader.DownloadLanguage(UserLang);
 
             string path = "C:/git/EvernoteClone/EvernoteClone/EvernoteCloneGUI/Language.resx";
             ResXResourceReader reader = new ResXResourceReader(path);
