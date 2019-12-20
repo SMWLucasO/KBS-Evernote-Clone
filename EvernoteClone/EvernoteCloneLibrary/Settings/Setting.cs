@@ -40,7 +40,7 @@ namespace EvernoteCloneLibrary.Settings
         /// Save the settings (locally and in database (if logged in))
         /// </summary>
         /// <returns>A boolean indicating whether saving the settings was a success or not</returns>
-        public static bool SaveSettings()
+        public static bool SaveSettings(bool onlySaveLocally = false)
         {
             SettingsConstant.LASTUPDATED = DateTime.Now;
 
@@ -48,7 +48,7 @@ namespace EvernoteCloneLibrary.Settings
                 SettingsConstant.ToXmlRepresentation());
             bool savedInCloud = false;
 
-            if (Constant.User.Id != -1)
+            if (Constant.User.Id != -1 && !onlySaveLocally)
             {
                 List<Setting> settings = new List<Setting>();
                 foreach (KeyValuePair<string, object> setting in SettingsConstant.GetSettings())
