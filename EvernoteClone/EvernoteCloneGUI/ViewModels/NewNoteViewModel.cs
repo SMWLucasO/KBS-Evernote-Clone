@@ -1,11 +1,9 @@
 ﻿using Caliburn.Micro;
 using EvernoteCloneGUI.ViewModels.Commands;
 using EvernoteCloneGUI.Views;
-using EvernoteCloneLibrary.Constants;
 using EvernoteCloneLibrary.Notebooks;
 using EvernoteCloneLibrary.Notebooks.Notes;
 using EvernoteCloneLibrary.Utils;
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -16,6 +14,8 @@ using System.Windows.Documents;
 using System.Windows.Markup;
 using System.Xml;
 using System.Linq;
+using System.Windows.Input;
+using EvernoteCloneGUI.ViewModels.Commands.KeyGestures;
 
 namespace EvernoteCloneGUI.ViewModels
 {
@@ -117,11 +117,15 @@ namespace EvernoteCloneGUI.ViewModels
 
         #endregion
 
+        //  cal:Message.Attach="[Event Click] = [SimulateRightClick($eventArgs)]" <--- add this to button
         public void SimulateRightClick(RoutedEventArgs routedEventArgs)
         {
             if (routedEventArgs.Source is Button button)
             {
-                button.ContextMenu.IsOpen = true;
+                if (button.ContextMenu != null)
+                {
+                    button.ContextMenu.IsOpen = true;
+                }
             }
         }
         
@@ -149,7 +153,7 @@ namespace EvernoteCloneGUI.ViewModels
         #region Saving and loading
 
         /// <summary>
-        /// Method for loading the contents of the note object into the databound properties.
+        /// Method for loading the contents of the note object into the data bound properties.
         /// </summary>
         public void LoadNote()
         {
@@ -255,7 +259,6 @@ namespace EvernoteCloneGUI.ViewModels
                 // Get the text from the richtextbox and create/read from a stream to get the data
                 
                 TextRange range = new TextRange(richTextBox.Document.ContentStart, richTextBox.Document.ContentEnd);
-                
 
                 MemoryStream stream = new MemoryStream();
                 range.Save(stream, DataFormats.Xaml);
@@ -297,6 +300,26 @@ namespace EvernoteCloneGUI.ViewModels
         {
             if (view is NewNoteView newNoteView)
             {
+                
+                // Register shortcuts for saving, inserting tables and changing text-color
+                newNoteView.InputBindings.Add(
+                    new KeyBinding(
+                        new TextColorCommand() { NewNoteViewModel = this}, Key.C, ModifierKeys.Alt
+                    )
+                );
+                
+                newNoteView.InputBindings.Add(
+                    new KeyBinding(
+                        new InsertTableCommand() {NewNoteViewModel = this}, Key.T, ModifierKeys.Alt
+                    )
+                );
+                
+                newNoteView.InputBindings.Add(
+                    new KeyBinding(
+                        new SaveCommand() {NewNoteViewModel = this}, Key.S, ModifierKeys.Control
+                    )
+                );
+                
                 _textEditor = newNoteView.TextEditor;
                 _textEditor.MinHeight = SystemParameters.FullPrimaryScreenHeight;
                 SetupTextEditor(newNoteView);
@@ -345,7 +368,9 @@ namespace EvernoteCloneGUI.ViewModels
 
         /// <summary>
         /// Method which loads all the contents of the XaML string into the text editor.
-        /// <see cref="https://stackoverflow.com/questions/1449121/how-to-insert-xaml-into-richtextbox">Impl. from here</see>
+        /// <see>Impl. from here
+        ///     <cref>https://stackoverflow.com/questions/1449121/how-to-insert-xaml-into-richtextbox</cref>
+        /// </see>
         /// </summary>
         /// <param name="xamlString"></param>
         /// <returns></returns>

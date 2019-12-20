@@ -3,7 +3,7 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace EvernoteCloneGUI.ViewModels
+namespace EvernoteCloneGUI.ViewModels.Popups
 {
     /// <summary>
     /// Class handling interaction with the 'TableRowColumnSpecifierView'
@@ -57,7 +57,7 @@ namespace EvernoteCloneGUI.ViewModels
             if (!_canSubmit)
             {
                 MessageBox.Show("Please make sure that both the rows and columns are greater than 0", "Note Fever | Warning",
-                    MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
             else
             {
