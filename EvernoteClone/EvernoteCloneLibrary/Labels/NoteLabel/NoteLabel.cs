@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using EvernoteCloneLibrary.Notebooks.Notes;
+using EvernoteCloneLibrary.Notebooks.Notes.Labels;
 
 namespace EvernoteCloneLibrary.Labels.NoteLabel
 {
@@ -11,7 +12,7 @@ namespace EvernoteCloneLibrary.Labels.NoteLabel
         /// </summary>
         /// <param name="note">The note all corresponding labels should be retrieved from</param>
         /// <returns>A list containing NoteLabel records</returns>
-        public static List<NoteLabel> GetAllNoteLabelsFromNote(Note note) =>
+        public static List<NoteLabelModel> GetAllNoteLabelsFromNote(Note note) =>
             GetAllNoteLabelsFromNote(note.Id);
         
         /// <summary>
@@ -19,13 +20,13 @@ namespace EvernoteCloneLibrary.Labels.NoteLabel
         /// </summary>
         /// <param name="noteId">The id of the note all corresponding labels should be retrieved from</param>
         /// <returns>A list containing NoteLabel records</returns>
-        public static List<NoteLabel> GetAllNoteLabelsFromNote(int noteId)
+        public static List<NoteLabelModel> GetAllNoteLabelsFromNote(int noteId)
         {
             NoteLabelRepository noteLabelRepository = new NoteLabelRepository();
             return noteLabelRepository.GetBy(
                 new[] { "NoteID = @NoteID" },
                 new Dictionary<string, object>() { { "@NoteID", noteId } }
-            ).Select((el) => ((NoteLabel)el)).ToList();
+            ).Select((el) => ((NoteLabelModel)el)).ToList();
         }
         
         /// <summary>
@@ -33,13 +34,44 @@ namespace EvernoteCloneLibrary.Labels.NoteLabel
         /// </summary>
         /// <param name="labelId">The id of the label all notes that are returned should have</param>
         /// <returns>A list containing NoteLabel records</returns>
-        public static List<NoteLabel> GetAllNoteLabelsFromLabel(int labelId) // TODO change this with Label.Id when branches are merged
+        public static List<NoteLabelModel> GetAllNoteLabelFromLabel(int labelId) // TODO change this with Label.Id when branches are merged
         {
             NoteLabelRepository noteLabelRepository = new NoteLabelRepository();
             return noteLabelRepository.GetBy(
                 new[] { "LabelID = @LabelID" },
                 new Dictionary<string, object>() { { "@LabelID", labelId } }
-            ).Select((el) => ((NoteLabel)el)).ToList();
+            ).Select((el) => ((NoteLabelModel)el)).ToList();
+        }
+
+        /// <summary>
+        /// Returns a NoteLabel record. This is used to check that a NoteLabel records does exist in the database
+        /// </summary>
+        /// <param name="note"></param>
+        /// <param name="label"></param>
+        /// <returns></returns>
+        public static NoteLabelModel GetNoteLabelFromLabelAndNote(Note note, LabelModel label) =>
+            GetNoteLabelFromLabelAndNote(note.Id, label.Id);
+
+        /// <summary>
+        /// Returns a NoteLabel record. This is used to check that a NoteLabel records does exist in the database
+        /// </summary>
+        /// <param name="noteId"></param>
+        /// <param name="labelId"></param>
+        /// <returns></returns>
+        public static NoteLabelModel GetNoteLabelFromLabelAndNote(int noteId, int labelId)
+        {
+            NoteLabelRepository noteLabelRepository = new NoteLabelRepository();
+            List<NoteLabelModel> noteLabelModels = noteLabelRepository.GetBy(
+                new[] { "LabelID = @LabelID", "NoteID = @NoteID" },
+                new Dictionary<string, object>() { { "@LabelID", labelId }, { "@NoteID", noteId } }
+            ).Select((el) => ((NoteLabelModel)el)).ToList();
+
+            if (noteLabelModels.Count > 0)
+            {
+                return noteLabelModels[0];
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -49,5 +81,13 @@ namespace EvernoteCloneLibrary.Labels.NoteLabel
         /// <returns>A boolean indicating if the operation was successful (true) or not (false)</returns>
         public static bool AddNewNoteLabel(NoteLabel noteLabel) =>
             new NoteLabelRepository().Insert(noteLabel);
+
+        /// <summary>
+        /// Delete a NoteLabel record
+        /// </summary>
+        /// <param name="noteLabel">The NoteLabel that should be removed</param>
+        /// <returns>A boolean indicating if the delete was successful</returns>
+        public static bool RemoveNoteLabel(NoteLabelModel noteLabel) =>
+            new NoteLabelRepository().Delete(noteLabel);
     }
 }

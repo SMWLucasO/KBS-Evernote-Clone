@@ -19,26 +19,42 @@ using System.Linq;
 using EvernoteCloneLibrary.Database;
 using EvernoteCloneLibrary.Notebooks.Notes.Labels;
 using System.Collections.ObjectModel;
+using Microsoft.VisualBasic;
+using EvernoteCloneLibrary.Labels.NoteLabel;
 
 namespace EvernoteCloneGUI.ViewModels
 {
     /// <summary>
     /// ViewModel which handles all interaction related to the NewNoteView
     /// </summary>
-    public class NewNoteViewModel : Screen
+ public class NewNoteViewModel : Screen
     {
 
         #region Instance variables
         private readonly bool _loadNote;
-        private LabelModel labelModel;
+        string userInput = "";
 
         public StackPanel LabelsStackPanel { get; set; }
-       /* public bool LabelsAdd { get
+       public void LabelsAdd()
+        {    
+            userInput = Interaction.InputBox("Share Note", "Please enter a valid username", userInput);
+
+            LabelModel labelModel = new LabelModel { Id = -1, Title = userInput };
+
+            if (Note.Id != -1)
             {
-                bool ba = DataAccess.Instance.InsertLabel(labelModel);
-                return ba;
+                bool addLabel = new EvernoteCloneLibrary.Notebooks.Notes.Labels.Label().InsertLabel(labelModel, Note);
+
+                if (addLabel)
+                {
+                    LoadLabels();
+                }
             }
-                 }*/
+            else
+            {
+                MessageBox.Show("You can't add labels to notes when they're not saved in the database.");
+            }
+        }
 
         private string _font = "";
         private int _fontSize = 12;
@@ -161,20 +177,49 @@ namespace EvernoteCloneGUI.ViewModels
 
         public void LoadLabels()
         {
-            for (int i = 0; i < 10; i++)
+            List<Button> toRemove = new List<Button>();
+            foreach (Button button in LabelsStackPanel.Children.Cast<Button>())
             {
-                foreach (LabelModel labelModel in DataAccess.Instance.GetLabels(i))
+                if (button.Content.ToString() != "+")
                 {
-                    Button label = new Button
-                    {
-                        Content = labelModel.Title,
-                        FontSize = 10,
-                        Height = 20,
-                        Margin = new Thickness(5, 0, 0, 0),
-                        Padding = new Thickness(5, 0, 5, 0)
-                    };
-                    LabelsStackPanel.Children.Add(label);
+                    toRemove.Add(button);
                 }
+            }
+
+            foreach (Button button in toRemove)
+            {
+                LabelsStackPanel.Children.Remove(button);
+            }
+
+            List<NoteLabelModel> noteLabels = NoteLabel.GetAllNoteLabelsFromNote(Note);
+            foreach (NoteLabelModel noteLabel in noteLabels)
+            {
+                LabelModel labelModel = new EvernoteCloneLibrary.Notebooks.Notes.Labels.Label().GetLabel(noteLabel.LabelId);
+
+                Button label = new Button
+                {
+                    Content = labelModel.Title,
+                    FontSize = 10,
+                    Height = 20,
+                    Margin = new Thickness(5, 0, 0, 0),
+                    Padding = new Thickness(5, 0, 5, 0),
+                    Tag = labelModel
+                };
+
+                label.Click += labelDelete;
+                LabelsStackPanel.Children.Add(label);
+            }
+        }
+        
+        private void labelDelete(object sender, RoutedEventArgs e)
+        {
+            Button label = (Button)sender;
+
+            bool deleted = NoteLabel.RemoveNoteLabel(NoteLabel.GetNoteLabelFromLabelAndNote(Note, (LabelModel)label.Tag));
+
+             if (deleted)
+            {
+                LoadLabels();
             }
         }
 

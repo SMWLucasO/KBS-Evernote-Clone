@@ -13,54 +13,6 @@ namespace EvernoteCloneLibrary.Database
     /// </summary>
     public class DataAccess
     {
-
-        public List<LabelModel> GetLabels(int id)
-        {
-            List<LabelModel> labelOutput = new List<LabelModel>();
-            LabelRepository labelRepository = new LabelRepository();
-            try
-            {
-                SqlConnection conn = new SqlConnection("ConnectionString");
-                conn.Open();
-                SqlCommand sqlCommand = new SqlCommand("SELECT COUNT (*) FROM Label", conn);
-                Int32 count = Convert.ToInt32(sqlCommand.ExecuteScalar());
-
-                for(int i = 0; i < count; i++)
-                {
-                    labelOutput.Add(GetLabel(i + 1));
-                }
-            } catch
-            {
-                Exception e;
-            }
-          
-            return labelRepository.GetBy(
-                new[] { "Id = @Id" },
-                new Dictionary<string, object>() { { "@Id", id } }
-
-                ).Select((el) => ((LabelModel)el)).ToList();
-
-        }
-
-        public LabelModel GetLabel(int id)
-        {
-            LabelModel labelModel = new LabelModel();
-
-            labelModel.Id = id;
-            labelModel.Title = id.ToString();
-
-            return labelModel;
-        }
-
-        /*public bool InsertLabel(LabelModel labelModel)
-        {
-            LabelRepository labelRepository = new LabelRepository();
-
-                return labelRepository.Insert(labelModel);
-  
-        }*/
-
-        
         /// <summary>
         /// The Singleton accessor to this class.
         /// The only way to access this class' object is through here.
@@ -120,18 +72,21 @@ namespace EvernoteCloneLibrary.Database
 
             // build the condition string: ( WHERE ... AND ... AND ... AND ... ) etc
             // conditions array should hold strings of: key = value, key >= value ... etc
-            for (int i = 0; i < conditions.Length; i++)
+            if (conditions != null)
             {
-                if (i == 0)
+                for (int i = 0; i < conditions.Length; i++)
                 {
-                    conditionBuilder.Append("WHERE ");
-                }
-                else
-                {
-                    conditionBuilder.Append("AND ");
-                }
+                    if (i == 0)
+                    {
+                        conditionBuilder.Append("WHERE ");
+                    }
+                    else
+                    {
+                        conditionBuilder.Append("AND ");
+                    }
 
-                conditionBuilder.Append(conditions[i]).Append(" ");
+                    conditionBuilder.Append(conditions[i]).Append(" ");
+                }
             }
 
             return Query($"SELECT * FROM [{table}] {conditionBuilder}",

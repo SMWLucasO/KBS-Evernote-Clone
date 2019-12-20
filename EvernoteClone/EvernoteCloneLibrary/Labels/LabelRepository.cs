@@ -68,6 +68,7 @@ namespace EvernoteCloneLibrary.Notebooks.Notes.Labels
                 {
                     if (string.IsNullOrEmpty(toInsert.Title))
                     {
+                        // TODO for Joris, change this default setting!
                         toInsert.Title = "Label";
                     }
 
