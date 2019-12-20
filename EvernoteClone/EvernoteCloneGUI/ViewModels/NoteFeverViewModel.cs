@@ -14,6 +14,8 @@ using System.Windows.Media.Imaging;
 using EvernoteCloneGUI.ViewModels.Controls;
 using EvernoteCloneLibrary.Constants;
 using EvernoteCloneLibrary.Users;
+using EvernoteCloneLibrary;
+
 
 namespace EvernoteCloneGUI.ViewModels
 {
@@ -377,6 +379,7 @@ namespace EvernoteCloneGUI.ViewModels
         /// </summary>
         protected override void OnActivate()
         {
+            LanguageChanger lang = new LanguageChanger("en-US");
             // Show login popup
             OpenLoginPopupView(true);
 
