@@ -6,53 +6,58 @@
              xmlns:local="clr-namespace:EvernoteCloneGUI.Views"
              xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              xmlns:cal="http://www.caliburnproject.org"
+             xmlns:lang="clr-namespace:EvernoteCloneGUI"
              mc:Ignorable="d" 
              d:DesignHeight="1200" d:DesignWidth="800">
     <StackPanel Margin="0,0,-0.5,0">
         <Menu>
-            <MenuItem Header="File">
-                <MenuItem Header="Open"/>
-                <MenuItem Header="Save" x:Name="NotifyUserOfSave"/>
+            <MenuItem Header="{x:Static lang:Language.NewNoteViewFile}">
+                <MenuItem Header="{x:Static lang:Language.NewNoteViewFileOpen}"/>
+                <MenuItem Header="{x:Static lang:Language.NewNoteViewFileSave}" x:Name="NotifyUserOfSave"/>
                 <Separator/>
-                <MenuItem Header="Attach File"/>
-                <MenuItem Header="Import"/>
-                <MenuItem Header="Export"/>
+                <MenuItem Header="{x:Static lang:Language.NewNoteViewFileAttach}"/>
+                <MenuItem Header="{x:Static lang:Language.NewNoteViewFileImport}"/>
+                <MenuItem Header="{x:Static lang:Language.NewNoteViewFileExport}"/>
                 <Separator/>
-                <MenuItem Header="Close"/>
+                <MenuItem Header="{x:Static lang:Language.NewNoteViewFileClose}"/>
             </MenuItem>
-            <MenuItem Header="Edit">
-                <MenuItem Header="Undo"/>
-                <MenuItem Header="Redo"/>
+            <MenuItem Header="{x:Static lang:Language.NewNoteViewEdit}">
+                <MenuItem Header="{x:Static lang:Language.NewNoteViewEditUndo}"/>
+                <MenuItem Header="{x:Static lang:Language.NewNoteViewEditRedo}"/>
                 <Separator/>
-                <MenuItem Header="Cut"/>
-                <MenuItem Header="Copy"/>
-                <MenuItem Header="Paste"/>
+                <MenuItem Header="{x:Static lang:Language.NewNoteViewEditCut}"/>
+                <MenuItem Header="{x:Static lang:Language.NewNoteViewEditCopy}"/>
+                <MenuItem Header="{x:Static lang:Language.NewNoteViewEditPaste}"/>
                 <Separator/>
-                <MenuItem Header="Delete"/>
-                <MenuItem Header="Select All"/>
-                <MenuItem Header="Find and Replace All">
-                    <MenuItem Header="Find Within Note"/>
-                    <MenuItem Header="Find Next"/>
-                    <MenuItem Header="Find Previous"/>
+                <MenuItem Header="{x:Static lang:Language.NewNoteViewEditDeletet}"/>
+                <MenuItem Header="{x:Static lang:Language.NewNoteViewEditSelect}"/>
+                <MenuItem Header="{x:Static lang:Language.NewNoteViewEditFind}">
+                    <MenuItem Header="{x:Static lang:Language.NewNoteViewEditFindWith}"/>
+                    <MenuItem Header="{x:Static lang:Language.NewNoteViewEditFindNext}"/>
+                    <MenuItem Header="{x:Static lang:Language.NewNoteViewEditFindPrev}"/>
                     <Separator/>
-                    <MenuItem Header="Replace Within Note"/>
+                    <MenuItem Header="{x:Static lang:Language.NewNoteViewEditFindReo}"/>
                 </MenuItem>
             </MenuItem>
-            <MenuItem Header="View">
-                <MenuItem Header="View status bar"/>
+            <MenuItem Header="{x:Static lang:Language.NewNoteViewView}">
+                <MenuItem Header="{x:Static lang:Language.NewNoteViewViewBar}"/>
             </MenuItem>
-            <MenuItem Header="Note">
-                <MenuItem Header="Copy Note"/>
-                <MenuItem Header="Move Note"/>
-                <MenuItem Header="Duplicate Note"/>
+            <MenuItem Header="{x:Static lang:Language.NewNoteViewNote}">
+                <MenuItem Header="{x:Static lang:Language.NewNoteViewNoteCopy}"/>
+                <MenuItem Header="{x:Static lang:Language.NewNoteViewNoteMove}"/>
+                <MenuItem Header="{x:Static lang:Language.NewNoteViewNoteDup}"/>
             </MenuItem>
         </Menu>
         <ToolBarTray>
             <ToolBar>
-                <Label>Font</Label>
+                <Label>
+                    <Run Text="{x:Static lang:Language.NewNoteViewF}"/>
+                </Label>
                 <ComboBox Margin="5 0 10 0" x:Name="Fonts" SelectedItem="{Binding SelectedFont}" />
-                
-                <Label>Font Size</Label>
+
+                <Label>
+                    <Run Text="{x:Static lang:Language.NewNoteViewFsize}"/>
+                </Label>
                 <ComboBox Margin="5 0 10 0" SelectedItem="{Binding SelectedFontSize}" x:Name="FontSizes" IsEditable="True"/>
                 
                 <Separator/>
@@ -68,14 +73,24 @@
 
                 <Separator />
 
-                <Button Margin="5 0 5 0" Command="EditingCommands.AlignLeft">Left</Button>
-                <Button Margin="5 0 5 0" Command="EditingCommands.AlignCenter">Center</Button>
-                <Button Margin="5 0 5 0" Command="EditingCommands.AlignRight">Right</Button>
+                <Button Margin="5 0 5 0" Command="EditingCommands.AlignLeft">
+                    <Run Text="{x:Static lang:Language.NewNoteViewFleft}"/>
+                </Button>
+                <Button Margin="5 0 5 0" Command="EditingCommands.AlignCenter">
+                    <Run Text="{x:Static lang:Language.NewNoteViewFcenter}"/>
+                </Button>
+                <Button Margin="5 0 5 0" Command="EditingCommands.AlignRight">
+                    <Run Text="{x:Static lang:Language.NewNoteViewFleft}"/>
+                </Button>
 
                 <Separator Margin="5 0 5 0" />
 
-                <Button Margin="5 0 5 0" Foreground="Black" Command="EditingCommands.DecreaseIndentation">Undent</Button>
-                <Button Margin="5 0 5 0" Foreground="Black" Command="EditingCommands.IncreaseIndentation">Indent</Button>
+                <Button Margin="5 0 5 0" Foreground="Black" Command="EditingCommands.DecreaseIndentation">
+                    <Run Text="{x:Static lang:Language.NewNoteViewFundent}"/>
+                </Button>
+                <Button Margin="5 0 5 0" Foreground="Black" Command="EditingCommands.IncreaseIndentation">
+                    <Run Text="{x:Static lang:Language.NewNoteViewFindent}"/>
+                </Button>
                 
                 <Separator/>
 
@@ -86,15 +101,17 @@
                     <TextBlock Background="Yellow">M</TextBlock>
                 </Button>
                 <Separator/>
-                <Button Margin="5 0 5 0">
-                    <TextBlock>Insert</TextBlock>
+                <Button Margin="5 0 5 0" cal:Message.Attach="[Event Click] = [SimulateRightClick($eventArgs)]">
+                    <TextBlock>
+                        <Run Text="{x:Static lang:Language.NewNoteViewFinsert}"/>
+                    </TextBlock>
                     <Button.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Table" cal:Message.Attach="[Event Click] = [OnInsertTable]" />
-                            <MenuItem Header="Horizontal line" cal:Message.Attach="[Event Click] = [OnInsertHorizontalLine]" />
-                            <MenuItem Header="Codeblocks" cal:Message.Attach="[Event Click] = [OnInsertCodeBlocks]"></MenuItem>
-                            <MenuItem Header="Ordered list" Command="EditingCommands.ToggleBullets"></MenuItem>
-                            <MenuItem Header="Unordered list" Command="EditingCommands.ToggleNumbering"></MenuItem>
+                            <MenuItem Header="{x:Static lang:Language.NewNoteViewFinsertTable}" cal:Message.Attach="[Event Click] = [OnInsertTable]" />
+                            <MenuItem Header="{x:Static lang:Language.NewNoteViewFinsertHorLine}" cal:Message.Attach="[Event Click] = [OnInsertHorizontalLine]" />
+                            <MenuItem Header="{x:Static lang:Language.NewNoteViewFinsertCode}" cal:Message.Attach="[Event Click] = [OnInsertCodeBlocks]"></MenuItem>
+                            <MenuItem Header="{x:Static lang:Language.NewNoteViewFinsertOr}" Command="EditingCommands.ToggleBullets"></MenuItem>
+                            <MenuItem Header="{x:Static lang:Language.NewNoteViewFinsertUnor}" Command="EditingCommands.ToggleNumbering"></MenuItem>
                         </ContextMenu>
                     </Button.ContextMenu>
                 </Button>
@@ -110,8 +127,8 @@
 
                 <TextBox Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,42.8,-0.4" x:Name="Title"></TextBox>
                 <Menu Grid.Column="1" HorizontalAlignment="Right">
-                    <MenuItem Header="Share">
-                        <MenuItem Header="Share With Contact"></MenuItem>
+                    <MenuItem Header="{x:Static lang:Language.NewNoteViewShare}">
+                        <MenuItem Header="{x:Static lang:Language.NewNoteViewShareOp}"></MenuItem>
                     </MenuItem>
                 </Menu>
             </Grid>

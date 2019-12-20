@@ -4,6 +4,10 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:cal="http://www.caliburnproject.org"
+        xmlns:vm="clr-namespace:EvernoteCloneGUI.ViewModels"
+        xmlns:vmc="clr-namespace:EvernoteCloneGUI.ViewModels.Controls"
+        xmlns:s="https://github.com/canton7/Stylet"
+        xmlns:lang="clr-namespace:EvernoteCloneGUI"
         mc:Ignorable="d"
         Title="Note Fever" Height="795" Width="1280"
         Icon="Images/logotransparentv2.png">
@@ -28,10 +32,10 @@
                 <TextBlock Margin="25,0,0,0" Text="Note Fever" Foreground="{Binding Path=ButtonBackgroundActive}" FontSize="28" VerticalAlignment="Center" FontFamily="Lato" FontWeight="Light"></TextBlock>
                 <Image Margin="0,0,25,0" Source="Images/logotransparentv2.png" Width="64" Height="95" HorizontalAlignment="Right" Stretch="Fill"></Image>
             </Grid>
-            <Button FontFamily="Lato" FontWeight="Light" Content="Change user" Background="{Binding Path=ButtonBackground}" Foreground="White" FontSize="16" Grid.Row="1" Grid.ColumnSpan="1" x:Name="OpenLoginPopupView"></Button>
-            <Button FontFamily="Lato" FontWeight="Light" Content="New Note" Background="{Binding Path=ButtonBackgroundActive}" Foreground="White" FontSize="16" x:Name="OpenNewNotePopupView"  Grid.Row="2" Grid.ColumnSpan="1"  Grid.RowSpan="1"/>
+            <Button FontFamily="Lato" FontWeight="Light" Content="{x:Static lang:Language.NoteFeverViewChange}" Background="{Binding Path=ButtonBackground}" Foreground="White" FontSize="16" Grid.Row="1" Grid.ColumnSpan="1" x:Name="OpenLoginPopupView"></Button>
+            <Button FontFamily="Lato" FontWeight="Light" Content="{x:Static lang:Language.NoteFeverViewNewN}" Background="{Binding Path=ButtonBackgroundActive}" Foreground="White" FontSize="16" x:Name="OpenNewNotePopupView"  Grid.Row="2" Grid.ColumnSpan="1"  Grid.RowSpan="1"/>
             <Button Height="25" Width="25" VerticalAlignment="Bottom" HorizontalAlignment="Right"  Background="{Binding Path=ButtonBackgroundActive}" Foreground="White" Grid.Row="3" Panel.ZIndex="1" x:Name="Synchronize">&#x27F3;</Button>
-            <Button FontFamily="Lato" FontWeight="Light" Content="All Notes" Background="{Binding Path=ButtonBackground}" Foreground="White" FontSize="16" x:Name="OpenAllNotesView" Grid.Row="3" Grid.ColumnSpan="1" Grid.RowSpan="1"></Button>
+            <Button FontFamily="Lato" FontWeight="Light" Content="{x:Static lang:Language.NoteFeverViewAllN}" Background="{Binding Path=ButtonBackground}" Foreground="White" FontSize="16" x:Name="OpenAllNotesView" Grid.Row="3" Grid.ColumnSpan="1" Grid.RowSpan="1"></Button>
             <TreeView
                 Grid.Row="4"
                 Grid.ColumnSpan="1"
@@ -43,10 +47,10 @@
                 cal:Message.Attach="[Event SelectedItemChanged] = [TreeViewSelectedItemChanged($eventArgs)]"
                 x:Name="NotebooksTreeView">
             </TreeView>
-            <Button FontFamily="Lato" FontWeight="Light" Content="Shared With Me" Background="{Binding Path=ButtonBackground}" Foreground="White" FontSize="16" Grid.Row="5" Grid.ColumnSpan="1" ></Button>
-            <Button FontFamily="Lato" FontWeight="Light" Content="Bin" Background="{Binding Path=ButtonBackground}" Foreground="White" FontSize="16" x:Name="OpenDeletedNotesView" Grid.Row="6" Grid.ColumnSpan="1" ></Button>
-            <Button FontFamily="Lato" FontWeight="Light" Content="Tags" Background="{Binding Path=ButtonBackground}" Foreground="White" FontSize="16" Grid.Row="7" Grid.ColumnSpan="1"></Button>
-            <Button FontFamily="Lato" FontWeight="Light" Content="Settings" Background="{Binding Path=ButtonBackground}" Foreground="White" FontSize="16" x:Name="OpenSettingsView" Grid.Row="8" Grid.ColumnSpan="1"></Button>
+            <Button FontFamily="Lato" FontWeight="Light" Content="{x:Static lang:Language.NoteFeverViewShared}" Background="{Binding Path=ButtonBackground}" Foreground="White" FontSize="16" Grid.Row="5" Grid.ColumnSpan="1" ></Button>
+            <Button FontFamily="Lato" FontWeight="Light" Content="{x:Static lang:Language.NoteFeverViewBin}" Background="{Binding Path=ButtonBackground}" Foreground="White" FontSize="16" x:Name="OpenDeletedNotesView" Grid.Row="6" Grid.ColumnSpan="1" ></Button>
+            <Button FontFamily="Lato" FontWeight="Light" Content="{x:Static lang:Language.NoteFeverViewTags}" Background="{Binding Path=ButtonBackground}" Foreground="White" FontSize="16" Grid.Row="7" Grid.ColumnSpan="1"></Button>
+            <Button FontFamily="Lato" FontWeight="Light" Content="{x:Static lang:Language.NoteFeverViewSearch}" Background="{Binding Path=ButtonBackground}" Foreground="White" FontSize="16" Grid.Row="8" Grid.ColumnSpan="1" x:Name="OpenSettingsView"></Button>
             <Grid.Effect>
                 <DropShadowEffect BlurRadius="20"/>
             </Grid.Effect>

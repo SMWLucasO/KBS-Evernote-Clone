@@ -1,0 +1,309 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="LoginViewLoca" xml:space="preserve">
+    <value>Or use it</value>
+  </data>
+  <data name="LoginViewLocaBut" xml:space="preserve">
+    <value>Locally</value>
+  </data>
+  <data name="LoginViewLogin" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="LoginViewPass" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="LoginViewRegi" xml:space="preserve">
+    <value>Register</value>
+  </data>
+  <data name="LoginViewUsern" xml:space="preserve">
+    <value>Username</value>
+  </data>
+  <data name="NewNoteViewEdiDeletet" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="NewNoteViewEdit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="NewNoteViewEditCopy" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="NewNoteViewEditCut" xml:space="preserve">
+    <value>Cut</value>
+  </data>
+  <data name="NewNoteViewEditFind" xml:space="preserve">
+    <value>Find and Replace All</value>
+  </data>
+  <data name="NewNoteViewEditFindNext" xml:space="preserve">
+    <value>Find Next</value>
+  </data>
+  <data name="NewNoteViewEditFindPrev" xml:space="preserve">
+    <value>Find Previous</value>
+  </data>
+  <data name="NewNoteViewEditFindReo" xml:space="preserve">
+    <value>Replace Within Note</value>
+  </data>
+  <data name="NewNoteViewEditFindWith" xml:space="preserve">
+    <value>Find Within Note</value>
+  </data>
+  <data name="NewNoteViewEditPaste" xml:space="preserve">
+    <value>Paste</value>
+  </data>
+  <data name="NewNoteViewEditRedo" xml:space="preserve">
+    <value>Redo</value>
+  </data>
+  <data name="NewNoteViewEditSelect" xml:space="preserve">
+    <value>Select All</value>
+  </data>
+  <data name="NewNoteViewEditUndo" xml:space="preserve">
+    <value>Undo</value>
+  </data>
+  <data name="NewNoteViewF" xml:space="preserve">
+    <value>Font</value>
+  </data>
+  <data name="NewNoteViewFcenter" xml:space="preserve">
+    <value>Center</value>
+  </data>
+  <data name="NewNoteViewFile" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="NewNoteViewFileAttach" xml:space="preserve">
+    <value>Attach File</value>
+  </data>
+  <data name="NewNoteViewFileClose" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="NewNoteViewFileExport" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="NewNoteViewFileImport" xml:space="preserve">
+    <value>Import</value>
+  </data>
+  <data name="NewNoteViewFileOpen" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="NewNoteViewFileSave" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="NewNoteViewFindent" xml:space="preserve">
+    <value>Indent</value>
+  </data>
+  <data name="NewNoteViewFinsert" xml:space="preserve">
+    <value>Insert</value>
+  </data>
+  <data name="NewNoteViewFleft" xml:space="preserve">
+    <value>Left</value>
+  </data>
+  <data name="NewNoteViewFright" xml:space="preserve">
+    <value>Right</value>
+  </data>
+  <data name="NewNoteViewFsize" xml:space="preserve">
+    <value>Font Size</value>
+  </data>
+  <data name="NewNoteViewFundent" xml:space="preserve">
+    <value>Undent</value>
+  </data>
+  <data name="NewNoteViewNote" xml:space="preserve">
+    <value>Note</value>
+  </data>
+  <data name="NewNoteViewNoteCopy" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="NewNoteViewNoteDup" xml:space="preserve">
+    <value>Duplicate Note</value>
+  </data>
+  <data name="NewNoteViewNoteMove" xml:space="preserve">
+    <value>Move</value>
+  </data>
+  <data name="NewNoteViewShare" xml:space="preserve">
+    <value>Share</value>
+  </data>
+  <data name="NewNoteViewShareOp" xml:space="preserve">
+    <value>Share with others</value>
+  </data>
+  <data name="NewNoteViewView" xml:space="preserve">
+    <value>View</value>
+  </data>
+  <data name="NewNoteViewViewBar" xml:space="preserve">
+    <value>View status bar</value>
+  </data>
+  <data name="NotebookNotesMenuViewNumber" xml:space="preserve">
+    <value>notes</value>
+  </data>
+  <data name="NotebookNotesMenuViewTitle" xml:space="preserve">
+    <value>Nameless notebook</value>
+  </data>
+  <data name="NoteFeverViewAllN" xml:space="preserve">
+    <value>All Notes</value>
+  </data>
+  <data name="NoteFeverViewBin" xml:space="preserve">
+    <value>Bin</value>
+  </data>
+  <data name="NoteFeverViewChange" xml:space="preserve">
+    <value>Change user</value>
+  </data>
+  <data name="NoteFeverViewNewN" xml:space="preserve">
+    <value>New Note</value>
+  </data>
+  <data name="NoteFeverViewSearch" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="NoteFeverViewShared" xml:space="preserve">
+    <value>Shared With Me</value>
+  </data>
+  <data name="NoteFeverViewTags" xml:space="preserve">
+    <value>Tags</value>
+  </data>
+  <data name="RegisterViewCpass" xml:space="preserve">
+    <value>Confirm Password</value>
+  </data>
+  <data name="RegisterViewFname" xml:space="preserve">
+    <value>First Name</value>
+  </data>
+  <data name="RegisterViewLname" xml:space="preserve">
+    <value>Last Name</value>
+  </data>
+  <data name="RegisterViewMail" xml:space="preserve">
+    <value>E-mail</value>
+  </data>
+  <data name="RegisterViewPass" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="RegisterViewRegi" xml:space="preserve">
+    <value>Register</value>
+  </data>
+  <data name="TableRowColumnSpecifierViewCancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="TableRowColumnSpecifierViewCulomns" xml:space="preserve">
+    <value>Insert tje amount of columns:</value>
+  </data>
+  <data name="TableRowColumnSpecifierViewRows" xml:space="preserve">
+    <value>Insert the amount of rows:</value>
+  </data>
+  <data name="TableRowColumnSpecifierViewSubmit" xml:space="preserve">
+    <value>Submit</value>
+  </data>
+  <data name="ValueRequestViewCancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="ValueRequestViewSubmit" xml:space="preserve">
+    <value>Submit</value>
+  </data>
+</root>

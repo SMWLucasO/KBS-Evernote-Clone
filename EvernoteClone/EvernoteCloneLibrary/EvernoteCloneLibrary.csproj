@@ -64,6 +64,7 @@
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -88,6 +89,7 @@
     <Compile Include="Files\Parsers\IParseable.cs" />
     <Compile Include="Files\Parsers\XmlExporter.cs" />
     <Compile Include="Files\Parsers\XmlImporter.cs" />
+    <Compile Include="Language_Loader.cs" />
     <Compile Include="Notebooks\Location\LocationUser\LocationUser.cs" />
     <Compile Include="Notebooks\Location\LocationUser\LocationUserModel.cs" />
     <Compile Include="Notebooks\Location\LocationUser\LocationUserRepository.cs" />

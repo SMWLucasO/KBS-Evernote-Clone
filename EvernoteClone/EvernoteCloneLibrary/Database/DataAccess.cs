@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Text;
 using EvernoteCloneLibrary.Constants;
@@ -167,6 +168,23 @@ namespace EvernoteCloneLibrary.Database
             _connection = new SqlConnection(connectionString);
             _connection.Open();
             return _connection;
+        }
+
+        public DataTable GetLanguageTable(string langCode)
+        {
+            DataTable _language = new DataTable();
+            SqlConnection conn = OpenSqlConnection();
+            string _query = $"SELECT * FROM LANGUAGE WHERE Language='{langCode}'";
+
+            SqlCommand cmd = new SqlCommand(_query, conn);
+            SqlDataAdapter da = new SqlDataAdapter(cmd);
+
+            da.Fill(_language);
+            conn.Close();
+
+            if (_language.Rows.Count < 1)
+                return null;
+            return _language;
         }
 
         /// <summary>
