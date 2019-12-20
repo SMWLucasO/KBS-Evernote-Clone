@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using EvernoteCloneGUI.ViewModels.Popups;
 using EvernoteCloneLibrary.Notebooks;
 using EvernoteCloneLibrary.Notebooks.Location;
 using EvernoteCloneLibrary.Notebooks.Notes;

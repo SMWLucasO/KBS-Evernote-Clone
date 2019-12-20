@@ -1,7 +1,8 @@
 ﻿using Caliburn.Micro;
 using System;
 
-namespace EvernoteCloneGUI.ViewModels
+// TODO create check for '/' in Value (in case of creating folder) and trimming the result (just) before using Value (after submit, cancel or close)
+namespace EvernoteCloneGUI.ViewModels.Popups
 {
     /// <summary>
     /// ViewModel which handles interaction with the ValueRequestView, a dialog which requests a piece of data.
@@ -52,14 +53,5 @@ namespace EvernoteCloneGUI.ViewModels
         /// <param name="eventArgs"></param>
         public void OnCancel(EventArgs eventArgs) =>
             Cancellation?.Invoke(this);
-
-        /// <summary>
-        /// On activation of this screen, set Value equals to empty string (but not null!)
-        /// </summary>
-        protected override void OnActivate()
-        {
-            base.OnActivate();
-            Value = "";
-        }
     }
 }

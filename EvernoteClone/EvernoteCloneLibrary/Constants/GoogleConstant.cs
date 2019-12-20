@@ -16,5 +16,17 @@
         /// The endpoint used for authorization (google)
         /// </value>
         public const string AUTHORIZATION_ENDPOINT = "https://accounts.google.com/o/oauth2/v2/auth";
+        
+        /// <value>
+        /// This contains a string that is the relative path were all logs should be stored
+        /// <username> is replaced with the currently logged in user
+        /// </value>
+        public const string TEST_LOG_STORAGE_PATH = "test/local/logs/google";
+        
+        /// <value>
+        /// This contains a string that is the relative path were all logs should be stored
+        /// <username> is replaced with the currently logged in user
+        /// </value>
+        public const string PRODUCTION_LOG_STORAGE_PATH = "production/local/logs/google";
     }
 }

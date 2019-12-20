@@ -8,7 +8,6 @@ using System.Linq;
 using EvernoteCloneLibrary.Extensions;
 using System.IO;
 
-// TODO add summary's
 namespace EvernoteCloneLibrary.Notebooks
 {
     public class Notebook : NotebookModel, IParseable
@@ -57,8 +56,7 @@ namespace EvernoteCloneLibrary.Notebooks
             // Load all the notebooks stored in the local storage
             List<Notebook> notebooksFromFileSystem = XmlImporter.TryImportNotebooks(GetNotebookStoragePath());
 
-            // Load all the notebooks stored in the database, if the user has a proper ID.
-            // Note: Should also verify using password hash, but that is a TODO. This part will be rewritten later on.
+            // Load all the notebooks stored in the database
             if (userId != -1)
             {
                 NotebookRepository notebookRepository = new NotebookRepository();
@@ -197,6 +195,10 @@ namespace EvernoteCloneLibrary.Notebooks
             }
         }
 
+        /// <summary>
+        /// Returns a list of all notebooks from the logged in user.
+        /// </summary>
+        /// <returns>List<Notebook></returns>
         public static List<Notebook> GetAllNotebooksFromDatabase()
         {
             NotebookRepository notebookRepository = new NotebookRepository();
@@ -206,6 +208,13 @@ namespace EvernoteCloneLibrary.Notebooks
             ).Select((el) => ((Notebook)el)).ToList();
         }
 
+        /// <summary>
+        /// This 'loads' a notebook.
+        /// If the filesystem notebook and database notebook have the same id or the same path and title. Add the filesystem notebook to the list.
+        /// </summary>
+        /// <param name="fsNotebook">Notebook loaded from filesystem</param>
+        /// <param name="dbNotebook">Notebook loaded from database</param>
+        /// <param name="listToAddTo">The list that the notebook should be added to</param>
         private static void LoadNotebook(Notebook fsNotebook, Notebook dbNotebook, List<Notebook> listToAddTo)
         {
             // If they both have the same Id, we load the last updated one.
@@ -214,7 +223,7 @@ namespace EvernoteCloneLibrary.Notebooks
                 listToAddTo.AddIfNotPresent(fsNotebook);
             }
 
-            else if (dbNotebook.Path.Equals(fsNotebook.Path))
+            else if (dbNotebook.Path.Equals(fsNotebook.Path) && dbNotebook.Title.Equals(fsNotebook.Title))
             {
                 listToAddTo.AddIfNotPresent(fsNotebook.Update(dbNotebook.Id));
             }
@@ -225,6 +234,10 @@ namespace EvernoteCloneLibrary.Notebooks
             }
         }
 
+        /// <summary>
+        /// Update the notebook (locally as well as in the database).
+        /// </summary>
+        /// <returns>A boolean indicating if the update was successful</returns>
         public bool Update()
         {
             NotebookRepository notebookRepository = new NotebookRepository();
@@ -232,11 +245,14 @@ namespace EvernoteCloneLibrary.Notebooks
             bool updatedCloud = notebookRepository.Update(this);
             bool updatedLocally = XmlExporter.Export(GetNotebookStoragePath(), $@"{FsName}.enex", this);
 
-            Console.WriteLine($"local: {updatedLocally} & cloud: {updatedCloud}");
-            
             return updatedCloud || updatedLocally;
         }
 
+        /// <summary>
+        /// Updates the local notebook
+        /// </summary>
+        /// <param name="newId">The newly received id from the database</param>
+        /// <returns>The updated notebook</returns>
         private Notebook Update(int newId)
         {
             Id = newId;
@@ -250,6 +266,11 @@ namespace EvernoteCloneLibrary.Notebooks
             return XmlExporter.Export(GetNotebookStoragePath(), $@"{FsName}.enex", this) ? this : null;
         }
 
+        /// <summary>
+        /// Adds a new notebook to the database and returns the id of the database record that was just added
+        /// </summary>
+        /// <param name="notebook">The notebook that should be added to the database</param>
+        /// <returns>The id of the notebook just inserted</returns>
         public static int AddNewNotebookToDatabaseAndGetId(Notebook notebook)
         {
             int userId = Constant.User.Id;
@@ -265,7 +286,6 @@ namespace EvernoteCloneLibrary.Notebooks
         /// <summary>
         /// Save all the notebooks belonging to the specified user.
         /// </summary>
-        /// <param name="userId"></param>
         /// <param name="forceInsert"></param>
         /// <returns></returns>
         public bool Save(bool forceInsert = false)
@@ -280,7 +300,7 @@ namespace EvernoteCloneLibrary.Notebooks
 
             if (IsNotNoteOwner)
             {
-                foreach (Note note in Notes)
+                foreach (Note note in Notes.Cast<Note>())
                 {
                     if (note.NoteOwner != null && !(savedNotebookIDs.Contains(note.NoteOwner.Id)))
                     {
@@ -302,68 +322,60 @@ namespace EvernoteCloneLibrary.Notebooks
 
             if (userId != -1)
             {
-                // TODO check if this try catch can be removed
-                try
-                {
-                    this.UserId = userId;
-                    NotebookRepository notebookRepository = new NotebookRepository();
-                    NoteRepository noteRepository = new NoteRepository();
+                UserId = userId;
+                NotebookRepository notebookRepository = new NotebookRepository();
+                NoteRepository noteRepository = new NoteRepository();
 
-                    // If the Id is '-1', that means it is a new notebook. Thus it should be inserted instead of updated.
-                    if (IsNotNoteOwner)
+                // If the Id is '-1', that means it is a new notebook. Thus it should be inserted instead of updated.
+                if (IsNotNoteOwner)
+                {
+                    savedNotebookIDs.Clear();
+                    foreach (Note note in Notes.Cast<Note>())
                     {
-                        savedNotebookIDs.Clear();
-                        foreach (Note note in Notes.Cast<Note>())
+                        if (note.NoteOwner != null && !(savedNotebookIDs.Contains(note.NoteOwner.Id)))
                         {
-                            if (note.NoteOwner != null && !(savedNotebookIDs.Contains(note.NoteOwner.Id)))
+                            // You should only be allowed to edit (not create new) notes if the notebook isn't the owner of the given notes.
+                            if (note.NoteOwner.Id != -1)
                             {
-                                // You should only be allowed to edit (not create new) notes if the notebook isn't the owner of the given notes.
-                                if (note.NoteOwner.Id != -1)
-                                {
-                                    // Set the NotebookID just in case it was not set before.
-                                    note.NotebookId = note.NoteOwner.Id;
-                                    note.NoteOwner.Save();
-                                    savedNotebookIDs.Add(note.NoteOwner.Id);
-                                }
+                                // Set the NotebookID just in case it was not set before.
+                                note.NotebookId = note.NoteOwner.Id;
+                                note.NoteOwner.Save();
+                                savedNotebookIDs.Add(note.NoteOwner.Id);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    if (Id != -1 && !forceInsert)
+                    {
+                        storedInTheCloud = notebookRepository.Update(this);
+                        if (!storedInTheCloud) // the note is (probably) removed on another client
+                        {
+                            if (!Title.EndsWith(" (notebook is removed)"))
+                            {
+                                Title += " (notebook is removed)";
                             }
                         }
                     }
                     else
                     {
-                        if (Id != -1 && !forceInsert)
+                        storedInTheCloud = notebookRepository.Insert(this);
+                    }
+
+                    foreach (Note note in Notes.Cast<Note>())
+                    {
+                        // Set the note's notebookID to the id of this notebook, in case it was -1 before.
+                        note.NotebookId = Id;
+                        if (note.Id == -1)
                         {
-                            storedInTheCloud = notebookRepository.Update(this);
-                            if (!storedInTheCloud) // the note is (probably) removed on another client TODO: do something with the bin here!
-                            {
-                                if (!Title.EndsWith(" (notebook is removed)"))
-                                {
-                                    Title += " (notebook is removed)";
-                                }
-                            }
+                            noteRepository.Insert(note);
                         }
                         else
                         {
-                            storedInTheCloud = notebookRepository.Insert(this);
-                        }
-
-                        foreach (Note note in Notes.Cast<Note>())
-                        {
-                            // Set the note's notebookID to the id of this notebook, in case it was -1 before.
-                            note.NotebookId = Id;
-                            if (note.Id == -1)
-                            {
-                                noteRepository.Insert(note);
-                            }
-                            else
-                            {
-                                noteRepository.Update(note);
-                            }
+                            noteRepository.Update(note);
                         }
                     }
-                }
-                catch (Exception)
-                {
-                    // ignored
                 }
             }
             storedLocally = UpdateLocalStorage(this);
@@ -373,7 +385,6 @@ namespace EvernoteCloneLibrary.Notebooks
 
         /// <summary>
         /// Delete the notebook, including its bindings, completely.
-        /// TODO: @Jorisvos add deletion logic for folders here.
         /// </summary>
         public void DeletePermanently()
         {
@@ -420,7 +431,7 @@ namespace EvernoteCloneLibrary.Notebooks
         {
             List<INote> notes = new List<INote>();
 
-            foreach (Note note in Notes)
+            foreach (Note note in Notes.Cast<Note>())
             {
                 if (condition(note))
                 {
@@ -459,6 +470,12 @@ namespace EvernoteCloneLibrary.Notebooks
             Title + (Notes.Count > 0 ? $" ({Notes.Count})" : "");
 
         #region Comparison methods
+        
+        /// <summary>
+        /// Checks if this notebook is the 'same' as the notebook that was added as a parameter
+        /// </summary>
+        /// <param name="obj">The notebook to check to</param>
+        /// <returns>A boolean indicating if the notebooks are the same</returns>
         public override bool Equals(object obj)
         {
             if (obj == null)
@@ -473,6 +490,10 @@ namespace EvernoteCloneLibrary.Notebooks
             return false;
         }
 
+        /// <summary>
+        /// Returns the 'Hash' code of this object
+        /// </summary>
+        /// <returns>An integer equal to the id of the notebook</returns>
         public override int GetHashCode()
         {
             if (Id != -1)
