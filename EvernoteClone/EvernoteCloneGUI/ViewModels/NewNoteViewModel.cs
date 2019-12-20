@@ -16,6 +16,7 @@ using System.Xml;
 using System.Linq;
 using System.Windows.Input;
 using EvernoteCloneGUI.ViewModels.Commands.KeyGestures;
+using EvernoteCloneLibrary.Constants;
 
 namespace EvernoteCloneGUI.ViewModels
 {
