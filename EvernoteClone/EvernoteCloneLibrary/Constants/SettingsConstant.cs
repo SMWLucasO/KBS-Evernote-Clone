@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using EvernoteCloneLibrary.Files.Parsers;
-using System.Drawing.FontFamily;
+using System.Drawing;
+using System.Linq;
 
 // TODO add summaries
 namespace EvernoteCloneLibrary.Constants
@@ -27,7 +28,7 @@ namespace EvernoteCloneLibrary.Constants
         public static string DEFAULT_NOTEBOOK_TITLE = "Nameless notebook";
         
         // Editor
-        //public static FontFamily DEFAULT_FONT = FontFamily.;
+        public static FontFamily DEFAULT_FONT = FontFamily.Families.First(font => font.Name == "Arial");
         
         //THEME
         
