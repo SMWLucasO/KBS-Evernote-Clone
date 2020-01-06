@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-// TODO add summarys
-// TODO remove 'int userId' and replace with Constant.User
 namespace EvernoteCloneLibrary.Notebooks.Location.LocationUser
 {
     public class LocationUser : LocationUserModel
@@ -11,14 +9,13 @@ namespace EvernoteCloneLibrary.Notebooks.Location.LocationUser
         /// <summary>
         /// Fetch all the links between users and notebooklocations
         /// </summary>
-        /// <param name="userId"></param>
         /// <returns></returns>
-        public static List<LocationUser> GetAllLocationsFromUser(int userId)
+        public static List<LocationUser> GetAllLocationsFromUser()
         {
             LocationUserRepository locationUserRepository = new LocationUserRepository();
             return locationUserRepository.GetBy(
                 new[] { "UserID = @UserID" },
-                new Dictionary<string, object>() { { "@UserID", userId } }
+                new Dictionary<string, object>() { { "@UserID", Constants.Constant.User.Id } }
             ).Select((el) => ((LocationUser)el)).ToList();
         }
 
