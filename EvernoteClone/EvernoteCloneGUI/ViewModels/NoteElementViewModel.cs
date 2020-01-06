@@ -265,13 +265,13 @@ namespace EvernoteCloneGUI.ViewModels
             
             Container.OpenDeletedNotesView();
         }
-
+            
         /// <summary>
         /// Makes a new note inserts them into list of notes of shared user
         /// </summary>
         /// <param name="sender"></param>
-        /// <param name="args"></param>
-        public void ShareNote(object sender, RoutedEventArgs args)
+        /// <param name="arg"></param>
+        public void ShareNote(object sender, RoutedEventArgs arg)
         {
             UserRepository userRepositoryLogin = new UserRepository();
             Note sharedNote = Note;
@@ -292,14 +292,13 @@ namespace EvernoteCloneGUI.ViewModels
             // If the user exist it will add the note to the new user. 
             User sharedUser = (User)userRepositoryLogin.CheckIfUserExists(userInput);
             if (sharedUser != null)
-            {
-                
+            {              
                 new NoteRepository().Insert(sharedNote);
                 SharedNote.SaveNewRecord(sharedNote.Id, sharedUser.Id);
             }
             else
             {
-                MessageBox.Show("Username does not exist");
+                MessageBox.Show("Username does not exist or make sure you're logged in");
             }
         }
 

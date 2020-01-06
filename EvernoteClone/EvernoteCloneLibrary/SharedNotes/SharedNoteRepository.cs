@@ -91,7 +91,8 @@ namespace EvernoteCloneLibrary.SharedNotes
                 bool insert = DataAccess.Instance.Execute("INSERT INTO [SharedNote] ([NoteId], [UserId])"
                         + " VALUES (@NoteId, @UserId)", parameters);
 
-                return insert;
+                return DataAccess.Instance.Execute("INSERT INTO [SharedNote] ([NoteId], [UserId])"
+                        + " VALUES (@NoteId, @UserId)", parameters);
             }
             return false;
         }
