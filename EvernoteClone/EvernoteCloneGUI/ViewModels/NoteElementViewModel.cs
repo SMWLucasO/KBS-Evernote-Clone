@@ -265,27 +265,6 @@ namespace EvernoteCloneGUI.ViewModels
             
             Container.OpenDeletedNotesView();
         }
-
-        /// <summary>
-        /// Makes a new note inserts them into list of notes of shared user
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
-        public void ShareNote(object sender, RoutedEventArgs args)
-        {
-            UserRepository userRepositoryLogin = new UserRepository();
-            Note sharedNote = Note;
-            string userInput = "";
-            sharedNote.Id = -1;
-            sharedNote.NotebookId = -1;
-
-            // Checks in field that is insert is not empty.
-            userInput = Interaction.InputBox("Share Note", "Please enter a valid username", userInput);
-            if (string.IsNullOrEmpty(userInput))
-            {
-                MessageBox.Show("Field cannot be empty");
-                return;
-            }
             
         /// <summary>
         /// Makes a new note inserts them into list of notes of shared user
