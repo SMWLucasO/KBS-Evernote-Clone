@@ -47,9 +47,9 @@ namespace EvernoteCloneLibrary.Utils
         /// <summary>
         /// Check whether an object is null or not
         /// </summary>
-        /// <param name="Object"></param>
+        /// <param name="specifiedObject"></param>
         /// <returns></returns>
-        public static bool IsNotNull(object Object)
-            => Object != null;
+        public static bool IsNotNull(object specifiedObject)
+            => specifiedObject != null;
     }
 }
