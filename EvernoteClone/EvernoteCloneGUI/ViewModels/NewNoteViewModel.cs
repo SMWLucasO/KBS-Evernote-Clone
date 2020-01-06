@@ -14,39 +14,39 @@ using System.Windows.Documents;
 using System.Windows.Markup;
 using System.Xml;
 using System.Linq;
-using EvernoteCloneLibrary.Database;
 using EvernoteCloneLibrary.Notebooks.Notes.Labels;
-using System.Collections.ObjectModel;
 using Microsoft.VisualBasic;
 using EvernoteCloneLibrary.Labels.NoteLabel;
 using System.Windows.Input;
 using EvernoteCloneGUI.ViewModels.Commands.KeyGestures;
+using EvernoteCloneLibrary.Constants;
 
 namespace EvernoteCloneGUI.ViewModels
 {
     /// <summary>
     /// ViewModel which handles all interaction related to the NewNoteView
     /// </summary>
-    public class NewNoteViewModel : Screen
+    public sealed class NewNoteViewModel : Screen
     {
         #region Instance variables
+        
         private readonly bool _loadNote;
-        private string userInput = "";
+        private string _userInput = "";
 
         public StackPanel LabelsStackPanel { get; set; }
         public void LabelsAdd()
         {    
-            userInput = Interaction.InputBox("Share Note", "Please enter a valid username", userInput);
+            _userInput = Interaction.InputBox("Share Note", "Please enter a valid username", _userInput);
 
-            LabelModel labelModel = new LabelModel { Id = -1, Title = userInput };
+            LabelModel labelModel = new LabelModel { Id = -1, Title = _userInput };
 
-            if (string.IsNullOrWhiteSpace(userInput))
+            if (string.IsNullOrWhiteSpace(_userInput))
             {
                 MessageBox.Show("Field can't be empty.");
             }
             else
             {
-                if (Note.Tags.Contains(userInput))
+                if (Note.Tags.Contains(_userInput))
                 {
                     MessageBox.Show("This label already exists.");
                     return;
@@ -69,10 +69,11 @@ namespace EvernoteCloneGUI.ViewModels
             }
         }
 
-        private string _font = "";
-        private int _fontSize = 12;
+        private string _font = SettingsConstant.DEFAULT_FONT;
+        private int _fontSize = SettingsConstant.DEFAULT_FONT_SIZE;
 
         private RichTextBox _textEditor = null;
+        
         #endregion
 
         #region Databound properties
@@ -90,13 +91,13 @@ namespace EvernoteCloneGUI.ViewModels
                 if (!_loadNote)
                 {
                     // Dynamically set the title of the window.
-                    if (!(string.IsNullOrEmpty(_title)))
+                    if (!(string.IsNullOrWhiteSpace(_title)))
                     {
                         DisplayName = $"Note Fever | {_title}";
                     }
                     else
                     {
-                        DisplayName = $"Note Fever | Nameless note";
+                        DisplayName = $"Note Fever | {SettingsConstant.DEFAULT_NOTE_TITLE}";
                     }
                 }
                 else
@@ -187,7 +188,7 @@ namespace EvernoteCloneGUI.ViewModels
         
         public NewNoteViewModel(bool loadNote = false)
         {
-            DisplayName = "Note Fever | Nameless note";
+            DisplayName = $"Note Fever | {SettingsConstant.DEFAULT_NOTE_TITLE}";
             _loadNote = loadNote;
         }
 
@@ -229,14 +230,14 @@ namespace EvernoteCloneGUI.ViewModels
                     Tag = labelModel
                 };
 
-                label.Click += labelDelete;
+                label.Click += LabelDelete;
                 LabelsStackPanel.Children.Add(label);
 
                 Note.Tags.Add(labelModel.Title);
             }
         }
         
-        private void labelDelete(object sender, RoutedEventArgs e)
+        private void LabelDelete(object sender, RoutedEventArgs e)
         {
             Button label = (Button)sender;
 
@@ -330,8 +331,12 @@ namespace EvernoteCloneGUI.ViewModels
                     {
                         if (GetView() != null && !(_loadNote))
                         {
-                            parent.SelectedNote = Note;
-                            parent.LoadNoteViewIfNoteExists();
+                            if (parent != null)
+                            {
+                                parent.SelectedNote = Note;
+                                parent.LoadNoteViewIfNoteExists();
+                            }
+
                             (GetView() as Window)?.Close();
                         }
                     }
@@ -385,6 +390,9 @@ namespace EvernoteCloneGUI.ViewModels
                 NewNoteView newNoteView = (NewNoteView)view;
                 newNoteView.TextEditor.Document = SetRtf(NewContent);
             }
+            
+            _textEditor.FontFamily = new System.Windows.Media.FontFamily(SettingsConstant.DEFAULT_FONT);
+            _textEditor.FontSize = SettingsConstant.DEFAULT_FONT_SIZE;
 
             base.OnViewReady(view);
         }
@@ -402,33 +410,36 @@ namespace EvernoteCloneGUI.ViewModels
                 // Register shortcuts for saving, inserting tables and changing text-color
                 newNoteView.InputBindings.Add(
                     new KeyBinding(
-                        new TextColorCommand() { NewNoteViewModel = this}, Key.C, ModifierKeys.Alt
+                        new TextColorCommand { NewNoteViewModel = this}, Key.C, ModifierKeys.Alt
                     )
                 );
                 
                 newNoteView.InputBindings.Add(
                     new KeyBinding(
-                        new InsertTableCommand() {NewNoteViewModel = this}, Key.T, ModifierKeys.Alt
+                        new InsertTableCommand {NewNoteViewModel = this}, Key.T, ModifierKeys.Alt
                     )
                 );
                 
                 newNoteView.InputBindings.Add(
                     new KeyBinding(
-                        new SaveCommand() {NewNoteViewModel = this}, Key.S, ModifierKeys.Control
+                        new SaveCommand {NewNoteViewModel = this}, Key.S, ModifierKeys.Control
                     )
                 );
                 
                 _textEditor = newNoteView.TextEditor;
                 _textEditor.MinHeight = SystemParameters.FullPrimaryScreenHeight-207;
                 SetupTextEditor(newNoteView);
+                
+                SelectedFont = SettingsConstant.DEFAULT_FONT;
+                SelectedFontSize = SettingsConstant.DEFAULT_FONT_SIZE;
 
                 if (GetView() is UserControl userControl)
                 {
                     userControl.SizeChanged += OnSizeChanged;
                 }
-                else
+                else if (GetView() is Window window)
                 {
-                    (GetView() as Window).SizeChanged += OnSizeChanged;
+                    window.SizeChanged += OnSizeChanged;
                 }
                 LabelsStackPanel = newNoteView.LabelsStackPanel;
                 LoadLabels();
@@ -498,7 +509,7 @@ namespace EvernoteCloneGUI.ViewModels
         private FlowDocument SetRtf(string xamlString)
         {
             // validate whether the xaml string is empty or not, since if it is, it would throw an error if we were to continue.
-            if (!(string.IsNullOrEmpty(xamlString.Trim())))
+            if (!(string.IsNullOrWhiteSpace(xamlString.Trim())))
             {
 
                 StringReader stringReader = new StringReader(xamlString);

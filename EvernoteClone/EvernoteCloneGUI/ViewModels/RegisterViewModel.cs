@@ -2,13 +2,9 @@
 using System.Windows;
 using System.Text.RegularExpressions;
 using Caliburn.Micro;
+using EvernoteCloneLibrary.Constants;
 using EvernoteCloneLibrary.Users;
 
-// TODO: see next comments @Chino
-// Password 1: Test123
-// Password 2: Test123!
-// Password 1: Test123!
-// Error message under Password 2
 namespace EvernoteCloneGUI.ViewModels
 {
     public class RegisterViewModel : Screen, IDataErrorInfo
@@ -20,6 +16,16 @@ namespace EvernoteCloneGUI.ViewModels
         private static readonly int _lowerLength = 1;
         private static readonly int _specialChar = 1;
         private static readonly int _numericLength = 2;
+        
+        /// <value>
+        /// The background of buttons
+        /// </value>
+        private string _buttonBackgroundColorColor;
+        
+        /// <value>
+        /// The background of active buttons
+        /// </value>
+        private string _buttonAccentColor;
         
         #endregion
         
@@ -34,6 +40,32 @@ namespace EvernoteCloneGUI.ViewModels
         public string FirstName { get; set; }
 
         public string LastName { get; set; }
+        
+        /// <value>
+        /// The background color of all buttons
+        /// </value>
+        public string ButtonBackgroundColor
+        {
+            get => _buttonBackgroundColorColor;
+            set
+            {
+                _buttonBackgroundColorColor = value;
+                NotifyOfPropertyChange(nameof(ButtonBackgroundColor));
+            }
+        }
+
+        /// <value>
+        /// The background color of all active buttons
+        /// </value>
+        public string ButtonAccentColor
+        {
+            get => _buttonAccentColor;
+            set
+            {
+                _buttonAccentColor = value;
+                NotifyOfPropertyChange(nameof(ButtonAccentColor));
+            }
+        }
 
         #endregion
         
@@ -47,7 +79,7 @@ namespace EvernoteCloneGUI.ViewModels
 
                 if (propertyName == "Email")
                 {
-                    if (string.IsNullOrEmpty(Email) || IsValidEmail(Email) == false)
+                    if (string.IsNullOrWhiteSpace(Email) || IsValidEmail(Email) == false)
                     {
                         result = "Please enter your email!";
                     }
@@ -156,6 +188,16 @@ namespace EvernoteCloneGUI.ViewModels
             {
                 MessageBox.Show("Please fill in the fields with errors");
             }
+        }
+
+        #endregion
+
+        #region Events
+
+        protected override void OnActivate()
+        {
+            ButtonBackgroundColor = SettingsConstant.BUTTON_BACKGROUND_COLOR;
+            ButtonAccentColor = SettingsConstant.ACCENT_COLOR;
         }
 
         #endregion
