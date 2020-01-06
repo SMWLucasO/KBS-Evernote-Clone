@@ -4,7 +4,6 @@ using EvernoteCloneLibrary.Notebooks.Location;
 using EvernoteCloneLibrary.Notebooks.Notes;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 
 namespace EvernoteCloneLibraryTests.TestHelpers
@@ -19,7 +18,7 @@ namespace EvernoteCloneLibraryTests.TestHelpers
         /// <returns></returns>
         public static IParseable GenerateTestableNotebook(int notes)
         {
-            if (notes == -1) return null;
+            if (notes < 0) return null;
 
             List<INote> innerNotes = new List<INote>();
             Notebook notebook = new Notebook()
@@ -27,13 +26,13 @@ namespace EvernoteCloneLibraryTests.TestHelpers
                 Id = -1,
                 LocationId = 1,
                 Path = ((new NotebookLocationRepository()).GetBy(
-                        new string[] { "Id = @Id" },
-                        new Dictionary<string, object>() { { "@Id", 1 } }
+                        new[] { "Id = @Id" },
+                        new Dictionary<string, object> { { "@Id", 1 } }
                         ).Select(
-                        el => new NotebookLocation() { Id = el.Id, Path = el.Path }
+                        el => new NotebookLocation { Id = el.Id, Path = el.Path }
                         )
                     ).First(),
-                Title = $"Notebook #{1}",
+                Title = "Notebook #1",
                 CreationDate = DateTime.Now.Date,
                 LastUpdated = DateTime.Now,
             };
@@ -45,8 +44,8 @@ namespace EvernoteCloneLibraryTests.TestHelpers
                     Id = -1,
                     NotebookId = 1,
                     Title = $"Test #{j}",
-                    Author = $"Some {j}",
-                    Content = $"ASDF {j}",
+                    Author = $"Some #{j}",
+                    Content = $"Notebooks #{j}",
                     CreationDate = DateTime.Now.Date,
                     LastUpdated = DateTime.Now
                 };
@@ -58,5 +57,13 @@ namespace EvernoteCloneLibraryTests.TestHelpers
 
             return notebook;
         }
+
+        /// <summary>
+        /// Creates a new NotebookLocation with Path path and Id -1
+        /// </summary>
+        /// <param name="path">The path of the to be generated NotebookLocation</param>
+        /// <returns>Returns a NotebookLocation</returns>
+        public static NotebookLocation GenerateNotebookLocation(string path) => 
+            new NotebookLocation { Id=-1, Path = path};
     }
 }

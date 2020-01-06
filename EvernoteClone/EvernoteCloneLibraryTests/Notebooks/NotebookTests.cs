@@ -8,15 +8,18 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using EvernoteCloneLibrary.Users;
 
 namespace EvernoteCloneLibraryTests.Notebooks
 {
-    [TestFixture, Order(5)]
+    [TestFixture, Order(8)]
     class NotebookTests
     {
-        public string XmlEmporterTests { get; private set; }
-
-
+        [SetUp]
+        public void Setup()
+        {
+            Constant.User = new User { Id=3, Username = "LocalTest"};
+        }
 
         // To run some of these test-cases properly, we need a user with a UserID of '3'
         // More testcases should be added once we have more objects to work with.
@@ -26,10 +29,11 @@ namespace EvernoteCloneLibraryTests.Notebooks
         public void Save_ShouldReturn(int userId, int notesToGenerate, bool expected)
         {
             // Arrange
+            Constant.User.Id = userId;
             Notebook notebook = (Notebook)ObjectGenerator.GenerateTestableNotebook(notesToGenerate);
 
             // Act
-            bool actual = notebook.Save(userId);
+            bool actual = notebook.Save();
 
             // Assert
             Assert.That(actual, Is.EqualTo(expected));
@@ -42,20 +46,21 @@ namespace EvernoteCloneLibraryTests.Notebooks
         public void Load_ShouldReturn(int userId, bool shouldJustBeFs)
         {
             // Arrange
-            List<Notebook> notebooksFromFs = XmlImporter.ImportNotebooks(Constant.TEST_NOTEBOOK_STORAGE_PATH);
+            Constant.User.Id = userId;
+            List<Notebook> notebooksFromFs = XmlImporter.TryImportNotebooks(GetNotebookStoragePath());
             
             // Act
-            List<Notebook> actual = Notebook.Load(userId);
+            List<Notebook> actual = Notebook.Load();
+            
             // Assert
             if (shouldJustBeFs)
             {
-                Assert.That(actual.Count, Is.EqualTo(notebooksFromFs.Count));
+                Assert.AreEqual(notebooksFromFs.Count, actual.Count);
             }
             else
             {
                 CollectionAssert.AreNotEquivalent(notebooksFromFs, actual);
             }
-
         }
 
         [Order(3)]
@@ -81,11 +86,25 @@ namespace EvernoteCloneLibraryTests.Notebooks
         public void ImportExport_ClearGeneratedFiles()
         {
             // Clean up the testing location.
-            foreach (string file in Directory.GetFiles(Constant.TEST_NOTEBOOK_STORAGE_PATH))
+            foreach (string file in Directory.GetFiles(GetNotebookStoragePath()))
             {
                 File.Delete(file);
             }
         }
 
+        private static string GetNotebookStoragePath()
+        {
+            string path = Constant.TEST_MODE ? Constant.TEST_NOTEBOOK_STORAGE_PATH : Constant.PRODUCTION_NOTEBOOK_STORAGE_PATH;
+            string[] splittedPath = path.Split('<', '>');
+
+            if (splittedPath.Length == 3)
+            {
+                splittedPath[1] = Constant.User.Username;
+
+                return splittedPath[0] + splittedPath[1] + splittedPath[2];
+            }
+
+            return null;
+        }
     }
 }

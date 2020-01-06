@@ -125,7 +125,6 @@ namespace EvernoteCloneLibrary.Notebooks
                     toUpdate.Title = "Nameless title";
                 }
 
-
                 Dictionary<string, object> parameters = GenerateQueryParameters(toUpdate);
                 parameters.Add("@Id", toUpdate.Id);
 

@@ -32,7 +32,7 @@ namespace EvernoteCloneGUI.ViewModels
         /// <value>
         /// This contains the user object (null if not logged in)
         /// </value>
-        public User user { get; private set; }
+        public User User { get; private set; }
 
         #endregion
 
@@ -40,7 +40,7 @@ namespace EvernoteCloneGUI.ViewModels
 
         public LoginViewModel(User user)
         {
-            this.user = user;
+            User = user;
         }
         
         #endregion
@@ -68,7 +68,7 @@ namespace EvernoteCloneGUI.ViewModels
         /// </summary>
         public void Login()
         {
-            User backupUser = user;
+            User backupUser = User;
             
             if (string.IsNullOrWhiteSpace(EmailLogin) || string.IsNullOrWhiteSpace(PasswordLogin))
             {
@@ -78,9 +78,9 @@ namespace EvernoteCloneGUI.ViewModels
             
             string usernameLogin = EmailLogin; 
             string passwordLogin = User.Encryption(PasswordLogin);
-            user = (User)User.Login(usernameLogin, passwordLogin);
+            User = (User)User.Login(usernameLogin, passwordLogin);
 
-            if (user != null)
+            if (User != null)
             {
                 MessageBox.Show("You've been logged in with success!");
                 (GetView() as Window)?.Close();
@@ -88,7 +88,7 @@ namespace EvernoteCloneGUI.ViewModels
             else 
             {
                 MessageBox.Show("Password or Username is not correct. Please check again.");
-                user = backupUser;
+                User = backupUser;
             }
         }
         
@@ -120,6 +120,21 @@ namespace EvernoteCloneGUI.ViewModels
         /// <returns></returns>
         public async Task GoogleLoginAsync()
         {
+            if (!Directory.Exists(GetGoogleLogStoragePath(false)))
+            {
+                Directory.CreateDirectory(GetGoogleLogStoragePath(false));
+            }
+            
+            // If latest log already exists, rename it
+            if (File.Exists(GetGoogleLogStoragePath()))
+            {
+                string newFileName = GetGoogleLogStoragePath(false) + "/" + DateTime.Now.ToString().Replace('/', '-').Replace(':', '.') + ".log"; 
+                newFileName = newFileName.Replace(' ', '_');
+                
+                File.Move(GetGoogleLogStoragePath(), 
+                    newFileName);
+            }
+            
             string state = RandomDataBase64Url(32);
             string codeVerifier = RandomDataBase64Url(32);
             string codeChallenge = Base64UrlencodeNoPadding(Sha256(codeVerifier));
@@ -132,26 +147,27 @@ namespace EvernoteCloneGUI.ViewModels
             // Creates an HttpListener to listen for requests on that redirect URI.
             var http = new HttpListener();
             http.Prefixes.Add(redirectUri);
-            Output("Listening..");
+            Output("Listening...");
             http.Start();
 
             // Creates the OAuth 2.0 authorization request.
             string authorizationRequest =
-                $"{GoogleConstant.AUTHORIZATION_ENDPOINT}?response_type=code&scope=openid%20email%20profile&redirect_uri={System.Uri.EscapeDataString(redirectUri)}&client_id={GoogleConstant.CLIENT_ID}&state={state}&code_challenge={codeChallenge}&code_challenge_method={codeChallengeMethod}";
+                $"{GoogleConstant.AUTHORIZATION_ENDPOINT}?response_type=code&scope=openid%20email%20profile&redirect_uri={Uri.EscapeDataString(redirectUri)}&client_id={GoogleConstant.CLIENT_ID}&state={state}&code_challenge={codeChallenge}&code_challenge_method={codeChallengeMethod}";
+            Output("authorizationRequest: "+authorizationRequest);
 
             // Opens request in the browser.
+            Output("Opening browser for user to login...");
             System.Diagnostics.Process.Start(authorizationRequest);
 
             // Waits for the OAuth authorization response.
             var context = await http.GetContextAsync();
 
             // Brings this app back to the foreground.
-            // TODO make this work!
-            //this.Activate();
+            (GetView() as Window)?.Activate();
 
             // Sends an HTTP response to the browser.
             var response = context.Response;
-            string responseString = "<html><head><meta http-equiv='refresh' content='10;url=https://google.com'></head><body>Please return to the app.</body></html>";
+            string responseString = "<html><head><meta http-equiv='refresh' content='10;url=https://google.com'></head><body>Please return to the app. <br />This page will be redirected to google in 10 seconds.</body></html>";
             var buffer = Encoding.UTF8.GetBytes(responseString);
             response.ContentLength64 = buffer.Length;
             var responseOutput = response.OutputStream;
@@ -160,7 +176,7 @@ namespace EvernoteCloneGUI.ViewModels
             {
                 responseOutput.Close();
                 http.Stop();
-                Console.WriteLine(@"HTTP server stopped.");
+                Output(@"HTTP server stopped.");
             });
 
             // Checks for errors.
@@ -191,7 +207,6 @@ namespace EvernoteCloneGUI.ViewModels
 
             // Starts the code exchange at the Token Endpoint.
             PerformCodeExchange(code, codeVerifier, redirectUri);
-
         }
         
         #endregion
@@ -213,6 +228,7 @@ namespace EvernoteCloneGUI.ViewModels
             string tokenRequestURI = "https://www.googleapis.com/oauth2/v4/token";
             string tokenRequestBody =
                 $"code={code}&redirect_uri={System.Uri.EscapeDataString(redirectUri)}&client_id={GoogleConstant.CLIENT_ID}&code_verifier={codeVerifier}&client_secret={GoogleConstant.CLIENT_SECRET}&grant_type=authorization_code";
+            Output("tokenRequestBody: " + tokenRequestBody);
 
             // Sends the actually token request
             HttpWebRequest tokenRequest = (HttpWebRequest)WebRequest.Create(tokenRequestURI);
@@ -242,7 +258,6 @@ namespace EvernoteCloneGUI.ViewModels
                     UserInfoCall(accessToken);
                 }
             }
-            
             //Handles error when tokens are not received.
             catch (WebException ex)
             {
@@ -276,8 +291,6 @@ namespace EvernoteCloneGUI.ViewModels
             // Local variables used to insert a new Google account if needed.
             ArrayList userData = new ArrayList();
             const bool isGoogleAccount = true;
-            
-            
 
             // Preparation to make the API call.
             string userInfoRequestUri = "https://www.googleapis.com/userinfo/v2/me";
@@ -314,21 +327,29 @@ namespace EvernoteCloneGUI.ViewModels
                 var firstName = Convert.ToString(arName);
                 var lastName = Convert.ToString(arLastName);
                 var googleId = Convert.ToString(arGoogleId);
-                var googlePassword = makeGooglePassword(googleId);
-                googlePassword = User.Encryption(googlePassword);
+                var googlePassword = User.Encryption(MakeGooglePassword(googleId));
+                
+                Output("Requested user data:\n" +
+                       "{" +
+                       "\n    username: "+username +
+                       "\n    firstname: "+firstName +
+                       "\n    lastname: "+lastName +
+                       "\n    google_id: "+googleId +
+                       "\n    google_password: secret" +
+                       "\n}");
 
                 //Check if the Google user already is registered to the application or not.
-                user = (User)User.Login(username,googlePassword);
+                User = (User)User.Login(username,googlePassword);
 
-                if (user == null)
+                if (User == null)
                 {
                     User.Register(username, googlePassword, firstName, lastName, isGoogleAccount);
-                    user = (User)User.Login(username,googlePassword);
+                    User = (User)User.Login(username,googlePassword);
                 }
 
-                if (user != null)
+                if (User != null)
                 {
-                    if (user.Id != -1)
+                    if (User.Id != -1)
                     {
                         MessageBox.Show("You've been logged in with a Google account.","NoteFever | Google login", MessageBoxButton.OK, MessageBoxImage.Information);
                         (GetView() as Window)?.Close();
@@ -338,13 +359,13 @@ namespace EvernoteCloneGUI.ViewModels
         }
 
         #region Extra info
+
         /// <summary>
-        /// Appends the given string to the on-screen log, and the debug console.
+        /// Writes 'debug' data to a log file
         /// </summary>
-        public void Output(string output)
-        {
-            Console.WriteLine(output);
-        }
+        /// <param name="output">The line that should be written to the log file</param>
+        public static void Output(string output) =>
+            File.AppendAllText(GetGoogleLogStoragePath(), output+"\n");
 
         /// <summary>
         /// Returns URI-safe data with a given input length.
@@ -382,6 +403,17 @@ namespace EvernoteCloneGUI.ViewModels
 
             return base64;
         }
+        
+        /// <summary>
+        /// Returns a path where google logs should be stored
+        /// </summary>
+        /// <returns>string</returns>
+        private static string GetGoogleLogStoragePath(bool appendFileName = true)
+        {
+            string path = Constant.TEST_MODE ? GoogleConstant.TEST_LOG_STORAGE_PATH : GoogleConstant.PRODUCTION_LOG_STORAGE_PATH;
+
+            return path + (appendFileName ? "/latest.log" : "");
+        }
         #endregion
         #endregion
 
@@ -393,7 +425,7 @@ namespace EvernoteCloneGUI.ViewModels
         /// </summary>
         /// <param name="password"></param>
         /// <returns></returns>
-        public string makeGooglePassword (string password)
+        public string MakeGooglePassword(string password)
         {
            return password + "!@#45";
         }
@@ -402,9 +434,12 @@ namespace EvernoteCloneGUI.ViewModels
 
         #region For local use only
         
+        /// <summary>
+        /// When this 'button' is clicked, set the User property to a LocalUser user object
+        /// </summary>
         public void UseLocally()
         {
-            user = new User
+            User = new User
             {
                 Id = -1,
                 Username = "LocalUser"

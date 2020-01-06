@@ -13,6 +13,11 @@ namespace EvernoteCloneLibrary.Constants
         public const bool   TEST_MODE = true;
 
         /// <value>
+        /// This contains the path to the testcases storage
+        /// </value>
+        public const string TESTS_STORAGE_PATH = "test/local/testcases";
+
+        /// <value>
         /// This contains a string that is the relative path were all notebook data should be stored
         /// <username> is replaced with the currently logged in user
         /// </value>
