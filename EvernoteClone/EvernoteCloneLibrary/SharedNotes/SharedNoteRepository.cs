@@ -17,12 +17,13 @@ namespace EvernoteCloneLibrary.SharedNotes
         {
             if (toDelete != null)
             {
-                Dictionary<string, object> parameter = new Dictionary<string, object>()
+                Dictionary<string, object> parameter = new Dictionary<string, object>
                 {
-                    { "UserId", toDelete.UserId}
+                    { "UserID", toDelete.UserId },
+                    { "NoteID", toDelete.NoteId }
                 };
 
-                return DataAccess.Instance.Execute("DELETE FROM [SharedNote] WHERE Id = @UserId", parameter);
+                return DataAccess.Instance.Execute("DELETE FROM [SharedNote] WHERE UserID = @UserID AND NoteID = @NoteID", parameter);
             }
             return false;
         }
@@ -87,9 +88,6 @@ namespace EvernoteCloneLibrary.SharedNotes
             if (toInsert != null)
             {
                 Dictionary<string, object> parameters = GenerateQueryParameters(toInsert);
-
-                bool insert = DataAccess.Instance.Execute("INSERT INTO [SharedNote] ([NoteId], [UserId])"
-                        + " VALUES (@NoteId, @UserId)", parameters);
 
                 return DataAccess.Instance.Execute("INSERT INTO [SharedNote] ([NoteId], [UserId])"
                         + " VALUES (@NoteId, @UserId)", parameters);

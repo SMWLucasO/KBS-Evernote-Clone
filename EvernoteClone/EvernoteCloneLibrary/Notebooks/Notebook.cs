@@ -22,6 +22,8 @@ namespace EvernoteCloneLibrary.Notebooks
 
         public bool IsNotNoteOwner { get; set; }
 
+        public bool IsSharedNotebook { get; set; }
+
         /// <summary>
         /// When an empty title is given, we give a default title.
         /// </summary>
