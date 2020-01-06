@@ -28,7 +28,7 @@ namespace EvernoteCloneLibrary.Users
                 Username = username,
                 Password = password
             };
-            return userRepositoryLogin.CompareDB(userModelLogin);
+            return userRepositoryLogin.Login(userModelLogin);
         }
 
         #region Password encrypter
