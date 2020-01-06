@@ -5,6 +5,8 @@ using EvernoteCloneLibraryTests.TestHelpers;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.IO;
+using EvernoteCloneLibrary.Settings;
+using EvernoteCloneLibrary.Users;
 
 namespace EvernoteCloneLibraryTests.Files.Parsers
 {
@@ -79,6 +81,22 @@ namespace EvernoteCloneLibraryTests.Files.Parsers
 
             // Assert
             Assert.IsNull(actual);
+        }
+
+        [Order(3)]
+        [Test]
+        public void Export_Settings()
+        {
+            Constant.User = new User { Id=-1, Username = "LocalUserTest"};
+            Assert.IsTrue(Setting.SaveSettings(true));
+        }
+
+        [Order(4)]
+        [Test]
+        public void Import_Settings()
+        {
+            Constant.User = new User { Id=-1, Username = "LocalUserTest"};
+            Assert.IsTrue(Setting.Load(true));
         }
 
         [OneTimeSetUp]

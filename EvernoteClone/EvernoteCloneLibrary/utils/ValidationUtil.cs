@@ -34,7 +34,7 @@ namespace EvernoteCloneLibrary.Utils
         /// <param name="objects"></param>
         /// <returns></returns>
         public static bool AreNotNull(params object[] objects) =>
-            ValidateMultiple((obj) => obj != null, objects);
+            ValidateMultiple(obj => obj != null, objects);
 
         /// <summary>
         /// Method which validates where or not an array of strings is empty or null
@@ -42,7 +42,15 @@ namespace EvernoteCloneLibrary.Utils
         /// <param name="strings"></param>
         /// <returns></returns>
         public static bool AreNullOrEmpty(params string[] strings) =>
-            ValidateMultiple((obj) => string.IsNullOrEmpty((string)obj), strings);
+            ValidateMultiple(obj => string.IsNullOrEmpty((string)obj), strings);
+        
+        /// <summary>
+        /// Method which validates where or not an array of strings is whitespace or null or empty
+        /// </summary>
+        /// <param name="strings"></param>
+        /// <returns></returns>
+        public static bool AreNullOrWhiteSpace(params string[] strings) =>
+            ValidateMultiple(obj => string.IsNullOrWhiteSpace((string)obj), strings);
 
         /// <summary>
         /// Check whether an object is null or not

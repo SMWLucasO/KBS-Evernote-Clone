@@ -21,6 +21,7 @@ using Microsoft.VisualBasic;
 using EvernoteCloneLibrary.Labels.NoteLabel;
 using System.Windows.Input;
 using EvernoteCloneGUI.ViewModels.Commands.KeyGestures;
+using EvernoteCloneLibrary.Constants;
 
 namespace EvernoteCloneGUI.ViewModels
 {
@@ -69,8 +70,8 @@ namespace EvernoteCloneGUI.ViewModels
             }
         }
 
-        private string _font = "";
-        private int _fontSize = 12;
+        private string _font = SettingsConstant.DEFAULT_FONT;
+        private int _fontSize = SettingsConstant.DEFAULT_FONT_SIZE;
 
         private RichTextBox _textEditor = null;
         #endregion
@@ -90,13 +91,13 @@ namespace EvernoteCloneGUI.ViewModels
                 if (!_loadNote)
                 {
                     // Dynamically set the title of the window.
-                    if (!(string.IsNullOrEmpty(_title)))
+                    if (!(string.IsNullOrWhiteSpace(_title)))
                     {
                         DisplayName = $"Note Fever | {_title}";
                     }
                     else
                     {
-                        DisplayName = $"Note Fever | Nameless note";
+                        DisplayName = $"Note Fever | {SettingsConstant.DEFAULT_NOTE_TITLE}";
                     }
                 }
                 else
@@ -187,7 +188,7 @@ namespace EvernoteCloneGUI.ViewModels
         
         public NewNoteViewModel(bool loadNote = false)
         {
-            DisplayName = "Note Fever | Nameless note";
+            DisplayName = $"Note Fever | {SettingsConstant.DEFAULT_NOTE_TITLE}";
             _loadNote = loadNote;
         }
 
@@ -385,6 +386,9 @@ namespace EvernoteCloneGUI.ViewModels
                 NewNoteView newNoteView = (NewNoteView)view;
                 newNoteView.TextEditor.Document = SetRtf(NewContent);
             }
+            
+            _textEditor.FontFamily = new System.Windows.Media.FontFamily(SettingsConstant.DEFAULT_FONT);
+            _textEditor.FontSize = SettingsConstant.DEFAULT_FONT_SIZE;
 
             base.OnViewReady(view);
         }
@@ -421,6 +425,10 @@ namespace EvernoteCloneGUI.ViewModels
                 _textEditor = newNoteView.TextEditor;
                 _textEditor.MinHeight = SystemParameters.FullPrimaryScreenHeight-207;
                 SetupTextEditor(newNoteView);
+                
+                // TODO make SetDefault method with _textEditor as parameter
+                SelectedFont = SettingsConstant.DEFAULT_FONT;
+                SelectedFontSize = SettingsConstant.DEFAULT_FONT_SIZE;
 
                 if (GetView() is UserControl userControl)
                 {
@@ -498,7 +506,7 @@ namespace EvernoteCloneGUI.ViewModels
         private FlowDocument SetRtf(string xamlString)
         {
             // validate whether the xaml string is empty or not, since if it is, it would throw an error if we were to continue.
-            if (!(string.IsNullOrEmpty(xamlString.Trim())))
+            if (!(string.IsNullOrWhiteSpace(xamlString.Trim())))
             {
 
                 StringReader stringReader = new StringReader(xamlString);

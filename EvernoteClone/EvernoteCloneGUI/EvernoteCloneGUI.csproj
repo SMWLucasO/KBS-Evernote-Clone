@@ -127,6 +127,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="LanguageChanger.cs" />
+    <Compile Include="Helpers\ComboBoxWidthFromItemsBehavior.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -143,6 +144,8 @@
     <Compile Include="ViewModels\Commands\KeyGestures\TextColorCommand.cs" />
     <Compile Include="ViewModels\Commands\RichTextEditorCommands.cs" />
     <Compile Include="ViewModels\Controls\NoteFeverTreeViewModel.cs" />
+    <Compile Include="ViewModels\Controls\Settings\ComboBoxHelper.cs" />
+    <Compile Include="ViewModels\Controls\Settings\TextBoxHelper.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\NewNoteViewModel.cs" />
     <Compile Include="ViewModels\NotebookNotesMenuViewModel.cs" />
@@ -151,6 +154,12 @@
     <Compile Include="ViewModels\NoteFeverViewModel.cs" />
     <Compile Include="ViewModels\Popups\NotebookPickerViewModel.cs" />
     <Compile Include="ViewModels\RegisterViewModel.cs" />
+    <Compile Include="ViewModels\SettingsViewModel.cs" />
+    <Compile Include="ViewModels\Settings\SettingViewModel.cs" />
+    <Compile Include="ViewModels\Settings\LayoutViewModel.cs" />
+    <Compile Include="ViewModels\Settings\EditorViewModel.cs" />
+    <Compile Include="ViewModels\Settings\LanguageViewModel.cs" />
+    <Compile Include="ViewModels\Settings\StandardsViewModel.cs" />
     <Compile Include="ViewModels\Popups\TableRowColumnSpecifierViewModel.cs" />
     <Compile Include="ViewModels\Popups\ValueRequestViewModel.cs" />
   </ItemGroup>
@@ -194,6 +203,26 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\RegisterView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Settings\LayoutView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Settings\EditorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Settings\LanguageView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Settings\StandardsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

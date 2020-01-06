@@ -21,7 +21,7 @@ namespace EvernoteCloneLibrary.Notebooks.Location
                     Path = null;
                 return _path;
             }
-            set => _path = string.IsNullOrEmpty(value) ? "/" : value;
+            set => _path = string.IsNullOrWhiteSpace(value) ? "/" : value;
         }
 
         // TODO: add summary
@@ -145,15 +145,15 @@ namespace EvernoteCloneLibrary.Notebooks.Location
         }
 
         public static bool AddNotebookLocationToLocalStorage(NotebookLocation notebookLocation) =>
-            XmlExporter.Export(GetUserDataStoragePath(), "NotebookLocations.enex",
+            XmlExporter.Export(StaticMethods.GetUserDataStoragePath(), "NotebookLocations.enex",
                 GetNewXmlRepresentation(notebookLocation));
 
         public static bool RemoveNotebookLocationFromLocalStorage(NotebookLocation notebookLocation) =>
-            XmlExporter.Export(GetUserDataStoragePath(), "NotebookLocations.enex",
+            XmlExporter.Export(StaticMethods.GetUserDataStoragePath(), "NotebookLocations.enex",
                 GetXmlRepresentationWithout(notebookLocation));
 
         private static string[] GetNewXmlRepresentation(NotebookLocation notebookLocation) => 
-            GetXmlRepresentation(XmlImporter.ImportNotebookLocations(GetUserDataStoragePath() + @"/NotebookLocations.enex"), notebookLocation);
+            GetXmlRepresentation(XmlImporter.ImportNotebookLocations(StaticMethods.GetUserDataStoragePath() + @"/NotebookLocations.enex"), notebookLocation);
         
         private static string[] GetXmlRepresentation(List<NotebookLocation> notebookLocations, NotebookLocation newNotebookLocation = null)
         {
@@ -182,7 +182,7 @@ namespace EvernoteCloneLibrary.Notebooks.Location
         private static string[] GetXmlRepresentationWithout(NotebookLocation notebookLocation)
         {
             List<NotebookLocation> notebookLocations =
-                XmlImporter.ImportNotebookLocations(GetUserDataStoragePath() + @"/NotebookLocations.enex");
+                XmlImporter.ImportNotebookLocations(StaticMethods.GetUserDataStoragePath() + @"/NotebookLocations.enex");
                 
             if (notebookLocations.Any(location => location.Path == notebookLocation.Path))
             {
@@ -197,7 +197,7 @@ namespace EvernoteCloneLibrary.Notebooks.Location
             List<NotebookLocation> notebookLocations = new List<NotebookLocation>();
             
             // Load all the notebook locations stored in the local storage
-            List<NotebookLocation> notebookLocationsFromFileSystem = XmlImporter.ImportNotebookLocations(GetUserDataStoragePath() + @"/NotebookLocations.enex");
+            List<NotebookLocation> notebookLocationsFromFileSystem = XmlImporter.ImportNotebookLocations(StaticMethods.GetUserDataStoragePath() + @"/NotebookLocations.enex");
             
             // Load all the notebook locations stored in the database, if the user has a proper ID.
             // Note: Should also verify using password hash, but that is a TODO. This part will be rewritten later on.
@@ -247,12 +247,12 @@ namespace EvernoteCloneLibrary.Notebooks.Location
 
         private NotebookLocation Update(int oldId, int newId)
         {
-            List<NotebookLocation> notebookLocations = XmlImporter.ImportNotebookLocations(GetUserDataStoragePath() + @"/NotebookLocations.enex");
+            List<NotebookLocation> notebookLocations = XmlImporter.ImportNotebookLocations(StaticMethods.GetUserDataStoragePath() + @"/NotebookLocations.enex");
             notebookLocations.First(notebookLocation => notebookLocation.Id == oldId).Id = newId;
             
             Id = newId;
             
-            return XmlExporter.Export(GetUserDataStoragePath(), "NotebookLocations.enex", GetXmlRepresentation(notebookLocations)) ? this : null;
+            return XmlExporter.Export(StaticMethods.GetUserDataStoragePath(), "NotebookLocations.enex", GetXmlRepresentation(notebookLocations)) ? this : null;
         }
 
         public string[] ToXmlRepresentation()
@@ -277,20 +277,5 @@ namespace EvernoteCloneLibrary.Notebooks.Location
 
         public override int GetHashCode() =>
             (Path != null ? Path.GetHashCode() : 0);
-
-        private static string GetUserDataStoragePath()
-        {
-            string path = Constant.TEST_MODE ? Constant.TEST_USERDATA_STORAGE_PATH : Constant.PRODUCTION_USERDATA_STORAGE_PATH;
-            string[] splittedPath = path.Split('<', '>');
-
-            if (splittedPath.Length == 3)
-            {
-                splittedPath[1] = Constant.User.Username;
-
-                return splittedPath[0] + splittedPath[1] + splittedPath[2];
-            }
-
-            return null;
-        }
     }
 }

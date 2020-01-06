@@ -37,7 +37,7 @@ namespace EvernoteCloneLibrary.Notebooks
 
                 return _title;
             }
-            set => _title = string.IsNullOrEmpty(value) ? "Nameless notebook" : value;
+            set => _title = string.IsNullOrWhiteSpace(value) ? SettingsConstant.DEFAULT_NOTEBOOK_TITLE : value;
         }
 
         public Notebook() =>
@@ -46,7 +46,6 @@ namespace EvernoteCloneLibrary.Notebooks
         /// <summary>
         /// Load all the notebooks belonging to the specified user.
         /// </summary>
-        /// <param name="userId"></param>
         /// <returns></returns>
         public static List<Notebook> Load()
         {
@@ -54,7 +53,7 @@ namespace EvernoteCloneLibrary.Notebooks
             List<Notebook> notebooksToReturn = new List<Notebook>();
 
             // Load all the notebooks stored in the local storage
-            List<Notebook> notebooksFromFileSystem = XmlImporter.TryImportNotebooks(GetNotebookStoragePath());
+            List<Notebook> notebooksFromFileSystem = XmlImporter.TryImportNotebooks(StaticMethods.GetNotebookStoragePath());
 
             // Load all the notebooks stored in the database
             if (userId != -1)
@@ -171,7 +170,6 @@ namespace EvernoteCloneLibrary.Notebooks
         /// <summary>
         /// Update the path of the notebook
         /// </summary>
-        /// <param name="userId"></param>
         public void UpdatePathId()
         {
             int userId = Constant.User.Id;
@@ -243,7 +241,7 @@ namespace EvernoteCloneLibrary.Notebooks
             NotebookRepository notebookRepository = new NotebookRepository();
             
             bool updatedCloud = notebookRepository.Update(this);
-            bool updatedLocally = XmlExporter.Export(GetNotebookStoragePath(), $@"{FsName}.enex", this);
+            bool updatedLocally = XmlExporter.Export(StaticMethods.GetNotebookStoragePath(), $@"{FsName}.enex", this);
 
             return updatedCloud || updatedLocally;
         }
@@ -263,7 +261,7 @@ namespace EvernoteCloneLibrary.Notebooks
                 Path = NotebookLocation.GetNotebookLocationByPath(Path.Path);
             }
 
-            return XmlExporter.Export(GetNotebookStoragePath(), $@"{FsName}.enex", this) ? this : null;
+            return XmlExporter.Export(StaticMethods.GetNotebookStoragePath(), $@"{FsName}.enex", this) ? this : null;
         }
 
         /// <summary>
@@ -395,7 +393,7 @@ namespace EvernoteCloneLibrary.Notebooks
             }
 
             // Delete the notebook file from local storage.
-            string path = GetNotebookStoragePath() + $"/{this.FsName}.enex";
+            string path = StaticMethods.GetNotebookStoragePath() + $"/{this.FsName}.enex";
             if (File.Exists(path))
             {
                 File.Delete(path);
@@ -417,7 +415,7 @@ namespace EvernoteCloneLibrary.Notebooks
                     notebook.FsName = $"{Guid.NewGuid()}";
                 }
 
-                return XmlExporter.Export(GetNotebookStoragePath(), $@"{notebook.FsName}.enex", notebook);
+                return XmlExporter.Export(StaticMethods.GetNotebookStoragePath(), $@"{notebook.FsName}.enex", notebook);
             }
             return false;
         }
@@ -440,25 +438,6 @@ namespace EvernoteCloneLibrary.Notebooks
             }
 
             return notes;
-        }
-
-        /// <summary>
-        /// Get the storage path for saving notes and notebooks locally.
-        /// </summary>
-        /// <returns></returns>
-        private static string GetNotebookStoragePath()
-        {
-            string path = Constant.TEST_MODE ? Constant.TEST_NOTEBOOK_STORAGE_PATH : Constant.PRODUCTION_NOTEBOOK_STORAGE_PATH;
-            string[] splittedPath = path.Split('<', '>');
-
-            if (splittedPath.Length == 3)
-            {
-                splittedPath[1] = Constant.User.Username;
-
-                return splittedPath[0] + splittedPath[1] + splittedPath[2];
-            }
-
-            return null;
         }
 
         /// <summary>

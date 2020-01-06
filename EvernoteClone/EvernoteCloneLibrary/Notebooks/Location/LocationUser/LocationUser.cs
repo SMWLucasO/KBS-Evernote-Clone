@@ -6,7 +6,6 @@ namespace EvernoteCloneLibrary.Notebooks.Location.LocationUser
 {
     public class LocationUser : LocationUserModel
     {
-        
         /// <summary>
         /// Returns all the LocationUsers linked to the current User
         /// </summary>

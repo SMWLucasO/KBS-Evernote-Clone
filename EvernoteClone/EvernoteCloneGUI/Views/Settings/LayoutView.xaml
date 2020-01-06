@@ -1,0 +1,75 @@
+﻿<UserControl x:Class="EvernoteCloneGUI.Views.Settings.LayoutView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:behaviors="clr-namespace:EvernoteCloneGUI.Helpers"
+        xmlns:helpers="clr-namespace:EvernoteCloneGUI.ViewModels.Controls.Settings"
+        xmlns:cal="http://www.caliburnproject.org"
+        mc:Ignorable="d"
+        d:DesignHeight="400" d:DesignWidth="640">
+    <Grid Background="{Binding Path=BackgroundColorSettings}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="30*"/>
+            <ColumnDefinition Width="70*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <!-- Row 1 -->
+        <Label Grid.Column="0" Grid.Row="0" Content="Button background color:" HorizontalAlignment="Right"/>
+
+        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="0">
+            <TextBox x:Name="ButtonBackgroundColor" 
+                     HorizontalAlignment="Left" 
+                     MinWidth="50"
+                     Text="#404040"
+                     Margin="5,5,5,5"
+                     cal:Message.Attach="[Event TextChanged] = [TextBoxTextChanged($source)]"></TextBox>
+
+            <Label Content="Standard: #404040" HorizontalAlignment="Right"/>
+        </StackPanel>
+
+        <!-- Row 2 -->
+        <Label Grid.Column="0" Grid.Row="1" Content="Accent color (e.g. Active button):" HorizontalAlignment="Right"/>
+
+        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="1">
+            <TextBox x:Name="ButtonAccentColor" 
+                     HorizontalAlignment="Left" 
+                     MinWidth="50"
+                     Text="#0052cc"
+                     Margin="5,5,5,5"
+                     cal:Message.Attach="[Event TextChanged] = [TextBoxTextChanged($source)]"></TextBox>
+
+            <Label Content="Standard: #0052cc" />
+        </StackPanel>
+        
+        <!-- Row 3 -->
+        <Label Grid.Column="0" Grid.Row="2" Content="Background color settings:" HorizontalAlignment="Right"/>
+
+        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="2">
+            <TextBox x:Name="BackgroundColorSettingsTextBox" 
+                     HorizontalAlignment="Left" 
+                     MinWidth="50"
+                     Text="#ffbfcd"
+                     Margin="5,5,5,5"
+                     cal:Message.Attach="[Event TextChanged] = [TextBoxTextChanged($source)]"></TextBox>
+
+            <Label Content="Standard: #ffbfcd" />
+        </StackPanel>
+
+        <Button 
+            Grid.Row="3" 
+            Grid.Column="0" 
+            HorizontalAlignment="Right" 
+            VerticalAlignment="Bottom" 
+            Margin="0,0,0,10"
+            Padding="5"
+            x:Name="ApplyChanges" 
+            Content="Apply changes"/>
+    </Grid>
+</UserControl>
