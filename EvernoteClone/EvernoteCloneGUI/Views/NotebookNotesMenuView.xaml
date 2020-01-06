@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:EvernoteCloneGUI.Views"
              xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              xmlns:cal="http://www.caliburnproject.org"
+             xmlns:lang="clr-namespace:EvernoteCloneGUI"
              mc:Ignorable="d" Background="WhiteSmoke"
              d:DesignHeight="450" d:DesignWidth="250">
     <Grid>
@@ -31,9 +32,13 @@
                     <RowDefinition Height="20*"/>
                     <RowDefinition Height="20*"/>
                 </Grid.RowDefinitions>
-                <TextBlock x:Name="NotebookName" FontSize="14" Grid.Column="1">Nameless notebook</TextBlock>
+                <TextBlock x:Name="NotebookName" FontSize="14" Grid.Column="1">
+                    <Run Text="{x:Static lang:Language.NotebookNotesMenuViewTitle}"/>
+                </TextBlock>
                 <TextBlock Grid.Row="1" />
-                <TextBlock x:Name="NotebookNoteCount" Grid.Row="2" Grid.Column="1" FontSize="10" Foreground="Gray">30 notes</TextBlock>
+                <TextBlock x:Name="NotebookNoteCount" Grid.Row="2" Grid.Column="1" FontSize="10" Foreground="Gray">30 
+                    <Run Text="{x:Static lang:Language.NotebookNotesMenuViewNumber}"/>
+                </TextBlock>
                 <TextBox cal:Message.Attach="[Event TextChanged] = [SearchNoteInNotebook($eventArgs)]"
                          Grid.Row="3" Grid.Column="1" Margin="0,4,10,10"></TextBox>
             </Grid>

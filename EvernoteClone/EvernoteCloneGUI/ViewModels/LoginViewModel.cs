@@ -434,6 +434,9 @@ namespace EvernoteCloneGUI.ViewModels
 
         #region For local use only
         
+        /// <summary>
+        /// When this 'button' is clicked, set the User property to a LocalUser user object
+        /// </summary>
         public void UseLocally()
         {
             User = new User

@@ -6,6 +6,7 @@ using System.Windows;
 using EvernoteCloneLibrary.Utils;
 using Caliburn.Micro;
 using System.Linq;
+using EvernoteCloneGUI.ViewModels.Popups;
 // ReSharper disable PossibleNullReferenceException
 
 namespace EvernoteCloneGUI.ViewModels.Commands

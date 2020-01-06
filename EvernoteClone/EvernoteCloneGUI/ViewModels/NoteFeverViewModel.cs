@@ -13,7 +13,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using EvernoteCloneGUI.ViewModels.Controls;
 using EvernoteCloneLibrary.Constants;
+using EvernoteCloneLibrary.SharedNotes;
 using EvernoteCloneLibrary.Users;
+using EvernoteCloneLibrary;
+
 
 namespace EvernoteCloneGUI.ViewModels
 {
@@ -40,6 +43,11 @@ namespace EvernoteCloneGUI.ViewModels
         /// Notebooks contains all the local notebooks (and online notebooks, if UserID != 1)
         /// </value>
         public List<Notebook> Notebooks { get; private set; } = new List<Notebook>();
+        
+        /// <summary>
+        /// A notebook that contains all shared notes
+        /// </summary>
+        public Notebook SharedNotebook { get; private set; }
 
         /// <value>
         /// SelectedNotebook contains the currently selected Notebook
@@ -72,6 +80,26 @@ namespace EvernoteCloneGUI.ViewModels
 
             // if we're doing the initial loading, load the note and notebook if there is not already a selected note/notebook.
             SelectFirst();
+        }
+
+        public void LoadSharedNotebook()
+        {
+            SharedNotebook = new Notebook
+            {
+                Id = -1,
+                LocationId = -1,
+                UserId = -1,
+                Title = "Shared notes",
+                LastUpdated = DateTime.Now,
+                CreationDate = DateTime.Now,
+                IsNotNoteOwner = true
+            };
+
+            List<SharedNote> sharedNotes = SharedNote.GetAllSharedNotes();
+            foreach (SharedNote sharedNote in sharedNotes)
+            {
+                SharedNotebook.Notes.Add(Note.GetNoteFromDatabaseById(sharedNote.NoteId));
+            }
         }
 
         /// <summary>
@@ -251,6 +279,19 @@ namespace EvernoteCloneGUI.ViewModels
         }
 
         /// <summary>
+        /// Method which opens the view containing all the user's SharedNotes.
+        /// </summary>
+        public void OpenSharedNotesView()
+        {
+            LoadSharedNotebook();
+
+            if (!(ValidateAndLoadNotebookView(SharedNotebook)))
+            {
+                MessageBox.Show("There are no shared notes to view.", "Note Fever", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        /// <summary>
         /// Open the view for all deleted notes
         /// </summary>
         public void OpenDeletedNotesView()
@@ -377,6 +418,7 @@ namespace EvernoteCloneGUI.ViewModels
         /// </summary>
         protected override void OnActivate()
         {
+            LanguageChanger lang = new LanguageChanger("en-US");
             // Show login popup
             OpenLoginPopupView(true);
 
