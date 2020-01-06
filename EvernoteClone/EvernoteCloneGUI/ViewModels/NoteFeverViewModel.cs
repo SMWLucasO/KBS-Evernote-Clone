@@ -9,12 +9,11 @@ using System.Dynamic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using EvernoteCloneGUI.ViewModels.Controls;
 using EvernoteCloneLibrary.Constants;
 using EvernoteCloneLibrary.SharedNotes;
 using EvernoteCloneLibrary.Users;
+using EvernoteCloneLibrary.Settings;
 using EvernoteCloneLibrary;
 
 
@@ -27,6 +26,35 @@ namespace EvernoteCloneGUI.ViewModels
     {
         #region Properties
 
+        /// <value>
+        /// The background color of all buttons
+        /// </value>
+        public string ButtonBackgroundColor
+        {
+            get => _buttonBackgroundColor;
+            set
+            {
+                _buttonBackgroundColor = value;
+                NotifyOfPropertyChange(nameof(ButtonBackgroundColor));
+            }
+        }
+
+        /// <value>
+        /// The background color of all active buttons
+        /// </value>
+        public string ButtonAccentColor
+        {
+            get => _buttonAccentColor;
+            set
+            {
+                _buttonAccentColor = value;
+                NotifyOfPropertyChange(nameof(ButtonAccentColor));
+            }
+        }
+        
+        /// <value>
+        /// The only instance of the NoteFeverTreeViewModel
+        /// </value>
         public static NoteFeverTreeViewModel NoteFeverTreeViewModel { get; private set; }
 
         /// <value>
@@ -64,6 +92,20 @@ namespace EvernoteCloneGUI.ViewModels
         /// That is used to display all the notes inside a Notebook
         /// </value>
         public NotebookViewModel NotebookViewModelProp { get; set; }
+
+        #endregion
+
+        #region Variables
+
+        /// <value>
+        /// The background of buttons
+        /// </value>
+        private string _buttonBackgroundColor;
+        
+        /// <value>
+        /// The background of active buttons
+        /// </value>
+        private string _buttonAccentColor;
 
         #endregion
 
@@ -170,7 +212,7 @@ namespace EvernoteCloneGUI.ViewModels
                 {
                     if (SelectedNotebook.Notes.Count > 0)
                     {
-                        IEnumerable<INote> notes = SelectedNotebook.Notes.Where((note) => !((Note)note).IsDeleted);
+                        IEnumerable<INote> notes = SelectedNotebook.Notes.Where(note => !((Note)note).IsDeleted);
                         notebookCountString = $"{notes.ToList().Count} note(s)";
                     }
                 }
@@ -190,10 +232,10 @@ namespace EvernoteCloneGUI.ViewModels
                 }
 
                 // Create the notebook view with the required data.
-                NotebookViewModelProp = new NotebookViewModel()
+                NotebookViewModelProp = new NotebookViewModel
                 {
                     NewNoteViewModel = newNoteViewModel,
-                    NotebookNotesMenu = new NotebookNotesMenuViewModel()
+                    NotebookNotesMenu = new NotebookNotesMenuViewModel
                     {
                         Notebook = SelectedNotebook,
                         NotebookName = SelectedNotebook.Title,
@@ -205,8 +247,7 @@ namespace EvernoteCloneGUI.ViewModels
                 // load the selected note and the note elements, afterwards, activate the view.
                 NotebookViewModelProp.NewNoteViewModel?.LoadNote();
                 NotebookViewModelProp.NotebookNotesMenu.LoadNotesIntoNotebookMenu(showDeletedNotes);
-
-                // Comment below and change ContentControl x:Name to ActiveItem and Change Class overerving to .OneActive and it works...
+                
                 ActivateItem(NotebookViewModelProp);
             }
             else
@@ -254,7 +295,7 @@ namespace EvernoteCloneGUI.ViewModels
         {
             if (Notebooks != null)
             {
-                Notebook allNotesNotebook = new Notebook()
+                Notebook allNotesNotebook = new Notebook
                 {
                     Id = -1,
                     LocationId = -1,
@@ -270,7 +311,7 @@ namespace EvernoteCloneGUI.ViewModels
                 foreach (Notebook notebook in Notebooks)
                 {
                     // We want to retrieve all notes which are not deleted.
-                    notes.AddRange(notebook.RetrieveNoteList((note) => (!((NoteModel)note).IsDeleted)));
+                    notes.AddRange(notebook.RetrieveNoteList(note => !((NoteModel)note).IsDeleted));
                 }
 
                 allNotesNotebook.Notes = notes;
@@ -300,7 +341,7 @@ namespace EvernoteCloneGUI.ViewModels
         /// </summary>
         public void OpenDeletedNotesView()
         {
-            Notebook trashNotebook = new Notebook()
+            Notebook trashNotebook = new Notebook
             {
                 Id = -1,
                 LocationId = -1,
@@ -342,9 +383,11 @@ namespace EvernoteCloneGUI.ViewModels
 
             LoginUser = loginViewModel.User;
             Constant.User = LoginUser;
-            
-            if (!suppressSynchronize) 
+
+            if (!suppressSynchronize)
                 Synchronize();
+            else
+                LoadSettings();
         }
 
         /// <summary>
@@ -388,7 +431,7 @@ namespace EvernoteCloneGUI.ViewModels
         /// <summary>
         /// Select the first notebook inside a path with a certain title
         /// </summary>
-        /// <param name="path">The path that should contain the notebook</param>
+        /// <param name="notebookLocation">The path that should contain the notebook</param>
         /// <param name="title">The title of the notebook that we want to select</param>
         public void SelectNotebook(NotebookLocation notebookLocation, string title)
         {
@@ -410,6 +453,18 @@ namespace EvernoteCloneGUI.ViewModels
             SelectedNotebook = Notebooks.FirstOrDefault(notebooks => notebooks.FsName == SelectedNotebook?.FsName);
             SelectedNote = SelectedNotebook?.Notes.Cast<Note>().FirstOrDefault(notes => notes.Title == SelectedNote?.Title && notes.LastUpdated == SelectedNote?.LastUpdated);
             LoadNoteViewIfNoteExists();
+            LoadSettings();
+        }
+        
+        /// <summary>
+        /// This will open the SettingsView when this button is clicked
+        /// </summary>
+        public void OpenSettingsView()
+        {
+            IWindowManager windowManager = new WindowManager();
+            
+            SettingsViewModel settingsViewModel = new SettingsViewModel(this);
+            windowManager.ShowDialog(settingsViewModel);
         }
         
         #endregion
@@ -457,6 +512,25 @@ namespace EvernoteCloneGUI.ViewModels
             (GetView() as Window)?.Hide();
             
             Synchronize();
+        }
+
+        #endregion
+
+        #region HelperMethods
+
+        public void UpdateColors()
+        {
+            ButtonBackgroundColor = SettingsConstant.BUTTON_BACKGROUND_COLOR;
+            ButtonAccentColor = SettingsConstant.ACCENT_COLOR;
+        }
+
+        public void LoadSettings()
+        {
+            // Load settings (if exist)
+            Setting.Load();
+
+            ButtonBackgroundColor = SettingsConstant.BUTTON_BACKGROUND_COLOR;
+            ButtonAccentColor = SettingsConstant.ACCENT_COLOR;
         }
 
         #endregion

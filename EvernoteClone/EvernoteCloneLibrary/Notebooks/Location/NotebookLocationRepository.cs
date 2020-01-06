@@ -75,7 +75,7 @@ namespace EvernoteCloneLibrary.Notebooks.Location
         {
             if (toUpdate != null)
             {
-                if (!string.IsNullOrEmpty(toUpdate.Path) && toUpdate.Id != -1)
+                if (!string.IsNullOrWhiteSpace(toUpdate.Path) && toUpdate.Id != -1)
                 {
                     Dictionary<string, object> parameters = GenerateQueryParameters(toUpdate);
                     parameters.Add("@Id", toUpdate.Id);

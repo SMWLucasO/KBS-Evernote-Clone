@@ -58,7 +58,6 @@ namespace EvernoteCloneGUI.ViewModels
         /// </summary>
         protected override void OnActivate()
         {
-            base.OnActivate();
             Value = "";
         }
     }

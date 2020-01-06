@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml.Linq;
 using System.Linq;
+using System.Windows;
+using EvernoteCloneLibrary.Constants;
 using EvernoteCloneLibrary.Notebooks.Location;
 using EvernoteCloneLibrary.Utils;
 
@@ -39,7 +41,7 @@ namespace EvernoteCloneLibrary.Files.Parsers
         /// <returns></returns>
         public static List<Notebook> ImportNotebooks(string filePath)
         {
-            if (!(string.IsNullOrEmpty(filePath)))
+            if (!(string.IsNullOrWhiteSpace(filePath)))
             {
                 List<Notebook> notebooks = new List<Notebook>();
                 if (!(ValidateFolderExistsNotEmpty(filePath)))
@@ -81,7 +83,7 @@ namespace EvernoteCloneLibrary.Files.Parsers
         /// <returns></returns>
         public static List<NotebookLocation> ImportNotebookLocations(string filePath)
         {
-            if (!(string.IsNullOrEmpty(filePath)))
+            if (!string.IsNullOrWhiteSpace(filePath))
             {
                 List<NotebookLocation> notebookLocations = new List<NotebookLocation>();
                 if (!File.Exists(filePath))
@@ -102,6 +104,44 @@ namespace EvernoteCloneLibrary.Files.Parsers
                 return notebookLocations;
             }
             return null;
+        }
+
+        /// <summary>
+        /// Import all the settings that are stored locally.
+        /// If a setting is not stored locally we keep the default
+        /// </summary>
+        /// <param name="filePath">The filePath where all settings are stored</param>
+        /// <returns>A boolean indicating whether importing the settings was successful</returns>
+        public static bool ImportSettings(string filePath)
+        {
+            if (!string.IsNullOrWhiteSpace(filePath) && ValidateFileExists(filePath))
+            {
+                Dictionary<string, object> settings = SettingsConstant.GetSettings();
+                
+                // load the XML from the path and parse it for usage
+                XDocument xDocument = XDocument.Load(filePath);
+                foreach (string name in settings.Keys)
+                {
+                    if (xDocument.Descendants("en-export").Descendants().Any(element => element.Name == name))
+                    {
+                        try
+                        {
+                            SettingsConstant.SetValue(name, 
+                                Convert.ChangeType(
+                                    xDocument.Descendants("en-export").Descendants()
+                                        .First(element => element.Name == name).Value, settings[name].GetType()));
+                        }
+                        catch (Exception)
+                        {
+                            MessageBox.Show("There went something wrong while importing the settings stored locally, don't change these values on your own!",
+                                "NoteFever | Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                    }
+                }
+
+                return true;
+            }
+            return false;
         }
 
         #region Methods for generating objects from XML
@@ -225,14 +265,24 @@ namespace EvernoteCloneLibrary.Files.Parsers
         #endregion
 
         #region Validation methods
+        
         private static bool ValidateFolderExistsNotEmpty(string filePath)
         {
             return Directory.Exists(filePath) && Directory.GetFiles(filePath).Length > 0;
         }
+        
+        /// <summary>
+        /// Validator method for if the file exists.
+        /// </summary>
+        /// <param name="fullPath"></param>
+        /// <returns></returns>
+        private static bool ValidateFileExists(string fullPath) =>
+            File.Exists(fullPath) && Path.HasExtension(fullPath);
 
         #endregion
 
         #region Helper methods
+        
         private static string GetStrippedContent(string value)
             => value.Replace("<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE en-note SYSTEM \"http://xml.evernote.com/pub/enml2.dtd\">", "")
                             .Replace("<en-note>", "")

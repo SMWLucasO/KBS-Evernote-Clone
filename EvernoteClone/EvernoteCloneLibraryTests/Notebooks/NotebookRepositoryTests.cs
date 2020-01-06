@@ -2,7 +2,6 @@
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 
 namespace EvernoteCloneLibraryTests.Notebooks
@@ -19,7 +18,7 @@ namespace EvernoteCloneLibraryTests.Notebooks
         public void Insert_ShouldReturn(string title, bool expected)
         {
             // Arrange
-            Notebook notebook = new Notebook()
+            Notebook notebook = new Notebook
             {
                 UserId = 3,
                 LocationId = 1, // default id for testing
@@ -47,10 +46,10 @@ namespace EvernoteCloneLibraryTests.Notebooks
         [TestCase("ATitle", true)]
         public void Update_ShouldReturn(string title, bool expected)
         {
-            // arrange
+            // Arrange
             NotebookRepository repository = new NotebookRepository();
 
-            // act and assert
+            // Act and Assert
             foreach (Notebook notebook in InsertedNotebooks)
             {
                 notebook.Title = title;

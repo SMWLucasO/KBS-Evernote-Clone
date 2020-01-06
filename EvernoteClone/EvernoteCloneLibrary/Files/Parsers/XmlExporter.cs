@@ -34,14 +34,24 @@ namespace EvernoteCloneLibrary.Files.Parsers
         #region Validation
 
         /// <summary>
-        /// Validate if the input parameters aren't null (or empty)
+        /// Validate if the input parameters aren't null (or empty or whitespace)
         /// </summary>
         /// <param name="filePath"></param>
         /// <param name="filename"></param>
         /// <param name="parseableObject"></param>
         /// <returns></returns>
         private static bool ValidateExportParameters(string filePath, string filename, IParseable parseableObject) =>
-            (!(string.IsNullOrEmpty(filePath) || string.IsNullOrEmpty(filename)) && parseableObject != null);
+            !(string.IsNullOrWhiteSpace(filePath) || string.IsNullOrWhiteSpace(filename)) && parseableObject != null;
+        
+        /// <summary>
+        /// Validate if the input parameters aren't null (or empty or whitespace)
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="filename"></param>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        private static bool ValidateExportParameters(string filePath, string filename, string[] content) =>
+            !(string.IsNullOrWhiteSpace(filePath) || string.IsNullOrWhiteSpace(filename)) && content.Length > 0;
 
         /// <summary>
         /// Validator method for if the file exists.
@@ -97,7 +107,7 @@ namespace EvernoteCloneLibrary.Files.Parsers
         /// <returns></returns>
         public static bool Export(string filePath, string fileName, string[] content)
         {
-            if (!(string.IsNullOrEmpty(filePath) || string.IsNullOrEmpty(fileName)))
+            if (ValidateExportParameters(filePath, fileName, content))
             {
                 string fullPath = $"{filePath}/{fileName}";
                 if (Path.HasExtension(fullPath))
