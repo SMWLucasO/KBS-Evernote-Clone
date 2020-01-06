@@ -247,14 +247,13 @@ namespace EvernoteCloneGUI.ViewModels
             // If the user exist it will add the note to the new user. 
             User sharedUser = (User)userRepositoryLogin.CheckIfUserExists(userInput);
             if (sharedUser != null)
-            {
-                
+            {              
                 new NoteRepository().Insert(sharedNote);
                 SharedNote.SaveNewRecord(sharedNote.Id, sharedUser.Id);
             }
             else
             {
-                MessageBox.Show("Username does not exist");
+                MessageBox.Show("Username does not exist or make sure you're logged in");
             }
         }
 
