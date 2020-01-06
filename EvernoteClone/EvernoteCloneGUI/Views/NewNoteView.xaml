@@ -59,7 +59,7 @@
                     <Run Text="{x:Static lang:Language.NewNoteViewFsize}"/>
                 </Label>
                 <ComboBox Margin="5 0 10 0" SelectedItem="{Binding SelectedFontSize}" x:Name="FontSizes" IsEditable="True"/>
-                
+
                 <Separator/>
 
                 <Button FontWeight="Bold" Command="EditingCommands.ToggleBold" Width="20">B</Button>
@@ -84,14 +84,14 @@
                 </Button>
 
                 <Separator Margin="5 0 5 0" />
-
+              
                 <Button Margin="5 0 5 0" Foreground="Black" Command="EditingCommands.DecreaseIndentation">
                     <Run Text="{x:Static lang:Language.NewNoteViewFundent}"/>
                 </Button>
                 <Button Margin="5 0 5 0" Foreground="Black" Command="EditingCommands.IncreaseIndentation">
                     <Run Text="{x:Static lang:Language.NewNoteViewFindent}"/>
                 </Button>
-                
+              
                 <Separator/>
 
                 <Button Margin="5 0 5 0" Foreground="Red" cal:Message.Attach="[Event Click] = [OnSetTextColor]">
@@ -134,12 +134,16 @@
             </Grid>
         </StackPanel>
         <StackPanel>
-            <RichTextBox Height="669" x:Name="TextEditor" cal:Message.Attach="[Event TextChanged] = [StoreRichTextBoxContent($eventArgs)]" 
-                         SpellCheck.IsEnabled="True" IsDocumentEnabled="True" AcceptsTab="True">
+            <RichTextBox Height="200" x:Name="TextEditor" cal:Message.Attach="[Event TextChanged] = [StoreRichTextBoxContent($eventArgs)]" 
+                         SpellCheck.IsEnabled="True" IsDocumentEnabled="True" AcceptsTab="True" Margin="0,0,-0.2,0">
                 <FlowDocument>
-                    
                 </FlowDocument>
             </RichTextBox>
         </StackPanel>
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+            <StackPanel x:Name="LabelsStackPanel" Height="40" Background="Pink" Orientation="Horizontal" HorizontalAlignment="Stretch">
+              <Button Width="50" FontSize="24" x:Name="LabelsAdd">+</Button>
+            </StackPanel>
+        </ScrollViewer>
     </StackPanel>
 </UserControl>

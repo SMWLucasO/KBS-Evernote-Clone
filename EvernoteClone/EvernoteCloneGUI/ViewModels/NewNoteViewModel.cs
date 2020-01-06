@@ -14,6 +14,11 @@ using System.Windows.Documents;
 using System.Windows.Markup;
 using System.Xml;
 using System.Linq;
+using EvernoteCloneLibrary.Database;
+using EvernoteCloneLibrary.Notebooks.Notes.Labels;
+using System.Collections.ObjectModel;
+using Microsoft.VisualBasic;
+using EvernoteCloneLibrary.Labels.NoteLabel;
 using System.Windows.Input;
 using EvernoteCloneGUI.ViewModels.Commands.KeyGestures;
 
@@ -24,9 +29,45 @@ namespace EvernoteCloneGUI.ViewModels
     /// </summary>
     public class NewNoteViewModel : Screen
     {
-
         #region Instance variables
         private readonly bool _loadNote;
+        private string userInput = "";
+
+        public StackPanel LabelsStackPanel { get; set; }
+        public void LabelsAdd()
+        {    
+            userInput = Interaction.InputBox("Share Note", "Please enter a valid username", userInput);
+
+            LabelModel labelModel = new LabelModel { Id = -1, Title = userInput };
+
+            if (string.IsNullOrWhiteSpace(userInput))
+            {
+                MessageBox.Show("Field can't be empty.");
+            }
+            else
+            {
+                if (Note.Tags.Contains(userInput))
+                {
+                    MessageBox.Show("This label already exists.");
+                    return;
+                }
+
+                if (Note.Id != -1)
+                {
+                    bool addLabel = new EvernoteCloneLibrary.Notebooks.Notes.Labels.Label().InsertLabel(labelModel, Note);
+
+                    if (addLabel)
+                    {
+                        LoadLabels();
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("You can't add labels to notes when they're not saved in the database.");
+                }
+                
+            }
+        }
 
         private string _font = "";
         private int _fontSize = 12;
@@ -140,7 +181,7 @@ namespace EvernoteCloneGUI.ViewModels
         /// <summary>
         /// Every note is part of a notebook, therefore we need the object when saving.
         /// </summary>
-        public Notebook NoteOwner { get; set; }
+        public Notebook NoteOwner { get; set; } 
 
         #endregion
         
@@ -148,6 +189,63 @@ namespace EvernoteCloneGUI.ViewModels
         {
             DisplayName = "Note Fever | Nameless note";
             _loadNote = loadNote;
+        }
+
+        public void LoadLabels()
+        {
+            if (Note.Tags == null)
+            {
+                Note.Tags = new List<string>();
+            }
+
+            Note.Tags.Clear();
+
+            List<Button> toRemove = new List<Button>();
+            foreach (Button button in LabelsStackPanel.Children.Cast<Button>())
+            {
+                    if (button.Content.ToString() != "+")
+                    {
+                        toRemove.Add(button);
+                    }
+            }
+
+            foreach (Button button in toRemove)
+            {
+                LabelsStackPanel.Children.Remove(button);
+            }
+
+            List<NoteLabelModel> noteLabels = NoteLabel.GetAllNoteLabelsFromNote(Note);
+            foreach (NoteLabelModel noteLabel in noteLabels)
+            {
+                LabelModel labelModel = new EvernoteCloneLibrary.Notebooks.Notes.Labels.Label().GetLabel(noteLabel.LabelId);
+
+                Button label = new Button
+                {
+                    Content = labelModel.Title,
+                    FontSize = 10,
+                    Height = 20,
+                    Margin = new Thickness(5, 0, 0, 0),
+                    Padding = new Thickness(5, 0, 5, 0),
+                    Tag = labelModel
+                };
+
+                label.Click += labelDelete;
+                LabelsStackPanel.Children.Add(label);
+
+                Note.Tags.Add(labelModel.Title);
+            }
+        }
+        
+        private void labelDelete(object sender, RoutedEventArgs e)
+        {
+            Button label = (Button)sender;
+
+            bool deleted = NoteLabel.RemoveNoteLabel(NoteLabel.GetNoteLabelFromLabelAndNote(Note, (LabelModel)label.Tag));
+
+             if (deleted)
+            {
+                LoadLabels();
+            }
         }
 
         #region Saving and loading
@@ -321,10 +419,33 @@ namespace EvernoteCloneGUI.ViewModels
                 );
                 
                 _textEditor = newNoteView.TextEditor;
-                _textEditor.MinHeight = SystemParameters.FullPrimaryScreenHeight;
+                _textEditor.MinHeight = SystemParameters.FullPrimaryScreenHeight-207;
                 SetupTextEditor(newNoteView);
+
+                if (GetView() is UserControl userControl)
+                {
+                    userControl.SizeChanged += OnSizeChanged;
+                }
+                else
+                {
+                    (GetView() as Window).SizeChanged += OnSizeChanged;
+                }
+                LabelsStackPanel = newNoteView.LabelsStackPanel;
+                LoadLabels();
             }
 
+        }
+
+        public void OnSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (GetView() is UserControl userControl)
+            {
+                _textEditor.MinHeight = userControl.ActualHeight - 122;
+            }
+            else if (GetView() is Window window)
+            {
+                _textEditor.MinHeight = window.Height - 161;
+            }
         }
 
         #region Toolbar events
