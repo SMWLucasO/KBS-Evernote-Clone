@@ -270,7 +270,7 @@ namespace EvernoteCloneGUI.ViewModels
         /// Makes a new note inserts them into list of notes of shared user
         /// </summary>
         /// <param name="sender"></param>
-        /// <param name="arg"></param>
+        /// <param name="args"></param>
         public void ShareNote(object sender, RoutedEventArgs args)
         {
             UserRepository userRepositoryLogin = new UserRepository();

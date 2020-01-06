@@ -25,6 +25,17 @@ namespace EvernoteCloneLibrary.SharedNotes
         }
 
         /// <summary>
+        /// Inserts a new sharedNoteModel
+        /// </summary>
+        /// <param name="sharedNoteModel"></param>
+        /// <returns></returns>
+        public static bool SaveNewRecord(SharedNoteModel sharedNoteModel)
+        {
+            SharedNoteRepository sharedNoteRepository = new SharedNoteRepository();
+            return sharedNoteRepository.Insert(sharedNoteModel);
+        }
+
+        /// <summary>
         /// Returns all SharedNote records that are linked to logged in User
         /// </summary>
         /// <returns>A list of SharedNotes</returns>
