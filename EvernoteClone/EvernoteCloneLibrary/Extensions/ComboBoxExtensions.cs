@@ -9,6 +9,10 @@ namespace EvernoteCloneLibrary.Extensions
 {
     public static class ComboBoxExtensions
     {
+        /// <summary>
+        /// Set the Width of the given ComboBox equal to the biggest item it contains
+        /// </summary>
+        /// <param name="comboBox"></param>
         public static void SetWidthFromItems(this ComboBox comboBox)
         {
             double comboBoxWidth = 19;// comboBox.DesiredSize.Width;

@@ -12,7 +12,9 @@ namespace EvernoteCloneGUI.Helpers
     /// </summary>
     public static class ComboBoxWidthFromItemsBehavior
     {
-        
+        /// <summary>
+        /// 'Creates' a property for a given combobox
+        /// </summary>
         public static readonly DependencyProperty ComboBoxWidthFromItemsProperty =
             DependencyProperty.RegisterAttached
             (
@@ -21,20 +23,38 @@ namespace EvernoteCloneGUI.Helpers
                 typeof(ComboBoxWidthFromItemsBehavior),
                 new UIPropertyMetadata(false, OnComboBoxWidthFromItemsPropertyChanged)
             );
+        
+        /// <summary>
+        /// Returns if the ComboBoxWidth is set according to its items
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public static bool GetComboBoxWidthFromItems(DependencyObject obj)
         {
             return (bool)obj.GetValue(ComboBoxWidthFromItemsProperty);
         }
+        
+        /// <summary>
+        /// Sets the ComboBoxWidth accordingly to its items
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="value"></param>
         public static void SetComboBoxWidthFromItems(DependencyObject obj, bool value)
         {
             obj.SetValue(ComboBoxWidthFromItemsProperty, value);
         }
+        
+        /// <summary>
+        /// When the ComboBoxWidthFromItems property is changed, change the actual width of the ComboBox
+        /// </summary>
+        /// <param name="dpo"></param>
+        /// <param name="e"></param>
         private static void OnComboBoxWidthFromItemsPropertyChanged(DependencyObject dpo,
             DependencyPropertyChangedEventArgs e)
         {
             if (dpo is ComboBox comboBox)
             {
-                if ((bool)e.NewValue == true)
+                if ((bool)e.NewValue)
                 {
                     comboBox.Loaded += OnComboBoxLoaded;
                 }
@@ -44,6 +64,12 @@ namespace EvernoteCloneGUI.Helpers
                 }
             }
         }
+        
+        /// <summary>
+        /// When the ComboBox is loaded, call the SetWidthFromItems from the given ComboBox
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private static void OnComboBoxLoaded(object sender, RoutedEventArgs e)
         {
             ComboBox comboBox = sender as ComboBox;
