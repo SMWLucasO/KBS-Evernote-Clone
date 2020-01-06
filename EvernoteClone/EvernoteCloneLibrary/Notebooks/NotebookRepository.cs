@@ -123,7 +123,7 @@ namespace EvernoteCloneLibrary.Notebooks
             {
                 if (string.IsNullOrWhiteSpace(toUpdate.Title))
                 {
-                    toUpdate.Title = "Nameless title";
+                    toUpdate.Title = SettingsConstant.DEFAULT_NOTEBOOK_TITLE;
                 }
 
                 Dictionary<string, object> parameters = GenerateQueryParameters(toUpdate);
