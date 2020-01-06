@@ -9,6 +9,7 @@ using System.Dynamic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using EvernoteCloneGUI.Properties;
 using EvernoteCloneGUI.ViewModels.Controls;
 using EvernoteCloneLibrary.Constants;
 using EvernoteCloneLibrary.SharedNotes;
@@ -138,13 +139,16 @@ namespace EvernoteCloneGUI.ViewModels
                 Title = "Shared notes",
                 LastUpdated = DateTime.Now,
                 CreationDate = DateTime.Now,
-                IsNotNoteOwner = true
+                IsNotNoteOwner = true,
+                IsSharedNotebook = true
             };
 
             List<SharedNote> sharedNotes = SharedNote.GetAllSharedNotes();
             foreach (SharedNote sharedNote in sharedNotes)
             {
-                SharedNotebook.Notes.Add(Note.GetNoteFromDatabaseById(sharedNote.NoteId));
+                Note note = Note.GetNoteFromDatabaseById(sharedNote.NoteId);
+                note.NoteOwner = SharedNotebook;
+                SharedNotebook.Notes.Add(note);
             }
         }
 
@@ -330,7 +334,7 @@ namespace EvernoteCloneGUI.ViewModels
         {
             LoadSharedNotebook();
 
-            if (!(ValidateAndLoadNotebookView(SharedNotebook)))
+            if (!ValidateAndLoadNotebookView(SharedNotebook))
             {
                 MessageBox.Show("There are no shared notes to view.", "Note Fever", MessageBoxButton.OK, MessageBoxImage.Information);
             }
@@ -477,7 +481,8 @@ namespace EvernoteCloneGUI.ViewModels
         /// </summary>
         protected override void OnActivate()
         {
-            LanguageChanger lang = new LanguageChanger("en-US");
+            LanguageChanger lang = new LanguageChanger(Properties.Settings.Default.LastSelectedLanguage);
+
             // Show login popup
             OpenLoginPopupView(true);
 

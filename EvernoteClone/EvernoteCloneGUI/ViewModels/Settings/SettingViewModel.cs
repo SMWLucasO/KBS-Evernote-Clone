@@ -45,7 +45,7 @@ namespace EvernoteCloneGUI.ViewModels.Settings
         /// <summary>
         /// Saves all changes locally
         /// </summary>
-        public void ApplyChanges()
+        public virtual void ApplyChanges()
         {
             if (EvernoteCloneLibrary.Settings.Setting.SaveSettings())
             {

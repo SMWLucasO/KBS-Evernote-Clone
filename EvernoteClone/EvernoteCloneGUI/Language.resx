@@ -262,7 +262,7 @@
     <value>New Note</value>
   </data>
   <data name="NoteFeverViewSearch" xml:space="preserve">
-    <value>Search</value>
+    <value>Settings</value>
   </data>
   <data name="NoteFeverViewShared" xml:space="preserve">
     <value>Shared With Me</value>

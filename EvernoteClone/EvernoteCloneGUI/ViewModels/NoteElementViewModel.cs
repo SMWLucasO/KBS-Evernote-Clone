@@ -130,7 +130,12 @@ namespace EvernoteCloneGUI.ViewModels
                     moveNoteMenuItem.Click += MoveNoteToOtherNotebook;
                     removeNoteMenuItem.Click += RemoveNote;
 
-                    menu.Items.Add(removeNoteMenuItem);
+                    // You can't remove notes that are in shared notes
+                    if (!Note.NoteOwner.IsSharedNotebook)
+                    {
+                        menu.Items.Add(removeNoteMenuItem);
+                    }
+
                     menu.Items.Add(moveNoteMenuItem);
                 }
                 
@@ -291,14 +296,15 @@ namespace EvernoteCloneGUI.ViewModels
                 return;
             }
             
-
             // If field has been filled, it will check if it exist in database of users.
             // If the user exist it will add the note to the new user. 
             User sharedUser = (User)userRepositoryLogin.CheckIfUserExists(userInput);
             if (sharedUser != null)
-            {              
+            {
                 new NoteRepository().Insert(sharedNote);
                 SharedNote.SaveNewRecord(sharedNote.Id, sharedUser.Id);
+
+                MessageBox.Show($"Successfully shared the note with {userInput}!", "NoteFever | Success", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
             {

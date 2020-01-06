@@ -6,7 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using EvernoteCloneLibrary.Constants;
 using EvernoteCloneLibrary.Notebooks.Notes;
+using EvernoteCloneLibrary.SharedNotes;
 
 namespace EvernoteCloneGUI.ViewModels.Popups
 {
@@ -91,17 +93,24 @@ namespace EvernoteCloneGUI.ViewModels.Popups
         private bool UpdateNoteNotebook()
         {
             PotentialMoveCandidate.NotebookId = SelectedNotebook.Id;
+
+            if (!PotentialMoveCandidate.NoteOwner.IsSharedNotebook)
+            {
+                SelectedNotebook.Notes.Add(PotentialMoveCandidate);
+
+                Notebook notePreviousNotebook = PotentialMoveCandidate.NoteOwner;
+                PotentialMoveCandidate.NoteOwner = SelectedNotebook;
+
+                return SelectedNotebook.Save() && notePreviousNotebook.Save();
+            }
+
+            SharedNote.RemoveRecord(PotentialMoveCandidate.Id, Constant.User.Id);
             
             PotentialMoveCandidate.NoteOwner.Notes.Remove(PotentialMoveCandidate);
             SelectedNotebook.Notes.Add(PotentialMoveCandidate);
-
-            Notebook notePreviousNotebook = PotentialMoveCandidate.NoteOwner;
             PotentialMoveCandidate.NoteOwner = SelectedNotebook;
 
-            return SelectedNotebook.Save() && notePreviousNotebook.Save();
+            return SelectedNotebook.Save();
         }
-
-        
-        
     }
 }

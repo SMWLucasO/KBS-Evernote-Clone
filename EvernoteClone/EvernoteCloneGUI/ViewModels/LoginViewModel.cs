@@ -328,6 +328,9 @@ namespace EvernoteCloneGUI.ViewModels
         /// <param name="accessToken"></param>
         private async void UserInfoCall(string accessToken)
         {
+            // WHen this function is called, the necessary info is already retrieved from the web browser
+            ((Window) GetView()).Topmost = true;
+            
             // Local variables used to insert a new Google account if needed.
             ArrayList userData = new ArrayList();
             const bool isGoogleAccount = true;
