@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Windows.Controls;
 using EvernoteCloneLibrary.Constants;
+using EvernoteCloneLibrary.Settings;
 
 namespace EvernoteCloneGUI.ViewModels.Controls.Settings
 {
@@ -20,16 +21,16 @@ namespace EvernoteCloneGUI.ViewModels.Controls.Settings
         {
             foreach (ComboBoxItem comboBoxItem in toSelectFrom.Items)
             {
-                if (toSelect is Setting setting)
+                if (toSelect is SettingModel setting)
                 {
-                    if (((Setting)comboBoxItem.Tag).value.ToString() == setting.value.ToString())
+                    if (((SettingModel)comboBoxItem.Tag).SettingValue.ToString() == setting.SettingValue.ToString())
                     {
                         toSelectFrom.SelectedItem = comboBoxItem;
                     }
                 }
                 else
                 {
-                    if (((Setting)comboBoxItem.Tag).value.ToString() == toSelect.ToString())
+                    if (((SettingModel)comboBoxItem.Tag).SettingValue.ToString() == toSelect.ToString())
                     {
                         toSelectFrom.SelectedItem = comboBoxItem;
                     }
@@ -63,10 +64,10 @@ namespace EvernoteCloneGUI.ViewModels.Controls.Settings
         /// <param name="content">The comboBox display item content</param>
         public static void AddItemToComboBox(ref ComboBox toAddTo, object toAdd, string settingRepresentation, string content)
         {
-            Setting setting = new Setting
+            SettingModel setting = new SettingModel
             {
-                setting = settingRepresentation,
-                value = toAdd
+                KeyWord = settingRepresentation,
+                SettingValue = toAdd
             };
             
             if (toAddTo.Items.Cast<ComboBoxItem>().Any(comboBoxItem => comboBoxItem.Content.ToString() == toAdd.ToString()))
@@ -98,8 +99,8 @@ namespace EvernoteCloneGUI.ViewModels.Controls.Settings
         {
             if (sender is ComboBoxItem comboBoxItem)
             {
-                Setting selectedSetting = (Setting) comboBoxItem.Tag;
-                SettingsConstant.SetValue(selectedSetting.setting, selectedSetting.value);
+                SettingModel selectedSetting = (SettingModel) comboBoxItem.Tag;
+                SettingsConstant.SetValue(selectedSetting.KeyWord, selectedSetting.SettingValue);
             }
         }
         

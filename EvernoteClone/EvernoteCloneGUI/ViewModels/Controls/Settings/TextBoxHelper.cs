@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using EvernoteCloneLibrary.Constants;
+using EvernoteCloneLibrary.Settings;
 
 namespace EvernoteCloneGUI.ViewModels.Controls.Settings
 {
@@ -21,10 +22,10 @@ namespace EvernoteCloneGUI.ViewModels.Controls.Settings
         {
             object value = SettingsConstant.GetValue(toSet);
 
-            Setting setting = new Setting
+            SettingModel setting = new SettingModel
             {
-                setting = toSet,
-                value = value
+                KeyWord = toSet,
+                SettingValue = value
             };
 
             setTextFrom.Text = value.ToString();
@@ -43,20 +44,20 @@ namespace EvernoteCloneGUI.ViewModels.Controls.Settings
         {
             if (sender is TextBox textBox)
             {
-                Setting selectedSetting = (Setting)textBox.Tag;
+                SettingModel selectedSetting = (SettingModel)textBox.Tag;
 
                 try
                 {
-                    selectedSetting.value = Convert.ChangeType(textBox.Text, selectedSetting.value.GetType());
+                    selectedSetting.SettingValue = Convert.ChangeType(textBox.Text, selectedSetting.SettingValue.GetType());
                 }
                 catch (Exception)
                 {
-                    MessageBox.Show("The given input can only be of type "+selectedSetting.value.GetType(), "NoteFever | Settings", MessageBoxButton.OK, MessageBoxImage.Error);
-                    textBox.Text = selectedSetting.value.ToString();
+                    MessageBox.Show("The given input can only be of type "+selectedSetting.SettingValue.GetType(), "NoteFever | Settings", MessageBoxButton.OK, MessageBoxImage.Error);
+                    textBox.Text = selectedSetting.SettingValue.ToString();
                     return;
                 }
 
-                SettingsConstant.SetValue(selectedSetting.setting, selectedSetting.value);
+                SettingsConstant.SetValue(selectedSetting.KeyWord, selectedSetting.SettingValue);
             }
         }
         
