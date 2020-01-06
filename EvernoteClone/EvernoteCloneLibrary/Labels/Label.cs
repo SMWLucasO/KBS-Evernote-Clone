@@ -53,21 +53,40 @@ namespace EvernoteCloneLibrary.Notebooks.Notes.Labels
             return null;
         }
 
+        public LabelModel GetLabel(string title)
+        {
+            LabelRepository labelRepository = new LabelRepository();
+            List<LabelModel> labelModels = labelRepository.GetBy(
+                    new[] { "Title = @Title" },
+                    new Dictionary<string, object>() { { "@Title", title } }
+            ).Select((el) => ((LabelModel)el)).ToList();
+
+            if (labelModels.Count > 0)
+            {
+                return labelModels[0];
+            }
+
+            return null;
+        }
+
         public bool InsertLabel(LabelModel labelModel, Note note)
         {
             LabelRepository labelRepository = new LabelRepository();
-            bool inserted = labelRepository.Insert(labelModel);
+            bool inserted = false;
 
-            if (inserted)
+            LabelModel existingLabelModel = GetLabel(labelModel.Title);
+
+            if (existingLabelModel == null)
             {
-                NoteLabel noteLabel = new NoteLabel();
-                noteLabel.NoteId = note.Id;
-                noteLabel.LabelId = labelModel.Id;
-                inserted = NoteLabel.AddNewNoteLabel(noteLabel);
+                inserted = labelRepository.Insert(labelModel);
             }
 
-            return inserted;
+            NoteLabel noteLabel = new NoteLabel();
+            noteLabel.NoteId = note.Id;
+            noteLabel.LabelId = existingLabelModel == null ? labelModel.Id : existingLabelModel.Id;
+            inserted = NoteLabel.AddNewNoteLabel(noteLabel);
 
+            return inserted;
         }
 
         /// <summary>

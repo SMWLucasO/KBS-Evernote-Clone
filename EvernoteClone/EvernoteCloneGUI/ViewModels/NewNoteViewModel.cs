@@ -41,32 +41,32 @@ namespace EvernoteCloneGUI.ViewModels
 
             LabelModel labelModel = new LabelModel { Id = -1, Title = userInput };
 
-            if (userInput == null || userInput == " ")
+            if (string.IsNullOrWhiteSpace(userInput))
             {
                 MessageBox.Show("Field can't be empty.");
             }
             else
             {
-                try
+                if (Note.Tags.Contains(userInput))
                 {
-                    if (Note.Id != -1)
-                    {
-                        bool addLabel = new EvernoteCloneLibrary.Notebooks.Notes.Labels.Label().InsertLabel(labelModel, Note);
-
-                        if (addLabel)
-                        {
-                            LoadLabels();
-                        }
-                    }
-                    else
-                    {
-                        MessageBox.Show("You can't add labels to notes when they're not saved in the database.");
-                    }
-                } catch
-                {
-                    Exception e;
-                    MessageBox.Show("Entered values can't be duplicate");
+                    MessageBox.Show("This label already exists.");
+                    return;
                 }
+
+                if (Note.Id != -1)
+                {
+                    bool addLabel = new EvernoteCloneLibrary.Notebooks.Notes.Labels.Label().InsertLabel(labelModel, Note);
+
+                    if (addLabel)
+                    {
+                        LoadLabels();
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("You can't add labels to notes when they're not saved in the database.");
+                }
+                
             }
         }
 
@@ -191,20 +191,20 @@ namespace EvernoteCloneGUI.ViewModels
 
         public void LoadLabels()
         {
+            if (Note.Tags == null)
+            {
+                Note.Tags = new List<string>();
+            }
+
+            Note.Tags.Clear();
+
             List<Button> toRemove = new List<Button>();
             foreach (Button button in LabelsStackPanel.Children.Cast<Button>())
             {
-                try
-                {
                     if (button.Content.ToString() != "+")
                     {
                         toRemove.Add(button);
                     }
-                    
-                } catch
-                {
-                    Exception e;
-                }
             }
 
             foreach (Button button in toRemove)
@@ -229,6 +229,8 @@ namespace EvernoteCloneGUI.ViewModels
 
                 label.Click += labelDelete;
                 LabelsStackPanel.Children.Add(label);
+
+                Note.Tags.Add(labelModel.Title);
             }
         }
         
