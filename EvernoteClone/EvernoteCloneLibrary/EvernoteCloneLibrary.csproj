@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -89,6 +89,12 @@
     <Compile Include="Files\Parsers\IParseable.cs" />
     <Compile Include="Files\Parsers\XmlExporter.cs" />
     <Compile Include="Files\Parsers\XmlImporter.cs" />
+    <Compile Include="Labels\Label.cs" />
+    <Compile Include="Labels\LabelModel.cs" />
+    <Compile Include="Labels\LabelRepository.cs" />
+    <Compile Include="Labels\NoteLabel\NoteLabel.cs" />
+    <Compile Include="Labels\NoteLabel\NoteLabelModel.cs" />
+    <Compile Include="Labels\NoteLabel\NoteLabelRepository.cs" />
     <Compile Include="LanguageLoader.cs" />
     <Compile Include="Notebooks\Location\LocationUser\LocationUser.cs" />
     <Compile Include="Notebooks\Location\LocationUser\LocationUserModel.cs" />
@@ -111,6 +117,9 @@
     <Compile Include="Settings\SettingModel.cs" />
     <Compile Include="Settings\SettingRepository.cs" />
     <Compile Include="StaticMethods.cs" />
+    <Compile Include="SharedNotes\SharedNote.cs" />
+    <Compile Include="SharedNotes\SharedNoteModel.cs" />
+    <Compile Include="SharedNotes\SharedNoteRepository.cs" />
     <Compile Include="Users\User.cs" />
     <Compile Include="Users\UserModel.cs" />
     <Compile Include="Users\UserRepository.cs" />
@@ -135,5 +144,6 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

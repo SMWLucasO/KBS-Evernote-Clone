@@ -1,11 +1,13 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-// TODO summary @Chino
 namespace EvernoteCloneGUI.Helpers
 {
     public static class PasswordHelper
     {
+        /// <summary>
+        /// Makes the password box a dependency object
+        /// </summary>
         public static readonly DependencyProperty PasswordProperty =
             DependencyProperty.RegisterAttached("Password",
             typeof(string), typeof(PasswordHelper),
@@ -19,6 +21,9 @@ namespace EvernoteCloneGUI.Helpers
             DependencyProperty.RegisterAttached("IsUpdating", typeof(bool),
             typeof(PasswordHelper));
 
+        /// <summary>
+        /// Setters and getters to ensure that the password boxes are bindable and the passwords can be retrieved.
+        /// </summary>
         public static void SetAttach(DependencyObject dp, bool value) =>
             dp.SetValue(AttachProperty, value);
 
@@ -37,6 +42,10 @@ namespace EvernoteCloneGUI.Helpers
         private static void SetIsUpdating(DependencyObject dp, bool value) =>
             dp.SetValue(IsUpdatingProperty, value);
 
+        /// <summary>
+        /// Checks if the first password box had any changes. If there were any changes
+        /// The password on the memory will be replaced.
+        /// </summary>
         private static void OnPasswordPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
             if (sender is PasswordBox passwordBox)
@@ -50,6 +59,10 @@ namespace EvernoteCloneGUI.Helpers
             }
         }
 
+        /// <summary>
+        /// Attach makes the password box bindable. This way passwords that are typed can be safed on the memory
+        /// for until the dialog with the password box is closed.
+        /// </summary>
         private static void Attach(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
             if (sender is PasswordBox passwordBox)
@@ -61,6 +74,9 @@ namespace EvernoteCloneGUI.Helpers
             }
         }
 
+        /// <summary>
+        /// Helper method for OnPasswordPropertyChanged to check if password had been changed.
+        /// </summary>
         private static void PasswordChanged(object sender, RoutedEventArgs e)
         {
             if (sender is PasswordBox passwordBox)

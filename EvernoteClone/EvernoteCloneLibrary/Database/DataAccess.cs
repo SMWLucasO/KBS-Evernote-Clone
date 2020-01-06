@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Text;
 using EvernoteCloneLibrary.Constants;
+using EvernoteCloneLibrary.Notebooks.Notes.Labels;
 
 namespace EvernoteCloneLibrary.Database
 {
@@ -12,7 +14,6 @@ namespace EvernoteCloneLibrary.Database
     /// </summary>
     public class DataAccess
     {
-
         /// <summary>
         /// The Singleton accessor to this class.
         /// The only way to access this class' object is through here.
@@ -72,18 +73,21 @@ namespace EvernoteCloneLibrary.Database
 
             // build the condition string: ( WHERE ... AND ... AND ... AND ... ) etc
             // conditions array should hold strings of: key = value, key >= value ... etc
-            for (int i = 0; i < conditions.Length; i++)
+            if (conditions != null)
             {
-                if (i == 0)
+                for (int i = 0; i < conditions.Length; i++)
                 {
-                    conditionBuilder.Append("WHERE ");
-                }
-                else
-                {
-                    conditionBuilder.Append("AND ");
-                }
+                    if (i == 0)
+                    {
+                        conditionBuilder.Append("WHERE ");
+                    }
+                    else
+                    {
+                        conditionBuilder.Append("AND ");
+                    }
 
-                conditionBuilder.Append(conditions[i]).Append(" ");
+                    conditionBuilder.Append(conditions[i]).Append(" ");
+                }
             }
 
             return Query($"SELECT * FROM [{table}] {conditionBuilder}",

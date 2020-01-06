@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using EvernoteCloneLibrary.Constants;
+using System.Linq;
 
 namespace EvernoteCloneLibrary.Notebooks.Notes
 {
@@ -83,6 +84,26 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
             }
            
             NoteOwner.Save();
+        }
+
+        /// <summary>
+        /// Returns a note by an specified Id (from the database)
+        /// </summary>
+        /// <param name="noteId">The Id of the note it should retrieve</param>
+        /// <returns>A Note</returns>
+        public static Note GetNoteFromDatabaseById(int noteId)
+        {
+            NoteRepository noteRepository = new NoteRepository();
+            List<Note> notes = noteRepository.GetBy(
+                new[] { "Id = @Id" },
+                new Dictionary<string, object> { { "@Id", noteId } }).Cast<Note>().ToList();
+
+            if (notes.Count > 0)
+            {
+                return notes[0];
+            }
+
+            return null;
         }
 
         /// <summary>

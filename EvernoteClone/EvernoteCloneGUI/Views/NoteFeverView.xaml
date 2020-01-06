@@ -47,10 +47,10 @@
                 cal:Message.Attach="[Event SelectedItemChanged] = [TreeViewSelectedItemChanged($eventArgs)]"
                 x:Name="NotebooksTreeView">
             </TreeView>
-            <Button FontFamily="Lato" FontWeight="Light" Content="{x:Static lang:Language.NoteFeverViewShared}" Background="{Binding Path=ButtonBackgroundColor}" Foreground="White" FontSize="16" Grid.Row="5" Grid.ColumnSpan="1" ></Button>
+            <Button FontFamily="Lato" FontWeight="Light" Content="{x:Static lang:Language.NoteFeverViewShared}" Background="{Binding Path=ButtonBackgroundColor}" Foreground="White" FontSize="16" x:Name="OpenSharedNotesView" Grid.Row="5" Grid.ColumnSpan="1" ></Button>
             <Button FontFamily="Lato" FontWeight="Light" Content="{x:Static lang:Language.NoteFeverViewBin}" Background="{Binding Path=ButtonBackgroundColor}" Foreground="White" FontSize="16" x:Name="OpenDeletedNotesView" Grid.Row="6" Grid.ColumnSpan="1" ></Button>
             <Button FontFamily="Lato" FontWeight="Light" Content="{x:Static lang:Language.NoteFeverViewTags}" Background="{Binding Path=ButtonBackgroundColor}" Foreground="White" FontSize="16" Grid.Row="7" Grid.ColumnSpan="1"></Button>
-            <Button FontFamily="Lato" FontWeight="Light" Content="{x:Static lang:Language.NoteFeverViewSearch}" Background="{Binding Path=ButtonBackgroundColor}" Foreground="White" FontSize="16" Grid.Row="8" Grid.ColumnSpan="1" x:Name="OpenSettingsView"></Button>
+            <Button FontFamily="Lato" FontWeight="Light" Content="{x:Static lang:Language.NoteFeverViewSearch}" Background="{Binding Path=ButtonBackgroundColor}" Foreground="White" FontSize="16" x:Name="OpenSettingsView" Grid.Row="8" Grid.ColumnSpan="1"></Button>
             <Grid.Effect>
                 <DropShadowEffect BlurRadius="20"/>
             </Grid.Effect>
