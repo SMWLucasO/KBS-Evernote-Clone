@@ -125,14 +125,7 @@
         </StackPanel>
         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
             <StackPanel x:Name="LabelsStackPanel" Height="40" Background="Pink" Orientation="Horizontal" HorizontalAlignment="Stretch">
-                <!--<ItemsControl x:Name="Labels">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Label Content="{Binding Title}"></Label>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>-->
-                <Button Width="50" FontSize="24" x:Name="LabelsAdd">+</Button>
+              <Button Width="50" FontSize="24" x:Name="LabelsAdd">+</Button>
             </StackPanel>
         </ScrollViewer>
     </StackPanel>
