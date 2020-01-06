@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Controls;
+using EvernoteCloneGUI.Properties;
 using EvernoteCloneGUI.ViewModels.Controls.Settings;
 using EvernoteCloneGUI.Views.Settings;
 using EvernoteCloneLibrary.Constants;
@@ -50,6 +51,18 @@ namespace EvernoteCloneGUI.ViewModels.Settings
         
         #endregion
         
+        #region Button Handlers
+
+        public override void ApplyChanges()
+        {
+            base.ApplyChanges();
+            
+            Properties.Settings.Default.Save();
+            LanguageChanger lang = new LanguageChanger(Properties.Settings.Default.LastSelectedLanguage);
+        }
+
+        #endregion
+        
         #region Events
 
         /// <summary>
@@ -69,6 +82,17 @@ namespace EvernoteCloneGUI.ViewModels.Settings
                 LoadLanguageComboBox();
                 Loaded = true;
             }
+        }
+
+        /// <summary>
+        /// Fired when the index of the selected item changes
+        /// </summary>
+        /// <param name="sender">The newly selected ComboBoxItem</param>
+        public new void ComboBoxSelectedIndexChanged(object sender)
+        {
+            ComboBoxHelper.ComboBoxSelectedIndexChanged(sender);
+
+            Properties.Settings.Default.LastSelectedLanguage = SettingsConstant.LANGUAGE;
         }
 
         #endregion

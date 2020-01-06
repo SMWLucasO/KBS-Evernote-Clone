@@ -9,6 +9,7 @@ using System.Dynamic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using EvernoteCloneGUI.Properties;
 using EvernoteCloneGUI.ViewModels.Controls;
 using EvernoteCloneLibrary.Constants;
 using EvernoteCloneLibrary.SharedNotes;
@@ -476,7 +477,8 @@ namespace EvernoteCloneGUI.ViewModels
         /// </summary>
         protected override void OnActivate()
         {
-            LanguageChanger lang = new LanguageChanger("en-US");
+            LanguageChanger lang = new LanguageChanger(Properties.Settings.Default.LastSelectedLanguage);
+
             // Show login popup
             OpenLoginPopupView(true);
 
