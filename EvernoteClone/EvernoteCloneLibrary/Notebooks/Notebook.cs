@@ -46,9 +46,9 @@ namespace EvernoteCloneLibrary.Notebooks
         /// <summary>
         /// Load all the notebooks belonging to the specified user.
         /// </summary>
-        /// <param name="userId"></param>
+        /// <param name="withoutSynchronize"></param>
         /// <returns></returns>
-        public static List<Notebook> Load()
+        public static List<Notebook> Load(bool withoutSynchronize = false)
         {
             int userId = Constant.User.Id;
             List<Notebook> notebooksToReturn = new List<Notebook>();
@@ -57,7 +57,7 @@ namespace EvernoteCloneLibrary.Notebooks
             List<Notebook> notebooksFromFileSystem = XmlImporter.TryImportNotebooks(GetNotebookStoragePath());
 
             // Load all the notebooks stored in the database
-            if (userId != -1)
+            if (userId != -1 && !withoutSynchronize)
             {
                 NotebookRepository notebookRepository = new NotebookRepository();
                 List<Notebook> notebooksFromDatabase = new List<Notebook>();
@@ -171,7 +171,6 @@ namespace EvernoteCloneLibrary.Notebooks
         /// <summary>
         /// Update the path of the notebook
         /// </summary>
-        /// <param name="userId"></param>
         public void UpdatePathId()
         {
             int userId = Constant.User.Id;
@@ -291,8 +290,6 @@ namespace EvernoteCloneLibrary.Notebooks
         public bool Save(bool forceInsert = false)
         {
             int userId = Constant.User.Id;
-            
-            // TODO revisit this method for check
             LastUpdated = DateTime.Now;
 
             List<int> savedNotebookIDs = new List<int>();

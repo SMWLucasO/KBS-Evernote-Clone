@@ -1,9 +1,6 @@
-﻿using System;
-using System.Text;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Windows;
 using System.Text.RegularExpressions;
-using System.Security.Cryptography;
 using Caliburn.Micro;
 using EvernoteCloneLibrary.Users;
 

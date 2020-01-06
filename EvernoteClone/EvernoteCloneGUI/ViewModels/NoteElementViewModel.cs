@@ -97,7 +97,6 @@ namespace EvernoteCloneGUI.ViewModels
         /// <param name="args"></param>
         public void LoadNoteContext(RoutedEventArgs args)
         {
-            // TODO redo this
             if (args.Source is ContextMenu menu && Note != null)
             {
                 // Load the appropriate context menu

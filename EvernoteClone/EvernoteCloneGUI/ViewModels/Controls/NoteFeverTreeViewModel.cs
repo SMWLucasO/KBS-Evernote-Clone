@@ -84,16 +84,18 @@ namespace EvernoteCloneGUI.ViewModels.Controls
         #region TreeView Builder
 
         /// <summary>
-        /// (Re)loads the folder structure and notebooks
+        /// /// (Re)loads the folder structure and notebooks
         /// </summary>
-        public void LoadNotebooksTreeView(string pathToBeSelected = null)
+        /// <param name="pathToBeSelected"></param>
+        /// <param name="withoutSynchronize"></param>
+        public void LoadNotebooksTreeView(string pathToBeSelected = null, bool withoutSynchronize = false)
         {
             // Create a root TreeViewItem
             TreeViewItem rootTreeViewItem = CreateTreeNode("My Notebooks", RootContext, null);
 
             // Load all Folders (LoadFolders) and attach Notebooks to them (LoadNotebooksIntoFolderStructure)
             // Now, loop over them all, and add them to the root TreeViewItem
-            foreach (TreeViewItem treeViewItem in AddNotebooksToFolders(GetFolders()))
+            foreach (TreeViewItem treeViewItem in AddNotebooksToFolders(GetFolders(withoutSynchronize), withoutSynchronize))
             {
                 rootTreeViewItem.Items.Add(treeViewItem);
             }
@@ -381,9 +383,9 @@ namespace EvernoteCloneGUI.ViewModels.Controls
         /// Returns all folders as TreeViewItems
         /// </summary>
         /// <returns>Returns a list with TreeViewItems</returns>
-        private List<TreeViewItem> GetFolders()
+        private List<TreeViewItem> GetFolders(bool withoutSynchronize = false)
         {
-            List<NotebookLocation> notebookLocations = NotebookLocation.Load();
+            List<NotebookLocation> notebookLocations = NotebookLocation.Load(withoutSynchronize);
             List<TreeViewItem> treeViewItems = new List<TreeViewItem>();
             
             // For all NotebookLocations create a treeViewItem
@@ -426,16 +428,15 @@ namespace EvernoteCloneGUI.ViewModels.Controls
         /// </summary>
         /// <param name="treeViewItems">The folder structure all notebooks should be added to</param>
         /// <returns>Returns a list of TreeViewItems as a representation of the folder and notebook structure</returns>
-        private List<TreeViewItem> AddNotebooksToFolders(List<TreeViewItem> treeViewItems)
+        private List<TreeViewItem> AddNotebooksToFolders(List<TreeViewItem> treeViewItems, bool withoutSynchronize = false)
         {
-            _noteFeverViewModel.LoadNotebooks();
+            _noteFeverViewModel.LoadNotebooks(false, withoutSynchronize);
             
             // For all Notebooks add them to the corresponding path (folder)
             foreach (Notebook notebook in _noteFeverViewModel.Notebooks)
             {
                 if (!notebook.IsDeleted)
                 {
-
                     TreeViewItem currentNode = null;
                     foreach (string directory in notebook.Path.Path.Split('/'))
                     {
@@ -443,7 +444,6 @@ namespace EvernoteCloneGUI.ViewModels.Controls
                         {
                             currentNode = treeViewItems.First(treeViewItem => GetHeader(treeViewItem) == directory);
                         }
-
                         else
                         {
                             currentNode = currentNode.Items.Cast<TreeViewItem>().First(treeViewItem => GetHeader(treeViewItem) == directory);
@@ -489,9 +489,9 @@ namespace EvernoteCloneGUI.ViewModels.Controls
                         {
                             MessageBox.Show("Something happened while adding the folder, does it already exist?", "NoteFever | Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                         }
-                        else // TODO fix refresh (for now, delete and add)
+                        else
                         {
-                            LoadNotebooksTreeView(notebookLocation.Path + "/" + newFolderName);
+                            LoadNotebooksTreeView(notebookLocation.Path + "/" + newFolderName, true);
                         }
                     }
                 }
@@ -513,9 +513,9 @@ namespace EvernoteCloneGUI.ViewModels.Controls
                 {
                     MessageBox.Show("Something happened while adding the folder, does it already exist?", "NoteFever | Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 }
-                else // TODO fix refresh (for now, delete and add)
+                else
                 {
-                    LoadNotebooksTreeView();
+                    LoadNotebooksTreeView(null, true);
                 }
             }
         }
@@ -550,9 +550,9 @@ namespace EvernoteCloneGUI.ViewModels.Controls
                         {
                             MessageBox.Show("Something happened while adding the notebook, does it already exist?", "NoteFever | Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                         }
-                        else // TODO fix refresh (for now, delete and add)
+                        else
                         {
-                            LoadNotebooksTreeView();
+                            LoadNotebooksTreeView(null, true);
                         }
                     }
                 }

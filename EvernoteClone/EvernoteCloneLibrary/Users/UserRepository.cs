@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 
-// TODO change comments to summary @Chino or @Mart
 namespace EvernoteCloneLibrary.Users
 {
     public class UserRepository : IRepository<UserModel>
