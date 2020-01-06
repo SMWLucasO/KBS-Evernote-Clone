@@ -31,13 +31,19 @@ namespace EvernoteCloneLibraryTests.Settings.Locales
             
             // Act
             if (expectedResult == false)
+            {
                 Assert.Throws<SqlException>(() => settingRepository.Insert(toBeInsertedLocale));
-            else 
+            }
+            else
+            {
                 actualResult = settingRepository.Insert(toBeInsertedLocale);
-            
+            }
+
             if (actualResult)
+            {
                 InsertedLocales.Add(toBeInsertedLocale);
-            
+            }
+
             // Assert
             Assert.AreEqual(expectedResult, actualResult);
         }

@@ -21,7 +21,10 @@ namespace EvernoteCloneLibrary.Settings
         public bool Save()
         {
             if (Update(this))
+            {
                 return true;
+            }
+
             return AddNewSetting(this);
         }
 
@@ -180,7 +183,10 @@ namespace EvernoteCloneLibrary.Settings
             ).Select(el => (Setting)el).ToList();
 
             if (settings.Count == 1)
+            {
                 return settings[0];
+            }
+
             return null;
         }
 

@@ -14,7 +14,10 @@ namespace EvernoteCloneLibrary.Settings.Locales
         public bool Save()
         {
             if (Update(this))
+            {
                 return true;
+            }
+
             return AddNewLocale(this);
         }
 

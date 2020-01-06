@@ -2,7 +2,6 @@
 using EvernoteCloneGUI.ViewModels.Settings;
 using System;
 using EvernoteCloneLibrary.Constants;
-using EvernoteCloneLibrary.Files.Parsers;
 using EvernoteCloneLibrary.Settings;
 
 namespace EvernoteCloneGUI.ViewModels
@@ -211,22 +210,38 @@ namespace EvernoteCloneGUI.ViewModels
             ButtonAccentColor = SettingsConstant.ACCENT_COLOR;
 
             if (_selectedView == nameof(_editorBtnBackGround))
+            {
                 EditorButtonBackgroundColor = SettingsConstant.ACCENT_COLOR;
+            }
             if (_selectedView == nameof(_standardsBtnBackGround))
+            {
                 StandardsButtonBackgroundColor = SettingsConstant.ACCENT_COLOR;
+            }
             if (_selectedView == nameof(_layoutBtnBackGround))
+            {
                 LayoutButtonBackgroundColor = SettingsConstant.ACCENT_COLOR;
+            }
             if (_selectedView == nameof(_languageBtnBackGround))
+            {
                 LanguageButtonBackgroundColor = SettingsConstant.ACCENT_COLOR;
+            }
 
             if (EditorSettingsViewModel != null)
+            {
                 EditorSettingsViewModel.BackgroundColorSettings = SettingsConstant.BACKGROUND_COLOR_SETTINGS;
+            }
             if (StandardsSettingsViewModel != null)
+            {
                 StandardsSettingsViewModel.BackgroundColorSettings = SettingsConstant.BACKGROUND_COLOR_SETTINGS;
+            }
             if (LayoutSettingsViewModel != null)
+            {
                 LayoutSettingsViewModel.BackgroundColorSettings = SettingsConstant.BACKGROUND_COLOR_SETTINGS;
+            }
             if (LanguageSettingsViewModel != null)
+            {
                 LanguageSettingsViewModel.BackgroundColorSettings = SettingsConstant.BACKGROUND_COLOR_SETTINGS;
+            }
 
             _noteFeverViewModel.UpdateColors();
         }
@@ -242,30 +257,46 @@ namespace EvernoteCloneGUI.ViewModels
             if (newViewModel == typeof(EditorViewModel))
             {
                 if (EditorSettingsViewModel == null)
-                    screen = (EditorSettingsViewModel = (EditorViewModel)Activator.CreateInstance(newViewModel));
+                {
+                    screen = (EditorSettingsViewModel = (EditorViewModel) Activator.CreateInstance(newViewModel));
+                }
                 else
+                {
                     screen = EditorSettingsViewModel;
+                }
             }
             else if (newViewModel == typeof(StandardsViewModel))
             {
                 if (StandardsSettingsViewModel == null)
-                    screen = (StandardsSettingsViewModel = (StandardsViewModel)Activator.CreateInstance(newViewModel));
+                {
+                    screen = (StandardsSettingsViewModel = (StandardsViewModel) Activator.CreateInstance(newViewModel));
+                }
                 else
+                {
                     screen = StandardsSettingsViewModel;
+                }
             }
             else if (newViewModel == typeof(LayoutViewModel))
             {
                 if (LayoutSettingsViewModel == null)
-                    screen = (LayoutSettingsViewModel = (LayoutViewModel)Activator.CreateInstance(newViewModel));
+                {
+                    screen = (LayoutSettingsViewModel = (LayoutViewModel) Activator.CreateInstance(newViewModel));
+                }
                 else
+                {
                     screen = LayoutSettingsViewModel;
+                }
             }
             else
             {
                 if (LanguageSettingsViewModel == null)
-                    screen = (LanguageSettingsViewModel = (LanguageViewModel)Activator.CreateInstance(newViewModel));
+                {
+                    screen = (LanguageSettingsViewModel = (LanguageViewModel) Activator.CreateInstance(newViewModel));
+                }
                 else
+                {
                     screen = LanguageSettingsViewModel;
+                }
             }
 
             screen.BackgroundColorSettings = SettingsConstant.BACKGROUND_COLOR_SETTINGS;
@@ -285,16 +316,24 @@ namespace EvernoteCloneGUI.ViewModels
 
             EditorSettingsViewModel = null;
             StandardsSettingsViewModel = null;
-            
+
             if (_selectedView == nameof(_editorBtnBackGround))
+            {
                 OpenEditorSettings();
+            }
             if (_selectedView == nameof(_standardsBtnBackGround))
+            {
                 OpenStandardsSettings();
+            }
             if (_selectedView == nameof(_layoutBtnBackGround))
+            {
                 OpenLayoutSettings();
+            }
             if (_selectedView == nameof(_languageBtnBackGround))
+            {
                 OpenLanguageSettings();
-            
+            }
+
             _noteFeverViewModel.UpdateColors();
         }
 

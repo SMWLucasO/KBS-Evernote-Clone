@@ -31,13 +31,19 @@ namespace EvernoteCloneLibraryTests.Settings
             
             // Act
             if (expectedResult == false)
+            {
                 Assert.Throws<SqlException>(() => settingRepository.Insert(setting));
-            else 
+            }
+            else
+            {
                 actualResult = settingRepository.Insert(setting);
-            
+            }
+
             if (actualResult)
+            {
                 InsertedSettings.Add(setting);
-            
+            }
+
             // Assert
             Assert.AreEqual(expectedResult, actualResult);
         }
