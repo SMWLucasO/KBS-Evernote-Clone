@@ -47,18 +47,25 @@ namespace EvernoteCloneGUI.ViewModels
             }
             else
             {
-                if (Note.Id != -1)
+                try
                 {
-                    bool addLabel = new EvernoteCloneLibrary.Notebooks.Notes.Labels.Label().InsertLabel(labelModel, Note);
-
-                    if (addLabel)
+                    if (Note.Id != -1)
                     {
-                        LoadLabels();
+                        bool addLabel = new EvernoteCloneLibrary.Notebooks.Notes.Labels.Label().InsertLabel(labelModel, Note);
+
+                        if (addLabel)
+                        {
+                            LoadLabels();
+                        }
                     }
-                }
-                else
+                    else
+                    {
+                        MessageBox.Show("You can't add labels to notes when they're not saved in the database.");
+                    }
+                } catch
                 {
-                    MessageBox.Show("You can't add labels to notes when they're not saved in the database.");
+                    Exception e;
+                    MessageBox.Show("Entered values can't be duplicate");
                 }
             }
         }
