@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EvernoteCloneGUI.Helpers"
         xmlns:vm="clr-namespace:EvernoteCloneGUI.ViewModels"
+        xmlns:lang="clr-namespace:EvernoteCloneGUI"
         mc:Ignorable="d" ResizeMode="NoResize"
         Title="RegisterView" Height="450" Width="450">
     <Window.DataContext>
@@ -77,28 +78,28 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
         <!-- First Name -->
-        <Label Content="First Name" Grid.Column="0" Grid.ColumnSpan="2" Margin="73,34,38.5,20.5"/>
+        <Label Content="{x:Static lang:Language.RegisterViewFname}" Grid.Column="0" Grid.ColumnSpan="2" Margin="73,34,38.5,20.5"/>
         <TextBox Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding FirstName}" Name="FirstName"   FontStyle="Italic" FontSize="10" Margin="73,58,38.5,0.5"/>
 
         <!-- Last Name -->
-        <Label Content=" Last name" Grid.Column="1" Grid.ColumnSpan="3" Margin="111,34,111,51" Grid.RowSpan="2"/>
+        <Label Content="{x:Static lang:Language.RegisterViewLname}" Grid.Column="1" Grid.ColumnSpan="3" Margin="111,34,111,51" Grid.RowSpan="2"/>
         <TextBox Text="{Binding LastName}" Name="LastName" FontStyle="Italic" FontSize="10" Grid.ColumnSpan="3" Margin="111,58,111,0.5" Grid.Column="1"/>
 
         <!-- E-mail -->
-        <Label Content=" E-mail" Grid.Column="0" Grid.Row="1" Margin="73,15.5,38.5,37" Grid.ColumnSpan="2"/>
+        <Label Content="{x:Static lang:Language.RegisterViewMail}" Grid.Column="0" Grid.Row="1" Margin="73,15.5,38.5,37" Grid.ColumnSpan="2"/>
         <TextBox Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="4" Text="{Binding Path=Email, Mode=TwoWay, ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged}" Name="Email" FontStyle="Italic" FontSize="10" Margin="73,52.5,111,7"/>
 
         <!-- Password-->
-        <Label Content="Password" Grid.Row="2" Margin="73,25,38.5,33.5" Grid.ColumnSpan="2"/>
+        <Label Content="{x:Static lang:Language.RegisterViewPass}" Grid.Row="2" Margin="73,25,38.5,33.5" Grid.ColumnSpan="2"/>
         <PasswordBox Grid.Row="2" Grid.ColumnSpan="4" Name="Password" local:PasswordHelper.Attach="False" local:PasswordHelper.Password="{Binding Path=Password, Mode=TwoWay, ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged,ValidatesOnExceptions=True}" Margin="73,51,111,9.5"/>
         <!-- Confirm Password-->
 
-        <Label Grid.Row="3" Content="Confirm password" Margin="73,10.5,38.5,48" Grid.ColumnSpan="2" />
+        <Label Grid.Row="3" Content="{x:Static lang:Language.RegisterViewCpass}" Margin="73,10.5,38.5,48" Grid.ColumnSpan="2" />
         <!-- <TextBox Text="{Binding Path=PasswordConfirm, Mode=TwoWay, ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged}" Name="Passwordconfirm" HorizontalAlignment="Left" Height="18" Margin="38,269,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="286"  FontStyle="Italic" FontSize="10" Grid.ColumnSpan="2"/> -->
         <PasswordBox Grid.Row="3" Grid.ColumnSpan="4" Name="PasswordConfirm" local:PasswordHelper.Attach="False" local:PasswordHelper.Password="{Binding Path=PasswordConfirm, Mode=TwoWay, ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged,ValidatesOnExceptions=True}" Margin="73,41.5,111,20"/>
 
         <!-- Register Button -->
-        <Button Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" x:Name="Register" Background="#0052cc" Foreground="White" Content="Register" HorizontalAlignment="Left" Margin="73,20,0,0" VerticalAlignment="Top" Width="261" Height="25"/>
+        <Button Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" x:Name="Register" Background="#0052cc" Foreground="White" Content="{x:Static lang:Language.RegisterViewRegi}" HorizontalAlignment="Left" Margin="73,20,0,0" VerticalAlignment="Top" Width="261" Height="25"/>
 
 
     </Grid>

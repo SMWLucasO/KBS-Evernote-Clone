@@ -66,7 +66,7 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
                 generatedModels.Add(new Note()
                 {
                     Id = (int)sqlDataReader["Id"],
-                    NotebookId = (int)sqlDataReader["NotebookID"],
+                    NotebookId = (string.IsNullOrWhiteSpace(sqlDataReader["NotebookID"].ToString()) ? -1 : (int)sqlDataReader["NotebookID"]),
                     Title = (string)sqlDataReader["Title"],
                     Content = (string)sqlDataReader["Content"],
                     NewContent = (string)sqlDataReader["Content"],
