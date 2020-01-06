@@ -319,6 +319,7 @@ namespace EvernoteCloneGUI.ViewModels.Controls
         }
         
         #endregion
+        
         #endregion
         
         #region TreeViewItem Helpers
@@ -430,6 +431,7 @@ namespace EvernoteCloneGUI.ViewModels.Controls
         /// Adds the notebooks to the folder structure and returns it
         /// </summary>
         /// <param name="treeViewItems">The folder structure all notebooks should be added to</param>
+        /// <param name="withoutSynchronize">This boolean indicates whether everything should be synchronized or not</param>
         /// <returns>Returns a list of TreeViewItems as a representation of the folder and notebook structure</returns>
         private List<TreeViewItem> AddNotebooksToFolders(List<TreeViewItem> treeViewItems, bool withoutSynchronize = false)
         {
