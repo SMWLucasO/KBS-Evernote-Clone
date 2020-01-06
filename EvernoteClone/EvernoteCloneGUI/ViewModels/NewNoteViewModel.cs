@@ -429,9 +429,9 @@ namespace EvernoteCloneGUI.ViewModels
                 else
                 {
                     (GetView() as Window).SizeChanged += OnSizeChanged;
-                    LabelsStackPanel = newNoteView.LabelsStackPanel;
-                    LoadLabels();
                 }
+                LabelsStackPanel = newNoteView.LabelsStackPanel;
+                LoadLabels();
             }
 
         }
