@@ -450,6 +450,15 @@ namespace EvernoteCloneGUI.ViewModels
             NoteFeverTreeViewModel.TreeViewSelectedItemChanged(routedPropertyChangedEventArgs);
         }
 
+        protected override void OnDeactivate(bool close)
+        {
+            base.OnDeactivate(close);
+            
+            (GetView() as Window)?.Hide();
+            
+            Synchronize();
+        }
+
         #endregion
     }
 }

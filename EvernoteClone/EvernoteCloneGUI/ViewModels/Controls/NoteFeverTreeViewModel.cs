@@ -106,8 +106,7 @@ namespace EvernoteCloneGUI.ViewModels.Controls
                 if (pathToBeSelected == null)
                 {
                     SelectPath(ref rootTreeViewItem,
-                        GetPath(SelectedTreeViewItem, IsNotebook(SelectedTreeViewItem)) + "/" +
-                        SelectedTreeViewItem.Header);
+                        GetPath(SelectedTreeViewItem, IsNotebook(SelectedTreeViewItem)).Path);
                 }
                 else
                 {
@@ -213,7 +212,11 @@ namespace EvernoteCloneGUI.ViewModels.Controls
                 {
                     currentNode = currentNode.Items.Cast<TreeViewItem>().First(treeViewItem => GetHeader(treeViewItem) == directory);
                 }
+            }
 
+            if (currentNode != null)
+            {
+                currentNode.IsExpanded = true;
             }
         }
         
