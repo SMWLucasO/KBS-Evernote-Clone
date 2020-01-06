@@ -41,18 +41,25 @@ namespace EvernoteCloneGUI.ViewModels
 
             LabelModel labelModel = new LabelModel { Id = -1, Title = userInput };
 
-            if (Note.Id != -1)
+            if (userInput == null || userInput == " ")
             {
-                bool addLabel = new EvernoteCloneLibrary.Notebooks.Notes.Labels.Label().InsertLabel(labelModel, Note);
-
-                if (addLabel)
-                {
-                    LoadLabels();
-                }
+                MessageBox.Show("Field can't be empty.");
             }
             else
             {
-                MessageBox.Show("You can't add labels to notes when they're not saved in the database.");
+                if (Note.Id != -1)
+                {
+                    bool addLabel = new EvernoteCloneLibrary.Notebooks.Notes.Labels.Label().InsertLabel(labelModel, Note);
+
+                    if (addLabel)
+                    {
+                        LoadLabels();
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("You can't add labels to notes when they're not saved in the database.");
+                }
             }
         }
 
@@ -180,9 +187,16 @@ namespace EvernoteCloneGUI.ViewModels
             List<Button> toRemove = new List<Button>();
             foreach (Button button in LabelsStackPanel.Children.Cast<Button>())
             {
-                if (button.Content.ToString() != "+")
+                try
                 {
-                    toRemove.Add(button);
+                    if (button.Content.ToString() != "+")
+                    {
+                        toRemove.Add(button);
+                    }
+                    
+                } catch
+                {
+                    Exception e;
                 }
             }
 
