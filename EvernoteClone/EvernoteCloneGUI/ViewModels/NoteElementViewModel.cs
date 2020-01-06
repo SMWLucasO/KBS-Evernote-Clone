@@ -10,6 +10,7 @@ using Microsoft.VisualBasic;
 using EvernoteCloneLibrary.Users;
 using EvernoteCloneLibrary.SharedNotes;
 using EvernoteCloneGUI.ViewModels.Popups;
+using EvernoteCloneLibrary.Constants;
 using EvernoteCloneLibrary.Notebooks;
 
 namespace EvernoteCloneGUI.ViewModels
@@ -270,6 +271,12 @@ namespace EvernoteCloneGUI.ViewModels
         /// <param name="arg"></param>
         public void ShareNote(object sender, RoutedEventArgs arg)
         {
+            if (Constant.User.Id == -1)
+            {
+                MessageBox.Show("You have to be logged in to use this functionality!", "NoteFever | Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                return;
+            }
+            
             UserRepository userRepositoryLogin = new UserRepository();
             Note sharedNote = Note;
             string userInput = "";
