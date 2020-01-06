@@ -473,6 +473,13 @@ namespace EvernoteCloneGUI.ViewModels.Controls
                 if (menuItem.Parent is ContextMenu contextMenu)
                 {
                     NotebookLocation notebookLocation = GetPath(contextMenu.PlacementTarget as TreeViewItem);
+
+                    if (notebookLocation.Path.Split('/').Length >= 10)
+                    {
+                        MessageBox.Show("You can't have more than 10 nested folders!", "NoteFever | Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        return;
+                    }
+                    
                     string newFolderName = GetUserInput("Create new folder", "What do you want your new folder to be called:");
 
                     if (newFolderName != null)
