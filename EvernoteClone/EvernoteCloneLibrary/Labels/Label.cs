@@ -88,13 +88,5 @@ namespace EvernoteCloneLibrary.Notebooks.Notes.Labels
 
             return inserted;
         }
-
-        /// <summary>
-        /// Since a label 'cant' be removed, return false
-        /// </summary>
-        /// <param name="labelModel"></param>
-        /// <returns></returns>
-        public bool DeleteLabel(LabelModel labelModel) =>
-            false;
     }
 }

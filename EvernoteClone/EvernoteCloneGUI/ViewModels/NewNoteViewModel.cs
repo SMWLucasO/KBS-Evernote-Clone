@@ -27,15 +27,14 @@ namespace EvernoteCloneGUI.ViewModels
     /// <summary>
     /// ViewModel which handles all interaction related to the NewNoteView
     /// </summary>
- public class NewNoteViewModel : Screen
+    public class NewNoteViewModel : Screen
     {
-
         #region Instance variables
         private readonly bool _loadNote;
-        string userInput = "";
+        private string userInput = "";
 
         public StackPanel LabelsStackPanel { get; set; }
-       public void LabelsAdd()
+        public void LabelsAdd()
         {    
             userInput = Interaction.InputBox("Share Note", "Please enter a valid username", userInput);
 
@@ -424,11 +423,15 @@ namespace EvernoteCloneGUI.ViewModels
                 SetupTextEditor(newNoteView);
 
                 if (GetView() is UserControl userControl)
+                {
                     userControl.SizeChanged += OnSizeChanged;
+                }
                 else
+                {
                     (GetView() as Window).SizeChanged += OnSizeChanged;
-                LabelsStackPanel = newNoteView.LabelsStackPanel;
-                LoadLabels();
+                    LabelsStackPanel = newNoteView.LabelsStackPanel;
+                    LoadLabels();
+                }
             }
 
         }
