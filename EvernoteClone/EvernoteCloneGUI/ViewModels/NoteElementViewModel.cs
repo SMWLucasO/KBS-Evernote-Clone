@@ -6,12 +6,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using EvernoteCloneGUI.ViewModels.Controls;
 using Microsoft.VisualBasic;
 using EvernoteCloneLibrary.Users;
-using System.Collections.Generic;
 using EvernoteCloneLibrary.SharedNotes;
 using EvernoteCloneGUI.ViewModels.Popups;
+using EvernoteCloneLibrary.Constants;
 using EvernoteCloneLibrary.Notebooks;
 
 namespace EvernoteCloneGUI.ViewModels
@@ -97,7 +96,6 @@ namespace EvernoteCloneGUI.ViewModels
         /// <param name="args"></param>
         public void LoadNoteContext(RoutedEventArgs args)
         {
-            // TODO redo this
             if (args.Source is ContextMenu menu && Note != null)
             {
                 // Load the appropriate context menu
@@ -273,6 +271,12 @@ namespace EvernoteCloneGUI.ViewModels
         /// <param name="arg"></param>
         public void ShareNote(object sender, RoutedEventArgs arg)
         {
+            if (Constant.User.Id == -1)
+            {
+                MessageBox.Show("You have to be logged in to use this functionality!", "NoteFever | Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                return;
+            }
+            
             UserRepository userRepositoryLogin = new UserRepository();
             Note sharedNote = Note;
             string userInput = "";

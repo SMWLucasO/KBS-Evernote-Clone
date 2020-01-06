@@ -16,6 +16,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
             <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
             <RowDefinition />
         </Grid.RowDefinitions>
 
@@ -46,9 +47,23 @@
 
             <Label Content="Standard: Nameless notebook" HorizontalAlignment="Right"/>
         </StackPanel>
+        
+        <!-- Row 3 -->
+        <Label Grid.Column="0" Grid.Row="2" Content="Default label title:" HorizontalAlignment="Right"/>
+
+        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="2">
+            <TextBox x:Name="DefaultLabelTitle" 
+                     HorizontalAlignment="Left" 
+                     MinWidth="50"
+                     Text="Nameless label"
+                     Margin="5,5,5,5"
+                     cal:Message.Attach="[Event TextChanged] = [TextBoxTextChanged($source)]"></TextBox>
+
+            <Label Content="Standard: Nameless label" HorizontalAlignment="Right"/>
+        </StackPanel>
 
         <Button 
-            Grid.Row="2" 
+            Grid.Row="3" 
             Grid.Column="0" 
             HorizontalAlignment="Right" 
             VerticalAlignment="Bottom" 

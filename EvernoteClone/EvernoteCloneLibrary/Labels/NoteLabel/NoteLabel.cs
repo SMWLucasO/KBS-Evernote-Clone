@@ -30,16 +30,16 @@ namespace EvernoteCloneLibrary.Labels.NoteLabel
         }
         
         /// <summary>
-        /// Get all the NoteLabel records given the Label (labelTitle)
+        /// Get all the NoteLabel records given the Label
         /// </summary>
-        /// <param name="labelId">The id of the label all notes that are returned should have</param>
+        /// <param name="label">The label that from which all notes should be returned</param>
         /// <returns>A list containing NoteLabel records</returns>
-        public static List<NoteLabelModel> GetAllNoteLabelFromLabel(int labelId) // TODO change this with Label.Id when branches are merged
+        public static List<NoteLabelModel> GetAllNoteLabelFromLabel(LabelModel label)
         {
             NoteLabelRepository noteLabelRepository = new NoteLabelRepository();
             return noteLabelRepository.GetBy(
                 new[] { "LabelID = @LabelID" },
-                new Dictionary<string, object>() { { "@LabelID", labelId } }
+                new Dictionary<string, object>() { { "@LabelID", label.Id } }
             ).Select((el) => ((NoteLabelModel)el)).ToList();
         }
 

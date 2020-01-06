@@ -21,6 +21,11 @@ namespace EvernoteCloneGUI.ViewModels.Settings
         /// The TextBox that contains the Default Notebook Title
         /// </value>
         public TextBox DefaultNotebookTitle;
+        
+        /// <value>
+        /// The TextBox that contains the Default Label Title
+        /// </value>
+        public TextBox DefaultLabelTitle;
 
         #endregion
 
@@ -33,6 +38,7 @@ namespace EvernoteCloneGUI.ViewModels.Settings
         {
             TextBoxHelper.SetTextBox(ref DefaultNoteTitle, nameof(SettingsConstant.DEFAULT_NOTE_TITLE));
             TextBoxHelper.SetTextBox(ref DefaultNotebookTitle, nameof(SettingsConstant.DEFAULT_NOTEBOOK_TITLE));
+            TextBoxHelper.SetTextBox(ref DefaultLabelTitle, nameof(SettingsConstant.DEFAULT_LABEL_TITLE));
         }
 
         #endregion
@@ -50,6 +56,7 @@ namespace EvernoteCloneGUI.ViewModels.Settings
             {
                 DefaultNoteTitle = colorsView.DefaultNoteTitle;
                 DefaultNotebookTitle = colorsView.DefaultNotebookTitle;
+                DefaultLabelTitle = colorsView.DefaultLabelTitle;
             }
 
             if (!Loaded)

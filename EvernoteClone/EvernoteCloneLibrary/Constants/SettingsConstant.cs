@@ -52,6 +52,11 @@ namespace EvernoteCloneLibrary.Constants
         /// The default Notebook title
         /// </value>
         public static string DEFAULT_NOTEBOOK_TITLE = "Nameless notebook";
+
+        /// <value>
+        /// The default Label title
+        /// </value>
+        public static string DEFAULT_LABEL_TITLE = "Nameless label";
         
         /// <value>
         /// The default Font

@@ -72,8 +72,6 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
 
         /// <summary>
         /// Delete the note permanently
-        /// TODO: If we end up implementing the note history, delete those before deleting the note itself.
-        /// ^ Same goes for tags
         /// </summary>
         public void DeletePermanently()
         {
