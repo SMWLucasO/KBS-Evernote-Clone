@@ -199,21 +199,21 @@ namespace EvernoteCloneLibrary.Users
         /// If they are both filled, username and password credentials will be compared in the database.
         /// If the credentials are valid return the user.
         /// </summary>
-        /// <param name="Comparedb"></param>
+        /// <param name="userToLogin"></param>
         /// <returns></returns>
-        public UserModel CompareDB(UserModel compareDb)
+        public UserModel Login(UserModel userToLogin)
         {
 
             // Checks if both one of them fields are empty or not.
-            if (compareDb != null)
+            if (userToLogin != null)
             {
-                if (string.IsNullOrEmpty(compareDb.Username) || string.IsNullOrEmpty(compareDb.Password))
+                if (string.IsNullOrEmpty(userToLogin.Username) || string.IsNullOrEmpty(userToLogin.Password))
                 {
                     return null;
                 }
 
                 // If both fields are filled compares the credentials with the database and returns user if they are correct.
-                Dictionary<string, object> parameters = GenerateLoginParameters(compareDb);
+                Dictionary<string, object> parameters = GenerateLoginParameters(userToLogin);
                 var user = this.GetBy(new[] { "Username = @Username", "Password = @Password" }, parameters).ToList();
 
                 if (user.Count > 0)
