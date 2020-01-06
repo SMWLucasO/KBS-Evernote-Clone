@@ -5,6 +5,7 @@ using EvernoteCloneLibrary.Constants;
 using EvernoteCloneLibrary.Extensions;
 using EvernoteCloneLibrary.Files.Parsers;
 
+// TODO add summary's
 namespace EvernoteCloneLibrary.Notebooks.Location
 {
     public class NotebookLocation : NotebookLocationModel, IParseable
@@ -35,9 +36,9 @@ namespace EvernoteCloneLibrary.Notebooks.Location
             return notebookLocations.Count > 0 ? notebookLocations.First() : null;
         }
 
-        public static NotebookLocation GetNotebookLocationById(int id, int userId)
+        public static NotebookLocation GetNotebookLocationById(int id)
         {
-            List<NotebookLocation> notebookLocations = Load(userId);
+            List<NotebookLocation> notebookLocations = Load();
             
             foreach (NotebookLocation notebookLocation in notebookLocations)
                 if (notebookLocation.Id == id)
@@ -51,18 +52,45 @@ namespace EvernoteCloneLibrary.Notebooks.Location
         
         public bool Delete(NotebookLocationRepository notebookLocationRepository)
         {
-            bool removedCloud = notebookLocationRepository.Delete(this);
+            bool removedCloud = false;
+
+            if (Constant.User.Id != -1)
+            {
+                if (LocationUser.LocationUser.DeleteLocationUser(
+                    LocationUser.LocationUser.GetLocationUserByNotebookLocation(this)))
+                {
+                    removedCloud = notebookLocationRepository.Delete(this);
+                }
+            }
+            
             bool removedLocally = RemoveNotebookLocationFromLocalStorage(this);
             
             return removedCloud || removedLocally;
         }
 
-        public static string GetNotebookLocationPathById(int id, int userId) =>
-            GetNotebookLocationById(id, userId)?.Path;
-
-        public static NotebookLocation GetNotebookLocationByPath(string path, int userId)
+        public bool DeleteFromDatabase() =>
+            DeleteFromDatabase(new NotebookLocationRepository());
+        
+        public bool DeleteFromDatabase(NotebookLocationRepository notebookLocationRepository)
         {
-            List<NotebookLocation> notebookLocations = Load(userId);
+            if (Constant.User.Id != -1)
+            {
+                if (LocationUser.LocationUser.DeleteLocationUser(
+                    LocationUser.LocationUser.GetLocationUserByNotebookLocation(this)))
+                {
+                    return notebookLocationRepository.Delete(this);
+                }
+            }
+
+            return false;
+        }
+
+        public static string GetNotebookLocationPathById(int id) =>
+            GetNotebookLocationById(id)?.Path;
+
+        public static NotebookLocation GetNotebookLocationByPath(string path)
+        {
+            List<NotebookLocation> notebookLocations = Load();
             
             foreach (NotebookLocation notebookLocation in notebookLocations)
                 if (notebookLocation.Path == path)
@@ -71,24 +99,26 @@ namespace EvernoteCloneLibrary.Notebooks.Location
             return null;
         }
 
-        public static bool AddNewNotebookLocation(NotebookLocation notebookLocation, int userId)
+        public static bool AddNewNotebookLocation(NotebookLocation notebookLocation)
         {
-            bool addedToDatabase = AddNewNotebookLocationToDatabaseAndGetId(notebookLocation, userId) != -1;
+            bool addedToDatabase = AddNewNotebookLocationToDatabaseAndGetId(notebookLocation) != -1;
             bool addedLocally = AddNotebookLocationToLocalStorage(notebookLocation);
 
             return addedToDatabase || addedLocally;
         }
 
-        public static int AddNewNotebookLocationAndGetId(NotebookLocation notebookLocation, int userId)
+        public static int AddNewNotebookLocationAndGetId(NotebookLocation notebookLocation)
         {
-            AddNewNotebookLocationToDatabaseAndGetId(notebookLocation, userId);
+            AddNewNotebookLocationToDatabaseAndGetId(notebookLocation);
             AddNotebookLocationToLocalStorage(notebookLocation);
 
             return notebookLocation.Id;
         }
 
-        public static int AddNewNotebookLocationToDatabaseAndGetId(NotebookLocation notebookLocation, int userId)
+        public static int AddNewNotebookLocationToDatabaseAndGetId(NotebookLocation notebookLocation)
         {
+            int userId = Constant.User.Id;
+            
             if (userId != -1)
             {
                 NotebookLocationRepository notebookLocationRepository = new NotebookLocationRepository();
@@ -99,10 +129,13 @@ namespace EvernoteCloneLibrary.Notebooks.Location
             return notebookLocation.Id;
         }
 
-        public static List<NotebookLocation> GetAllNotebookLocationsFromDatabase(int userId)
+        public static List<NotebookLocation> GetAllNotebookLocationsFromDatabase()
         {
+            if (Constant.User.Id == -1)
+                return null;
+            
             // Load all LocationUser records from UserID
-            List<LocationUser.LocationUser> locationUserRecords = LocationUser.LocationUser.GetAllLocationsFromUser(userId);
+            List<LocationUser.LocationUser> locationUserRecords = LocationUser.LocationUser.GetAllLocationsFromUser();
 
             NotebookLocationRepository notebookLocationRepository = new NotebookLocationRepository();
             List<NotebookLocation> notebookLocationsFromDatabase = new List<NotebookLocation>();
@@ -159,7 +192,7 @@ namespace EvernoteCloneLibrary.Notebooks.Location
             return GetXmlRepresentation(notebookLocations);
         }
 
-        public static List<NotebookLocation> Load(int userId = -1)
+        public static List<NotebookLocation> Load()
         {
             List<NotebookLocation> notebookLocations = new List<NotebookLocation>();
             
@@ -168,9 +201,9 @@ namespace EvernoteCloneLibrary.Notebooks.Location
             
             // Load all the notebook locations stored in the database, if the user has a proper ID.
             // Note: Should also verify using password hash, but that is a TODO. This part will be rewritten later on.
-            if (userId != -1)
+            if (Constant.User.Id != -1)
             {
-                List<NotebookLocation> notebookLocationsFromDatabase = GetAllNotebookLocationsFromDatabase(userId);
+                List<NotebookLocation> notebookLocationsFromDatabase = GetAllNotebookLocationsFromDatabase();
                 if (notebookLocationsFromFileSystem != null && notebookLocationsFromDatabase != null)
                 {
                     // Check if db and fs id's are identical, if so, add. If not but paths are, update fs id.
@@ -186,7 +219,7 @@ namespace EvernoteCloneLibrary.Notebooks.Location
                 {
                     // If path from fs is not in db, add to db (and update local id)
                     foreach (NotebookLocation notebookLocation in notebookLocationsFromFileSystem.Where(notebookLocation => !notebookLocations.Contains(notebookLocation)))
-                        notebookLocations.AddIfNotPresent(notebookLocation.Update(notebookLocation.Id, AddNewNotebookLocationToDatabaseAndGetId(notebookLocation, userId)));
+                        notebookLocations.AddIfNotPresent(notebookLocation.Update(notebookLocation.Id, AddNewNotebookLocationToDatabaseAndGetId(notebookLocation)));
                 }
                 if (notebookLocationsFromDatabase != null)
                 {

@@ -1,10 +1,8 @@
 ﻿using EvernoteCloneLibrary.Constants;
 using EvernoteCloneLibrary.Files.Parsers;
 using EvernoteCloneLibrary.Notebooks;
-using EvernoteCloneLibrary.Notebooks.Notes;
 using EvernoteCloneLibraryTests.TestHelpers;
 using NUnit.Framework;
-using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -15,8 +13,8 @@ namespace EvernoteCloneLibraryTests.Files.Parsers
     class XmlExporterTests
     {
 
-        [TestCase(Constant.TEST_NOTEBOOK_STORAGE_PATH + "/testcases/", "file.enex", 1)]
-        [TestCase(Constant.TEST_NOTEBOOK_STORAGE_PATH + "/testcases/", "file2.enex", 3)]
+        [TestCase(Constant.TESTS_STORAGE_PATH, "file.enex", 1)]
+        [TestCase(Constant.TESTS_STORAGE_PATH, "file2.enex", 3)]
         public void Export_ShouldExport(string filePath, string filename, int notes)
         {
             // Arrange
@@ -27,7 +25,7 @@ namespace EvernoteCloneLibraryTests.Files.Parsers
             bool actual = XmlExporter.Export(filePath, filename, parseable);
 
             // Assert
-            Assert.That(actual, Is.True);
+            Assert.IsTrue(actual);
         }
 
         [TestCase("", "", -1)]
@@ -49,7 +47,7 @@ namespace EvernoteCloneLibraryTests.Files.Parsers
             bool actual = XmlExporter.Export(filePath, filename, parseable);
 
             // Assert
-            Assert.That(actual, Is.False);
+            Assert.IsFalse(actual);
         }
 
     }
@@ -63,7 +61,7 @@ namespace EvernoteCloneLibraryTests.Files.Parsers
         public void Import_ShouldImportNotebooks()
         {
             // Act
-            List<Notebook> loaded = XmlImporter.TryImportNotebooks(Constant.TEST_NOTEBOOK_STORAGE_PATH + "/testcases/");
+            List<Notebook> loaded = XmlImporter.TryImportNotebooks(Constant.TESTS_STORAGE_PATH);
 
             // Assert
             Assert.IsNotNull(loaded);
@@ -95,9 +93,9 @@ namespace EvernoteCloneLibraryTests.Files.Parsers
         [OneTimeTearDown]
         public void Remove_TestCaseFolder()
         {
-            if(Directory.Exists(Constant.TEST_NOTEBOOK_STORAGE_PATH + "/testcases/"))
+            if(Directory.Exists(Constant.TESTS_STORAGE_PATH))
             {
-                Directory.Delete(Constant.TEST_NOTEBOOK_STORAGE_PATH + "/testcases/", true);
+                Directory.Delete(Constant.TESTS_STORAGE_PATH, true);
             }
         }
 

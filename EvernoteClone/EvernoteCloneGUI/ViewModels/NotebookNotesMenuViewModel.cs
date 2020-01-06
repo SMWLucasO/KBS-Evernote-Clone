@@ -171,9 +171,9 @@ namespace EvernoteCloneGUI.ViewModels
                             };
                             
                             // Set the default selected note element for the notebook view
-                            if (note.Equals(noteFeverViewModel.SelectedNote) && noteFeverViewModel.NotebookViewModel != null)
+                            if (note.Equals(noteFeverViewModel.SelectedNote) && noteFeverViewModel.NotebookViewModelProp != null)
                             {
-                                noteFeverViewModel.NotebookViewModel.SelectedNoteElement = noteElementView;
+                                noteFeverViewModel.NotebookViewModelProp.SelectedNoteElement = noteElementView;
                             }
                             noteElementViewModels.Add(noteElementView);
                         }

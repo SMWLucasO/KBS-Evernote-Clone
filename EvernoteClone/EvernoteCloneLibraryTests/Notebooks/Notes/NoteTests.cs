@@ -6,7 +6,7 @@ using System.Text;
 
 namespace EvernoteCloneLibraryTests.Notebooks.Notes
 {
-    [TestFixture]
+    [TestFixture, Order(6)]
     class NoteTests
     {
 

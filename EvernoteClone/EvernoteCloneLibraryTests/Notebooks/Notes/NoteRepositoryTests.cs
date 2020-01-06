@@ -8,11 +8,10 @@ using System.Linq;
 
 namespace EvernoteCloneLibraryTests.Notebooks.Notes
 {
-    [TestFixture, Order(4)]
+    [TestFixture, Order(5)]
     class NoteRepositoryTests
     {
-
-        static List<Note> _insertedNotes = new List<Note>();
+        private static readonly List<Note> InsertedNotes = new List<Note>();
 
         [Order(1)]
         [TestCase("Some title", "<b>Message</b>", "", false, Description = "A note is not allowed to not have an author, and an author always has a name.")]
@@ -26,7 +25,7 @@ namespace EvernoteCloneLibraryTests.Notebooks.Notes
             // Arrange
             Note note = new Note()
             {
-                NotebookId = 2, // ID 2 is default test notebook
+                NotebookId = 3368, // ID 2 is default test notebook
                 Title = title,
                 Content = content,
                 CreationDate = DateTime.Now.Date,
@@ -41,7 +40,7 @@ namespace EvernoteCloneLibraryTests.Notebooks.Notes
 
             // Should only add the Id if it got inserted.
             if (actual)
-                _insertedNotes.Add(note);
+                InsertedNotes.Add(note);
 
             // Assert
             Assert.That(expected, Is.EqualTo(actual));
@@ -57,7 +56,7 @@ namespace EvernoteCloneLibraryTests.Notebooks.Notes
             NoteRepository repository = new NoteRepository();
 
             // act and assert
-            foreach (Note note in _insertedNotes)
+            foreach (Note note in InsertedNotes)
             {
                 note.Author = author;
                 Assert.That(repository.Update(note), Is.EqualTo(expected));
@@ -73,7 +72,7 @@ namespace EvernoteCloneLibraryTests.Notebooks.Notes
             NoteRepository noteRepository = new NoteRepository();
 
             // Act and Assert
-            foreach (Note note in _insertedNotes)
+            foreach (Note note in InsertedNotes)
             {
                 Assert.That(
                     noteRepository.GetBy(
@@ -91,7 +90,7 @@ namespace EvernoteCloneLibraryTests.Notebooks.Notes
             NoteRepository noteRepository = new NoteRepository();
 
             // Act and Assert
-            foreach (Note note in _insertedNotes)
+            foreach (Note note in InsertedNotes)
             {
                 Assert.That(noteRepository.Delete(note), Is.True);
             }
