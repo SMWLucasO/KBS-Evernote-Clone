@@ -106,7 +106,7 @@ namespace EvernoteCloneGUI.ViewModels.Controls
                 if (pathToBeSelected == null)
                 {
                     SelectPath(ref rootTreeViewItem,
-                        GetPath(SelectedTreeViewItem, IsNotebook(SelectedTreeViewItem)).Path);
+                        GetPath(SelectedTreeViewItem, IsNotebook(SelectedTreeViewItem))?.Path);
                 }
                 else
                 {
