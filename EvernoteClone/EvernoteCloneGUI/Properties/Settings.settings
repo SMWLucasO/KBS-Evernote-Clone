@@ -132,7 +132,7 @@
       <Value Profile="(Default)">View status bar</Value>
     </Setting>
     <Setting Name="NotebookNotesMenuViewNotes" Type="System.String" Scope="User">
-      <Value Profile="(Default)">notes</Value>
+      <Value Profile="(Default)">note(s)</Value>
     </Setting>
     <Setting Name="NoteFeverViewAllNotes" Type="System.String" Scope="User">
       <Value Profile="(Default)">All Notes</Value>
@@ -316,6 +316,216 @@
     </Setting>
     <Setting Name="StandardsViewApplyChanges" Type="System.String" Scope="User">
       <Value Profile="(Default)">Apply changes</Value>
+    </Setting>
+    <Setting Name="StandardsViewLabelTitle" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Default label title:</Value>
+    </Setting>
+    <Setting Name="StandardsViewDefaultLabelTitle" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Standard: Nameless label</Value>
+    </Setting>
+    <Setting Name="NoteElementViewModelUnsavedChanges" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Are you sure? Unsaved changes will be lost.</Value>
+    </Setting>
+    <Setting Name="SettingViewModelSuccessfullySaved" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Settings successfully saved!</Value>
+    </Setting>
+    <Setting Name="SettingViewModelWronglySaved" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Something went wrong while trying to save settings.</Value>
+    </Setting>
+    <Setting Name="SettingViewModelTitle" Type="System.String" Scope="User">
+      <Value Profile="(Default)">NoteFever | Settings</Value>
+    </Setting>
+    <Setting Name="TextBoxHelperOnlyGivenType" Type="System.String" Scope="User">
+      <Value Profile="(Default)">The given input can only be of type </Value>
+    </Setting>
+    <Setting Name="LoginViewModelSuccessfullyLoggedIn" Type="System.String" Scope="User">
+      <Value Profile="(Default)">You've been logged in with success!</Value>
+    </Setting>
+    <Setting Name="LoginViewModelTitle" Type="System.String" Scope="User">
+      <Value Profile="(Default)">NoteFever | Login</Value>
+    </Setting>
+    <Setting Name="LoginViewModelUnsuccessfullLoginAttempt" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Password or Username is not correct. Please check again.</Value>
+    </Setting>
+    <Setting Name="NotebookPickerViewModelMoved" Type="System.String" Scope="User">
+      <Value Profile="(Default)">The note {0} has been moved to the notebook {1}/{2}</Value>
+    </Setting>
+    <Setting Name="NotebookPickerViewModelTitle" Type="System.String" Scope="User">
+      <Value Profile="(Default)">NoteFever | Notebook Picker</Value>
+    </Setting>
+    <Setting Name="NotebookPickerViewModelNotMoved" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Failed to move the note to the specified notebook.</Value>
+    </Setting>
+    <Setting Name="TableRowColumnSpecifierViewModelGreaterThanZero" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Please make sure that both the rows and columns are greater than 0</Value>
+    </Setting>
+    <Setting Name="MessageBoxTitleWarning" Type="System.String" Scope="User">
+      <Value Profile="(Default)">NoteFever | Warning</Value>
+    </Setting>
+    <Setting Name="FieldsCantBeEmpty" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Fields can't be empty!</Value>
+    </Setting>
+    <Setting Name="MessageBoxTitleError" Type="System.String" Scope="User">
+      <Value Profile="(Default)">NoteFever | Error</Value>
+    </Setting>
+    <Setting Name="NewNoteViewModelLabelAlreadyExists" Type="System.String" Scope="User">
+      <Value Profile="(Default)">This label already exists!</Value>
+    </Setting>
+    <Setting Name="NoteElementViewModelPermanentlyDeleteNote" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Are you sure that you want to permanently delete this note?</Value>
+    </Setting>
+    <Setting Name="MessageBoxTitleFailed" Type="System.String" Scope="User">
+      <Value Profile="(Default)">NoteFever | Failed</Value>
+    </Setting>
+    <Setting Name="NoteFeverViewModelCannotAddNoteToEmptyNotebook" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Cannot add new notes whilst not in a notebook</Value>
+    </Setting>
+    <Setting Name="NewNoteViewModelCantAddLabel" Type="System.String" Scope="User">
+      <Value Profile="(Default)">You can't add labels to notes when they're not saved in the database.</Value>
+    </Setting>
+    <Setting Name="NoteElementViewModelLoggedInToUse" Type="System.String" Scope="User">
+      <Value Profile="(Default)">You have to be logged in to use this functionality!</Value>
+    </Setting>
+    <Setting Name="NoteElementViewModelShareNote" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Please enter a valid username</Value>
+    </Setting>
+    <Setting Name="NoteElementViewModelShareNoteTitle" Type="System.String" Scope="User">
+      <Value Profile="(Default)">NoteFever | Share Note</Value>
+    </Setting>
+    <Setting Name="NewNoteViewModelAddLabel" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Enter a label name</Value>
+    </Setting>
+    <Setting Name="NewNoteViewModelAddLabelTitle" Type="System.String" Scope="User">
+      <Value Profile="(Default)">NoteFever | Add Label</Value>
+    </Setting>
+    <Setting Name="RegisterViewModelRegisterSuccessful" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Registration successful!</Value>
+    </Setting>
+    <Setting Name="MessageBoxTitleSuccessful" Type="System.String" Scope="User">
+      <Value Profile="(Default)">NoteFever | Success</Value>
+    </Setting>
+    <Setting Name="RegisterViewModelRegistrationFailed" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Registration failed! Please try again.</Value>
+    </Setting>
+    <Setting Name="RegisterViewModelFieldsWithErrors" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Please fill in the fields with errors</Value>
+    </Setting>
+    <Setting Name="NoteFeverViewModelNoNotes" Type="System.String" Scope="User">
+      <Value Profile="(Default)">There are no notes to view.</Value>
+    </Setting>
+    <Setting Name="NoteFeverViewModelNoSharedNotes" Type="System.String" Scope="User">
+      <Value Profile="(Default)">There are no shared notes to view.</Value>
+    </Setting>
+    <Setting Name="MessageBoxTitleNotice" Type="System.String" Scope="User">
+      <Value Profile="(Default)">NoteFever | Notice</Value>
+    </Setting>
+    <Setting Name="NoteElementViewModelSharedNote" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Successfully shared the note with {0}!</Value>
+    </Setting>
+    <Setting Name="NoteElementViewModelShareNoteUsernameDoesNotExist" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Username does not exist or make sure you're logged in.</Value>
+    </Setting>
+    <Setting Name="NewNoteViewModelSavedNote" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Note was saved successfully!</Value>
+    </Setting>
+    <Setting Name="NewNoteViewModelCouldntSaveNote" Type="System.String" Scope="User">
+      <Value Profile="(Default)">We were unable to save your note.</Value>
+    </Setting>
+    <Setting Name="NoteFeverViewModelNoDeletedNotes" Type="System.String" Scope="User">
+      <Value Profile="(Default)">There are no deleted notes.</Value>
+    </Setting>
+    <Setting Name="LoginViewModelGoogleLogin" Type="System.String" Scope="User">
+      <Value Profile="(Default)">You've been logged in with a Google account.</Value>
+    </Setting>
+    <Setting Name="RichTextEditorCommandsProvideHexadecimal" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Please provide a valid hexadecimal color.</Value>
+    </Setting>
+    <Setting Name="NoteFeverTreeViewModelNoMoreThan" Type="System.String" Scope="User">
+      <Value Profile="(Default)">You can't have more than 10 nested folders!</Value>
+    </Setting>
+    <Setting Name="NoteFeverTreeViewModelNewFolderTitle" Type="System.String" Scope="User">
+      <Value Profile="(Default)">NoteFever | Create new folder</Value>
+    </Setting>
+    <Setting Name="NoteFeverTreeViewModelNewFolder" Type="System.String" Scope="User">
+      <Value Profile="(Default)">What do you want your new folder to be called:</Value>
+    </Setting>
+    <Setting Name="NoteFeverTreeViewModelErrorWhileNewFolder" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Something happened while adding the folder, does it already exist?</Value>
+    </Setting>
+    <Setting Name="NoteFeverTreeViewModelNewNotebookTitle" Type="System.String" Scope="User">
+      <Value Profile="(Default)">NoteFever | Create new notebook</Value>
+    </Setting>
+    <Setting Name="NoteFeverTreeViewModelNewNotebook" Type="System.String" Scope="User">
+      <Value Profile="(Default)">What do you want your new notebook to be called:</Value>
+    </Setting>
+    <Setting Name="NoteFeverTreeViewModelErrorWhileNewNotebook" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Something happened while adding the notebook, does it already exist?</Value>
+    </Setting>
+    <Setting Name="RichTextEditorCommandsColorTitle" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Pick a color</Value>
+    </Setting>
+    <Setting Name="RichTextEditorCommandsInsertHEX" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Insert a HEX color to change the color to (without the '#')</Value>
+    </Setting>
+    <Setting Name="NoteFeverTreeViewModelAddFolder" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Add Folder</Value>
+    </Setting>
+    <Setting Name="NoteFeverTreeViewModelAddNotebook" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Add Notebook</Value>
+    </Setting>
+    <Setting Name="NoteFeverTreeViewModelRemove" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Remove</Value>
+    </Setting>
+    <Setting Name="NoteFeverTreeViewModelAddNote" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Add Note</Value>
+    </Setting>
+    <Setting Name="NoteFeverTreeViewModelMyNotebooks" Type="System.String" Scope="User">
+      <Value Profile="(Default)">My Notebooks</Value>
+    </Setting>
+    <Setting Name="NoteFeverTreeViewModelTextBetween" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Text should be between {0} and {1} characters long. Also it can't contain the '/' character.</Value>
+    </Setting>
+    <Setting Name="NewNoteViewModelNamelessAuthor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Nameless author</Value>
+    </Setting>
+    <Setting Name="NoteElementViewModelRestore" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Restore</Value>
+    </Setting>
+    <Setting Name="NoteElementViewModelDeletePermanently" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Delete permanently</Value>
+    </Setting>
+    <Setting Name="NoteElementViewModelRemove" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Remove</Value>
+    </Setting>
+    <Setting Name="NoteElementViewModelMove" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Move</Value>
+    </Setting>
+    <Setting Name="NoteElementViewModelShareNoteHeader" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Share Note</Value>
+    </Setting>
+    <Setting Name="NoteFeverViewModelSharedNotes" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Shared notes</Value>
+    </Setting>
+    <Setting Name="NoteFeverViewModelAllNotes" Type="System.String" Scope="User">
+      <Value Profile="(Default)">All notes</Value>
+    </Setting>
+    <Setting Name="NoteFeverViewModelBin" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Bin</Value>
+    </Setting>
+    <Setting Name="RegisterViewModelPleaseEmail" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Please enter your email!</Value>
+    </Setting>
+    <Setting Name="RegisterViewModelPleasePassword" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Please enter valid password!</Value>
+    </Setting>
+    <Setting Name="RegisterViewModelNotEqual" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Password are not equal!</Value>
+    </Setting>
+    <Setting Name="RegisterViewModelUnknown" Type="System.String" Scope="User">
+      <Value Profile="(Default)">An unknown error occured!</Value>
+    </Setting>
+    <Setting Name="RegisterViewModelAlreadyExists" Type="System.String" Scope="User">
+      <Value Profile="(Default)">A user with that username (email) already exists!</Value>
     </Setting>
   </Settings>
 </SettingsFile>

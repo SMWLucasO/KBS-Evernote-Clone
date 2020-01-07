@@ -41,6 +41,8 @@ namespace EvernoteCloneGUI.ViewModels
 
         public string LastName { get; set; }
         
+        public bool Registered { get; set; }
+        
         /// <value>
         /// The background color of all buttons
         /// </value>
@@ -81,7 +83,7 @@ namespace EvernoteCloneGUI.ViewModels
                 {
                     if (string.IsNullOrWhiteSpace(Email) || IsValidEmail(Email) == false)
                     {
-                        result = "Please enter your email!";
+                        result = Properties.Settings.Default.RegisterViewModelPleaseEmail;
                     }
 
                 }
@@ -92,7 +94,7 @@ namespace EvernoteCloneGUI.ViewModels
                     {
                         if (ValidatePassword(Password) == false)
                         {
-                            result = "Please enter valid password!";
+                            result = Properties.Settings.Default.RegisterViewModelPleasePassword;
                         }
                     }
                 }
@@ -104,7 +106,7 @@ namespace EvernoteCloneGUI.ViewModels
                     {
                         if (ComparePasswordEquality(PasswordConfirm, Password) == false)
                         {
-                            result = "Password are not equal!";
+                            result = Properties.Settings.Default.RegisterViewModelNotEqual;
                         }
                     }
                 }
@@ -114,7 +116,7 @@ namespace EvernoteCloneGUI.ViewModels
         }
 
         public string Error =>
-            "An unknown error occured!";
+            Properties.Settings.Default.RegisterViewModelUnknown;
 
         #endregion
 
@@ -174,19 +176,33 @@ namespace EvernoteCloneGUI.ViewModels
 
             if (IsValidEmail(Email) && ValidatePassword(Password) && ComparePasswordEquality(PasswordConfirm, Password))
             {
-                if (User.Register(Email, tbPassword, FirstName, LastName))
+                if (new UserRepository().CheckIfUserExists(Email) == null)
                 {
-                    MessageBox.Show("Registration successful!");
-                    (GetView() as Window)?.Close();
+                    if (User.Register(Email, tbPassword, FirstName, LastName))
+                    {
+                        MessageBox.Show(Properties.Settings.Default.RegisterViewModelRegisterSuccessful,
+                            Properties.Settings.Default.MessageBoxTitleSuccessful);
+                        DefaultSettingsConstant.CopyDefaults();
+                        Registered = true;
+                        (GetView() as Window)?.Close();
+                    }
+                    else
+                    {
+                        MessageBox.Show(Properties.Settings.Default.RegisterViewModelRegistrationFailed,
+                            Properties.Settings.Default.MessageBoxTitleFailed, MessageBoxButton.OK,
+                            MessageBoxImage.Exclamation);
+                    }
                 }
                 else
                 {
-                    MessageBox.Show("Registration failed! Please try again.");
+                    MessageBox.Show(Properties.Settings.Default.RegisterViewModelAlreadyExists,
+                        Properties.Settings.Default.MessageBoxTitleFailed, MessageBoxButton.OK,
+                        MessageBoxImage.Exclamation);
                 }
             }
             else
             {
-                MessageBox.Show("Please fill in the fields with errors");
+                MessageBox.Show(Properties.Settings.Default.RegisterViewModelFieldsWithErrors, Properties.Settings.Default.MessageBoxTitleWarning, MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 

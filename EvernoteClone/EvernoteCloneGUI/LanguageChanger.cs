@@ -1,22 +1,23 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
+using EvernoteCloneGUI.Helpers;
 using EvernoteCloneLibrary;
 
 namespace EvernoteCloneGUI
 {
     public static class LanguageChanger
     {
-        private static string _userLang;
-
-        public static void UpdateResxFile(string language)
+        public static void UpdateResxFile()
         {
-            _userLang = language;
-
-            SortedList<string, string> downloadedLanguages = LanguageLoader.DownloadLanguage(_userLang);
+            SortedList<string, string> downloadedLanguages = 
+                LanguageLoader.DownloadLanguage(Properties.Settings.Default.LastSelectedLanguage);
             
             foreach (KeyValuePair<string, string> pair in downloadedLanguages)
             {
                 Properties.Settings.Default[pair.Key] = pair.Value;
             }
+            
+            TranslationSource.Instance.CurrentCulture = new CultureInfo(Properties.Settings.Default.LastSelectedLanguage);
         }
     }
 }

@@ -59,15 +59,14 @@ namespace EvernoteCloneGUI.ViewModels.Popups
             {
                 if (UpdateNoteNotebook())
                 {
-                    MessageBox.Show($"The note {PotentialMoveCandidate.Title} has been moved to the" +
-                                    $" notebook {SelectedNotebook.Path.Path}/{SelectedNotebook.Title}",
-                        "Note Fever | Notice", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show(string.Format(Properties.Settings.Default.NotebookPickerViewModelMoved, PotentialMoveCandidate.Title, SelectedNotebook.Path.Path, SelectedNotebook.Title,
+                        Properties.Settings.Default.NotebookPickerViewModelTitle, MessageBoxButton.OK, MessageBoxImage.Information));
                     TryClose(true);
                 }
                 else
                 {
-                    MessageBox.Show("Failed to move the note to the specified notebook.",
-                        "Note Fever | Notice", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show(Properties.Settings.Default.NotebookPickerViewModelNotMoved,
+                        Properties.Settings.Default.NotebookPickerViewModelTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
             }
             

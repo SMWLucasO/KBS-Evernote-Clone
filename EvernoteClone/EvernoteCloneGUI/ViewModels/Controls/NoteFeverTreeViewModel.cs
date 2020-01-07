@@ -66,14 +66,14 @@ namespace EvernoteCloneGUI.ViewModels.Controls
             _noteFeverViewModel = noteFeverViewModel;
             
             // First create/build context menu's
-            RootContext.Items.Add(CreateMenuItem("Add Folder", AddFolderToRoot));
+            RootContext.Items.Add(CreateMenuItem(Properties.Settings.Default.NoteFeverTreeViewModelAddFolder, AddFolderToRoot));
             
-            FolderContext.Items.Add(CreateMenuItem("Add Folder", AddFolder));
-            FolderContext.Items.Add(CreateMenuItem("Add Notebook", AddNotebook));
-            FolderContext.Items.Add(CreateMenuItem("Remove", RemoveFolder));
+            FolderContext.Items.Add(CreateMenuItem(Properties.Settings.Default.NoteFeverTreeViewModelAddFolder, AddFolder));
+            FolderContext.Items.Add(CreateMenuItem(Properties.Settings.Default.NoteFeverTreeViewModelAddNotebook, AddNotebook));
+            FolderContext.Items.Add(CreateMenuItem(Properties.Settings.Default.NoteFeverTreeViewModelRemove, RemoveFolder));
             
-            NotebookContext.Items.Add(CreateMenuItem("Add Note", AddNote));
-            NotebookContext.Items.Add(CreateMenuItem("Remove", RemoveNotebook));
+            NotebookContext.Items.Add(CreateMenuItem(Properties.Settings.Default.NoteFeverTreeViewModelAddNote, AddNote));
+            NotebookContext.Items.Add(CreateMenuItem(Properties.Settings.Default.NoteFeverTreeViewModelRemove, RemoveNotebook));
 
             // Load all folders, notebooks and add them all to the view
             LoadNotebooksTreeView();
@@ -91,7 +91,7 @@ namespace EvernoteCloneGUI.ViewModels.Controls
         public void LoadNotebooksTreeView(string pathToBeSelected = null, bool withoutSynchronize = false)
         {
             // Create a root TreeViewItem
-            TreeViewItem rootTreeViewItem = CreateTreeNode("My Notebooks", RootContext, null);
+            TreeViewItem rootTreeViewItem = CreateTreeNode(Properties.Settings.Default.NoteFeverTreeViewModelMyNotebooks, RootContext, null);
 
             // Load all Folders (LoadFolders) and attach Notebooks to them (LoadNotebooksIntoFolderStructure)
             // Now, loop over them all, and add them to the root TreeViewItem
@@ -133,7 +133,7 @@ namespace EvernoteCloneGUI.ViewModels.Controls
         private static NotebookLocation GetPath(HeaderedItemsControl treeViewItem, bool isNotebook = false)
         {
             // Check if header of treeViewItem is 'My Notebooks', if this is true, it is the root TreeViewItem and thus we should return null.
-            if (treeViewItem.Header.ToString() == "My Notebooks")
+            if (treeViewItem.Header.ToString() == Properties.Settings.Default.NoteFeverTreeViewModelMyNotebooks)
             {
                 return null;
             }
@@ -187,6 +187,11 @@ namespace EvernoteCloneGUI.ViewModels.Controls
         {
             rootTreeViewItem.IsExpanded = true;
             TreeViewItem currentNode = null;
+
+            if (path == null)
+            {
+                return;
+            }
 
             // Foreach folder in path
             foreach (string directory in path.Split('/'))
@@ -481,18 +486,18 @@ namespace EvernoteCloneGUI.ViewModels.Controls
 
                     if (notebookLocation.Path.Split('/').Length >= 10)
                     {
-                        MessageBox.Show("You can't have more than 10 nested folders!", "NoteFever | Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        MessageBox.Show(Properties.Settings.Default.NoteFeverTreeViewModelNoMoreThan, Properties.Settings.Default.MessageBoxTitleError, MessageBoxButton.OK, MessageBoxImage.Error);
                         return;
                     }
                     
-                    string newFolderName = GetUserInput("Create new folder", "What do you want your new folder to be called:");
+                    string newFolderName = GetUserInput(Properties.Settings.Default.NoteFeverTreeViewModelNewFolderTitle, Properties.Settings.Default.NoteFeverTreeViewModelNewFolder);
 
                     if (newFolderName != null)
                     {
                         if (!NotebookLocation.AddNewNotebookLocation(
                             new NotebookLocation {Path = notebookLocation.Path + "/" + newFolderName }))
                         {
-                            MessageBox.Show("Something happened while adding the folder, does it already exist?", "NoteFever | Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                            MessageBox.Show(Properties.Settings.Default.NoteFeverTreeViewModelErrorWhileNewFolder, Properties.Settings.Default.MessageBoxTitleError, MessageBoxButton.OK, MessageBoxImage.Error);
                         }
                         else
                         {
@@ -510,13 +515,14 @@ namespace EvernoteCloneGUI.ViewModels.Controls
         /// <param name="e"></param>
         public void AddFolderToRoot(object sender, RoutedEventArgs e)
         {
-            string newFolderName = GetUserInput("Create new folder", "What do you want your new folder to be called:");
+            string newFolderName = GetUserInput(Properties.Settings.Default.NoteFeverTreeViewModelNewFolderTitle, Properties.Settings.Default.NoteFeverTreeViewModelNewFolder);
+            
             if (newFolderName != null)
             {
                 if (!NotebookLocation.AddNewNotebookLocation(
                     new NotebookLocation {Path = newFolderName}))
                 {
-                    MessageBox.Show("Something happened while adding the folder, does it already exist?", "NoteFever | Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    MessageBox.Show(Properties.Settings.Default.NoteFeverTreeViewModelErrorWhileNewFolder, Properties.Settings.Default.MessageBoxTitleError, MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 else
                 {
@@ -537,7 +543,7 @@ namespace EvernoteCloneGUI.ViewModels.Controls
                 if (menuItem.Parent is ContextMenu contextMenu)
                 {
                     NotebookLocation notebookLocation = GetPath(contextMenu.PlacementTarget as TreeViewItem);
-                    string newNotebookName = GetUserInput("Create new notebook", "What do you want your new notebook to be called:");
+                    string newNotebookName = GetUserInput(Properties.Settings.Default.NoteFeverTreeViewModelNewNotebookTitle, Properties.Settings.Default.NoteFeverTreeViewModelNewNotebook);
 
                     if (newNotebookName != null)
                     {
@@ -553,7 +559,7 @@ namespace EvernoteCloneGUI.ViewModels.Controls
 
                         if (!notebook.Save())
                         {
-                            MessageBox.Show("Something happened while adding the notebook, does it already exist?", "NoteFever | Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                            MessageBox.Show(Properties.Settings.Default.NoteFeverTreeViewModelErrorWhileNewNotebook, Properties.Settings.Default.MessageBoxTitleError, MessageBoxButton.OK, MessageBoxImage.Error);
                         }
                         else
                         {
@@ -691,8 +697,8 @@ namespace EvernoteCloneGUI.ViewModels.Controls
                        && valueRequestViewModel.Value.Length > maxCharacters)
                 {
                     if (MessageBox.Show(
-                            $"Text should be between {minCharacters} and {maxCharacters} characters long. Also it can't contain the '/' character.",
-                            "NoteFever | Error", 
+                            string.Format(Properties.Settings.Default.NoteFeverTreeViewModelTextBetween, minCharacters, maxCharacters),
+                            Properties.Settings.Default.MessageBoxTitleError, 
                             MessageBoxButton.OKCancel, 
                             MessageBoxImage.Error) 
                         == MessageBoxResult.Cancel)

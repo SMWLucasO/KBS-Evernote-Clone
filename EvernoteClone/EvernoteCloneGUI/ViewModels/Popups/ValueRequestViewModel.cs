@@ -27,12 +27,12 @@ namespace EvernoteCloneGUI.ViewModels.Popups
         /// <summary>
         /// The title for the dialog which has been opened.
         /// </summary>
-        public string DialogTitle { get; set; } = "No title has been specified.";
+        public string DialogTitle { get; set; }
 
         /// <summary>
         /// Text for the textblock above the textbox.
         /// </summary>
-        public string DialogValueRequestText { get; set; } = "No request text has been given.";
+        public string DialogValueRequestText { get; set; }
 
         /// <summary>
         /// The variable containing the user input

@@ -70,6 +70,23 @@
                 <Button Width="20" cal:Message.Attach="[Event Click] = [OnToggleStrikethrough]">
                     <TextBlock TextDecorations="Strikethrough">S</TextBlock>
                 </Button>
+                
+                <Separator/>
+                
+                <Button Margin="5 0 5 0">
+                    <TextBlock>
+                        <Run Text="{local:Loc NewNoteViewInsert}"/>
+                    </TextBlock>
+                    <Button.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="{local:Loc NewNoteViewInsertTable}" cal:Message.Attach="[Event Click] = [OnInsertTable]" />
+                            <MenuItem Header="{local:Loc NewNoteViewInsertHorizontalLine}" cal:Message.Attach="[Event Click] = [OnInsertHorizontalLine]" />
+                            <MenuItem Header="{local:Loc NewNoteViewInsertCode}" cal:Message.Attach="[Event Click] = [OnInsertCodeBlocks]"></MenuItem>
+                            <MenuItem Header="{local:Loc NewNoteViewInsertOrderedList}" Command="EditingCommands.ToggleBullets"></MenuItem>
+                            <MenuItem Header="{local:Loc NewNoteViewInsertUnorderedList}" Command="EditingCommands.ToggleNumbering"></MenuItem>
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                </Button>
 
                 <Separator />
 
@@ -99,21 +116,6 @@
                 </Button>
                 <Button Margin="5 0 5 0" FontWeight="Bold" cal:Message.Attach="[Event Click] = [OnToggleTextMarking]">
                     <TextBlock Background="Yellow">M</TextBlock>
-                </Button>
-                <Separator/>
-                <Button Margin="5 0 5 0" cal:Message.Attach="[Event Click] = [SimulateRightClick($eventArgs)]">
-                    <TextBlock>
-                        <Run Text="{local:Loc NewNoteViewInsert}"/>
-                    </TextBlock>
-                    <Button.ContextMenu>
-                        <ContextMenu>
-                            <MenuItem Header="{local:Loc NewNoteViewInsertTable}" cal:Message.Attach="[Event Click] = [OnInsertTable]" />
-                            <MenuItem Header="{local:Loc NewNoteViewInsertHorizontalLine}" cal:Message.Attach="[Event Click] = [OnInsertHorizontalLine]" />
-                            <MenuItem Header="{local:Loc NewNoteViewInsertCode}" cal:Message.Attach="[Event Click] = [OnInsertCodeBlocks]"></MenuItem>
-                            <MenuItem Header="{local:Loc NewNoteViewInsertOrderedList}" Command="EditingCommands.ToggleBullets"></MenuItem>
-                            <MenuItem Header="{local:Loc NewNoteViewInsertUnorderedList}" Command="EditingCommands.ToggleNumbering"></MenuItem>
-                        </ContextMenu>
-                    </Button.ContextMenu>
                 </Button>
                 <Separator/>
             </ToolBar>

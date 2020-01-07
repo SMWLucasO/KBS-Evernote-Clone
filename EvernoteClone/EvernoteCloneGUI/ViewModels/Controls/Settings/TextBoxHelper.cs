@@ -52,7 +52,7 @@ namespace EvernoteCloneGUI.ViewModels.Controls.Settings
                 }
                 catch (Exception)
                 {
-                    MessageBox.Show("The given input can only be of type "+selectedSetting.SettingValue.GetType(), "NoteFever | Settings", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(Properties.Settings.Default.TextBoxHelperOnlyGivenType + selectedSetting.SettingValue.GetType(), Properties.Settings.Default.SettingViewModelTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                     textBox.Text = selectedSetting.SettingValue.ToString();
                     return;
                 }

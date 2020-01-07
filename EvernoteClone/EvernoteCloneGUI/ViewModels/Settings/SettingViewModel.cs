@@ -49,11 +49,11 @@ namespace EvernoteCloneGUI.ViewModels.Settings
         {
             if (EvernoteCloneLibrary.Settings.Setting.SaveSettings())
             {
-                MessageBox.Show("Settings successfully saved!", "NoteFever | Settings", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show(Properties.Settings.Default.SettingViewModelSuccessfullySaved, Properties.Settings.Default.SettingViewModelTitle, MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
             {
-                MessageBox.Show("Something went wrong while trying to save settings.", "NoteFever | Settings", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(Properties.Settings.Default.SettingViewModelWronglySaved, Properties.Settings.Default.SettingViewModelTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
             // Update colors of Settings view

@@ -314,10 +314,10 @@ namespace EvernoteCloneGUI.ViewModels.Commands
 
             ValueRequestViewModel valueRequestViewModel = new ValueRequestViewModel
             {
-                DialogTitle = "Pick a color",
-                DialogValueRequestText = "Insert a HEX color to change the color to (without the '#')"
+                DialogTitle = Properties.Settings.Default.RichTextEditorCommandsColorTitle,
+                DialogValueRequestText = Properties.Settings.Default.RichTextEditorCommandsInsertHEX
             };
-            valueRequestViewModel.Submission += (model) =>
+            valueRequestViewModel.Submission += model =>
             {
                 try
                 {
@@ -340,10 +340,10 @@ namespace EvernoteCloneGUI.ViewModels.Commands
                 }
 
                 // When an error occurs or when the hex value is an improper value, show this error message.
-                MessageBox.Show("Please provide a valid hexadecimal color.", "Note Fever", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(Properties.Settings.Default.RichTextEditorCommandsProvideHexadecimal, Properties.Settings.Default.MessageBoxTitleNotice, MessageBoxButton.OK, MessageBoxImage.Error);
             };
 
-            valueRequestViewModel.Cancellation += (model) => model.TryClose(false);
+            valueRequestViewModel.Cancellation += model => model.TryClose(false);
             bool success = windowManager.ShowDialog(valueRequestViewModel) ?? false;
 
             return (success ? output : null);

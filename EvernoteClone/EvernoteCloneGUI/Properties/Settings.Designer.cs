@@ -541,7 +541,7 @@ namespace EvernoteCloneGUI.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("notes")]
+        [global::System.Configuration.DefaultSettingValueAttribute("note(s)")]
         public string NotebookNotesMenuViewNotes {
             get {
                 return ((string)(this["NotebookNotesMenuViewNotes"]));
@@ -1280,6 +1280,847 @@ namespace EvernoteCloneGUI.Properties {
             }
             set {
                 this["StandardsViewApplyChanges"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Default label title:")]
+        public string StandardsViewLabelTitle {
+            get {
+                return ((string)(this["StandardsViewLabelTitle"]));
+            }
+            set {
+                this["StandardsViewLabelTitle"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Standard: Nameless label")]
+        public string StandardsViewDefaultLabelTitle {
+            get {
+                return ((string)(this["StandardsViewDefaultLabelTitle"]));
+            }
+            set {
+                this["StandardsViewDefaultLabelTitle"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Are you sure? Unsaved changes will be lost.")]
+        public string NoteElementViewModelUnsavedChanges {
+            get {
+                return ((string)(this["NoteElementViewModelUnsavedChanges"]));
+            }
+            set {
+                this["NoteElementViewModelUnsavedChanges"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Settings successfully saved!")]
+        public string SettingViewModelSuccessfullySaved {
+            get {
+                return ((string)(this["SettingViewModelSuccessfullySaved"]));
+            }
+            set {
+                this["SettingViewModelSuccessfullySaved"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Something went wrong while trying to save settings.")]
+        public string SettingViewModelWronglySaved {
+            get {
+                return ((string)(this["SettingViewModelWronglySaved"]));
+            }
+            set {
+                this["SettingViewModelWronglySaved"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("NoteFever | Settings")]
+        public string SettingViewModelTitle {
+            get {
+                return ((string)(this["SettingViewModelTitle"]));
+            }
+            set {
+                this["SettingViewModelTitle"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("The given input can only be of type ")]
+        public string TextBoxHelperOnlyGivenType {
+            get {
+                return ((string)(this["TextBoxHelperOnlyGivenType"]));
+            }
+            set {
+                this["TextBoxHelperOnlyGivenType"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("You\'ve been logged in with success!")]
+        public string LoginViewModelSuccessfullyLoggedIn {
+            get {
+                return ((string)(this["LoginViewModelSuccessfullyLoggedIn"]));
+            }
+            set {
+                this["LoginViewModelSuccessfullyLoggedIn"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("NoteFever | Login")]
+        public string LoginViewModelTitle {
+            get {
+                return ((string)(this["LoginViewModelTitle"]));
+            }
+            set {
+                this["LoginViewModelTitle"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Password or Username is not correct. Please check again.")]
+        public string LoginViewModelUnsuccessfullLoginAttempt {
+            get {
+                return ((string)(this["LoginViewModelUnsuccessfullLoginAttempt"]));
+            }
+            set {
+                this["LoginViewModelUnsuccessfullLoginAttempt"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("The note {0} has been moved to the notebook {1}/{2}")]
+        public string NotebookPickerViewModelMoved {
+            get {
+                return ((string)(this["NotebookPickerViewModelMoved"]));
+            }
+            set {
+                this["NotebookPickerViewModelMoved"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("NoteFever | Notebook Picker")]
+        public string NotebookPickerViewModelTitle {
+            get {
+                return ((string)(this["NotebookPickerViewModelTitle"]));
+            }
+            set {
+                this["NotebookPickerViewModelTitle"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Failed to move the note to the specified notebook.")]
+        public string NotebookPickerViewModelNotMoved {
+            get {
+                return ((string)(this["NotebookPickerViewModelNotMoved"]));
+            }
+            set {
+                this["NotebookPickerViewModelNotMoved"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Please make sure that both the rows and columns are greater than 0")]
+        public string TableRowColumnSpecifierViewModelGreaterThanZero {
+            get {
+                return ((string)(this["TableRowColumnSpecifierViewModelGreaterThanZero"]));
+            }
+            set {
+                this["TableRowColumnSpecifierViewModelGreaterThanZero"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("NoteFever | Warning")]
+        public string MessageBoxTitleWarning {
+            get {
+                return ((string)(this["MessageBoxTitleWarning"]));
+            }
+            set {
+                this["MessageBoxTitleWarning"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Fields can\'t be empty!")]
+        public string FieldsCantBeEmpty {
+            get {
+                return ((string)(this["FieldsCantBeEmpty"]));
+            }
+            set {
+                this["FieldsCantBeEmpty"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("NoteFever | Error")]
+        public string MessageBoxTitleError {
+            get {
+                return ((string)(this["MessageBoxTitleError"]));
+            }
+            set {
+                this["MessageBoxTitleError"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("This label already exists!")]
+        public string NewNoteViewModelLabelAlreadyExists {
+            get {
+                return ((string)(this["NewNoteViewModelLabelAlreadyExists"]));
+            }
+            set {
+                this["NewNoteViewModelLabelAlreadyExists"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Are you sure that you want to permanently delete this note?")]
+        public string NoteElementViewModelPermanentlyDeleteNote {
+            get {
+                return ((string)(this["NoteElementViewModelPermanentlyDeleteNote"]));
+            }
+            set {
+                this["NoteElementViewModelPermanentlyDeleteNote"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("NoteFever | Failed")]
+        public string MessageBoxTitleFailed {
+            get {
+                return ((string)(this["MessageBoxTitleFailed"]));
+            }
+            set {
+                this["MessageBoxTitleFailed"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Cannot add new notes whilst not in a notebook")]
+        public string NoteFeverViewModelCannotAddNoteToEmptyNotebook {
+            get {
+                return ((string)(this["NoteFeverViewModelCannotAddNoteToEmptyNotebook"]));
+            }
+            set {
+                this["NoteFeverViewModelCannotAddNoteToEmptyNotebook"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("You can\'t add labels to notes when they\'re not saved in the database.")]
+        public string NewNoteViewModelCantAddLabel {
+            get {
+                return ((string)(this["NewNoteViewModelCantAddLabel"]));
+            }
+            set {
+                this["NewNoteViewModelCantAddLabel"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("You have to be logged in to use this functionality!")]
+        public string NoteElementViewModelLoggedInToUse {
+            get {
+                return ((string)(this["NoteElementViewModelLoggedInToUse"]));
+            }
+            set {
+                this["NoteElementViewModelLoggedInToUse"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Please enter a valid username")]
+        public string NoteElementViewModelShareNote {
+            get {
+                return ((string)(this["NoteElementViewModelShareNote"]));
+            }
+            set {
+                this["NoteElementViewModelShareNote"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("NoteFever | Share Note")]
+        public string NoteElementViewModelShareNoteTitle {
+            get {
+                return ((string)(this["NoteElementViewModelShareNoteTitle"]));
+            }
+            set {
+                this["NoteElementViewModelShareNoteTitle"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Enter a label name")]
+        public string NewNoteViewModelAddLabel {
+            get {
+                return ((string)(this["NewNoteViewModelAddLabel"]));
+            }
+            set {
+                this["NewNoteViewModelAddLabel"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("NoteFever | Add Label")]
+        public string NewNoteViewModelAddLabelTitle {
+            get {
+                return ((string)(this["NewNoteViewModelAddLabelTitle"]));
+            }
+            set {
+                this["NewNoteViewModelAddLabelTitle"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Registration successful!")]
+        public string RegisterViewModelRegisterSuccessful {
+            get {
+                return ((string)(this["RegisterViewModelRegisterSuccessful"]));
+            }
+            set {
+                this["RegisterViewModelRegisterSuccessful"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("NoteFever | Success")]
+        public string MessageBoxTitleSuccessful {
+            get {
+                return ((string)(this["MessageBoxTitleSuccessful"]));
+            }
+            set {
+                this["MessageBoxTitleSuccessful"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Registration failed! Please try again.")]
+        public string RegisterViewModelRegistrationFailed {
+            get {
+                return ((string)(this["RegisterViewModelRegistrationFailed"]));
+            }
+            set {
+                this["RegisterViewModelRegistrationFailed"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Please fill in the fields with errors")]
+        public string RegisterViewModelFieldsWithErrors {
+            get {
+                return ((string)(this["RegisterViewModelFieldsWithErrors"]));
+            }
+            set {
+                this["RegisterViewModelFieldsWithErrors"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("There are no notes to view.")]
+        public string NoteFeverViewModelNoNotes {
+            get {
+                return ((string)(this["NoteFeverViewModelNoNotes"]));
+            }
+            set {
+                this["NoteFeverViewModelNoNotes"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("There are no shared notes to view.")]
+        public string NoteFeverViewModelNoSharedNotes {
+            get {
+                return ((string)(this["NoteFeverViewModelNoSharedNotes"]));
+            }
+            set {
+                this["NoteFeverViewModelNoSharedNotes"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("NoteFever | Notice")]
+        public string MessageBoxTitleNotice {
+            get {
+                return ((string)(this["MessageBoxTitleNotice"]));
+            }
+            set {
+                this["MessageBoxTitleNotice"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Successfully shared the note with {0}!")]
+        public string NoteElementViewModelSharedNote {
+            get {
+                return ((string)(this["NoteElementViewModelSharedNote"]));
+            }
+            set {
+                this["NoteElementViewModelSharedNote"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Username does not exist or make sure you\'re logged in.")]
+        public string NoteElementViewModelShareNoteUsernameDoesNotExist {
+            get {
+                return ((string)(this["NoteElementViewModelShareNoteUsernameDoesNotExist"]));
+            }
+            set {
+                this["NoteElementViewModelShareNoteUsernameDoesNotExist"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Note was saved successfully!")]
+        public string NewNoteViewModelSavedNote {
+            get {
+                return ((string)(this["NewNoteViewModelSavedNote"]));
+            }
+            set {
+                this["NewNoteViewModelSavedNote"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("We were unable to save your note.")]
+        public string NewNoteViewModelCouldntSaveNote {
+            get {
+                return ((string)(this["NewNoteViewModelCouldntSaveNote"]));
+            }
+            set {
+                this["NewNoteViewModelCouldntSaveNote"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("There are no deleted notes.")]
+        public string NoteFeverViewModelNoDeletedNotes {
+            get {
+                return ((string)(this["NoteFeverViewModelNoDeletedNotes"]));
+            }
+            set {
+                this["NoteFeverViewModelNoDeletedNotes"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("You\'ve been logged in with a Google account.")]
+        public string LoginViewModelGoogleLogin {
+            get {
+                return ((string)(this["LoginViewModelGoogleLogin"]));
+            }
+            set {
+                this["LoginViewModelGoogleLogin"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Please provide a valid hexadecimal color.")]
+        public string RichTextEditorCommandsProvideHexadecimal {
+            get {
+                return ((string)(this["RichTextEditorCommandsProvideHexadecimal"]));
+            }
+            set {
+                this["RichTextEditorCommandsProvideHexadecimal"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("You can\'t have more than 10 nested folders!")]
+        public string NoteFeverTreeViewModelNoMoreThan {
+            get {
+                return ((string)(this["NoteFeverTreeViewModelNoMoreThan"]));
+            }
+            set {
+                this["NoteFeverTreeViewModelNoMoreThan"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("NoteFever | Create new folder")]
+        public string NoteFeverTreeViewModelNewFolderTitle {
+            get {
+                return ((string)(this["NoteFeverTreeViewModelNewFolderTitle"]));
+            }
+            set {
+                this["NoteFeverTreeViewModelNewFolderTitle"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("What do you want your new folder to be called:")]
+        public string NoteFeverTreeViewModelNewFolder {
+            get {
+                return ((string)(this["NoteFeverTreeViewModelNewFolder"]));
+            }
+            set {
+                this["NoteFeverTreeViewModelNewFolder"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Something happened while adding the folder, does it already exist?")]
+        public string NoteFeverTreeViewModelErrorWhileNewFolder {
+            get {
+                return ((string)(this["NoteFeverTreeViewModelErrorWhileNewFolder"]));
+            }
+            set {
+                this["NoteFeverTreeViewModelErrorWhileNewFolder"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("NoteFever | Create new notebook")]
+        public string NoteFeverTreeViewModelNewNotebookTitle {
+            get {
+                return ((string)(this["NoteFeverTreeViewModelNewNotebookTitle"]));
+            }
+            set {
+                this["NoteFeverTreeViewModelNewNotebookTitle"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("What do you want your new notebook to be called:")]
+        public string NoteFeverTreeViewModelNewNotebook {
+            get {
+                return ((string)(this["NoteFeverTreeViewModelNewNotebook"]));
+            }
+            set {
+                this["NoteFeverTreeViewModelNewNotebook"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Something happened while adding the notebook, does it already exist?")]
+        public string NoteFeverTreeViewModelErrorWhileNewNotebook {
+            get {
+                return ((string)(this["NoteFeverTreeViewModelErrorWhileNewNotebook"]));
+            }
+            set {
+                this["NoteFeverTreeViewModelErrorWhileNewNotebook"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Pick a color")]
+        public string RichTextEditorCommandsColorTitle {
+            get {
+                return ((string)(this["RichTextEditorCommandsColorTitle"]));
+            }
+            set {
+                this["RichTextEditorCommandsColorTitle"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Insert a HEX color to change the color to (without the \'#\')")]
+        public string RichTextEditorCommandsInsertHEX {
+            get {
+                return ((string)(this["RichTextEditorCommandsInsertHEX"]));
+            }
+            set {
+                this["RichTextEditorCommandsInsertHEX"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Add Folder")]
+        public string NoteFeverTreeViewModelAddFolder {
+            get {
+                return ((string)(this["NoteFeverTreeViewModelAddFolder"]));
+            }
+            set {
+                this["NoteFeverTreeViewModelAddFolder"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Add Notebook")]
+        public string NoteFeverTreeViewModelAddNotebook {
+            get {
+                return ((string)(this["NoteFeverTreeViewModelAddNotebook"]));
+            }
+            set {
+                this["NoteFeverTreeViewModelAddNotebook"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Remove")]
+        public string NoteFeverTreeViewModelRemove {
+            get {
+                return ((string)(this["NoteFeverTreeViewModelRemove"]));
+            }
+            set {
+                this["NoteFeverTreeViewModelRemove"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Add Note")]
+        public string NoteFeverTreeViewModelAddNote {
+            get {
+                return ((string)(this["NoteFeverTreeViewModelAddNote"]));
+            }
+            set {
+                this["NoteFeverTreeViewModelAddNote"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("My Notebooks")]
+        public string NoteFeverTreeViewModelMyNotebooks {
+            get {
+                return ((string)(this["NoteFeverTreeViewModelMyNotebooks"]));
+            }
+            set {
+                this["NoteFeverTreeViewModelMyNotebooks"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Text should be between {0} and {1} characters long. Also it can\'t contain the \'/\'" +
+            " character.")]
+        public string NoteFeverTreeViewModelTextBetween {
+            get {
+                return ((string)(this["NoteFeverTreeViewModelTextBetween"]));
+            }
+            set {
+                this["NoteFeverTreeViewModelTextBetween"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Nameless author")]
+        public string NewNoteViewModelNamelessAuthor {
+            get {
+                return ((string)(this["NewNoteViewModelNamelessAuthor"]));
+            }
+            set {
+                this["NewNoteViewModelNamelessAuthor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Restore")]
+        public string NoteElementViewModelRestore {
+            get {
+                return ((string)(this["NoteElementViewModelRestore"]));
+            }
+            set {
+                this["NoteElementViewModelRestore"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Delete permanently")]
+        public string NoteElementViewModelDeletePermanently {
+            get {
+                return ((string)(this["NoteElementViewModelDeletePermanently"]));
+            }
+            set {
+                this["NoteElementViewModelDeletePermanently"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Remove")]
+        public string NoteElementViewModelRemove {
+            get {
+                return ((string)(this["NoteElementViewModelRemove"]));
+            }
+            set {
+                this["NoteElementViewModelRemove"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Move")]
+        public string NoteElementViewModelMove {
+            get {
+                return ((string)(this["NoteElementViewModelMove"]));
+            }
+            set {
+                this["NoteElementViewModelMove"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Share Note")]
+        public string NoteElementViewModelShareNoteHeader {
+            get {
+                return ((string)(this["NoteElementViewModelShareNoteHeader"]));
+            }
+            set {
+                this["NoteElementViewModelShareNoteHeader"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Shared notes")]
+        public string NoteFeverViewModelSharedNotes {
+            get {
+                return ((string)(this["NoteFeverViewModelSharedNotes"]));
+            }
+            set {
+                this["NoteFeverViewModelSharedNotes"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("All notes")]
+        public string NoteFeverViewModelAllNotes {
+            get {
+                return ((string)(this["NoteFeverViewModelAllNotes"]));
+            }
+            set {
+                this["NoteFeverViewModelAllNotes"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Bin")]
+        public string NoteFeverViewModelBin {
+            get {
+                return ((string)(this["NoteFeverViewModelBin"]));
+            }
+            set {
+                this["NoteFeverViewModelBin"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Please enter your email!")]
+        public string RegisterViewModelPleaseEmail {
+            get {
+                return ((string)(this["RegisterViewModelPleaseEmail"]));
+            }
+            set {
+                this["RegisterViewModelPleaseEmail"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Please enter valid password!")]
+        public string RegisterViewModelPleasePassword {
+            get {
+                return ((string)(this["RegisterViewModelPleasePassword"]));
+            }
+            set {
+                this["RegisterViewModelPleasePassword"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Password are not equal!")]
+        public string RegisterViewModelNotEqual {
+            get {
+                return ((string)(this["RegisterViewModelNotEqual"]));
+            }
+            set {
+                this["RegisterViewModelNotEqual"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("An unknown error occured!")]
+        public string RegisterViewModelUnknown {
+            get {
+                return ((string)(this["RegisterViewModelUnknown"]));
+            }
+            set {
+                this["RegisterViewModelUnknown"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("A user with that username (email) already exists!")]
+        public string RegisterViewModelAlreadyExists {
+            get {
+                return ((string)(this["RegisterViewModelAlreadyExists"]));
+            }
+            set {
+                this["RegisterViewModelAlreadyExists"] = value;
             }
         }
     }
