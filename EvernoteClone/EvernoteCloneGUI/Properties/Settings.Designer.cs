@@ -34,5 +34,1253 @@ namespace EvernoteCloneGUI.Properties {
                 this["LastSelectedLanguage"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Or use it")]
+        public string LoginViewLocal {
+            get {
+                return ((string)(this["LoginViewLocal"]));
+            }
+            set {
+                this["LoginViewLocal"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Locally")]
+        public string LoginViewLocalHyperlink {
+            get {
+                return ((string)(this["LoginViewLocalHyperlink"]));
+            }
+            set {
+                this["LoginViewLocalHyperlink"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Login")]
+        public string LoginViewLogin {
+            get {
+                return ((string)(this["LoginViewLogin"]));
+            }
+            set {
+                this["LoginViewLogin"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Password")]
+        public string LoginViewPassword {
+            get {
+                return ((string)(this["LoginViewPassword"]));
+            }
+            set {
+                this["LoginViewPassword"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Register")]
+        public string LoginViewRegister {
+            get {
+                return ((string)(this["LoginViewRegister"]));
+            }
+            set {
+                this["LoginViewRegister"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Username")]
+        public string LoginViewUsername {
+            get {
+                return ((string)(this["LoginViewUsername"]));
+            }
+            set {
+                this["LoginViewUsername"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Delete")]
+        public string NewNoteViewEditDelete {
+            get {
+                return ((string)(this["NewNoteViewEditDelete"]));
+            }
+            set {
+                this["NewNoteViewEditDelete"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Edit")]
+        public string NewNoteViewEdit {
+            get {
+                return ((string)(this["NewNoteViewEdit"]));
+            }
+            set {
+                this["NewNoteViewEdit"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Copy")]
+        public string NewNoteViewEditCopy {
+            get {
+                return ((string)(this["NewNoteViewEditCopy"]));
+            }
+            set {
+                this["NewNoteViewEditCopy"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Cut")]
+        public string NewNoteViewEditCut {
+            get {
+                return ((string)(this["NewNoteViewEditCut"]));
+            }
+            set {
+                this["NewNoteViewEditCut"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Find and Replace All")]
+        public string NewNoteViewEditFindAndReplaceAll {
+            get {
+                return ((string)(this["NewNoteViewEditFindAndReplaceAll"]));
+            }
+            set {
+                this["NewNoteViewEditFindAndReplaceAll"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Find Next")]
+        public string NewNoteViewEditFindNext {
+            get {
+                return ((string)(this["NewNoteViewEditFindNext"]));
+            }
+            set {
+                this["NewNoteViewEditFindNext"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Find Previous")]
+        public string NewNoteViewEditFindPrevious {
+            get {
+                return ((string)(this["NewNoteViewEditFindPrevious"]));
+            }
+            set {
+                this["NewNoteViewEditFindPrevious"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Replace Withing Note")]
+        public string NewNoteViewEditReplaceWithinNote {
+            get {
+                return ((string)(this["NewNoteViewEditReplaceWithinNote"]));
+            }
+            set {
+                this["NewNoteViewEditReplaceWithinNote"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Find Within Note")]
+        public string NewNoteViewEditFindWithinNote {
+            get {
+                return ((string)(this["NewNoteViewEditFindWithinNote"]));
+            }
+            set {
+                this["NewNoteViewEditFindWithinNote"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Paste")]
+        public string NewNoteViewEditPaste {
+            get {
+                return ((string)(this["NewNoteViewEditPaste"]));
+            }
+            set {
+                this["NewNoteViewEditPaste"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Redo")]
+        public string NewNoteViewEditRedo {
+            get {
+                return ((string)(this["NewNoteViewEditRedo"]));
+            }
+            set {
+                this["NewNoteViewEditRedo"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Select All")]
+        public string NewNoteViewEditSelectAll {
+            get {
+                return ((string)(this["NewNoteViewEditSelectAll"]));
+            }
+            set {
+                this["NewNoteViewEditSelectAll"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Undo")]
+        public string NewNoteViewEditUndo {
+            get {
+                return ((string)(this["NewNoteViewEditUndo"]));
+            }
+            set {
+                this["NewNoteViewEditUndo"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Font")]
+        public string NewNoteViewFont {
+            get {
+                return ((string)(this["NewNoteViewFont"]));
+            }
+            set {
+                this["NewNoteViewFont"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Center")]
+        public string NewNoteViewCenter {
+            get {
+                return ((string)(this["NewNoteViewCenter"]));
+            }
+            set {
+                this["NewNoteViewCenter"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("File")]
+        public string NewNoteViewFile {
+            get {
+                return ((string)(this["NewNoteViewFile"]));
+            }
+            set {
+                this["NewNoteViewFile"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Attach File")]
+        public string NewNoteViewFileAttach {
+            get {
+                return ((string)(this["NewNoteViewFileAttach"]));
+            }
+            set {
+                this["NewNoteViewFileAttach"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Close")]
+        public string NewNoteViewFileClose {
+            get {
+                return ((string)(this["NewNoteViewFileClose"]));
+            }
+            set {
+                this["NewNoteViewFileClose"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Export")]
+        public string NewNoteViewFileExport {
+            get {
+                return ((string)(this["NewNoteViewFileExport"]));
+            }
+            set {
+                this["NewNoteViewFileExport"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Import")]
+        public string NewNoteViewFileImport {
+            get {
+                return ((string)(this["NewNoteViewFileImport"]));
+            }
+            set {
+                this["NewNoteViewFileImport"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Open")]
+        public string NewNoteViewFileOpen {
+            get {
+                return ((string)(this["NewNoteViewFileOpen"]));
+            }
+            set {
+                this["NewNoteViewFileOpen"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Save")]
+        public string NewNoteViewFileSave {
+            get {
+                return ((string)(this["NewNoteViewFileSave"]));
+            }
+            set {
+                this["NewNoteViewFileSave"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Indent")]
+        public string NewNoteViewIndent {
+            get {
+                return ((string)(this["NewNoteViewIndent"]));
+            }
+            set {
+                this["NewNoteViewIndent"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Undent")]
+        public string NewNoteViewUndent {
+            get {
+                return ((string)(this["NewNoteViewUndent"]));
+            }
+            set {
+                this["NewNoteViewUndent"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Insert")]
+        public string NewNoteViewInsert {
+            get {
+                return ((string)(this["NewNoteViewInsert"]));
+            }
+            set {
+                this["NewNoteViewInsert"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Left")]
+        public string NewNoteViewLeft {
+            get {
+                return ((string)(this["NewNoteViewLeft"]));
+            }
+            set {
+                this["NewNoteViewLeft"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Right")]
+        public string NewNoteViewRight {
+            get {
+                return ((string)(this["NewNoteViewRight"]));
+            }
+            set {
+                this["NewNoteViewRight"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Font Size")]
+        public string NewNoteViewFontSize {
+            get {
+                return ((string)(this["NewNoteViewFontSize"]));
+            }
+            set {
+                this["NewNoteViewFontSize"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Note")]
+        public string NewNoteViewNote {
+            get {
+                return ((string)(this["NewNoteViewNote"]));
+            }
+            set {
+                this["NewNoteViewNote"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Copy")]
+        public string NewNoteViewNoteCopy {
+            get {
+                return ((string)(this["NewNoteViewNoteCopy"]));
+            }
+            set {
+                this["NewNoteViewNoteCopy"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Duplicate Note")]
+        public string NewNoteViewNoteDuplicate {
+            get {
+                return ((string)(this["NewNoteViewNoteDuplicate"]));
+            }
+            set {
+                this["NewNoteViewNoteDuplicate"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Move")]
+        public string NewNoteViewNoteMove {
+            get {
+                return ((string)(this["NewNoteViewNoteMove"]));
+            }
+            set {
+                this["NewNoteViewNoteMove"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Share")]
+        public string NewNoteViewShare {
+            get {
+                return ((string)(this["NewNoteViewShare"]));
+            }
+            set {
+                this["NewNoteViewShare"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Share with others")]
+        public string NewNoteViewShareWithOthers {
+            get {
+                return ((string)(this["NewNoteViewShareWithOthers"]));
+            }
+            set {
+                this["NewNoteViewShareWithOthers"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("View")]
+        public string NewNoteViewView {
+            get {
+                return ((string)(this["NewNoteViewView"]));
+            }
+            set {
+                this["NewNoteViewView"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("View status bar")]
+        public string NewNoteViewViewStatusBar {
+            get {
+                return ((string)(this["NewNoteViewViewStatusBar"]));
+            }
+            set {
+                this["NewNoteViewViewStatusBar"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("notes")]
+        public string NotebookNotesMenuViewNotes {
+            get {
+                return ((string)(this["NotebookNotesMenuViewNotes"]));
+            }
+            set {
+                this["NotebookNotesMenuViewNotes"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("All Notes")]
+        public string NoteFeverViewAllNotes {
+            get {
+                return ((string)(this["NoteFeverViewAllNotes"]));
+            }
+            set {
+                this["NoteFeverViewAllNotes"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Bin")]
+        public string NoteFeverViewBin {
+            get {
+                return ((string)(this["NoteFeverViewBin"]));
+            }
+            set {
+                this["NoteFeverViewBin"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Change User")]
+        public string NoteFeverViewChangeUser {
+            get {
+                return ((string)(this["NoteFeverViewChangeUser"]));
+            }
+            set {
+                this["NoteFeverViewChangeUser"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("New Note")]
+        public string NoteFeverViewNewNote {
+            get {
+                return ((string)(this["NoteFeverViewNewNote"]));
+            }
+            set {
+                this["NoteFeverViewNewNote"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Settings")]
+        public string NoteFeverViewSettings {
+            get {
+                return ((string)(this["NoteFeverViewSettings"]));
+            }
+            set {
+                this["NoteFeverViewSettings"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Shared With Me")]
+        public string NoteFeverViewSharedWithMe {
+            get {
+                return ((string)(this["NoteFeverViewSharedWithMe"]));
+            }
+            set {
+                this["NoteFeverViewSharedWithMe"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Tags")]
+        public string NoteFeverViewTags {
+            get {
+                return ((string)(this["NoteFeverViewTags"]));
+            }
+            set {
+                this["NoteFeverViewTags"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Confirm Password")]
+        public string RegisterViewConfirmPassword {
+            get {
+                return ((string)(this["RegisterViewConfirmPassword"]));
+            }
+            set {
+                this["RegisterViewConfirmPassword"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Password")]
+        public string RegisterViewPassword {
+            get {
+                return ((string)(this["RegisterViewPassword"]));
+            }
+            set {
+                this["RegisterViewPassword"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("First Name")]
+        public string RegisterViewFirstName {
+            get {
+                return ((string)(this["RegisterViewFirstName"]));
+            }
+            set {
+                this["RegisterViewFirstName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Last Name")]
+        public string RegisterViewLastName {
+            get {
+                return ((string)(this["RegisterViewLastName"]));
+            }
+            set {
+                this["RegisterViewLastName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Email")]
+        public string RegisterViewEmail {
+            get {
+                return ((string)(this["RegisterViewEmail"]));
+            }
+            set {
+                this["RegisterViewEmail"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Register")]
+        public string RegisterViewRegister {
+            get {
+                return ((string)(this["RegisterViewRegister"]));
+            }
+            set {
+                this["RegisterViewRegister"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Cancel")]
+        public string TableRowColumnSpecifierViewCancel {
+            get {
+                return ((string)(this["TableRowColumnSpecifierViewCancel"]));
+            }
+            set {
+                this["TableRowColumnSpecifierViewCancel"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Insert the amount of columns:")]
+        public string TableRowColumnSpecifierViewColumns {
+            get {
+                return ((string)(this["TableRowColumnSpecifierViewColumns"]));
+            }
+            set {
+                this["TableRowColumnSpecifierViewColumns"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Insert the amount of rows:")]
+        public string TableRowColumnSpecifierViewRows {
+            get {
+                return ((string)(this["TableRowColumnSpecifierViewRows"]));
+            }
+            set {
+                this["TableRowColumnSpecifierViewRows"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Submit")]
+        public string TableRowColumnSpecifierViewSubmit {
+            get {
+                return ((string)(this["TableRowColumnSpecifierViewSubmit"]));
+            }
+            set {
+                this["TableRowColumnSpecifierViewSubmit"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Cancel")]
+        public string ValueRequestViewCancel {
+            get {
+                return ((string)(this["ValueRequestViewCancel"]));
+            }
+            set {
+                this["ValueRequestViewCancel"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Submit")]
+        public string ValueRequestViewSubmit {
+            get {
+                return ((string)(this["ValueRequestViewSubmit"]));
+            }
+            set {
+                this["ValueRequestViewSubmit"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Insert Table")]
+        public string NewNoteViewInsertTable {
+            get {
+                return ((string)(this["NewNoteViewInsertTable"]));
+            }
+            set {
+                this["NewNoteViewInsertTable"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Insert Horizontal Line")]
+        public string NewNoteViewInsertHorizontalLine {
+            get {
+                return ((string)(this["NewNoteViewInsertHorizontalLine"]));
+            }
+            set {
+                this["NewNoteViewInsertHorizontalLine"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Insert Code")]
+        public string NewNoteViewInsertCode {
+            get {
+                return ((string)(this["NewNoteViewInsertCode"]));
+            }
+            set {
+                this["NewNoteViewInsertCode"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Insert Ordered List")]
+        public string NewNoteViewInsertOrderedList {
+            get {
+                return ((string)(this["NewNoteViewInsertOrderedList"]));
+            }
+            set {
+                this["NewNoteViewInsertOrderedList"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Insert Unordered List")]
+        public string NewNoteViewInsertUnorderedList {
+            get {
+                return ((string)(this["NewNoteViewInsertUnorderedList"]));
+            }
+            set {
+                this["NewNoteViewInsertUnorderedList"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Nameless notebook")]
+        public string NotebookNotesMenuViewTitle {
+            get {
+                return ((string)(this["NotebookNotesMenuViewTitle"]));
+            }
+            set {
+                this["NotebookNotesMenuViewTitle"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Nameless note")]
+        public string NoteElementViewTitle {
+            get {
+                return ((string)(this["NoteElementViewTitle"]));
+            }
+            set {
+                this["NoteElementViewTitle"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("05-07-1999")]
+        public string NoteElementViewCreationDate {
+            get {
+                return ((string)(this["NoteElementViewCreationDate"]));
+            }
+            set {
+                this["NoteElementViewCreationDate"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Login")]
+        public string LoginViewWindowTitle {
+            get {
+                return ((string)(this["LoginViewWindowTitle"]));
+            }
+            set {
+                this["LoginViewWindowTitle"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Note Fever")]
+        public string NoteFeverWindowTitle {
+            get {
+                return ((string)(this["NoteFeverWindowTitle"]));
+            }
+            set {
+                this["NoteFeverWindowTitle"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Register")]
+        public string RegisterViewWindowTitle {
+            get {
+                return ((string)(this["RegisterViewWindowTitle"]));
+            }
+            set {
+                this["RegisterViewWindowTitle"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Settings")]
+        public string SettingsViewWindowTitle {
+            get {
+                return ((string)(this["SettingsViewWindowTitle"]));
+            }
+            set {
+                this["SettingsViewWindowTitle"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Settings")]
+        public string SettingsViewTitle {
+            get {
+                return ((string)(this["SettingsViewTitle"]));
+            }
+            set {
+                this["SettingsViewTitle"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Editor")]
+        public string SettingsViewEditor {
+            get {
+                return ((string)(this["SettingsViewEditor"]));
+            }
+            set {
+                this["SettingsViewEditor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Standards")]
+        public string SettingsViewStandards {
+            get {
+                return ((string)(this["SettingsViewStandards"]));
+            }
+            set {
+                this["SettingsViewStandards"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Layout")]
+        public string SettingsViewLayout {
+            get {
+                return ((string)(this["SettingsViewLayout"]));
+            }
+            set {
+                this["SettingsViewLayout"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Language")]
+        public string SettingsViewLanguage {
+            get {
+                return ((string)(this["SettingsViewLanguage"]));
+            }
+            set {
+                this["SettingsViewLanguage"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Note Fever | specify notebook")]
+        public string NotebookPickerViewWindowTitle {
+            get {
+                return ((string)(this["NotebookPickerViewWindowTitle"]));
+            }
+            set {
+                this["NotebookPickerViewWindowTitle"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Specify a notebook to move the note to:")]
+        public string NotebookPickerViewSpecifyANotebook {
+            get {
+                return ((string)(this["NotebookPickerViewSpecifyANotebook"]));
+            }
+            set {
+                this["NotebookPickerViewSpecifyANotebook"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Cancel")]
+        public string NotebookPickerViewCancel {
+            get {
+                return ((string)(this["NotebookPickerViewCancel"]));
+            }
+            set {
+                this["NotebookPickerViewCancel"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Submit")]
+        public string NotebookPickerViewSubmit {
+            get {
+                return ((string)(this["NotebookPickerViewSubmit"]));
+            }
+            set {
+                this["NotebookPickerViewSubmit"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Note Fever | Specify table rows and columns")]
+        public string TableRowColumnSpecifierViewWindowTitle {
+            get {
+                return ((string)(this["TableRowColumnSpecifierViewWindowTitle"]));
+            }
+            set {
+                this["TableRowColumnSpecifierViewWindowTitle"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Default font:")]
+        public string EditorViewFont {
+            get {
+                return ((string)(this["EditorViewFont"]));
+            }
+            set {
+                this["EditorViewFont"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Default font size:")]
+        public string EditorViewFontSize {
+            get {
+                return ((string)(this["EditorViewFontSize"]));
+            }
+            set {
+                this["EditorViewFontSize"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Apply changes")]
+        public string EditorViewApplyChanges {
+            get {
+                return ((string)(this["EditorViewApplyChanges"]));
+            }
+            set {
+                this["EditorViewApplyChanges"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Standard: Arial")]
+        public string EditorViewDefaultFont {
+            get {
+                return ((string)(this["EditorViewDefaultFont"]));
+            }
+            set {
+                this["EditorViewDefaultFont"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Standard: 11")]
+        public string EditorViewDefaultFontSize {
+            get {
+                return ((string)(this["EditorViewDefaultFontSize"]));
+            }
+            set {
+                this["EditorViewDefaultFontSize"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Display language:")]
+        public string LanguageViewDisplayLanguage {
+            get {
+                return ((string)(this["LanguageViewDisplayLanguage"]));
+            }
+            set {
+                this["LanguageViewDisplayLanguage"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Standard: English (United States) / en-US")]
+        public string LanguageViewDefaultDisplayLanguage {
+            get {
+                return ((string)(this["LanguageViewDefaultDisplayLanguage"]));
+            }
+            set {
+                this["LanguageViewDefaultDisplayLanguage"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Apply changes")]
+        public string LanguageViewApplyChanges {
+            get {
+                return ((string)(this["LanguageViewApplyChanges"]));
+            }
+            set {
+                this["LanguageViewApplyChanges"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Button background color:")]
+        public string LayoutViewButtonBackgroundColor {
+            get {
+                return ((string)(this["LayoutViewButtonBackgroundColor"]));
+            }
+            set {
+                this["LayoutViewButtonBackgroundColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Standard: #404040")]
+        public string LayoutViewDefaultButtonBackgroundColor {
+            get {
+                return ((string)(this["LayoutViewDefaultButtonBackgroundColor"]));
+            }
+            set {
+                this["LayoutViewDefaultButtonBackgroundColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Accent color (e.g. Active button):")]
+        public string LayoutViewAccentColor {
+            get {
+                return ((string)(this["LayoutViewAccentColor"]));
+            }
+            set {
+                this["LayoutViewAccentColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Standard: #0052cc")]
+        public string LayoutViewDefaultAccentColor {
+            get {
+                return ((string)(this["LayoutViewDefaultAccentColor"]));
+            }
+            set {
+                this["LayoutViewDefaultAccentColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Background color settings:")]
+        public string LayoutViewBackgroundColor {
+            get {
+                return ((string)(this["LayoutViewBackgroundColor"]));
+            }
+            set {
+                this["LayoutViewBackgroundColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Standard: #ffbfcd")]
+        public string LayoutViewDefaultBackgroundColor {
+            get {
+                return ((string)(this["LayoutViewDefaultBackgroundColor"]));
+            }
+            set {
+                this["LayoutViewDefaultBackgroundColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Apply changes")]
+        public string LayoutViewApplyChanges {
+            get {
+                return ((string)(this["LayoutViewApplyChanges"]));
+            }
+            set {
+                this["LayoutViewApplyChanges"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Default note title:")]
+        public string StandardsViewNoteTitle {
+            get {
+                return ((string)(this["StandardsViewNoteTitle"]));
+            }
+            set {
+                this["StandardsViewNoteTitle"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Standard: Nameless note")]
+        public string StandardsViewDefaultNoteTitle {
+            get {
+                return ((string)(this["StandardsViewDefaultNoteTitle"]));
+            }
+            set {
+                this["StandardsViewDefaultNoteTitle"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Default notebook title:")]
+        public string StandardsViewNotebookTitle {
+            get {
+                return ((string)(this["StandardsViewNotebookTitle"]));
+            }
+            set {
+                this["StandardsViewNotebookTitle"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Standard: Nameless notebook")]
+        public string StandardsViewDefaultNotebookTitle {
+            get {
+                return ((string)(this["StandardsViewDefaultNotebookTitle"]));
+            }
+            set {
+                this["StandardsViewDefaultNotebookTitle"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Apply changes")]
+        public string StandardsViewApplyChanges {
+            get {
+                return ((string)(this["StandardsViewApplyChanges"]));
+            }
+            set {
+                this["StandardsViewApplyChanges"] = value;
+            }
+        }
     }
 }

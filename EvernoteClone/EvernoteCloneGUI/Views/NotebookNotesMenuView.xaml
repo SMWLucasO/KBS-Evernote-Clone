@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:EvernoteCloneGUI.Views"
+             xmlns:local="clr-namespace:EvernoteCloneGUI.Helpers"
              xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              xmlns:cal="http://www.caliburnproject.org"
              xmlns:lang="clr-namespace:EvernoteCloneGUI"
@@ -33,11 +33,11 @@
                     <RowDefinition Height="20*"/>
                 </Grid.RowDefinitions>
                 <TextBlock x:Name="NotebookName" FontSize="14" Grid.Column="1">
-                    <Run Text="{x:Static lang:Language.NotebookNotesMenuViewTitle}"/>
+                    <Run Text="{local:Loc NotebookNotesMenuViewTitle}"/>
                 </TextBlock>
                 <TextBlock Grid.Row="1" />
                 <TextBlock x:Name="NotebookNoteCount" Grid.Row="2" Grid.Column="1" FontSize="10" Foreground="Gray">30 
-                    <Run Text="{x:Static lang:Language.NotebookNotesMenuViewNumber}"/>
+                    <Run Text="{local:Loc NotebookNotesMenuViewNotes}"/>
                 </TextBlock>
                 <TextBox cal:Message.Attach="[Event TextChanged] = [SearchNoteInNotebook($eventArgs)]"
                          Grid.Row="3" Grid.Column="1" Margin="0,4,10,10"></TextBox>

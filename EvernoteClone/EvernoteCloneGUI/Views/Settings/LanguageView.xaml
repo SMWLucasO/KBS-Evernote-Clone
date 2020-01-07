@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:behaviors="clr-namespace:EvernoteCloneGUI.Helpers"
         xmlns:cal="http://www.caliburnproject.org"
+        xmlns:local="clr-namespace:EvernoteCloneGUI.Helpers"
         mc:Ignorable="d"
         d:DesignHeight="400" d:DesignWidth="640">
     <Grid Background="{Binding Path=BackgroundColorSettings}">
@@ -18,7 +19,7 @@
         </Grid.RowDefinitions>
 
         <!-- Row 1 -->
-        <Label Grid.Column="0" Grid.Row="0" Content="Display language:" HorizontalAlignment="Right"/>
+        <Label Grid.Column="0" Grid.Row="0" Content="{local:Loc LanguageViewDisplayLanguage}" HorizontalAlignment="Right"/>
 
         <StackPanel Orientation="Horizontal"  Grid.Column="1" Grid.Row="0">
             <ComboBox 
@@ -29,7 +30,7 @@
                 behaviors:ComboBoxWidthFromItemsBehavior.ComboBoxWidthFromItems="True">
             </ComboBox>
 
-            <Label Content="Standard: English (United States) / en-US" HorizontalAlignment="Right"/>
+            <Label Content="{local:Loc LanguageViewDefaultDisplayLanguage}" HorizontalAlignment="Right"/>
         </StackPanel>
 
         <Button 
@@ -40,6 +41,6 @@
             Margin="0,0,0,10"
             Padding="5"
             x:Name="ApplyChanges" 
-            Content="Apply changes"/>
+            Content="{local:Loc LanguageViewApplyChanges}"/>
     </Grid>
 </UserControl>

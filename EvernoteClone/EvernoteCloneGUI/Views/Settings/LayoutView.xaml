@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:behaviors="clr-namespace:EvernoteCloneGUI.Helpers"
         xmlns:helpers="clr-namespace:EvernoteCloneGUI.ViewModels.Controls.Settings"
+        xmlns:local="clr-namespace:EvernoteCloneGUI.Helpers"
         xmlns:cal="http://www.caliburnproject.org"
         mc:Ignorable="d"
         d:DesignHeight="400" d:DesignWidth="640">
@@ -21,7 +22,7 @@
         </Grid.RowDefinitions>
 
         <!-- Row 1 -->
-        <Label Grid.Column="0" Grid.Row="0" Content="Button background color:" HorizontalAlignment="Right"/>
+        <Label Grid.Column="0" Grid.Row="0" Content="{local:Loc LayoutViewButtonBackgroundColor}" HorizontalAlignment="Right"/>
 
         <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="0">
             <TextBox x:Name="ButtonBackgroundColor" 
@@ -31,11 +32,11 @@
                      Margin="5,5,5,5"
                      cal:Message.Attach="[Event TextChanged] = [TextBoxTextChanged($source)]"></TextBox>
 
-            <Label Content="Standard: #404040" HorizontalAlignment="Right"/>
+            <Label Content="{local:Loc LayoutViewDefaultButtonBackgroundColor}" HorizontalAlignment="Right"/>
         </StackPanel>
 
         <!-- Row 2 -->
-        <Label Grid.Column="0" Grid.Row="1" Content="Accent color (e.g. Active button):" HorizontalAlignment="Right"/>
+        <Label Grid.Column="0" Grid.Row="1" Content="{local:Loc LayoutViewAccentColor}" HorizontalAlignment="Right"/>
 
         <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="1">
             <TextBox x:Name="ButtonAccentColor" 
@@ -45,11 +46,11 @@
                      Margin="5,5,5,5"
                      cal:Message.Attach="[Event TextChanged] = [TextBoxTextChanged($source)]"></TextBox>
 
-            <Label Content="Standard: #0052cc" />
+            <Label Content="{local:Loc LayoutViewDefaultAccentColor}" />
         </StackPanel>
         
         <!-- Row 3 -->
-        <Label Grid.Column="0" Grid.Row="2" Content="Background color settings:" HorizontalAlignment="Right"/>
+        <Label Grid.Column="0" Grid.Row="2" Content="{local:Loc LayoutViewBackgroundColor}" HorizontalAlignment="Right"/>
 
         <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="2">
             <TextBox x:Name="BackgroundColorSettingsTextBox" 
@@ -59,7 +60,7 @@
                      Margin="5,5,5,5"
                      cal:Message.Attach="[Event TextChanged] = [TextBoxTextChanged($source)]"></TextBox>
 
-            <Label Content="Standard: #ffbfcd" />
+            <Label Content="{local:Loc LayoutViewDefaultBackgroundColor}" />
         </StackPanel>
 
         <Button 
@@ -70,6 +71,6 @@
             Margin="0,0,0,10"
             Padding="5"
             x:Name="ApplyChanges" 
-            Content="Apply changes"/>
+            Content="{local:Loc LayoutViewApplyChanges}"/>
     </Grid>
 </UserControl>

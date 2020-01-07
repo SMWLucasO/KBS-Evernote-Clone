@@ -3,11 +3,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:EvernoteCloneGUI.Views.Popups"
+        xmlns:local="clr-namespace:EvernoteCloneGUI.Helpers"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:cal="http://www.caliburnproject.org"
         mc:Ignorable="d" ResizeMode="NoResize"
-        Title="Note Fever | specify notebook" Height="150" Width="300">
+        Title="{local:Loc NotebookPickerViewWindowTitle}" Height="150" Width="300">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="15" />
@@ -28,7 +28,7 @@
                 <RowDefinition Height="8*" />
             </Grid.RowDefinitions>
 
-            <Label VerticalAlignment="Bottom">Specify a notebook to move the note to.</Label>
+            <Label Content="{local:Loc NotebookPickerViewSpecifyANotebook}" VerticalAlignment="Bottom"/>
             <ComboBox Grid.Row="1" SelectedItem="{Binding SelectedNotebook}" x:Name="Notebooks">
                <ComboBox.ItemTemplate>
                    <DataTemplate>
@@ -44,8 +44,8 @@
                     <ColumnDefinition Width="15" />
                     <ColumnDefinition Width="40*" />
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="1" cal:Message.Attach="[Event Click] = [OnCancel]" Content="Cancel"/>
-                <Button Grid.Column="3" cal:Message.Attach="[Event Click] = [OnSubmit]" Content="Submit"/>
+                <Button Grid.Column="1" cal:Message.Attach="[Event Click] = [OnCancel]" Content="{local:Loc NotebookPickerViewCancel}"/>
+                <Button Grid.Column="3" cal:Message.Attach="[Event Click] = [OnSubmit]" Content="{local:Loc NotebookPickerViewSubmit}"/>
             </Grid>
         </Grid>
     </Grid>

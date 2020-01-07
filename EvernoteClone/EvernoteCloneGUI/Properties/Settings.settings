@@ -5,5 +5,317 @@
     <Setting Name="LastSelectedLanguage" Type="System.String" Scope="User">
       <Value Profile="(Default)">en-US</Value>
     </Setting>
+    <Setting Name="LoginViewLocal" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Or use it</Value>
+    </Setting>
+    <Setting Name="LoginViewLocalHyperlink" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Locally</Value>
+    </Setting>
+    <Setting Name="LoginViewLogin" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Login</Value>
+    </Setting>
+    <Setting Name="LoginViewPassword" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Password</Value>
+    </Setting>
+    <Setting Name="LoginViewRegister" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Register</Value>
+    </Setting>
+    <Setting Name="LoginViewUsername" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Username</Value>
+    </Setting>
+    <Setting Name="NewNoteViewEditDelete" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Delete</Value>
+    </Setting>
+    <Setting Name="NewNoteViewEdit" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Edit</Value>
+    </Setting>
+    <Setting Name="NewNoteViewEditCopy" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Copy</Value>
+    </Setting>
+    <Setting Name="NewNoteViewEditCut" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Cut</Value>
+    </Setting>
+    <Setting Name="NewNoteViewEditFindAndReplaceAll" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Find and Replace All</Value>
+    </Setting>
+    <Setting Name="NewNoteViewEditFindNext" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Find Next</Value>
+    </Setting>
+    <Setting Name="NewNoteViewEditFindPrevious" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Find Previous</Value>
+    </Setting>
+    <Setting Name="NewNoteViewEditReplaceWithinNote" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Replace Withing Note</Value>
+    </Setting>
+    <Setting Name="NewNoteViewEditFindWithinNote" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Find Within Note</Value>
+    </Setting>
+    <Setting Name="NewNoteViewEditPaste" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Paste</Value>
+    </Setting>
+    <Setting Name="NewNoteViewEditRedo" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Redo</Value>
+    </Setting>
+    <Setting Name="NewNoteViewEditSelectAll" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Select All</Value>
+    </Setting>
+    <Setting Name="NewNoteViewEditUndo" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Undo</Value>
+    </Setting>
+    <Setting Name="NewNoteViewFont" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Font</Value>
+    </Setting>
+    <Setting Name="NewNoteViewCenter" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Center</Value>
+    </Setting>
+    <Setting Name="NewNoteViewFile" Type="System.String" Scope="User">
+      <Value Profile="(Default)">File</Value>
+    </Setting>
+    <Setting Name="NewNoteViewFileAttach" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Attach File</Value>
+    </Setting>
+    <Setting Name="NewNoteViewFileClose" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Close</Value>
+    </Setting>
+    <Setting Name="NewNoteViewFileExport" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Export</Value>
+    </Setting>
+    <Setting Name="NewNoteViewFileImport" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Import</Value>
+    </Setting>
+    <Setting Name="NewNoteViewFileOpen" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Open</Value>
+    </Setting>
+    <Setting Name="NewNoteViewFileSave" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Save</Value>
+    </Setting>
+    <Setting Name="NewNoteViewIndent" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Indent</Value>
+    </Setting>
+    <Setting Name="NewNoteViewUndent" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Undent</Value>
+    </Setting>
+    <Setting Name="NewNoteViewInsert" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Insert</Value>
+    </Setting>
+    <Setting Name="NewNoteViewLeft" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Left</Value>
+    </Setting>
+    <Setting Name="NewNoteViewRight" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Right</Value>
+    </Setting>
+    <Setting Name="NewNoteViewFontSize" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Font Size</Value>
+    </Setting>
+    <Setting Name="NewNoteViewNote" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Note</Value>
+    </Setting>
+    <Setting Name="NewNoteViewNoteCopy" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Copy</Value>
+    </Setting>
+    <Setting Name="NewNoteViewNoteDuplicate" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Duplicate Note</Value>
+    </Setting>
+    <Setting Name="NewNoteViewNoteMove" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Move</Value>
+    </Setting>
+    <Setting Name="NewNoteViewShare" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Share</Value>
+    </Setting>
+    <Setting Name="NewNoteViewShareWithOthers" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Share with others</Value>
+    </Setting>
+    <Setting Name="NewNoteViewView" Type="System.String" Scope="User">
+      <Value Profile="(Default)">View</Value>
+    </Setting>
+    <Setting Name="NewNoteViewViewStatusBar" Type="System.String" Scope="User">
+      <Value Profile="(Default)">View status bar</Value>
+    </Setting>
+    <Setting Name="NotebookNotesMenuViewNotes" Type="System.String" Scope="User">
+      <Value Profile="(Default)">notes</Value>
+    </Setting>
+    <Setting Name="NoteFeverViewAllNotes" Type="System.String" Scope="User">
+      <Value Profile="(Default)">All Notes</Value>
+    </Setting>
+    <Setting Name="NoteFeverViewBin" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Bin</Value>
+    </Setting>
+    <Setting Name="NoteFeverViewChangeUser" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Change User</Value>
+    </Setting>
+    <Setting Name="NoteFeverViewNewNote" Type="System.String" Scope="User">
+      <Value Profile="(Default)">New Note</Value>
+    </Setting>
+    <Setting Name="NoteFeverViewSettings" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Settings</Value>
+    </Setting>
+    <Setting Name="NoteFeverViewSharedWithMe" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Shared With Me</Value>
+    </Setting>
+    <Setting Name="NoteFeverViewTags" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Tags</Value>
+    </Setting>
+    <Setting Name="RegisterViewConfirmPassword" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Confirm Password</Value>
+    </Setting>
+    <Setting Name="RegisterViewPassword" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Password</Value>
+    </Setting>
+    <Setting Name="RegisterViewFirstName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">First Name</Value>
+    </Setting>
+    <Setting Name="RegisterViewLastName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Last Name</Value>
+    </Setting>
+    <Setting Name="RegisterViewEmail" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Email</Value>
+    </Setting>
+    <Setting Name="RegisterViewRegister" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Register</Value>
+    </Setting>
+    <Setting Name="TableRowColumnSpecifierViewCancel" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Cancel</Value>
+    </Setting>
+    <Setting Name="TableRowColumnSpecifierViewColumns" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Insert the amount of columns:</Value>
+    </Setting>
+    <Setting Name="TableRowColumnSpecifierViewRows" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Insert the amount of rows:</Value>
+    </Setting>
+    <Setting Name="TableRowColumnSpecifierViewSubmit" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Submit</Value>
+    </Setting>
+    <Setting Name="ValueRequestViewCancel" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Cancel</Value>
+    </Setting>
+    <Setting Name="ValueRequestViewSubmit" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Submit</Value>
+    </Setting>
+    <Setting Name="NewNoteViewInsertTable" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Insert Table</Value>
+    </Setting>
+    <Setting Name="NewNoteViewInsertHorizontalLine" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Insert Horizontal Line</Value>
+    </Setting>
+    <Setting Name="NewNoteViewInsertCode" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Insert Code</Value>
+    </Setting>
+    <Setting Name="NewNoteViewInsertOrderedList" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Insert Ordered List</Value>
+    </Setting>
+    <Setting Name="NewNoteViewInsertUnorderedList" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Insert Unordered List</Value>
+    </Setting>
+    <Setting Name="NotebookNotesMenuViewTitle" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Nameless notebook</Value>
+    </Setting>
+    <Setting Name="NoteElementViewTitle" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Nameless note</Value>
+    </Setting>
+    <Setting Name="NoteElementViewCreationDate" Type="System.String" Scope="User">
+      <Value Profile="(Default)">05-07-1999</Value>
+    </Setting>
+    <Setting Name="LoginViewWindowTitle" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Login</Value>
+    </Setting>
+    <Setting Name="NoteFeverWindowTitle" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Note Fever</Value>
+    </Setting>
+    <Setting Name="RegisterViewWindowTitle" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Register</Value>
+    </Setting>
+    <Setting Name="SettingsViewWindowTitle" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Settings</Value>
+    </Setting>
+    <Setting Name="SettingsViewTitle" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Settings</Value>
+    </Setting>
+    <Setting Name="SettingsViewEditor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Editor</Value>
+    </Setting>
+    <Setting Name="SettingsViewStandards" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Standards</Value>
+    </Setting>
+    <Setting Name="SettingsViewLayout" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Layout</Value>
+    </Setting>
+    <Setting Name="SettingsViewLanguage" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Language</Value>
+    </Setting>
+    <Setting Name="NotebookPickerViewWindowTitle" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Note Fever | specify notebook</Value>
+    </Setting>
+    <Setting Name="NotebookPickerViewSpecifyANotebook" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Specify a notebook to move the note to:</Value>
+    </Setting>
+    <Setting Name="NotebookPickerViewCancel" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Cancel</Value>
+    </Setting>
+    <Setting Name="NotebookPickerViewSubmit" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Submit</Value>
+    </Setting>
+    <Setting Name="TableRowColumnSpecifierViewWindowTitle" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Note Fever | Specify table rows and columns</Value>
+    </Setting>
+    <Setting Name="EditorViewFont" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Default font:</Value>
+    </Setting>
+    <Setting Name="EditorViewFontSize" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Default font size:</Value>
+    </Setting>
+    <Setting Name="EditorViewApplyChanges" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Apply changes</Value>
+    </Setting>
+    <Setting Name="EditorViewDefaultFont" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Standard: Arial</Value>
+    </Setting>
+    <Setting Name="EditorViewDefaultFontSize" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Standard: 11</Value>
+    </Setting>
+    <Setting Name="LanguageViewDisplayLanguage" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Display language:</Value>
+    </Setting>
+    <Setting Name="LanguageViewDefaultDisplayLanguage" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Standard: English (United States) / en-US</Value>
+    </Setting>
+    <Setting Name="LanguageViewApplyChanges" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Apply changes</Value>
+    </Setting>
+    <Setting Name="LayoutViewButtonBackgroundColor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Button background color:</Value>
+    </Setting>
+    <Setting Name="LayoutViewDefaultButtonBackgroundColor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Standard: #404040</Value>
+    </Setting>
+    <Setting Name="LayoutViewAccentColor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Accent color (e.g. Active button):</Value>
+    </Setting>
+    <Setting Name="LayoutViewDefaultAccentColor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Standard: #0052cc</Value>
+    </Setting>
+    <Setting Name="LayoutViewBackgroundColor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Background color settings:</Value>
+    </Setting>
+    <Setting Name="LayoutViewDefaultBackgroundColor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Standard: #ffbfcd</Value>
+    </Setting>
+    <Setting Name="LayoutViewApplyChanges" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Apply changes</Value>
+    </Setting>
+    <Setting Name="StandardsViewNoteTitle" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Default note title:</Value>
+    </Setting>
+    <Setting Name="StandardsViewDefaultNoteTitle" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Standard: Nameless note</Value>
+    </Setting>
+    <Setting Name="StandardsViewNotebookTitle" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Default notebook title:</Value>
+    </Setting>
+    <Setting Name="StandardsViewDefaultNotebookTitle" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Standard: Nameless notebook</Value>
+    </Setting>
+    <Setting Name="StandardsViewApplyChanges" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Apply changes</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

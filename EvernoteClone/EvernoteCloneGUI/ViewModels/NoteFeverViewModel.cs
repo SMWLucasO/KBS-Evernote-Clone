@@ -477,7 +477,8 @@ namespace EvernoteCloneGUI.ViewModels
         /// </summary>
         protected override void OnActivate()
         {
-            LanguageChanger lang = new LanguageChanger(Properties.Settings.Default.LastSelectedLanguage);
+            MessageBox.Show(Environment.CurrentDirectory);
+            LanguageChanger.UpdateResxFile(Properties.Settings.Default.LastSelectedLanguage);
 
             // Show login popup
             OpenLoginPopupView(true);
