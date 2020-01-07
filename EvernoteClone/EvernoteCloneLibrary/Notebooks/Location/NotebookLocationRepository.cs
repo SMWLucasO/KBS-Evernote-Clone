@@ -73,7 +73,6 @@ namespace EvernoteCloneLibrary.Notebooks.Location
         /// <returns>bool to determine if the update was a success</returns>
         public bool Update(NotebookLocationModel toUpdate)
         {
-            // TODO: Make sure the note is actually from the author before saving it. @Lucas don't think this should be here...
             if (toUpdate != null)
             {
                 if (!string.IsNullOrWhiteSpace(toUpdate.Path) && toUpdate.Id != -1)

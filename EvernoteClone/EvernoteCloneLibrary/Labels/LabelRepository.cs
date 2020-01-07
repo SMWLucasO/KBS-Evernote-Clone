@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EvernoteCloneLibrary.Constants;
 
 namespace EvernoteCloneLibrary.Notebooks.Notes.Labels
 {
@@ -68,8 +69,7 @@ namespace EvernoteCloneLibrary.Notebooks.Notes.Labels
                 {
                     if (string.IsNullOrEmpty(toInsert.Title))
                     {
-                        // TODO for Joris, change this default setting!
-                        toInsert.Title = "Label";
+                        toInsert.Title = SettingsConstant.DEFAULT_LABEL_TITLE;
                     }
 
 

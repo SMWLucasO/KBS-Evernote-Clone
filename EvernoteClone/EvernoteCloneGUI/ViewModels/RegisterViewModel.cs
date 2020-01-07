@@ -1,19 +1,10 @@
-﻿using System;
-using System.Text;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Windows;
 using System.Text.RegularExpressions;
-using System.Security.Cryptography;
 using Caliburn.Micro;
 using EvernoteCloneLibrary.Constants;
 using EvernoteCloneLibrary.Users;
 
-// TODO: see next comments @Chino
-// Password 1: Test123
-// Password 2: Test123!
-// Password 1: Test123!
-// Error message under Password 2
-// TODO add summeries
 namespace EvernoteCloneGUI.ViewModels
 {
     public class RegisterViewModel : Screen, IDataErrorInfo

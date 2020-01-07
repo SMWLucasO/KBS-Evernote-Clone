@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 
-// TODO check summaries
 namespace EvernoteCloneLibrary.Files.Parsers
 {
     /// <summary>

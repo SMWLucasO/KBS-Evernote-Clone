@@ -116,13 +116,17 @@ namespace EvernoteCloneGUI.ViewModels
         /// This loads all the notebooks from the filesystem (and from the database as well, if UserID != 1)
         /// </summary>
         /// <param name="initialLoad">If this is true, it loads the SelectedNotebook and SelectedNote</param>
-        public void LoadNotebooks(bool initialLoad = false)
+        /// <param name="withoutSynchronize">If this is tru, nothing is retrieved from the database</param>
+        public void LoadNotebooks(bool initialLoad = false, bool withoutSynchronize = false)
         {
             // Load all Notebooks
-            Notebooks = Notebook.Load();
+            Notebooks = Notebook.Load(withoutSynchronize);
 
-            // if we're doing the initial loading, load the note and notebook if there is not already a selected note/notebook.
-            SelectFirst();
+            // If we're doing the initial loading, load the note and notebook if there is not already a selected note/notebook.
+            if (initialLoad)
+            {
+                SelectFirst();
+            }
         }
 
         public void LoadSharedNotebook()
@@ -505,6 +509,15 @@ namespace EvernoteCloneGUI.ViewModels
         public void TreeViewSelectedItemChanged(RoutedPropertyChangedEventArgs<object> routedPropertyChangedEventArgs)
         {
             NoteFeverTreeViewModel.TreeViewSelectedItemChanged(routedPropertyChangedEventArgs);
+        }
+
+        protected override void OnDeactivate(bool close)
+        {
+            base.OnDeactivate(close);
+            
+            (GetView() as Window)?.Hide();
+            
+            Synchronize();
         }
 
         #endregion
