@@ -48,7 +48,7 @@ namespace EvernoteCloneGUI.ViewModels
                 Note currentlySelectedNote = Container.SelectedNote;
                 if (!(currentlySelectedNote.Content.Equals(currentlySelectedNote.NewContent)))
                 {
-                    MessageBoxResult result = MessageBox.Show("Are you sure? Unsaved changes will be lost.", "Warning!", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                    MessageBoxResult result = MessageBox.Show(Properties.Settings.Default.NoteElementViewModelUnsavedChanges, Properties.Settings.Default.NoteElementViewTitle, MessageBoxButton.YesNo, MessageBoxImage.Warning);
                     if (result == MessageBoxResult.Yes)
                     {
                         // Reset contents and switch note views.
@@ -105,12 +105,12 @@ namespace EvernoteCloneGUI.ViewModels
                 {
                     // Clear the previous items, because it might already have previous ones.
                     menu.Items.Clear();
-                    MenuItem restoreNoteMenuItem = new MenuItem() { Header = "Restore" };
+                    MenuItem restoreNoteMenuItem = new MenuItem { Header = Properties.Settings.Default.NoteElementViewModelRestore };
 
                     // Set the 'IsDeleted' flag to false, same goes for the notebook if this flag was set to true.
                     restoreNoteMenuItem.Click += RestoreNote;
 
-                    MenuItem permanentNoteDeletionMenuItem = new MenuItem() { Header = "Delete permanently" };
+                    MenuItem permanentNoteDeletionMenuItem = new MenuItem { Header = Properties.Settings.Default.NoteElementViewModelDeletePermanently };
 
                     // Register 'delete permanently' click event, which deletes the note perm, and the notebook too if it is 
                     // the last note inside of said notebook.
@@ -124,8 +124,8 @@ namespace EvernoteCloneGUI.ViewModels
                 {
                     menu.Items.Clear();
                     
-                    MenuItem removeNoteMenuItem = new MenuItem { Header = "Remove" };
-                    MenuItem moveNoteMenuItem = new MenuItem { Header = "Move..." };
+                    MenuItem removeNoteMenuItem = new MenuItem { Header = Properties.Settings.Default.NoteElementViewModelRemove };
+                    MenuItem moveNoteMenuItem = new MenuItem { Header = Properties.Settings.Default.NoteElementViewModelMove };
 
                     moveNoteMenuItem.Click += MoveNoteToOtherNotebook;
                     removeNoteMenuItem.Click += RemoveNote;
@@ -140,10 +140,7 @@ namespace EvernoteCloneGUI.ViewModels
                 }
                 
                 // Makes new menu item share.
-                MenuItem shareNote = new MenuItem
-                {
-                    Header = "Share Note"
-                };
+                MenuItem shareNote = new MenuItem { Header = Properties.Settings.Default.NoteElementViewModelShareNoteHeader };
 
                 shareNote.Click += ShareNote;
                 menu.Items.Add(shareNote);
@@ -157,7 +154,7 @@ namespace EvernoteCloneGUI.ViewModels
         /// <param name="args"></param>
         private void PermanentlyDeleteNote(object sender, RoutedEventArgs args)
         {
-            if (MessageBox.Show("Are you sure that you want to permanently delete this note?", "Note Fever | Warning",
+            if (MessageBox.Show(Properties.Settings.Default.NoteElementViewModelPermanentlyDeleteNote, Properties.Settings.Default.MessageBoxTitleWarning,
                     MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
                 // If the note we are deleting is the currently selected note, we delete it.
@@ -278,7 +275,7 @@ namespace EvernoteCloneGUI.ViewModels
         {
             if (Constant.User.Id == -1)
             {
-                MessageBox.Show("You have to be logged in to use this functionality!", "NoteFever | Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                MessageBox.Show(Properties.Settings.Default.NoteElementViewModelLoggedInToUse, Properties.Settings.Default.MessageBoxTitleError, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 return;
             }
             
@@ -289,10 +286,10 @@ namespace EvernoteCloneGUI.ViewModels
             sharedNote.NotebookId = -1;
 
             // Checks in field that is insert is not empty.
-            userInput = Interaction.InputBox("Share Note", "Please enter a valid username", userInput);
+            userInput = Interaction.InputBox(Properties.Settings.Default.NoteElementViewModelShareNote, Properties.Settings.Default.NoteElementViewModelShareNoteTitle, userInput);
             if (string.IsNullOrEmpty(userInput))
             {
-                MessageBox.Show("Field cannot be empty");
+                MessageBox.Show(Properties.Settings.Default.FieldsCantBeEmpty, Properties.Settings.Default.MessageBoxTitleWarning, MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
             
@@ -304,11 +301,11 @@ namespace EvernoteCloneGUI.ViewModels
                 new NoteRepository().Insert(sharedNote);
                 SharedNote.SaveNewRecord(sharedNote.Id, sharedUser.Id);
 
-                MessageBox.Show($"Successfully shared the note with {userInput}!", "NoteFever | Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show(string.Format(Properties.Settings.Default.NoteElementViewModelSharedNote, userInput), Properties.Settings.Default.MessageBoxTitleSuccessful, MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
             {
-                MessageBox.Show("Username does not exist or make sure you're logged in");
+                MessageBox.Show(Properties.Settings.Default.NoteElementViewModelShareNoteUsernameDoesNotExist, Properties.Settings.Default.MessageBoxTitleWarning, MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Controls;
-using EvernoteCloneGUI.Properties;
 using EvernoteCloneGUI.ViewModels.Controls.Settings;
 using EvernoteCloneGUI.Views.Settings;
 using EvernoteCloneLibrary.Constants;
@@ -58,7 +57,7 @@ namespace EvernoteCloneGUI.ViewModels.Settings
             base.ApplyChanges();
             
             Properties.Settings.Default.Save();
-            LanguageChanger lang = new LanguageChanger(Properties.Settings.Default.LastSelectedLanguage);
+            LanguageChanger.UpdateResxFile();
         }
 
         #endregion

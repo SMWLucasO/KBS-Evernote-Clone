@@ -58,8 +58,8 @@ namespace EvernoteCloneLibrary.Users
 
         #endregion
 
-
         #region Handles sign-up account
+        
         /// <summary>
         /// First method is to sign-up a normal account. Passes username, password,firstname and lastname. 
         /// Second method is to sign-up a google account passess same variables with a boolean to set the value to true for google accounts. 
@@ -83,6 +83,7 @@ namespace EvernoteCloneLibrary.Users
             };
             return userRepository.Insert(userModel);
         }
+        
         #endregion
     }
 }

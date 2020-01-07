@@ -36,19 +36,19 @@ namespace EvernoteCloneGUI.ViewModels
         public StackPanel LabelsStackPanel { get; set; }
         public void LabelsAdd()
         {    
-            _userInput = Interaction.InputBox("Share Note", "Please enter a valid username", _userInput);
+            _userInput = Interaction.InputBox(Properties.Settings.Default.NewNoteViewModelAddLabel, Properties.Settings.Default.NewNoteViewModelAddLabelTitle, _userInput);
 
             LabelModel labelModel = new LabelModel { Id = -1, Title = _userInput };
 
             if (string.IsNullOrWhiteSpace(_userInput))
             {
-                MessageBox.Show("Field can't be empty.");
+                MessageBox.Show(Properties.Settings.Default.FieldsCantBeEmpty, Properties.Settings.Default.MessageBoxTitleError,MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
             else
             {
                 if (Note.Tags.Contains(_userInput))
                 {
-                    MessageBox.Show("This label already exists.");
+                    MessageBox.Show(Properties.Settings.Default.NewNoteViewModelLabelAlreadyExists, Properties.Settings.Default.MessageBoxTitleWarning,MessageBoxButton.OK, MessageBoxImage.Exclamation);
                     return;
                 }
 
@@ -63,7 +63,7 @@ namespace EvernoteCloneGUI.ViewModels
                 }
                 else
                 {
-                    MessageBox.Show("You can't add labels to notes when they're not saved in the database.");
+                    MessageBox.Show(Properties.Settings.Default.NewNoteViewModelCantAddLabel, Properties.Settings.Default.MessageBoxTitleWarning, MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
                 
             }
@@ -270,7 +270,7 @@ namespace EvernoteCloneGUI.ViewModels
         public bool SaveNote(bool showDeletedNotes = false)
         {
             // Set some standard values for now and save
-            Note.Author = "Nameless author"; // If user is logged in, this should obv. be different!
+            Note.Author = Properties.Settings.Default.NewNoteViewModelNamelessAuthor; // If user is logged in, this should obv. be different!
             Note.Title = Title; // We don't have to check if it is empty or null, the property in note does that already
             Note.Save();
 
@@ -322,7 +322,7 @@ namespace EvernoteCloneGUI.ViewModels
 
             if (SaveNote(shouldShowDeleted))
             {
-                MessageBox.Show("Note was saved successfully!", "Note Fever | Saved.", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show(Properties.Settings.Default.NewNoteViewModelSavedNote, Properties.Settings.Default.MessageBoxTitleSuccessful, MessageBoxButton.OK, MessageBoxImage.Information);
                 if (Parent != null)
                 {
                     // If _loadNote is true, we are not creating a new note. Thus, we will only load the note and close the window
@@ -344,7 +344,7 @@ namespace EvernoteCloneGUI.ViewModels
             }
             else
             {
-                MessageBox.Show("We were unable to save your note.", "Note Fever | Failed.", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(Properties.Settings.Default.NewNoteViewModelCouldntSaveNote, Properties.Settings.Default.MessageBoxTitleFailed, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

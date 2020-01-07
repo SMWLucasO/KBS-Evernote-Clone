@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:EvernoteCloneGUI.Views"
+             xmlns:local="clr-namespace:EvernoteCloneGUI.Helpers"
              xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              xmlns:cal="http://www.caliburnproject.org"
              mc:Ignorable="d" Background="WhiteSmoke"
@@ -22,15 +22,19 @@
             <RowDefinition Height="9*"/>
         </Grid.RowDefinitions>
 
-        <!-- This contains the notebook title. -->
-        <TextBlock Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" FontSize="18" Grid.ColumnSpan="2" x:Name="Title">Notebook title</TextBlock>
+        <!-- This contains the note title. -->
+        <TextBlock Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" FontSize="18" Grid.ColumnSpan="2" x:Name="Title">
+            <Run Text="{local:Loc NoteElementViewTitle}"/>
+        </TextBlock>
         <Separator Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Top"/>
 
         <!-- Contains tags (and a bit of content, only add if there is left-over time.)-->
         <WrapPanel Grid.Row="2"/>
 
         <!-- Creation date of notebook -->
-        <TextBlock Grid.Row="3" Grid.Column="1" FontSize="9" x:Name="NoteCreationDate">05-07-1999</TextBlock>
+        <TextBlock Grid.Row="3" Grid.Column="1" FontSize="9" x:Name="NoteCreationDate">
+            <Run Text="{local:Loc NoteElementViewCreationDate}"/>
+        </TextBlock>
 
     </Grid>
 </UserControl>

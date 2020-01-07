@@ -56,7 +56,7 @@ namespace EvernoteCloneGUI.ViewModels.Popups
         {
             if (!_canSubmit)
             {
-                MessageBox.Show("Please make sure that both the rows and columns are greater than 0", "Note Fever | Warning",
+                MessageBox.Show(Properties.Settings.Default.TableRowColumnSpecifierViewModelGreaterThanZero, Properties.Settings.Default.MessageBoxTitleWarning,
                         MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
             else

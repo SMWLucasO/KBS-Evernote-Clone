@@ -96,6 +96,13 @@ namespace EvernoteCloneGUI.ViewModels
 
             RegisterViewModel registerViewModel = new RegisterViewModel();
             windowManager.ShowDialog(registerViewModel);
+
+            if (registerViewModel.Registered)
+            {
+                EmailLogin = registerViewModel.Email;
+                PasswordLogin = registerViewModel.Password;
+                Login();
+            }
         }
         
         #endregion
@@ -112,7 +119,7 @@ namespace EvernoteCloneGUI.ViewModels
             
             if (string.IsNullOrWhiteSpace(EmailLogin) || string.IsNullOrWhiteSpace(PasswordLogin))
             {
-                MessageBox.Show("Fields can't be empty!","NoteFever | Error",MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                MessageBox.Show(Properties.Settings.Default.FieldsCantBeEmpty, Properties.Settings.Default.MessageBoxTitleError,MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 return;
             }
             
@@ -122,12 +129,12 @@ namespace EvernoteCloneGUI.ViewModels
 
             if (User != null)
             {
-                MessageBox.Show("You've been logged in with success!");
+                MessageBox.Show(Properties.Settings.Default.LoginViewModelSuccessfullyLoggedIn, Properties.Settings.Default.LoginViewModelTitle, MessageBoxButton.OK, MessageBoxImage.Information);
                 (GetView() as Window)?.Close();
             }
             else 
             {
-                MessageBox.Show("Password or Username is not correct. Please check again.");
+                MessageBox.Show(Properties.Settings.Default.LoginViewModelUnsuccessfullLoginAttempt, Properties.Settings.Default.LoginViewModelTitle, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 User = backupUser;
             }
         }
@@ -351,6 +358,7 @@ namespace EvernoteCloneGUI.ViewModels
             {
                 //Reads the full info and adds the details to a list. 
                 string userInfoResponseText = await userInfoResponseReader.ReadToEndAsync();
+                Output("UserInfoResponseText {\n"+userInfoResponseText+"\n}");
                 
                 var userInfo = userInfoResponseText.Split('"');
 
@@ -361,7 +369,7 @@ namespace EvernoteCloneGUI.ViewModels
 
                 // Getting specific user information from the list
                 var arUserMail = userData[7];
-                var arName = userData[13];
+                var arName = userData[17];
                 var arLastName = userData[21];
                 var arGoogleId = userData[3];
 
@@ -394,7 +402,7 @@ namespace EvernoteCloneGUI.ViewModels
                 {
                     if (User.Id != -1)
                     {
-                        MessageBox.Show("You've been logged in with a Google account.","NoteFever | Google login", MessageBoxButton.OK, MessageBoxImage.Information);
+                        MessageBox.Show(Properties.Settings.Default.LoginViewModelGoogleLogin,Properties.Settings.Default.MessageBoxTitleSuccessful, MessageBoxButton.OK, MessageBoxImage.Information);
                         (GetView() as Window)?.Close();
                     }
                 }

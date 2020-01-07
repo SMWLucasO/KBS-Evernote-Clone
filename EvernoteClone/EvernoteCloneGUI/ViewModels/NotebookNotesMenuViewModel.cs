@@ -17,7 +17,7 @@ namespace EvernoteCloneGUI.ViewModels
         public bool ShowDeletedNotes { get; set; }
 
         #region Databound properties and their 'behind the scenes' instance variables
-        private string _notebookNoteCount = "0 note(s)";
+        private string _notebookNoteCount = "0 " + Properties.Settings.Default.NotebookNotesMenuViewNotes;
         private ObservableCollection<NoteElementViewModel> _noteElementViews;
 
         // These properties need to make changes happen in the view.
@@ -111,7 +111,7 @@ namespace EvernoteCloneGUI.ViewModels
                 }
 
                 // Update the note count to show the current situation.
-                NotebookNoteCount = $"{NoteElementViews.Count} note(s)";
+                NotebookNoteCount = $"{NoteElementViews.Count} " + Properties.Settings.Default.NotebookNotesMenuViewNotes;
 
             }
         }

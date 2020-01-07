@@ -7,7 +7,7 @@
         xmlns:lang="clr-namespace:EvernoteCloneGUI"
         xmlns:cal="http://www.caliburnproject.org"
         mc:Ignorable="d" ResizeMode="NoResize"
-        Title="LoginView" Height="450" Width="550">
+        Title="{local:Loc LoginViewWindowTitle}" Height="450" Width="550">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -23,16 +23,20 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
 
-        <Label Grid.Column="0" Content="{x:Static lang:Language.LoginViewUsern}" Grid.ColumnSpan="2" Margin="104,84,10.5,51" Grid.RowSpan="2"/>
+        <Label Grid.Column="0" Content="{local:Loc LoginViewUsername}" Grid.ColumnSpan="2" Margin="104,84,10.5,51" Grid.RowSpan="2"/>
         <TextBox Text="{Binding Path=EmailLogin}" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="4" Margin="104,32,103,28.5"/>
-        <Label Grid.Column="0" Grid.Row="2" Content="{x:Static lang:Language.LoginViewPass}" Margin="104,0,32.5,52.5" Grid.ColumnSpan="2"></Label>
+        
+        <Label Grid.Column="0" Grid.Row="2" Content="{local:Loc LoginViewPassword}" Margin="104,0,32.5,52.5" Grid.ColumnSpan="2"></Label>
         <PasswordBox Name="PasswordLogin" local:PasswordHelper.Attach="False" local:PasswordHelper.Password="{Binding Path=PasswordLogin, Mode=TwoWay, ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged,ValidatesOnExceptions=True}" Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="4" Margin="104,32,103,28.5"/>
-        <Button x:Name="Login" Grid.Row="3" Content="{x:Static lang:Language.LoginViewLogin}" Background="{Binding Path=ButtonAccentColor}" Foreground="White" Margin="104,26.5,32.5,10" Grid.ColumnSpan="2"/>
-        <Button x:Name="Register" Grid.Row="3" Content="{x:Static lang:Language.LoginViewRegi}" Background="{Binding Path=ButtonAccentColor}" Foreground="White" Margin="33.5,26.5,103,10" Grid.Column="2" Grid.ColumnSpan="2"/>
+        
+        <Button x:Name="Login" Grid.Row="3" Content="{local:Loc LoginViewLogin}" Background="{Binding Path=ButtonAccentColor}" Foreground="White" Margin="104,26.5,32.5,10" Grid.ColumnSpan="2"/>
+        <Button x:Name="Register" Grid.Row="3" Content="{local:Loc LoginViewRegister}" Background="{Binding Path=ButtonAccentColor}" Foreground="White" Margin="33.5,26.5,103,10" Grid.Column="2" Grid.ColumnSpan="2"/>
+        
         <Button x:Name="GoogleLoginAsync" Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="2" Margin="68,10,69.5,34.5" BorderThickness="0" Padding="0" Background="Transparent">
             <Image Source="Images/btn_google_sign-in.png" Stretch="UniformToFill" Height="30" Width="135" ></Image>
         </Button>
-        <Label Content="{x:Static lang:Language.LoginViewLoca}" Grid.ColumnSpan="2" Grid.Column="1" Margin="68,49,68,-49.5" Grid.Row="4" />
+        
+        <Label Content="{local:Loc LoginViewLocal}" Grid.ColumnSpan="2" Grid.Column="1" Margin="68,49,68,-49.5" Grid.Row="4" />
         <Button Margin="32,54,70,12.5" Grid.Column="2" Grid.Row="4" x:Name="UseLocally" Width="35" Height="18">
             <Button.Template>
                 <ControlTemplate TargetType="{x:Type Button}">
@@ -40,7 +44,7 @@
                 </ControlTemplate>
             </Button.Template>
             <Hyperlink Foreground="DodgerBlue">
-                <Run Text="{x:Static lang:Language.LoginViewLocaBut}"/>
+                <Run Text="{local:Loc LoginViewLocalHyperlink}"/>
             </Hyperlink>
         </Button>
     </Grid>

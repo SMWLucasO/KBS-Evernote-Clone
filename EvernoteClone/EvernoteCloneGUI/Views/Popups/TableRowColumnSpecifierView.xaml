@@ -3,12 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:EvernoteCloneGUI.Views"
+        xmlns:local="clr-namespace:EvernoteCloneGUI.Helpers"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:cal="http://www.caliburnproject.org"
         xmlns:lang="clr-namespace:EvernoteCloneGUI"
         mc:Ignorable="d" ResizeMode="NoResize"
-        Title="Note Fever | Specify table rows and columns" Height="220" Width="450">
+        Title="{local:Loc TableRowColumnSpecifierViewWindowTitle}" Height="220" Width="450">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20" />
@@ -35,7 +35,7 @@
                     <ColumnDefinition Width="20" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Row="0" VerticalAlignment="Bottom">
-                    <Run Text="{x:Static lang:Language.TableRowColumnSpecifierViewRows}"/>
+                    <Run Text="{local:Loc TableRowColumnSpecifierViewRows}"/>
                 </TextBlock>
                 <TextBox Grid.Row="1" x:Name="RowCount" cal:Message.Attach="[Event TextChanged] = [ValidateNumericTextInput($eventArgs)]" MaxHeight="20" VerticalAlignment="Top"></TextBox>
             </Grid>
@@ -49,7 +49,7 @@
                     <ColumnDefinition Width="20" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Row="0" VerticalAlignment="Bottom">
-                    <Run Text="{x:Static lang:Language.TableRowColumnSpecifierViewCulomns}"/>
+                    <Run Text="{local:Loc TableRowColumnSpecifierViewColumns}"/>
                 </TextBlock>
                 <TextBox Grid.Row="1" x:Name="ColumnCount" cal:Message.Attach="[Event TextChanged] = [ValidateNumericTextInput($eventArgs)]" MaxHeight="20" VerticalAlignment="Top"></TextBox>
             </Grid>
@@ -61,8 +61,8 @@
                     <ColumnDefinition Width="35*" />
                     <ColumnDefinition Width="20" />
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="1" cal:Message.Attach="[Event Click] = [OnCancel]" Content="{x:Static lang:Language.TableRowColumnSpecifierViewCancel}" />
-                <Button Grid.Column="3" cal:Message.Attach="[Event Click] = [OnSubmit]" Content="{x:Static lang:Language.TableRowColumnSpecifierViewSubmit}" />
+                <Button Grid.Column="1" cal:Message.Attach="[Event Click] = [OnCancel]" Content="{local:Loc TableRowColumnSpecifierViewCancel}" />
+                <Button Grid.Column="3" cal:Message.Attach="[Event Click] = [OnSubmit]" Content="{local:Loc TableRowColumnSpecifierViewSubmit}" />
             </Grid>
         </Grid>
     </Grid>

@@ -9,13 +9,11 @@ using System.Dynamic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using EvernoteCloneGUI.Properties;
 using EvernoteCloneGUI.ViewModels.Controls;
 using EvernoteCloneLibrary.Constants;
 using EvernoteCloneLibrary.SharedNotes;
 using EvernoteCloneLibrary.Users;
 using EvernoteCloneLibrary.Settings;
-using EvernoteCloneLibrary;
 
 
 namespace EvernoteCloneGUI.ViewModels
@@ -136,7 +134,7 @@ namespace EvernoteCloneGUI.ViewModels
                 Id = -1,
                 LocationId = -1,
                 UserId = -1,
-                Title = "Shared notes",
+                Title = Properties.Settings.Default.NoteFeverViewModelSharedNotes,
                 LastUpdated = DateTime.Now,
                 CreationDate = DateTime.Now,
                 IsNotNoteOwner = true,
@@ -207,7 +205,7 @@ namespace EvernoteCloneGUI.ViewModels
         {
             if (SelectedNotebook != null)
             {
-                string notebookCountString = "0 note(s)";
+                string notebookCountString = "0 " + Properties.Settings.Default.NotebookNotesMenuViewNotes;
                 NewNoteViewModel newNoteViewModel = null;
 
 
@@ -217,12 +215,12 @@ namespace EvernoteCloneGUI.ViewModels
                     if (SelectedNotebook.Notes.Count > 0)
                     {
                         IEnumerable<INote> notes = SelectedNotebook.Notes.Where(note => !((Note)note).IsDeleted);
-                        notebookCountString = $"{notes.ToList().Count} note(s)";
+                        notebookCountString = $"{notes.ToList().Count} " + Properties.Settings.Default.NotebookNotesMenuViewNotes;
                     }
                 }
                 else
                 {
-                    notebookCountString = $"{SelectedNotebook.Notes.Count} note(s)";
+                    notebookCountString = $"{SelectedNotebook.Notes.Count} " + Properties.Settings.Default.NotebookNotesMenuViewNotes;
                 }
 
                 if (SelectedNote != null)
@@ -287,7 +285,7 @@ namespace EvernoteCloneGUI.ViewModels
             }
             else
             {
-                MessageBox.Show("Cannot add new notes whilst not in a notebook", "Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(Properties.Settings.Default.NoteFeverViewModelCannotAddNoteToEmptyNotebook, Properties.Settings.Default.MessageBoxTitleFailed, MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
         }
@@ -304,7 +302,7 @@ namespace EvernoteCloneGUI.ViewModels
                     Id = -1,
                     LocationId = -1,
                     UserId = -1,
-                    Title = "All notes",
+                    Title = Properties.Settings.Default.NoteFeverViewModelAllNotes,
                     LastUpdated = DateTime.Now,
                     CreationDate = DateTime.Now.Date,
                     IsNotNoteOwner = true
@@ -322,7 +320,7 @@ namespace EvernoteCloneGUI.ViewModels
 
                 if (!(ValidateAndLoadNotebookView(allNotesNotebook)))
                 {
-                    MessageBox.Show("There are no notes to view.", "Note Fever", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show(Properties.Settings.Default.NoteFeverViewModelNoNotes, Properties.Settings.Default.MessageBoxTitleNotice, MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
         }
@@ -336,7 +334,7 @@ namespace EvernoteCloneGUI.ViewModels
 
             if (!ValidateAndLoadNotebookView(SharedNotebook))
             {
-                MessageBox.Show("There are no shared notes to view.", "Note Fever", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show(Properties.Settings.Default.NoteFeverViewModelNoSharedNotes, Properties.Settings.Default.MessageBoxTitleNotice, MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 
@@ -350,7 +348,7 @@ namespace EvernoteCloneGUI.ViewModels
                 Id = -1,
                 LocationId = -1,
                 UserId = -1,
-                Title = "Bin",
+                Title = Properties.Settings.Default.NoteFeverViewModelBin,
                 LastUpdated = DateTime.Now,
                 CreationDate = DateTime.Now.Date,
                 IsNotNoteOwner = true
@@ -369,8 +367,7 @@ namespace EvernoteCloneGUI.ViewModels
             trashNotebook.Notes = deletedNotes;
             if (!(ValidateAndLoadNotebookView(trashNotebook, true)))
             {
-                MessageBox.Show("There are no deleted notes.", "Note Fever", MessageBoxButton.OK, MessageBoxImage.Information);
-
+                MessageBox.Show(Properties.Settings.Default.NoteFeverViewModelNoDeletedNotes, Properties.Settings.Default.MessageBoxTitleNotice, MessageBoxButton.OK, MessageBoxImage.Information);
             }
 
         }
@@ -392,6 +389,10 @@ namespace EvernoteCloneGUI.ViewModels
                 Synchronize();
             else
                 LoadSettings();
+            
+            Properties.Settings.Default.LastSelectedLanguage = SettingsConstant.LANGUAGE;
+            Properties.Settings.Default.Save();
+            LanguageChanger.UpdateResxFile();
         }
 
         /// <summary>
@@ -481,8 +482,8 @@ namespace EvernoteCloneGUI.ViewModels
         /// </summary>
         protected override void OnActivate()
         {
-            LanguageChanger lang = new LanguageChanger(Properties.Settings.Default.LastSelectedLanguage);
-
+            LanguageChanger.UpdateResxFile();
+            
             // Show login popup
             OpenLoginPopupView(true);
 
