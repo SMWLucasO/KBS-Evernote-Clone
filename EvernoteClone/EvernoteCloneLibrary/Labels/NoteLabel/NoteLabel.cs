@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using EvernoteCloneLibrary.Notebooks.Notes;
-using EvernoteCloneLibrary.Notebooks.Notes.Labels;
 
 namespace EvernoteCloneLibrary.Labels.NoteLabel
 {
@@ -26,7 +25,7 @@ namespace EvernoteCloneLibrary.Labels.NoteLabel
             return noteLabelRepository.GetBy(
                 new[] { "NoteID = @NoteID" },
                 new Dictionary<string, object>() { { "@NoteID", noteId } }
-            ).Select((el) => ((NoteLabelModel)el)).ToList();
+            ).Select(el => el).ToList();
         }
         
         /// <summary>
@@ -34,13 +33,13 @@ namespace EvernoteCloneLibrary.Labels.NoteLabel
         /// </summary>
         /// <param name="label">The label that from which all notes should be returned</param>
         /// <returns>A list containing NoteLabel records</returns>
-        public static List<NoteLabelModel> GetAllNoteLabelFromLabel(LabelModel label)
+        public static List<NoteLabelModel> GetAllNoteLabelsFromLabel(LabelModel label)
         {
             NoteLabelRepository noteLabelRepository = new NoteLabelRepository();
             return noteLabelRepository.GetBy(
                 new[] { "LabelID = @LabelID" },
                 new Dictionary<string, object>() { { "@LabelID", label.Id } }
-            ).Select((el) => ((NoteLabelModel)el)).ToList();
+            ).Select(el => el).ToList();
         }
 
         /// <summary>
@@ -64,7 +63,7 @@ namespace EvernoteCloneLibrary.Labels.NoteLabel
             List<NoteLabelModel> noteLabelModels = noteLabelRepository.GetBy(
                 new[] { "LabelID = @LabelID", "NoteID = @NoteID" },
                 new Dictionary<string, object>() { { "@LabelID", labelId }, { "@NoteID", noteId } }
-            ).Select((el) => ((NoteLabelModel)el)).ToList();
+            ).Select(el => el).ToList();
 
             if (noteLabelModels.Count > 0)
             {

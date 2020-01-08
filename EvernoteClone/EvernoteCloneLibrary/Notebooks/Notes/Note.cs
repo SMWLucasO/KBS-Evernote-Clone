@@ -10,11 +10,30 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
     /// </summary>
     public class Note : NoteModel, INote
     {
+        #region Variables
+        
+        /// <value>
+        /// This contains the title of the note
+        /// </value>
         private string _title = SettingsConstant.DEFAULT_NOTE_TITLE;
+        
+        /// <value>
+        /// This contains the new content for this note
+        /// </value>
         private string _newContent = "";
 
-        public List<string> Tags { get; set; }
+        #endregion
+        
+        #region Properties
+        
+        /// <value>
+        /// Contains all the labels
+        /// </value>
+        public List<string> Labels { get; set; }
 
+        /// <value>
+        /// The notebook this note is in
+        /// </value>
         public Notebook NoteOwner { get; set; }
 
         /// <summary>
@@ -52,11 +71,12 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
             }
             set => _newContent = value;
         }
-
-        public Note() { }
+        
+        #endregion
 
         /// <summary>
-        /// Method for saving specific notes.
+        /// Method for saving this note.
+        /// This updates the content and also the last updated 
         /// </summary>
         /// <returns></returns>
         public void Save()
@@ -94,7 +114,8 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
             NoteRepository noteRepository = new NoteRepository();
             List<Note> notes = noteRepository.GetBy(
                 new[] { "Id = @Id" },
-                new Dictionary<string, object> { { "@Id", noteId } }).Cast<Note>().ToList();
+                new Dictionary<string, object> { { "@Id", noteId } }
+                ).Cast<Note>().ToList();
 
             if (notes.Count > 0)
             {
@@ -115,6 +136,7 @@ namespace EvernoteCloneLibrary.Notebooks.Notes
             {
                 throw new InvalidOperationException("Author must exist and cannot be empty.");
             }
+            
             return $"{Title} by {Author}";
         }
 

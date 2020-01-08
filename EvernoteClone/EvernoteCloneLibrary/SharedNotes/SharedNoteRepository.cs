@@ -1,11 +1,13 @@
 ﻿using EvernoteCloneLibrary.Database;
-using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 
 namespace EvernoteCloneLibrary.SharedNotes
 {
+    /// <summary>
+    /// This class handles the communication between the database in this application
+    /// </summary>
     public class SharedNoteRepository : IRepository<SharedNoteModel>
     {
         /// <summary>
@@ -23,8 +25,11 @@ namespace EvernoteCloneLibrary.SharedNotes
                     { "NoteID", toDelete.NoteId }
                 };
 
-                return DataAccess.Instance.Execute("DELETE FROM [SharedNote] WHERE UserID = @UserID AND NoteID = @NoteID", parameter);
+                return DataAccess.Instance.Execute(
+                    "DELETE FROM [SharedNote] WHERE UserID = @UserID AND NoteID = @NoteID", 
+                    parameter);
             }
+            
             return false;
         }
 
@@ -37,7 +42,7 @@ namespace EvernoteCloneLibrary.SharedNotes
         {
             if (toExtractFrom != null)
             {
-                return new Dictionary<string, object>() 
+                return new Dictionary<string, object>
                 {
                     { "@NoteId", toExtractFrom.NoteId },
                     { "@UserId", toExtractFrom.UserId }
@@ -89,14 +94,15 @@ namespace EvernoteCloneLibrary.SharedNotes
             {
                 Dictionary<string, object> parameters = GenerateQueryParameters(toInsert);
 
-                return DataAccess.Instance.Execute("INSERT INTO [SharedNote] ([NoteId], [UserId])"
-                        + " VALUES (@NoteId, @UserId)", parameters);
+                return DataAccess.Instance.Execute(
+                    "INSERT INTO [SharedNote] ([NoteId], [UserId]) VALUES (@NoteId, @UserId)", 
+                    parameters);
             }
             return false;
         }
 
         /// <summary>
-        /// Updates the user id of the note incase the note is shared again.
+        /// Updates the user id of the note in case the note is shared again.
         /// </summary>
         /// <param name="toUpdate"></param>
         /// <returns></returns>
@@ -109,7 +115,8 @@ namespace EvernoteCloneLibrary.SharedNotes
                     Dictionary<string, object> parameters = GenerateQueryParameters(toUpdate);
                     parameters.Add("@UserId", toUpdate.UserId);
 
-                    return DataAccess.Instance.Execute("UPDATE [SharedNote] SET [UserId] = @UserId WHERE Id = @UserId",
+                    return DataAccess.Instance.Execute(
+                        "UPDATE [SharedNote] SET [UserId] = @UserId WHERE Id = @UserId",
                         parameters);
                 }
             }

@@ -96,7 +96,6 @@
     <Compile Include="Labels\NoteLabel\NoteLabel.cs" />
     <Compile Include="Labels\NoteLabel\NoteLabelModel.cs" />
     <Compile Include="Labels\NoteLabel\NoteLabelRepository.cs" />
-    <Compile Include="LanguageLoader.cs" />
     <Compile Include="Notebooks\Location\LocationUser\LocationUser.cs" />
     <Compile Include="Notebooks\Location\LocationUser\LocationUserModel.cs" />
     <Compile Include="Notebooks\Location\LocationUser\LocationUserRepository.cs" />
@@ -117,13 +116,14 @@
     <Compile Include="Settings\Setting.cs" />
     <Compile Include="Settings\SettingModel.cs" />
     <Compile Include="Settings\SettingRepository.cs" />
-    <Compile Include="StaticMethods.cs" />
     <Compile Include="SharedNotes\SharedNote.cs" />
     <Compile Include="SharedNotes\SharedNoteModel.cs" />
     <Compile Include="SharedNotes\SharedNoteRepository.cs" />
     <Compile Include="Users\User.cs" />
     <Compile Include="Users\UserModel.cs" />
     <Compile Include="Users\UserRepository.cs" />
+    <Compile Include="Utils\LanguageLoader.cs" />
+    <Compile Include="Utils\StaticMethods.cs" />
     <Compile Include="Utils\ValidationUtil.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,7 +1,7 @@
 ﻿namespace EvernoteCloneLibrary.Constants
 {
     /// <summary>
-    /// This class contains all the constants that relate to Ssh
+    /// This class contains all the constants that needed to make a Ssh connection
     /// </summary>
     public class SshConstant
     {
@@ -16,6 +16,7 @@
         public const int    TEST_SSH_KEEP_ALIVE = 2000; // in milliseconds
         
         #endregion
+        
         #region Production
         
         public const bool   SSH_USE_PUBLIC_KEY = false;

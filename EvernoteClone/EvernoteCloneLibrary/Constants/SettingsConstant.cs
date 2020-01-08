@@ -74,6 +74,9 @@ namespace EvernoteCloneLibrary.Constants
 
         #region Constructor
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
         private SettingsConstant() { }
 
         #endregion

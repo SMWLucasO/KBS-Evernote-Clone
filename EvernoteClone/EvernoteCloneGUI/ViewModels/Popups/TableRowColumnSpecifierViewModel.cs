@@ -11,14 +11,31 @@ namespace EvernoteCloneGUI.ViewModels.Popups
     public class TableRowColumnSpecifierViewModel : Screen
     {
 
+        /// <value>
+        /// A boolean which indicates if the submit button can be clicked.
+        /// </value>
         private bool _canSubmit = true;
 
+        /// <value>
+        /// A boolean which indicates if the submit button was clicked.
+        /// </value>
         public bool Submitted = false;
+        
+        /// <value>
+        /// A boolean to indicate that the 'cancel' button was clicked.
+        /// </value>
         public bool Cancelled = false;
 
         #region Databound properties
 
+        /// <value>
+        /// The amount of columns, specified within the popup window.
+        /// </value>
         public uint ColumnCount { get; set; } = 1;
+        
+        /// <value>
+        /// The amount of rows, specified within the popup window.
+        /// </value>
         public uint RowCount { get; set; } = 1;
 
         #endregion
@@ -56,7 +73,8 @@ namespace EvernoteCloneGUI.ViewModels.Popups
         {
             if (!_canSubmit)
             {
-                MessageBox.Show(Properties.Settings.Default.TableRowColumnSpecifierViewModelGreaterThanZero, Properties.Settings.Default.MessageBoxTitleWarning,
+                MessageBox.Show(Properties.Settings.Default.TableRowColumnSpecifierViewModelGreaterThanZero,
+                    Properties.Settings.Default.MessageBoxTitleWarning,
                         MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
             else

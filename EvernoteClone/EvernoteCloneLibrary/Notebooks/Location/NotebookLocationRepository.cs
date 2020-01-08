@@ -19,18 +19,24 @@ namespace EvernoteCloneLibrary.Notebooks.Location
                 Dictionary<string, object> parameters = GenerateQueryParameters(toInsert);
 
                 // Check if the path already exists, if so, set toInsert.Id equal to the already existing NotebookLocation id
-                List<NotebookLocationModel> notebookLocations = GetBy(new[] {"Path = @Path"}, parameters).ToList();
+                List<NotebookLocationModel> notebookLocations = 
+                    GetBy(new[] {"Path = @Path"}, parameters).ToList();
+                
                 if (notebookLocations.Count > 0)
                 {
                     toInsert.Id = notebookLocations[0].Id;
                     return true;
                 }
 
-                int id = DataAccess.Instance.ExecuteAndReturnId("INSERT INTO [NotebookLocation] ([Path])"
-                        + " VALUES (@Path)", parameters);
+                int id = DataAccess.Instance.ExecuteAndReturnId(
+                    "INSERT INTO [NotebookLocation] ([Path]) VALUES (@Path)", 
+                    parameters);
 
                 if (id != -1)
+                {
                     toInsert.Id = id;
+                }
+                
                 return id != -1;
             }
             return false;
@@ -52,7 +58,7 @@ namespace EvernoteCloneLibrary.Notebooks.Location
             while (sqlDataReader.Read())
             {
                 // Generate a model for each row of the NotebookLocations table.
-                generatedModels.Add(new NotebookLocation()
+                generatedModels.Add(new NotebookLocation
                 {
                     Id = (int)sqlDataReader["Id"],
                     Path = (string)sqlDataReader["Path"]
@@ -80,7 +86,8 @@ namespace EvernoteCloneLibrary.Notebooks.Location
                     Dictionary<string, object> parameters = GenerateQueryParameters(toUpdate);
                     parameters.Add("@Id", toUpdate.Id);
 
-                    return DataAccess.Instance.Execute("UPDATE [NotebookLocation] SET [Path] = @Path WHERE Id = @Id",
+                    return DataAccess.Instance.Execute(
+                        "UPDATE [NotebookLocation] SET [Path] = @Path WHERE Id = @Id",
                         parameters);
                 }
             }
@@ -96,12 +103,14 @@ namespace EvernoteCloneLibrary.Notebooks.Location
         {
             if (toDelete != null)
             {
-                Dictionary<string, object> parameter = new Dictionary<string, object>()
+                Dictionary<string, object> parameter = new Dictionary<string, object>
                 {
                     { "@Id", toDelete.Id }
                 };
 
-                return DataAccess.Instance.Execute("DELETE FROM [NotebookLocation] WHERE Id = @Id", parameter);
+                return DataAccess.Instance.Execute(
+                    "DELETE FROM [NotebookLocation] WHERE Id = @Id", 
+                    parameter);
             }
             return false;
         }
@@ -115,7 +124,8 @@ namespace EvernoteCloneLibrary.Notebooks.Location
         {
             if (toExtractFrom != null)
             {
-                return new Dictionary<string, object>() {
+                return new Dictionary<string, object> 
+                {
                     { "@Path", toExtractFrom.Path },
                 };
             }

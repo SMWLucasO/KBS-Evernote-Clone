@@ -10,17 +10,31 @@ namespace EvernoteCloneGUI.ViewModels
 {
     /// <summary>
     /// ViewModel which handles all interaction in the note menu window.
+    /// This ViewModel represents a notebook containing multiple notes.
     /// </summary>
     public class NotebookNotesMenuViewModel : Conductor<NoteElementViewModel>.Collection.AllActive
     {
 
+        /// <value>
+        /// Boolean indicating whether deleted notes should be shown.
+        /// </value>
         public bool ShowDeletedNotes { get; set; }
 
         #region Databound properties and their 'behind the scenes' instance variables
+        
+        /// <value>
+        /// instance variable containing a string representation of the amount of notes in the specified notebook. 
+        /// </value>
         private string _notebookNoteCount = "0 " + Properties.Settings.Default.NotebookNotesMenuViewNotes;
+        
+        /// <value>
+        /// Instance variable containing all visual representations of the notes within the notebook.
+        /// </value>
         private ObservableCollection<NoteElementViewModel> _noteElementViews;
 
-        // These properties need to make changes happen in the view.
+        /// <value>
+        /// Getter and setter for the name of the notebook currently open.
+        /// </value>
         public string NotebookName
         {
             get => Notebook.Title;
@@ -31,6 +45,10 @@ namespace EvernoteCloneGUI.ViewModels
             }
         }
 
+        /// <value>
+        /// Getter/setter for the string representation of the notebook note count.
+        /// When this property is set, it will be modified on the screen, too.
+        /// </value>
         public string NotebookNoteCount
         {
             get => _notebookNoteCount;
@@ -41,6 +59,9 @@ namespace EvernoteCloneGUI.ViewModels
             }
         }
 
+        /// <value>
+        /// Getter/setter for all the visual representations of the notebook's notes.
+        /// </value>
         public ObservableCollection<NoteElementViewModel> NoteElementViews
         {
             get => _noteElementViews;
@@ -53,6 +74,9 @@ namespace EvernoteCloneGUI.ViewModels
 
         #endregion
 
+        /// <value>
+        /// The notebook which this ViewModel represents visually.
+        /// </value>
         public Notebook Notebook { get; set; }
 
         #region Events
@@ -87,9 +111,9 @@ namespace EvernoteCloneGUI.ViewModels
                             {
                                 returnedNotes.Add(note);
                             }
-                            else if (note.Tags != null)
+                            else if (note.Labels != null)
                             {
-                                foreach (string tag in note.Tags)
+                                foreach (string tag in note.Labels)
                                 {
                                     if (tag.ToLower().Contains(searchFor))
                                     {

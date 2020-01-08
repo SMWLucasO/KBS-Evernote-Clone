@@ -20,9 +20,19 @@ namespace EvernoteCloneGUI.ViewModels
     /// </summary>
     public class NoteElementViewModel : PropertyChangedBase
     {
+        /// <value>
+        /// The instance variable of the note's title.
+        /// </value>
         private string _title;
+        
+        /// <value>
+        /// The user currently logged in
+        /// </value>
         public User User { get; private set; }
 
+        /// <value>
+        /// The title of the note. If it gets set, the label which this property is bound to will also change.
+        /// </value>
         public string Title
         {
             get => _title;
@@ -32,12 +42,27 @@ namespace EvernoteCloneGUI.ViewModels
                 NotifyOfPropertyChange(() => Title);
             }
         }
+        
+        /// <value>
+        /// A 'day-month-year' representation of the creation date of the note.
+        /// </value>
         public string NoteCreationDate { get; set; }
 
+        /// <value>
+        /// The note object being represented in this ViewModel
+        /// </value>
         public Note Note { get; set; }
 
+        /// <value>
+        /// The NoteFeverViewModel which contains this NoteElementViewModel
+        /// </value>
         public NoteFeverViewModel Container { get; set; }
-
+        
+        /// <summary>
+        /// Method which switches between note views, it will ask the user to save changes if there is a difference between
+        /// the current saved text and the modified text.
+        /// </summary>
+        /// <param name="clickedEventArgs"></param>
         public void LoadOnClick(EventArgs clickedEventArgs)
         {
             if (Container?.SelectedNote != null)

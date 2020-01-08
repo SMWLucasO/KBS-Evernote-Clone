@@ -4,6 +4,9 @@ using EvernoteCloneLibrary.Constants;
 
 namespace EvernoteCloneLibrary.Notebooks.Location.LocationUser
 {
+    /// <summary>
+    /// This class handles all logic for LocationUsers
+    /// </summary>
     public class LocationUser : LocationUserModel
     {
         /// <summary>
@@ -15,14 +18,14 @@ namespace EvernoteCloneLibrary.Notebooks.Location.LocationUser
             return new LocationUserRepository().GetBy(
                 new[] { "UserID = @UserID" },
                 new Dictionary<string, object>() { { "@UserID", Constant.User.Id } }
-            ).Select((el) => ((LocationUser)el)).ToList();
+            ).Select(el => (LocationUser)el).ToList();
         }
 
         /// <summary>
         /// Insert a new LocationUser
         /// </summary>
         /// <param name="locationUser">The to be inserted LocationUser</param>
-        /// <returns>A boolean indicating if the insert went succesfully</returns>
+        /// <returns>A boolean indicating if the insert went successfully</returns>
         public static bool AddNewLocationUser(LocationUser locationUser) =>
             new LocationUserRepository().Insert(locationUser);
         
@@ -43,11 +46,14 @@ namespace EvernoteCloneLibrary.Notebooks.Location.LocationUser
         {
             List<LocationUser> locationUsers = new LocationUserRepository().GetBy(
                 new[] { "UserID = @UserID", "LocationID = @LocationID" },
-                new Dictionary<string, object>() { { "@UserID", Constant.User.Id }, { "@LocationID", notebookLocation.Id } }
-            ).Select((el) => ((LocationUser)el)).ToList();
+                new Dictionary<string, object> { { "@UserID", Constant.User.Id }, { "@LocationID", notebookLocation.Id } }
+            ).Select(el => (LocationUser)el).ToList();
 
             if (locationUsers.Count == 1)
+            {
                 return locationUsers[0];
+            }
+            
             return null;
         }
     }

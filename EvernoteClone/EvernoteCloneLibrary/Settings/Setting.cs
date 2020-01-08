@@ -112,6 +112,9 @@ namespace EvernoteCloneLibrary.Settings
                         {
                             try
                             {
+                                // If a settings name is changed, this should be changed in the database too.
+                                // If this does not happen, there will be a error here.
+                                // Not a vital error, the application will still work, but it will always throw an error here
                                 SettingsConstant.SetValue(setting.KeyWord,
                                     Convert.ChangeType(
                                         setting.SettingValue,
@@ -150,7 +153,7 @@ namespace EvernoteCloneLibrary.Settings
         {
             return new SettingRepository().GetBy(
                 new[] { "UserID = @UserID" },
-                new Dictionary<string, object>() { { "@UserID", Constant.User.Id } }
+                new Dictionary<string, object> { { "@UserID", Constant.User.Id } }
             ).Select(el => (Setting)el).ToList();
         }
 

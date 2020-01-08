@@ -2,6 +2,7 @@
 using EvernoteCloneLibrary.Notebooks.Notes;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Xml.Linq;
 using System.Linq;
@@ -150,10 +151,11 @@ namespace EvernoteCloneLibrary.Files.Parsers
         /// Helper method for generating a notebook out of existing data of the file specified by the path.
         /// </summary>
         /// <param name="fullPath"></param>
+        /// <param name="xDocument"></param>
         /// <returns></returns>
         private static Notebook GenerateNotebookFromFile(string fullPath, XDocument xDocument)
         {
-            if (fullPath != null && xDocument != null && xDocument.Descendants("en-export") != null)
+            if (fullPath != null && xDocument != null)
             {
                 foreach (XElement node in xDocument.Descendants("en-export").ToList())
                 {
@@ -166,19 +168,21 @@ namespace EvernoteCloneLibrary.Files.Parsers
                         return new Notebook
                         {
                             // The Id of the notebook, might be -1 if the notebook doesn't exist in the database
-                            Id = int.Parse(node.Element("id").Value),
-                            Title = node.Element("title").Value,
+                            Id = int.Parse(node.Element("id")?.Value ?? "-1"),
+                            Title = node.Element("title")?.Value,
+                            
                             // location data
                             Path = new NotebookLocation()
                             {
-                                Id = int.Parse(node.Element("path-id").Value),
-                                Path = node.Element("path").Value
+                                Id = int.Parse(node.Element("path-id")?.Value ?? "-1"),
+                                Path = node.Element("path")?.Value
                             },
-                            LocationId = int.Parse(node.Element("path-id").Value),
+                            LocationId = int.Parse(node.Element("path-id")?.Value ?? "-1"),
+                            
                             // File data which applies to the notebook.
-                            CreationDate = DateTime.Parse(FormatDateTime(node.Element("created").Value)),
-                            LastUpdated = DateTime.Parse(FormatDateTime(node.Element("updated").Value)),
-                            IsDeleted = bool.Parse(node.Element("deleted").Value),
+                            CreationDate = DateTime.Parse(FormatDateTime(node.Element("created")?.Value)),
+                            LastUpdated = DateTime.Parse(FormatDateTime(node.Element("updated")?.Value)),
+                            IsDeleted = bool.Parse(node.Element("deleted")?.Value ?? "false"),
                             FsName = Path.GetFileNameWithoutExtension(fullPath)
                         };
                     }
@@ -191,6 +195,7 @@ namespace EvernoteCloneLibrary.Files.Parsers
         /// Helper method which generates Note objects with the available information.
         /// </summary>
         /// <param name="xDocument"></param>
+        /// <param name="notebook"></param>
         /// <returns></returns>
         private static List<Note> GenerateNotesFromXml(XDocument xDocument, Notebook notebook)
         {
@@ -204,13 +209,13 @@ namespace EvernoteCloneLibrary.Files.Parsers
 
                     // If all required data is existent, then we (eventually) add it to the list.
                     if (ValidationUtil.AreNotNull(node.Element("created")?.Value, node.Element("updated")?.Value, node.Element("note-attributes"),
-                        node.Element("note-attributes").Element("author")?.Value, node.Element("id")?.Value, node.Element("title")?.Value,
-                        node.Element("note-attributes").Element("deleted")?.Value, notebook))
+                        node.Element("note-attributes")?.Element("author")?.Value, node.Element("id")?.Value, node.Element("title")?.Value,
+                        node.Element("note-attributes")?.Element("deleted")?.Value, notebook))
                     {
                         Note note = new Note
                         {
                             // Fetch the Id for the import, if there is none, or it is -1: This note is not in the database.
-                            Id = (node.Element("id") != null ? int.Parse(node.Element("id").Value) : -1),
+                            Id = (node.Element("id") != null ? int.Parse(node.Element("id")?.Value ?? "-1") : -1),
                             // Fetch the title of note
                             Title = node.Element("title")?.Value
                         };
@@ -219,35 +224,32 @@ namespace EvernoteCloneLibrary.Files.Parsers
                         note.Content = note.NewContent = GetStrippedContent(node.Element("content")?.Value) ?? "";
 
                         // fetch the date the note was created, needed to change it from 'T00000000Z000000' where '0' is an arbitrary value
-                        note.CreationDate = DateTime.Parse(FormatDateTime(node.Element("created").Value));
+                        note.CreationDate = DateTime.Parse(FormatDateTime(node.Element("created")?.Value));
 
                         // fetch the date the note was last updated, needed to change it from 'T00000000Z000000' where '0' is an arbitrary value
-                        note.LastUpdated = DateTime.Parse(FormatDateTime(node.Element("updated").Value));
+                        note.LastUpdated = DateTime.Parse(FormatDateTime(node.Element("updated")?.Value));
 
                         // fetch the author of the note and a bool to check if it is soft-deleted. Both nodes are attributes of a note.
-                        note.Author = node.Element("note-attributes").Element("author").Value;
-                        note.IsDeleted = bool.Parse(node.Element("note-attributes").Element("deleted").Value);
+                        note.Author = node.Element("note-attributes")?.Element("author")?.Value;
+                        note.IsDeleted = bool.Parse(node.Element("note-attributes")?.Element("deleted")?.Value ?? "false");
 
                         // fetch all the tags of the note.
                         // There can be zero or more tags, therefore make sure it exists 
                         // & if so add them all the the tags list.
                         // If there is no tags, we will still load in an empty list to avoid nulls 
                         List<string> tags = new List<string>();
-                        if (node.Elements("tag") != null)
+                        foreach (string tag in node.Elements("tag").ToList())
                         {
-                            foreach (string tag in node.Elements("tag").ToList())
-                            {
-                                tags.Add(tag);
-                            }
+                            tags.Add(tag);
                         }
 
-                        note.Tags = tags;
+                        note.Labels = tags;
 
                         // Set all the notebook data for the note
                         note.NoteOwner = notebook;
                         note.NotebookId = notebook.Id;
 
-                        if (ValidationUtil.IsNotNull(note.Tags))
+                        if (ValidationUtil.IsNotNull(note.Labels))
                         {
                             notes.Add(note);
                         }
@@ -266,6 +268,11 @@ namespace EvernoteCloneLibrary.Files.Parsers
 
         #region Validation methods
         
+        /// <summary>
+        /// This returns true if the folder (filePath) exists and is not empty
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
         private static bool ValidateFolderExistsNotEmpty(string filePath)
         {
             return Directory.Exists(filePath) && Directory.GetFiles(filePath).Length > 0;
@@ -283,6 +290,11 @@ namespace EvernoteCloneLibrary.Files.Parsers
 
         #region Helper methods
         
+        /// <summary>
+        /// This returns the value that is given without all the xml tags that are not needed
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         private static string GetStrippedContent(string value)
             => value.Replace("<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE en-note SYSTEM \"http://xml.evernote.com/pub/enml2.dtd\">", "")
                             .Replace("<en-note>", "")
@@ -294,7 +306,7 @@ namespace EvernoteCloneLibrary.Files.Parsers
         /// An ISO-8601 '00000000T000000Z' formatter.
         /// Converts the above to an appropriate DateTime (ex: 2019-07-05 05:40:53)
         /// </summary>
-        /// <param name="datetime"</param>
+        /// <param name="datetime"></param>
         /// <returns></returns>
         private static string FormatDateTime(string datetime)
         {
@@ -309,10 +321,10 @@ namespace EvernoteCloneLibrary.Files.Parsers
                     string minute = datetime.Substring(11, 2);
                     string second = datetime.Substring(13, 2);
 
-                    return (year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second);
+                    return year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second;
                 }
 
-                return DateTime.Now.ToString();
+                return DateTime.Now.ToString(CultureInfo.InvariantCulture);
             }
             return null;
         }

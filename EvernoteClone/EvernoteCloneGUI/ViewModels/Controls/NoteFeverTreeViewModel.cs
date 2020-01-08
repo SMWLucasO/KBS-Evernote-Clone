@@ -84,7 +84,7 @@ namespace EvernoteCloneGUI.ViewModels.Controls
         #region TreeView Builder
 
         /// <summary>
-        /// /// (Re)loads the folder structure and notebooks
+        /// (Re)loads the folder structure and notebooks
         /// </summary>
         /// <param name="pathToBeSelected"></param>
         /// <param name="withoutSynchronize"></param>
@@ -288,7 +288,10 @@ namespace EvernoteCloneGUI.ViewModels.Controls
         private List<NotebookLocation> RecursiveGetSubFolders(TreeViewItem rootTreeViewItem, ref bool notebookIsPartOfSubfolders)
         {
             if (notebookIsPartOfSubfolders)
+            {
                 return null;
+            }
+                
 
             List<NotebookLocation> notebookLocations = new List<NotebookLocation>();
 
@@ -307,7 +310,10 @@ namespace EvernoteCloneGUI.ViewModels.Controls
                         RecursiveGetSubFolders(treeViewItem, ref notebookIsPartOfSubfolders);
 
                     if (tmpNotebookLocations != null)
+                    {
                         notebookLocations.AddRange(tmpNotebookLocations);
+                    }
+                        
                 }
             }
             else
@@ -391,6 +397,7 @@ namespace EvernoteCloneGUI.ViewModels.Controls
         /// <summary>
         /// Returns all folders as TreeViewItems
         /// </summary>
+        /// <param name="withoutSynchronize">This boolean indicates whether everything should be synchronized or not</param>
         /// <returns>Returns a list with TreeViewItems</returns>
         private List<TreeViewItem> GetFolders(bool withoutSynchronize = false)
         {

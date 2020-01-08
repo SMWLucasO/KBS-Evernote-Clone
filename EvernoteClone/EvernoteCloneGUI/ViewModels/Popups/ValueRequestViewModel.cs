@@ -14,29 +14,29 @@ namespace EvernoteCloneGUI.ViewModels.Popups
         /// <param name="viewModel"></param>
         public delegate void DialogResultHandler(ValueRequestViewModel viewModel);
 
-        /// <summary>
-        /// When the submit button gets clicked, this event will get called.
-        /// </summary>
+        /// <value>
+        /// The event called when the submit button gets clicked.
+        /// </value>
         public event DialogResultHandler Submission;
 
-        /// <summary>
-        /// When the cancel button gets clicked, this event will get called.
-        /// </summary>
+        /// <value>
+        /// The event called when the cancel button gets clicked.
+        /// </value>
         public event DialogResultHandler Cancellation;
 
-        /// <summary>
+        /// <value>
         /// The title for the dialog which has been opened.
-        /// </summary>
+        /// </value>
         public string DialogTitle { get; set; }
 
-        /// <summary>
+        /// <value>
         /// Text for the textblock above the textbox.
-        /// </summary>
+        /// </value>
         public string DialogValueRequestText { get; set; }
 
-        /// <summary>
-        /// The variable containing the user input
-        /// </summary>
+        /// <value>
+        /// The input of the user
+        /// </value>
         public string Value { get; set; } = "";
 
         /// <summary>
