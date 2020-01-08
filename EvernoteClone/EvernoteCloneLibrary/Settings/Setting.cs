@@ -150,7 +150,7 @@ namespace EvernoteCloneLibrary.Settings
         {
             return new SettingRepository().GetBy(
                 new[] { "UserID = @UserID" },
-                new Dictionary<string, object>() { { "@UserID", Constant.User.Id } }
+                new Dictionary<string, object> { { "@UserID", Constant.User.Id } }
             ).Select(el => (Setting)el).ToList();
         }
 

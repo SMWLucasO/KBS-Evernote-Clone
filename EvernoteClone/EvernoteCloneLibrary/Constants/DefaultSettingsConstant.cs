@@ -69,6 +69,9 @@ namespace EvernoteCloneLibrary.Constants
         
         #region Method
 
+        /// <summary>
+        /// Copy the default settings (this is used when changing from user)
+        /// </summary>
         public static void CopyDefaults()
         {
             DefaultSettingsConstant settingsConstant = new DefaultSettingsConstant();

@@ -15,6 +15,7 @@
         public const string TEST_DATABASE_INTEGRATED_SECURITY = "False";
 
         #endregion
+        
         #region Production
         
         public const string DATABASE_HOST = "127.0.0.1";

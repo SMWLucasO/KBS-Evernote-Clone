@@ -5,6 +5,9 @@ using System.Linq;
 
 namespace EvernoteCloneLibrary.Notebooks.Location.LocationUser
 {
+    /// <summary>
+    /// This class handles all communication between the database
+    /// </summary>
     public class LocationUserRepository : IRepository<LocationUserModel>
     {
         /// <summary>
@@ -19,11 +22,17 @@ namespace EvernoteCloneLibrary.Notebooks.Location.LocationUser
                 Dictionary<string, object> parameters = GenerateQueryParameters(toInsert);
                 
                 // Check if the path already exists, if so, set toInsert.Id equal to the already existing NotebookLocation id
-                List<LocationUserModel> notebookLocations = GetBy(new[] {"LocationID = @LocationID", "UserID = @UserID"}, parameters).ToList();
+                List<LocationUserModel> notebookLocations = 
+                    GetBy(new[] {"LocationID = @LocationID", "UserID = @UserID"}, parameters).ToList();
+                
                 if (notebookLocations.Count > 0)
+                {
                     return true;
+                }
 
-                return DataAccess.Instance.Execute("INSERT INTO [LocationUser] ([LocationID], [UserID]) VALUES (@LocationID, @UserID)", parameters);
+                return DataAccess.Instance.Execute(
+                    "INSERT INTO [LocationUser] ([LocationID], [UserID]) VALUES (@LocationID, @UserID)", 
+                    parameters);
             }
             return false;
         }
@@ -44,7 +53,7 @@ namespace EvernoteCloneLibrary.Notebooks.Location.LocationUser
             while (sqlDataReader.Read())
             {
                 // Generate a model for each row of the LocationUser table.
-                generatedModels.Add(new LocationUser()
+                generatedModels.Add(new LocationUser
                 { 
                     LocationId = (int)sqlDataReader["LocationID"],
                     UserId = (int)sqlDataReader["UserID"]
@@ -59,11 +68,12 @@ namespace EvernoteCloneLibrary.Notebooks.Location.LocationUser
         }
 
         /// <summary>
-        /// This will always return false, because this is a 'koppel tabel' and this will never be updated (only inserted, deleted or viewed)
+        /// This will always return false, because this is a 'koppel' table and this will never be updated (only inserted, deleted or viewed)
         /// </summary>
         /// <param name="toUpdate">The model which is to be updated</param>
         /// <returns>bool to determine if the update was a success (will always be false)</returns>
-        public bool Update(LocationUserModel toUpdate) => false;
+        public bool Update(LocationUserModel toUpdate) => 
+            false;
 
         /// <summary>
         /// The method for deleting the LocationUser record which the specified model represents.
@@ -74,13 +84,15 @@ namespace EvernoteCloneLibrary.Notebooks.Location.LocationUser
         {
             if (toDelete != null)
             {
-                Dictionary<string, object> parameters = new Dictionary<string, object>()
+                Dictionary<string, object> parameters = new Dictionary<string, object>
                 {
                     { "@LocationID", toDelete.LocationId },
                     { "@UserID", toDelete.UserId }
                 };
 
-                return DataAccess.Instance.Execute("DELETE FROM [LocationUser] WHERE LocationID = @LocationID AND UserID = @UserID", parameters);
+                return DataAccess.Instance.Execute(
+                    "DELETE FROM [LocationUser] WHERE LocationID = @LocationID AND UserID = @UserID", 
+                    parameters);
             }
 
             return false;
@@ -95,7 +107,8 @@ namespace EvernoteCloneLibrary.Notebooks.Location.LocationUser
         {
             if (toExtractFrom != null)
             {
-                return new Dictionary<string, object>() {
+                return new Dictionary<string, object>
+                {
                     { "@LocationID", toExtractFrom.LocationId },
                     { "@UserID", toExtractFrom.UserId }
                 };

@@ -3,6 +3,9 @@ using System.Linq;
 
 namespace EvernoteCloneLibrary.Settings.Locales
 {
+    /// <summary>
+    /// This class handles all logic for locales
+    /// </summary>
     public class Locale : LocaleModel
     {
         #region Setting methods

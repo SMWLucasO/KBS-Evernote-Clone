@@ -14,12 +14,13 @@ using System.Windows.Documents;
 using System.Windows.Markup;
 using System.Xml;
 using System.Linq;
-using EvernoteCloneLibrary.Notebooks.Notes.Labels;
 using Microsoft.VisualBasic;
 using EvernoteCloneLibrary.Labels.NoteLabel;
 using System.Windows.Input;
 using EvernoteCloneGUI.ViewModels.Commands.KeyGestures;
 using EvernoteCloneLibrary.Constants;
+using EvernoteCloneLibrary.Labels;
+using Label = EvernoteCloneLibrary.Labels.Label;
 
 namespace EvernoteCloneGUI.ViewModels
 {
@@ -34,6 +35,7 @@ namespace EvernoteCloneGUI.ViewModels
         private string _userInput = "";
 
         public StackPanel LabelsStackPanel { get; set; }
+        
         public void LabelsAdd()
         {    
             _userInput = Interaction.InputBox(Properties.Settings.Default.NewNoteViewModelAddLabel, Properties.Settings.Default.NewNoteViewModelAddLabelTitle, _userInput);
@@ -46,7 +48,7 @@ namespace EvernoteCloneGUI.ViewModels
             }
             else
             {
-                if (Note.Tags.Contains(_userInput))
+                if (Note.Labels.Contains(_userInput))
                 {
                     MessageBox.Show(Properties.Settings.Default.NewNoteViewModelLabelAlreadyExists, Properties.Settings.Default.MessageBoxTitleWarning,MessageBoxButton.OK, MessageBoxImage.Exclamation);
                     return;
@@ -54,7 +56,7 @@ namespace EvernoteCloneGUI.ViewModels
 
                 if (Note.Id != -1)
                 {
-                    bool addLabel = new EvernoteCloneLibrary.Notebooks.Notes.Labels.Label().InsertLabel(labelModel, Note);
+                    bool addLabel = Label.InsertLabel(labelModel, Note);
 
                     if (addLabel)
                     {
@@ -194,12 +196,12 @@ namespace EvernoteCloneGUI.ViewModels
 
         public void LoadLabels()
         {
-            if (Note.Tags == null)
+            if (Note.Labels == null)
             {
-                Note.Tags = new List<string>();
+                Note.Labels = new List<string>();
             }
 
-            Note.Tags.Clear();
+            Note.Labels.Clear();
 
             List<Button> toRemove = new List<Button>();
             foreach (Button button in LabelsStackPanel.Children.Cast<Button>())
@@ -218,7 +220,7 @@ namespace EvernoteCloneGUI.ViewModels
             List<NoteLabelModel> noteLabels = NoteLabel.GetAllNoteLabelsFromNote(Note);
             foreach (NoteLabelModel noteLabel in noteLabels)
             {
-                LabelModel labelModel = new EvernoteCloneLibrary.Notebooks.Notes.Labels.Label().GetLabel(noteLabel.LabelId);
+                LabelModel labelModel = Label.GetLabel(noteLabel.LabelId);
 
                 Button label = new Button
                 {
@@ -233,7 +235,7 @@ namespace EvernoteCloneGUI.ViewModels
                 label.Click += LabelDelete;
                 LabelsStackPanel.Children.Add(label);
 
-                Note.Tags.Add(labelModel.Title);
+                Note.Labels.Add(labelModel.Title);
             }
         }
         

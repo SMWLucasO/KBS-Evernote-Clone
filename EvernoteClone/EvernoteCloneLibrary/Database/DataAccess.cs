@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Text;
 using EvernoteCloneLibrary.Constants;
-using EvernoteCloneLibrary.Notebooks.Notes.Labels;
 
 namespace EvernoteCloneLibrary.Database
 {
@@ -174,21 +172,26 @@ namespace EvernoteCloneLibrary.Database
             return _connection;
         }
 
+        /// <summary>
+        /// This returns a data table with the selected language
+        /// </summary>
+        /// <param name="langCode">The language we want to retrieve</param>
+        /// <returns></returns>
         public DataTable GetLanguageTable(string langCode)
         {
-            DataTable _language = new DataTable();
+            DataTable language = new DataTable();
             SqlConnection conn = OpenSqlConnection();
-            string _query = $"SELECT * FROM LANGUAGE WHERE Language='{langCode}'";
+            string query = $"SELECT * FROM LANGUAGE WHERE Language='{langCode}'";
 
-            SqlCommand cmd = new SqlCommand(_query, conn);
+            SqlCommand cmd = new SqlCommand(query, conn);
             SqlDataAdapter da = new SqlDataAdapter(cmd);
 
-            da.Fill(_language);
+            da.Fill(language);
             conn.Close();
 
-            if (_language.Rows.Count < 1)
+            if (language.Rows.Count < 1)
                 return null;
-            return _language;
+            return language;
         }
 
         /// <summary>
@@ -210,6 +213,5 @@ namespace EvernoteCloneLibrary.Database
         /// </summary>
         private static readonly Func<SqlCommand, SqlDataReader> SqlDataReaderReturnType = sqlCommand
             => sqlCommand.ExecuteReader();
-
     }
 }

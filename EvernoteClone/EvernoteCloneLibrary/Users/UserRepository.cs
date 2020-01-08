@@ -18,12 +18,14 @@ namespace EvernoteCloneLibrary.Users
         {
             if (toDelete != null)
             {
-                Dictionary<string, object> parameters = new Dictionary<string, object>()
+                Dictionary<string, object> parameters = new Dictionary<string, object>
                 {
                     {"@Id", toDelete.Id }
                 };
 
-                return DataAccess.Instance.Execute("DELETE FROM [User] WHERE Id = @Id", parameters);
+                return DataAccess.Instance.Execute(
+                    "DELETE FROM [User] WHERE Id = @Id", 
+                    parameters);
             }
 
             return false;
@@ -38,7 +40,7 @@ namespace EvernoteCloneLibrary.Users
         {
             if (toExtractFrom != null)
             {
-                Dictionary<string, object> parameters = new Dictionary<string, object>()
+                Dictionary<string, object> parameters = new Dictionary<string, object>
                 {
                     { "@Username", toExtractFrom.Username },
                     { "@Password", toExtractFrom.Password },
@@ -96,13 +98,15 @@ namespace EvernoteCloneLibrary.Users
         public IEnumerable<UserModel> GetBy(string[] conditions, Dictionary<string, object> parameters)
         {
             List<User> usersList = new List<User>();
-            SqlDataReader fetchedSqlDataReader = DataAccess.Instance.ExecuteAndRead("User", conditions, parameters);
+            
+            SqlDataReader fetchedSqlDataReader = 
+                DataAccess.Instance.ExecuteAndRead("User", conditions, parameters);
 
             NotebookRepository notebookRepository = new NotebookRepository();
 
             while (fetchedSqlDataReader.Read())
             {
-                User user = new User()
+                User user = new User
                 {
                     Id = (int)fetchedSqlDataReader["Id"],
                     Username = (string)fetchedSqlDataReader["Username"],
@@ -113,12 +117,12 @@ namespace EvernoteCloneLibrary.Users
                     CreationDate = (DateTime)fetchedSqlDataReader["CreationDate"],
                     LastLogin = !(fetchedSqlDataReader["LastLogin"] is DBNull) ? (DateTime)fetchedSqlDataReader["LastLogin"] : DateTime.Now,
                     Notebooks = notebookRepository.GetBy(
-                            new string[] { "UserID = @UserID" },
-                            new Dictionary<string, object>()
+                            new[] { "UserID = @UserID" },
+                            new Dictionary<string, object>
                             {
                                 {"@UserID", (int)fetchedSqlDataReader ["Id"] }
                             })
-                    .Select((el) => ((Notebook)el)).ToList()
+                    .Select(el => (Notebook)el).ToList()
                 };
 
                 usersList.Add(user);
@@ -139,7 +143,9 @@ namespace EvernoteCloneLibrary.Users
         {
             if (toInsert != null)
             {
-                if (string.IsNullOrWhiteSpace(toInsert.Username) || string.IsNullOrWhiteSpace(toInsert.Password) || toInsert.CreationDate == null)
+                if (string.IsNullOrWhiteSpace(toInsert.Username) || 
+                    string.IsNullOrWhiteSpace(toInsert.Password) || 
+                    toInsert.CreationDate == null)
                 {
                     return false;
                 }
@@ -178,7 +184,10 @@ namespace EvernoteCloneLibrary.Users
         {
             if (toUpdate != null)
             {
-                if (string.IsNullOrWhiteSpace(toUpdate.FirstName) || string.IsNullOrWhiteSpace(toUpdate.LastName) || string.IsNullOrWhiteSpace(toUpdate.Password) || string.IsNullOrWhiteSpace(toUpdate.Username))
+                if (string.IsNullOrWhiteSpace(toUpdate.FirstName) || 
+                    string.IsNullOrWhiteSpace(toUpdate.LastName) || 
+                    string.IsNullOrWhiteSpace(toUpdate.Password) || 
+                    string.IsNullOrWhiteSpace(toUpdate.Username))
                 {
                     return false;
                 }
@@ -186,15 +195,16 @@ namespace EvernoteCloneLibrary.Users
                 Dictionary<string, object> parameters = GenerateQueryParameters(toUpdate);
                 parameters.Add("@Id", toUpdate.Id);
 
-                return DataAccess.Instance.Execute("UPDATE [User] SET [FirstName] = @FirstName, [LastName] = @LastName, "
-                    + "[Username] = @Username, [Password] = @Password WHERE Id = @Id", parameters);
+                return DataAccess.Instance.Execute(
+                    "UPDATE [User] SET [FirstName] = @FirstName, [LastName] = @LastName, [Username] = @Username, [Password] = @Password WHERE Id = @Id", 
+                    parameters);
             }
 
             return false;
         }
 
         /// <summary>
-        /// Checkes whether the username or password fields are filled, if not return nothing.
+        /// Checks whether the username or password fields are filled, if not return nothing.
         /// If they are both filled, username and password credentials will be compared in the database.
         /// If the credentials are valid return the user.
         /// </summary>
@@ -202,7 +212,6 @@ namespace EvernoteCloneLibrary.Users
         /// <returns></returns>
         public UserModel Login(UserModel userToLogin)
         {
-
             // Checks if both one of them fields are empty or not.
             if (userToLogin != null)
             {
@@ -213,7 +222,7 @@ namespace EvernoteCloneLibrary.Users
 
                 // If both fields are filled compares the credentials with the database and returns user if they are correct.
                 Dictionary<string, object> parameters = GenerateLoginParameters(userToLogin);
-                var user = this.GetBy(new[] { "Username = @Username", "Password = @Password" }, parameters).ToList();
+                var user = GetBy(new[] { "Username = @Username", "Password = @Password" }, parameters).ToList();
 
                 if (user.Count > 0)
                 {
@@ -239,12 +248,14 @@ namespace EvernoteCloneLibrary.Users
 
             // Checks the inserted username with usernames in database. 
             // If it exist in the database it returns that user.
-            Dictionary<string, object> parameters = new Dictionary<string, object>()
+            Dictionary<string, object> parameters = new Dictionary<string, object>
             {
                 { "@Username", username }
 
             };
-            var user = this.GetBy(new[] { "Username = @Username" }, parameters).ToList();
+            
+            List<UserModel> user = 
+                GetBy(new[] { "Username = @Username" }, parameters).ToList();
 
             if (user.Count > 0)
             {

@@ -87,9 +87,9 @@ namespace EvernoteCloneGUI.ViewModels
                             {
                                 returnedNotes.Add(note);
                             }
-                            else if (note.Tags != null)
+                            else if (note.Labels != null)
                             {
-                                foreach (string tag in note.Tags)
+                                foreach (string tag in note.Labels)
                                 {
                                     if (tag.ToLower().Contains(searchFor))
                                     {

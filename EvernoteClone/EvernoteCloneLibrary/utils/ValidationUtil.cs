@@ -10,6 +10,7 @@ namespace EvernoteCloneLibrary.Utils
         /// <summary>
         /// Method to validate multiple objects with a specified validator
         /// </summary>
+        /// <param name="validator"></param>
         /// <param name="objects"></param>
         /// <returns></returns>
         private static bool ValidateMultiple(Func<object, bool> validator, params object[] objects)
@@ -19,6 +20,7 @@ namespace EvernoteCloneLibrary.Utils
             foreach (object obj in objects)
             {
                 bool outputResult = validator?.Invoke(obj) ?? false;
+                
                 if (!outputResult)
                 {
                     result = false;
