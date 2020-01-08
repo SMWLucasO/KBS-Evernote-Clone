@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace EvernoteCloneGUI.Helpers
 {
-    public class Utility
+    public class EmbeddedResourceUtility
     {
         /// <summary>
         /// Takes the full name of a resource and loads it in to a stream.
@@ -20,7 +20,7 @@ namespace EvernoteCloneGUI.Helpers
         }
 
         /// <summary>
-        /// Get the list of all emdedded resources in the assembly.
+        /// Get the list of all embedded resources in the assembly.
         /// </summary>
         /// <returns>An array of fully qualified resource names</returns>
         public static string[] GetEmbeddedResourceNames()

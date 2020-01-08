@@ -30,7 +30,11 @@ namespace EvernoteCloneGUI.ViewModels
     {
         #region Instance variables
         
+        /// <value>
+        /// This boolean indicates whether the screen is for a note that already exists.
+        /// </value>
         private readonly bool _loadNote;
+        
         private string _userInput = "";
 
         public StackPanel LabelsStackPanel { get; set; }
@@ -461,19 +465,9 @@ namespace EvernoteCloneGUI.ViewModels
 
         #region Toolbar events
 
-        public void OnInsertCodeBlocks()
-        {
-            RichTextEditorCommands.InsertCodeBlocks(_textEditor);
-        }
-
         public void OnInsertTable()
         {
             RichTextEditorCommands.InsertTable(_textEditor);
-        }
-
-        public void OnInsertHorizontalLine()
-        {
-            RichTextEditorCommands.InsertHorizontalLine(_textEditor);
         }
 
         public void OnToggleStrikethrough()
