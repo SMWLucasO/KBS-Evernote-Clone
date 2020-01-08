@@ -2,8 +2,11 @@
 using System.Data;
 using EvernoteCloneLibrary.Database;
 
-namespace EvernoteCloneLibrary
+namespace EvernoteCloneLibrary.Utils
 {
+    /// <summary>
+    /// This downloads the language from the database
+    /// </summary>
     public static class LanguageLoader
     {
         public static SortedList<string, string> DownloadLanguage(string langCode)
@@ -12,7 +15,9 @@ namespace EvernoteCloneLibrary
             DataTable download = DataAccess.Instance.GetLanguageTable(langCode);
 
             foreach (DataRow row in download.AsEnumerable())
+            {
                 result.Add(row["Keyword"].ToString(), row["Translation"].ToString());
+            }
 
             return result;
         }

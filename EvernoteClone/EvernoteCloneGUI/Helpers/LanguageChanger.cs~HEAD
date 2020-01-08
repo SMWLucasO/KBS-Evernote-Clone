@@ -1,15 +1,14 @@
 ﻿﻿using System.Collections.Generic;
 using System.Globalization;
-using EvernoteCloneLibrary.Utils;
+using EvernoteCloneGUI.Helpers;
+using EvernoteCloneLibrary;
+ using EvernoteCloneLibrary.Utils;
 
- namespace EvernoteCloneGUI.Helpers
+ namespace EvernoteCloneGUI
 {
     public static class LanguageChanger
     {
-        /// <summary>
-        /// Load the language specified by the LastSelectedLanguage setting
-        /// </summary>
-        public static void ChangeLanguage()
+        public static void UpdateResxFile()
         {
             SortedList<string, string> downloadedLanguages = 
                 LanguageLoader.DownloadLanguage(Properties.Settings.Default.LastSelectedLanguage);

@@ -12,7 +12,7 @@ namespace EvernoteCloneGUI.ViewModels.Settings
         #region Properties
 
         /// <value>
-        /// The property that is used to update the background of the grid of each view that inherits from this class
+        /// The property that is used to update the background of the grid of each view that inherits from this class.
         /// </value>
         public string BackgroundColorSettings
         {

@@ -18,12 +18,22 @@ namespace EvernoteCloneGUI.ViewModels.Popups
     public class NotebookPickerViewModel : Screen
     {
 
+        /// <value>
+        /// The note which will be moved to the new notebook if everything goes through.
+        /// </value>
         public Note PotentialMoveCandidate { get; set; }
 
         #region  databound properties
 
+        /// <value>
+        /// The notebooks which can be chosen within the viewmodel
+        /// </value>
         private List<Notebook> _notebooks;
 
+        /// <value>
+        /// Gets and sets the notebooks which can be chosen within the viewmodel.
+        /// Calls the NotifyOfPropertyChange event when set to a new value, to update the ComboBox which it is bound to.
+        /// </value>
         public List<Notebook> Notebooks
         {
             get
@@ -38,6 +48,9 @@ namespace EvernoteCloneGUI.ViewModels.Popups
             }
         }
 
+        /// <value>
+        /// The currently selected notebook within the NotebookPicker.
+        /// </value>
         public Notebook SelectedNotebook { get; set; }
         
         

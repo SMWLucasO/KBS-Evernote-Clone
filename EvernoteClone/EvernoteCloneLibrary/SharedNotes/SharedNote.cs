@@ -4,6 +4,9 @@ using EvernoteCloneLibrary.Constants;
 
 namespace EvernoteCloneLibrary.SharedNotes
 {
+    /// <summary>
+    /// This handles all logic for SharedNotes
+    /// </summary>
     public class SharedNote : SharedNoteModel
     {
         /// <summary>
@@ -16,11 +19,12 @@ namespace EvernoteCloneLibrary.SharedNotes
         {
             // Gets the two ID of a note and user and inserts them into the database.
             SharedNoteRepository sharedNoteRepository = new SharedNoteRepository();
-            SharedNoteModel sharedNoteModel = new SharedNoteModel()
+            SharedNoteModel sharedNoteModel = new SharedNoteModel
             {
                 NoteId = noteId,
                 UserId = userId
             };
+            
             return sharedNoteRepository.Insert(sharedNoteModel);
         }
 
@@ -45,11 +49,12 @@ namespace EvernoteCloneLibrary.SharedNotes
         {
             // Gets the two ID of a note and user and inserts them into the database.
             SharedNoteRepository sharedNoteRepository = new SharedNoteRepository();
-            SharedNoteModel sharedNoteModel = new SharedNoteModel()
+            SharedNoteModel sharedNoteModel = new SharedNoteModel
             {
                 NoteId = noteId,
                 UserId = userId
             };
+            
             return sharedNoteRepository.Delete(sharedNoteModel);
         }
         
@@ -71,6 +76,7 @@ namespace EvernoteCloneLibrary.SharedNotes
         public static List<SharedNote> GetAllSharedNotes() =>
             new SharedNoteRepository().GetBy(
                 new[] { "UserID = @UserID" },
-                new Dictionary<string, object> { { "@UserID", Constant.User.Id } }).Cast<SharedNote>().ToList();
+                new Dictionary<string, object> { { "@UserID", Constant.User.Id } }
+                ).Cast<SharedNote>().ToList();
     }
 }

@@ -201,6 +201,9 @@ namespace EvernoteCloneGUI.ViewModels
             NotifyOfPropertyChange(nameof(LanguageButtonBackgroundColor));
         }
 
+        /// <summary>
+        /// Retrieves the new colors from the settings and applies the changes.
+        /// </summary>
         public void UpdateLayout()
         {
             EditorButtonBackgroundColor = SettingsConstant.BUTTON_BACKGROUND_COLOR;

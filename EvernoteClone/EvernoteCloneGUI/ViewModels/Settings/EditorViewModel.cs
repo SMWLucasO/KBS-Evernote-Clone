@@ -43,8 +43,10 @@ namespace EvernoteCloneGUI.ViewModels.Settings
         {
             // Load all the fonts into the databound font list.
             foreach (FontFamily font in FontFamily.Families)
+            {
                 ComboBoxHelper.AddItemToComboBox(ref DefaultFont, font.Name, nameof(SettingsConstant.DEFAULT_FONT));
-            
+            }
+
             // If used offline (or if something else happens) and no font is added, add standard font
             ComboBoxHelper.AddItemToComboBox(ref DefaultFont, nameof(SettingsConstant.DEFAULT_FONT));
             
@@ -59,8 +61,10 @@ namespace EvernoteCloneGUI.ViewModels.Settings
         {
             // Load all the fonts into the databound font size list.
             for (int i = 1; i < 200; i++)
+            {
                 ComboBoxHelper.AddItemToComboBox(ref DefaultFontSize, i, nameof(SettingsConstant.DEFAULT_FONT_SIZE));
-            
+            }
+
             // If used offline (or if something else happens) and no font is added, add standard font
             ComboBoxHelper.AddItemToComboBox(ref DefaultFontSize, nameof(SettingsConstant.DEFAULT_FONT_SIZE));
             

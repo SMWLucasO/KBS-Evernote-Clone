@@ -9,6 +9,7 @@ using System.Dynamic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using EvernoteCloneGUI.Helpers;
 using EvernoteCloneGUI.ViewModels.Controls;
 using EvernoteCloneLibrary.Constants;
 using EvernoteCloneLibrary.SharedNotes;
@@ -127,6 +128,9 @@ namespace EvernoteCloneGUI.ViewModels
             }
         }
 
+        /// <summary>
+        /// Load all shared notes from the database and insert it into the SharedNotebook.
+        /// </summary>
         public void LoadSharedNotebook()
         {
             SharedNotebook = new Notebook
@@ -166,7 +170,7 @@ namespace EvernoteCloneGUI.ViewModels
         {
             if (Notebooks.Count > 0)
             {
-                SelectedNotebook = Notebooks.Where((notebook) => !(notebook.IsDeleted)).FirstOrDefault();
+                SelectedNotebook = Notebooks.FirstOrDefault(notebook => !(notebook.IsDeleted));
             }
         }
 
@@ -386,13 +390,17 @@ namespace EvernoteCloneGUI.ViewModels
             Constant.User = LoginUser;
 
             if (!suppressSynchronize)
+            {
                 Synchronize();
+            }
             else
+            {
                 LoadSettings();
-            
+            }
+
             Properties.Settings.Default.LastSelectedLanguage = SettingsConstant.LANGUAGE;
             Properties.Settings.Default.Save();
-            LanguageChanger.UpdateResxFile();
+            LanguageChanger.ChangeLanguage();
         }
 
         /// <summary>
@@ -482,7 +490,7 @@ namespace EvernoteCloneGUI.ViewModels
         /// </summary>
         protected override void OnActivate()
         {
-            LanguageChanger.UpdateResxFile();
+            LanguageChanger.ChangeLanguage();
             
             // Show login popup
             OpenLoginPopupView(true);
@@ -511,6 +519,10 @@ namespace EvernoteCloneGUI.ViewModels
             NoteFeverTreeViewModel.TreeViewSelectedItemChanged(routedPropertyChangedEventArgs);
         }
 
+        /// <summary>
+        /// When deactivating the application, synchronize the application.
+        /// </summary>
+        /// <param name="close">boolean determining if the application should close</param>
         protected override void OnDeactivate(bool close)
         {
             base.OnDeactivate(close);
@@ -524,12 +536,18 @@ namespace EvernoteCloneGUI.ViewModels
 
         #region HelperMethods
 
+        /// <summary>
+        /// Method for updating the button background and accent color.
+        /// </summary>
         public void UpdateColors()
         {
             ButtonBackgroundColor = SettingsConstant.BUTTON_BACKGROUND_COLOR;
             ButtonAccentColor = SettingsConstant.ACCENT_COLOR;
         }
 
+        /// <summary>
+        /// Opens the setting popup
+        /// </summary>
         public void LoadSettings()
         {
             // Load settings (if exist)

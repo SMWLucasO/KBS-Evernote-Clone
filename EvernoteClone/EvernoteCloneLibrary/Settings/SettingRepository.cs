@@ -27,8 +27,8 @@ namespace EvernoteCloneLibrary.Settings
                 Dictionary<string, object> parameters = GenerateQueryParameters(toInsert);
 
                 int id = DataAccess.Instance.ExecuteAndReturnId(
-                    "INSERT INTO [Setting] ([UserID], [Keyword], [SettingValue])"
-                        + " VALUES (@UserID, @Keyword, @SettingValue)", parameters);
+                    "INSERT INTO [Setting] ([UserID], [Keyword], [SettingValue]) VALUES (@UserID, @Keyword, @SettingValue)", 
+                    parameters);
 
                 if (id != -1)
                 {
@@ -48,12 +48,12 @@ namespace EvernoteCloneLibrary.Settings
         /// <returns>an enumerable containing all the settings selected from the database.</returns>
         public IEnumerable<SettingModel> GetBy(string[] conditions, Dictionary<string, object> parameters)
         {
-            List<Settings.Setting> settings = new List<Settings.Setting>();
+            List<Setting> settings = new List<Setting>();
             SqlDataReader fetchedSqlDataReader = DataAccess.Instance.ExecuteAndRead("Setting", conditions, parameters);
 
             while (fetchedSqlDataReader.Read())
             {
-                Settings.Setting setting = new Settings.Setting
+                Setting setting = new Setting
                 {
                     Id = (int)fetchedSqlDataReader["Id"],
                     UserId = (int)fetchedSqlDataReader["UserID"],
@@ -89,8 +89,9 @@ namespace EvernoteCloneLibrary.Settings
                 
                 Dictionary<string, object> parameters = GenerateQueryParameters(toUpdate);
 
-                return DataAccess.Instance.Execute("UPDATE [Setting] SET [SettingValue] = @SettingValue "
-                                                   + " WHERE UserID = @UserID AND Keyword = @Keyword", parameters);
+                return DataAccess.Instance.Execute(
+                    "UPDATE [Setting] SET [SettingValue] = @SettingValue WHERE UserID = @UserID AND Keyword = @Keyword", 
+                    parameters);
             }
             return false;
         }
@@ -104,12 +105,14 @@ namespace EvernoteCloneLibrary.Settings
         {
             if (toDelete != null)
             {
-                Dictionary<string, object> parameters = new Dictionary<string, object>()
+                Dictionary<string, object> parameters = new Dictionary<string, object>
                 {
                     { "@Id", toDelete.Id }
                 };
 
-                return DataAccess.Instance.Execute("DELETE FROM [Setting] WHERE Id = @Id", parameters);
+                return DataAccess.Instance.Execute(
+                    "DELETE FROM [Setting] WHERE Id = @Id", 
+                    parameters);
             }
             return false;
         }

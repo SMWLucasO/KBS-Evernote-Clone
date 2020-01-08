@@ -25,7 +25,7 @@ namespace EvernoteCloneGUI.Helpers
             );
         
         /// <summary>
-        /// Returns if the ComboBoxWidth is set according to its items
+        /// Returns whether the ComboBoxWidth is set according to its items
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>

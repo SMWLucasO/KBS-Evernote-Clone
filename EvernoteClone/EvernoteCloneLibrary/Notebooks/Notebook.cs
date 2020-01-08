@@ -12,16 +12,41 @@ namespace EvernoteCloneLibrary.Notebooks
 {
     public class Notebook : NotebookModel, IParseable
     {
+        #region Variables
+        
+        /// <value>
+        /// This contains the notebook title
+        /// </value>
         private string _title;
+        
+        #endregion
 
-        public List<INote> Notes { get; set; }
+        #region Properties
+        
+        /// <value>
+        /// All the notes that are in this notebook
+        /// </value>
+        public List<INote> Notes { get; set; } = new List<INote>();
 
+        /// <value>
+        /// The path or location of the notebook
+        /// </value>
         public NotebookLocation Path { get; set; } = new NotebookLocation();
 
+        /// <value>
+        /// The name that is given to this notebook as a file name (to save the notebook locally)
+        /// </value>
         public string FsName { get; set; }
 
+        /// <value>
+        /// An indicator if this notebook is the owner of the notes
+        /// </value>
         public bool IsNotNoteOwner { get; set; }
 
+        /// <value>
+        /// An indicator if this notebook is a notebook that contains all shared notes
+        /// This is used when notes are moved from this notebook to another notebook
+        /// </value>
         public bool IsSharedNotebook { get; set; }
 
         /// <summary>
@@ -41,12 +66,11 @@ namespace EvernoteCloneLibrary.Notebooks
             }
             set => _title = string.IsNullOrWhiteSpace(value) ? SettingsConstant.DEFAULT_NOTEBOOK_TITLE : value;
         }
-
-        public Notebook() =>
-            Notes = new List<INote>();
+        
+        #endregion
 
         /// <summary>
-        /// Load all the notebooks belonging to the specified user.
+        /// Load all the notebooks belonging to the specific user.
         /// </summary>
         /// <param name="withoutSynchronize"></param>
         /// <returns></returns>
@@ -199,14 +223,14 @@ namespace EvernoteCloneLibrary.Notebooks
         /// <summary>
         /// Returns a list of all notebooks from the logged in user.
         /// </summary>
-        /// <returns>List<Notebook></returns>
+        /// <returns>List<Notebook/></returns>
         public static List<Notebook> GetAllNotebooksFromDatabase()
         {
             NotebookRepository notebookRepository = new NotebookRepository();
             return notebookRepository.GetBy(
-                new string[] { "UserID = @UserID" },
-                new Dictionary<string, object>() { { "@UserID", Constant.User.Id } }
-            ).Select((el) => ((Notebook)el)).ToList();
+                new[] { "UserID = @UserID" },
+                new Dictionary<string, object> { { "@UserID", Constant.User.Id } }
+            ).Select(el => (Notebook)el).ToList();
         }
 
         /// <summary>
@@ -216,6 +240,7 @@ namespace EvernoteCloneLibrary.Notebooks
         /// <param name="fsNotebook">Notebook loaded from filesystem</param>
         /// <param name="dbNotebook">Notebook loaded from database</param>
         /// <param name="listToAddTo">The list that the notebook should be added to</param>
+        // ReSharper disable once UnusedMember.Local
         private static void LoadNotebook(Notebook fsNotebook, Notebook dbNotebook, List<Notebook> listToAddTo)
         {
             // If they both have the same Id, we load the last updated one.
@@ -295,7 +320,6 @@ namespace EvernoteCloneLibrary.Notebooks
             LastUpdated = DateTime.Now;
 
             List<int> savedNotebookIDs = new List<int>();
-            bool storedLocally;
 
             if (IsNotNoteOwner)
             {
@@ -304,17 +328,13 @@ namespace EvernoteCloneLibrary.Notebooks
                     if (note.NoteOwner != null && !(savedNotebookIDs.Contains(note.NoteOwner.Id)))
                     {
                         // should never happen, but just in case (would cause StackOverFlow)
-                        if (!(note.NoteOwner.Equals(this)))
+                        if (!note.NoteOwner.Equals(this))
                         {
-                            storedLocally = note.NoteOwner.Save();
+                            note.NoteOwner.Save();
                             savedNotebookIDs.Add(note.NoteOwner.Id);
                         }
                     }
                 }
-            }
-            else
-            {
-                storedLocally = UpdateLocalStorage(this);
             }
 
             bool storedInTheCloud = false;
@@ -331,7 +351,7 @@ namespace EvernoteCloneLibrary.Notebooks
                     savedNotebookIDs.Clear();
                     foreach (Note note in Notes.Cast<Note>())
                     {
-                        if (note.NoteOwner != null && !(savedNotebookIDs.Contains(note.NoteOwner.Id)))
+                        if (note.NoteOwner != null && !savedNotebookIDs.Contains(note.NoteOwner.Id))
                         {
                             // You should only be allowed to edit (not create new) notes if the notebook isn't the owner of the given notes.
                             if (note.NoteOwner.Id != -1)
@@ -377,9 +397,8 @@ namespace EvernoteCloneLibrary.Notebooks
                     }
                 }
             }
-            storedLocally = UpdateLocalStorage(this);
 
-            return storedInTheCloud || storedLocally;
+            return storedInTheCloud || UpdateLocalStorage(this);
         }
 
         /// <summary>
@@ -394,7 +413,7 @@ namespace EvernoteCloneLibrary.Notebooks
             }
 
             // Delete the notebook file from local storage.
-            string path = StaticMethods.GetNotebookStoragePath() + $"/{this.FsName}.enex";
+            string path = StaticMethods.GetNotebookStoragePath() + $"/{FsName}.enex";
             if (File.Exists(path))
             {
                 File.Delete(path);
@@ -416,7 +435,9 @@ namespace EvernoteCloneLibrary.Notebooks
                     notebook.FsName = $"{Guid.NewGuid()}";
                 }
 
-                return XmlExporter.Export(StaticMethods.GetNotebookStoragePath(), $@"{notebook.FsName}.enex", notebook);
+                return XmlExporter.Export(
+                    StaticMethods.GetNotebookStoragePath(), 
+                    $@"{notebook.FsName}.enex", notebook);
             }
             return false;
         }
@@ -459,12 +480,17 @@ namespace EvernoteCloneLibrary.Notebooks
         public override bool Equals(object obj)
         {
             if (obj == null)
+            {
                 return false;
+            }
 
             if (obj is Notebook notebook)
             {
                 if (notebook.Id != -1)
+                {
                     return notebook.Id == Id;
+                }
+                
                 return notebook.Path.Path == Path.Path && notebook.Title == Title;
             }
             return false;
@@ -476,11 +502,14 @@ namespace EvernoteCloneLibrary.Notebooks
         /// <returns>An integer equal to the id of the notebook</returns>
         public override int GetHashCode()
         {
+            // ReSharper disable once NonReadonlyMemberInGetHashCode
             if (Id != -1)
             {
+                // ReSharper disable once NonReadonlyMemberInGetHashCode
                 return Id;
             }
 
+            // ReSharper disable once BaseObjectGetHashCodeCallInGetHashCode
             return base.GetHashCode();
         }
         #endregion
@@ -491,16 +520,16 @@ namespace EvernoteCloneLibrary.Notebooks
         /// <returns></returns>
         public string[] ToXmlRepresentation()
         {
-            List<string> xmlRepresentation = new List<string>()
+            List<string> xmlRepresentation = new List<string>
             {
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
                 "<!DOCTYPE en-export SYSTEM \"http://xml.evernote.com/pub/evernote-export2.dtd\">",
-                $"<en-export export-date=\"{DateTime.Now.ToString("yyyyMMdd")}T{DateTime.Now.ToString("HHmmss")}Z\"",
+                $"<en-export export-date=\"{DateTime.Now:yyyyMMdd}T{DateTime.Now:HHmmss}Z\"",
                 $" application=\"EvernoteClone/Windows\" version=\"6.x\">",
                 $"<title>{Title}</title>",
                 $"<deleted>{IsDeleted}</deleted>",
-                $"<created>{CreationDate.ToString("yyyyMMdd")}T{CreationDate.ToString("HHmmss")}Z</created>",
-                $"<updated>{LastUpdated.ToString("yyyyMMdd")}T{LastUpdated.ToString("HHmmss")}Z</updated>",
+                $"<created>{CreationDate:yyyyMMdd}T{CreationDate:HHmmss}Z</created>",
+                $"<updated>{LastUpdated:yyyyMMdd}T{LastUpdated:HHmmss}Z</updated>",
                 $"<id>{Id}</id>",
                 $"<path-id>{Path.Id}</path-id>",
                 $"<path>{Path.Path}</path>",

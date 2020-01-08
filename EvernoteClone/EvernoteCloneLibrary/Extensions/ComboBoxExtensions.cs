@@ -7,6 +7,9 @@ using System.Windows.Controls.Primitives;
 
 namespace EvernoteCloneLibrary.Extensions
 {
+    /// <summary>
+    /// This class contains all Extension methods for ComboBoxes
+    /// </summary>
     public static class ComboBoxExtensions
     {
         /// <summary>
@@ -29,24 +32,30 @@ namespace EvernoteCloneLibrary.Extensions
                     double width = 0;
                     foreach (var item in comboBox.Items)
                     {
-                        ComboBoxItem comboBoxItem = comboBox.ItemContainerGenerator.ContainerFromItem(item) as ComboBoxItem;
-                        comboBoxItem.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-                        if (comboBoxItem.DesiredSize.Width > width)
+                        if (comboBox.ItemContainerGenerator.ContainerFromItem(item) is ComboBoxItem comboBoxItem)
                         {
-                            width = comboBoxItem.DesiredSize.Width;
+                            comboBoxItem.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+                            if (comboBoxItem.DesiredSize.Width > width)
+                            {
+                                width = comboBoxItem.DesiredSize.Width;
+                            }
                         }
                     }
+                    
                     comboBox.Width = comboBoxWidth + width;
                     // Remove the event handler. 
                     comboBox.ItemContainerGenerator.StatusChanged -= eventHandler;
                     comboBox.DropDownOpened -= eventHandler;
-                    provider.Collapse();
+
+                    provider?.Collapse();
                 }
             });
+            
             comboBox.ItemContainerGenerator.StatusChanged += eventHandler;
             comboBox.DropDownOpened += eventHandler;
+            
             // Expand the comboBox to generate all its ComboBoxItem's. 
-            provider.Expand();
+            provider?.Expand();
         }
     }
 }

@@ -11,10 +11,10 @@ namespace EvernoteCloneGUI.ViewModels.Commands.KeyGestures
     {
         public NewNoteViewModel NewNoteViewModel { get; set; }
         
+        public event EventHandler CanExecuteChanged;
+        
         public bool CanExecute(object parameter)
-        {
-            return true;
-        }
+            => true;
 
         /// <summary>
         /// Method which is called when the key gesture is executed, sets the text color. (if gone through with)
@@ -25,6 +25,5 @@ namespace EvernoteCloneGUI.ViewModels.Commands.KeyGestures
             NewNoteViewModel.OnSetTextColor();
         }
 
-        public event EventHandler CanExecuteChanged;
     }
 }
