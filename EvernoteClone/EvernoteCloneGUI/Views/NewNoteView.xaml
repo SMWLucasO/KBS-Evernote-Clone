@@ -80,8 +80,6 @@
                     <Button.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="{local:Loc NewNoteViewInsertTable}" cal:Message.Attach="[Event Click] = [OnInsertTable]" />
-                            <MenuItem Header="{local:Loc NewNoteViewInsertHorizontalLine}" cal:Message.Attach="[Event Click] = [OnInsertHorizontalLine]" />
-                            <MenuItem Header="{local:Loc NewNoteViewInsertCode}" cal:Message.Attach="[Event Click] = [OnInsertCodeBlocks]"></MenuItem>
                             <MenuItem Header="{local:Loc NewNoteViewInsertOrderedList}" Command="EditingCommands.ToggleBullets"></MenuItem>
                             <MenuItem Header="{local:Loc NewNoteViewInsertUnorderedList}" Command="EditingCommands.ToggleNumbering"></MenuItem>
                         </ContextMenu>

@@ -1,12 +1,10 @@
 ﻿using EvernoteCloneLibrary.Database;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace EvernoteCloneLibrary.Notebooks.Notes.Labels
+namespace EvernoteCloneLibrary.Labels
 {
+    /// <summary>
+    /// The class representation of the 'LabelModel' table.
+    /// </summary>
     public class LabelModel : IModel
     {
         public int Id { get; set; } = -1;

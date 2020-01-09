@@ -11,10 +11,10 @@ namespace EvernoteCloneGUI.ViewModels.Commands.KeyGestures
     {
         public NewNoteViewModel NewNoteViewModel { get; set; }
         
+        public event EventHandler CanExecuteChanged;
+
         public bool CanExecute(object parameter)
-        {
-            return true;
-        }
+            => true;
 
         /// <summary>
         /// Method which is called when the key gesture is executed, saves the note.
@@ -24,7 +24,5 @@ namespace EvernoteCloneGUI.ViewModels.Commands.KeyGestures
         {
             NewNoteViewModel.NotifyUserOfSave();
         }
-
-        public event EventHandler CanExecuteChanged;
     }
 }

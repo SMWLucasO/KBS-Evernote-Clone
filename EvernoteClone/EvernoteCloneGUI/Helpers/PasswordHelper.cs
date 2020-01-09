@@ -3,6 +3,9 @@ using System.Windows.Controls;
 
 namespace EvernoteCloneGUI.Helpers
 {
+    /// <summary>
+    /// DependencyProperty for making the PasswordBox bindable using MVVM.
+    /// </summary>
     public static class PasswordHelper
     {
         /// <summary>

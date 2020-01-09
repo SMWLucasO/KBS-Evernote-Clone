@@ -1,5 +1,8 @@
 ﻿namespace EvernoteCloneLibrary.Constants
 {
+    /// <summary>
+    /// This class contains all info needed for Google authentication
+    /// </summary>
     public class GoogleConstant
     {
         /// <value>

@@ -27,8 +27,8 @@ namespace EvernoteCloneLibrary.Settings.Locales
                 Dictionary<string, object> parameters = GenerateQueryParameters(toInsert);
 
                 int id = DataAccess.Instance.ExecuteAndReturnId(
-                    "INSERT INTO [Locale] ([Locale], [Language])"
-                        + " VALUES (@Locale, @Language)", parameters);
+                    "INSERT INTO [Locale] ([Locale], [Language]) VALUES (@Locale, @Language)", 
+                    parameters);
 
                 if (id != -1)
                 {
@@ -119,8 +119,9 @@ namespace EvernoteCloneLibrary.Settings.Locales
                 Dictionary<string, object> parameters = GenerateQueryParameters(toUpdate);
                 parameters.Add("@Id", toUpdate.Id);
 
-                return DataAccess.Instance.Execute("UPDATE [Locale] SET [Language] = @Language, [Locale] = @Locale "
-                    + "WHERE Id = @Id", parameters);
+                return DataAccess.Instance.Execute(
+                    "UPDATE [Locale] SET [Language] = @Language, [Locale] = @Locale WHERE Id = @Id", 
+                    parameters);
             }
             return false;
         }
@@ -134,12 +135,14 @@ namespace EvernoteCloneLibrary.Settings.Locales
         {
             if (toDelete != null)
             {
-                Dictionary<string, object> parameters = new Dictionary<string, object>()
+                Dictionary<string, object> parameters = new Dictionary<string, object>
                 {
                     { "@Id", toDelete.Id }
                 };
 
-                return DataAccess.Instance.Execute("DELETE FROM [Locale] WHERE Id = @Id", parameters);
+                return DataAccess.Instance.Execute(
+                    "DELETE FROM [Locale] WHERE Id = @Id", 
+                    parameters);
             }
             return false;
         }

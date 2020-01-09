@@ -32,7 +32,8 @@ namespace EvernoteCloneLibrary.Notebooks
 
                 int id = DataAccess.Instance.ExecuteAndReturnId(
                     "INSERT INTO [Notebook] ([UserID], [LocationID], [Title], [CreationDate], [LastUpdated], [Deleted])"
-                        + " VALUES (@UserID, @LocationID, @Title, @CreationDate, @LastUpdated, @Deleted)", parameters);
+                        + " VALUES (@UserID, @LocationID, @Title, @CreationDate, @LastUpdated, @Deleted)", 
+                    parameters);
 
                 if (id != -1)
                 {
@@ -60,7 +61,7 @@ namespace EvernoteCloneLibrary.Notebooks
                 NoteRepository noteRepository = new NoteRepository();
                 NotebookLocationRepository notebookLocationRepository = new NotebookLocationRepository();
 
-                Notebook notebook = new Notebook()
+                Notebook notebook = new Notebook
                 {
                     Id = (int)fetchedSqlDataReader["Id"],
                     LocationId = (int)fetchedSqlDataReader["LocationID"],
@@ -73,8 +74,8 @@ namespace EvernoteCloneLibrary.Notebooks
                 };
 
                 foreach (NoteModel model in noteRepository.GetBy(
-                            new string[] { "NotebookID = @Id" },
-                            new Dictionary<string, object>() {
+                            new[] { "NotebookID = @Id" },
+                            new Dictionary<string, object> {
                                 { "@Id", (int) fetchedSqlDataReader["Id"] }
                             }))
                 {
@@ -82,13 +83,11 @@ namespace EvernoteCloneLibrary.Notebooks
                 }
 
                 foreach (NotebookLocationModel model in notebookLocationRepository.GetBy(
-                            new string[] { "Id = @Id" },
-                            new Dictionary<string, object>() {
-                                { "@Id", (int) fetchedSqlDataReader["LocationID"] }
-                            }
+                            new[] { "Id = @Id" },
+                            new Dictionary<string, object> { { "@Id", (int) fetchedSqlDataReader["LocationID"] } }
                         ))
                 {
-                    notebook.Path = new NotebookLocation()
+                    notebook.Path = new NotebookLocation
                     {
                         Id = model.Id,
                         Path = model.Path
@@ -98,7 +97,7 @@ namespace EvernoteCloneLibrary.Notebooks
                 }
 
                 // Make the notebook known to the note
-                notebook.Notes.ForEach((el) => ((Note)el).NoteOwner = notebook);
+                notebook.Notes.ForEach(el => ((Note)el).NoteOwner = notebook);
 
                 // Add the generated notebook with its notes to the list to be returned.
                 generatedNotebooks.Add(notebook);
@@ -129,8 +128,10 @@ namespace EvernoteCloneLibrary.Notebooks
                 Dictionary<string, object> parameters = GenerateQueryParameters(toUpdate);
                 parameters.Add("@Id", toUpdate.Id);
 
-                return DataAccess.Instance.Execute("UPDATE [Notebook] SET [UserID] = @UserID, [LocationID] = @LocationID, "
-                    + "[Title] = @Title, [CreationDate] = @CreationDate, [LastUpdated] = @LastUpdated, [Deleted] = @Deleted WHERE Id = @Id", parameters);
+                return DataAccess.Instance.Execute(
+                    "UPDATE [Notebook] SET [UserID] = @UserID, [LocationID] = @LocationID, "
+                            + "[Title] = @Title, [CreationDate] = @CreationDate, [LastUpdated] = @LastUpdated, [Deleted] = @Deleted WHERE Id = @Id", 
+                    parameters);
             }
             return false;
         }
@@ -144,12 +145,14 @@ namespace EvernoteCloneLibrary.Notebooks
         {
             if (toDelete != null)
             {
-                Dictionary<string, object> parameters = new Dictionary<string, object>()
+                Dictionary<string, object> parameters = new Dictionary<string, object>
                 {
                     { "@Id", toDelete.Id }
                 };
 
-                return DataAccess.Instance.Execute("DELETE FROM [Notebook] WHERE Id = @Id", parameters);
+                return DataAccess.Instance.Execute(
+                    "DELETE FROM [Notebook] WHERE Id = @Id", 
+                    parameters);
             }
             return false;
         }
@@ -163,7 +166,7 @@ namespace EvernoteCloneLibrary.Notebooks
         {
             if (toExtractFrom != null)
             {
-                return new Dictionary<string, object>()
+                return new Dictionary<string, object>
                 {
                     { "@UserID", toExtractFrom.UserId },
                     { "@LocationID", toExtractFrom.LocationId },

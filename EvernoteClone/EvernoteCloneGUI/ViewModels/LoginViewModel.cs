@@ -15,17 +15,20 @@ using EvernoteCloneLibrary.Constants;
 
 namespace EvernoteCloneGUI.ViewModels
 {
-    class LoginViewModel : Screen
+    /// <summary>
+    /// ViewModel which handles all interaction related to the LoginView
+    /// </summary>
+    public class LoginViewModel : Screen
     {
         #region Properties
         
         /// <value>
-        /// This contains the email
+        /// string containing the email inserted in the e-mail textbox field  
         /// </value>
         public string EmailLogin { get; set; }
         
         /// <value>
-        /// This contains the password
+        /// string containing the password inserted in the password textbox field
         /// </value>
         public string PasswordLogin { get; set; }
 
@@ -421,6 +424,7 @@ namespace EvernoteCloneGUI.ViewModels
         /// <summary>
         /// Returns URI-safe data with a given input length.
         /// </summary>
+        /// <param name="length">the length which the base64 url should be</param>
         public static string RandomDataBase64Url(uint length)
         {
             RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
@@ -432,6 +436,7 @@ namespace EvernoteCloneGUI.ViewModels
         /// <summary>
         /// Returns the SHA256 hash of the input string.
         /// </summary>
+        /// <param name="inputString">The input to be hashed</param>
         public static byte[] Sha256(string inputString)
         {
             byte[] bytes = Encoding.ASCII.GetBytes(inputString);
@@ -442,6 +447,7 @@ namespace EvernoteCloneGUI.ViewModels
         /// <summary>
         /// Base64url no-padding encodes the given input buffer.
         /// </summary>
+        /// <param name="buffer">bytes to be converted to a base64 url-encoded string</param>
         public static string Base64UrlencodeNoPadding(byte[] buffer)
         {
             string base64 = Convert.ToBase64String(buffer);
@@ -458,6 +464,7 @@ namespace EvernoteCloneGUI.ViewModels
         /// <summary>
         /// Returns a path where google logs should be stored
         /// </summary>
+        /// <param name="appendFileName">A boolean which indicates if the file name of the log storage path should also be returned together with the path</param>
         /// <returns>string</returns>
         private static string GetGoogleLogStoragePath(bool appendFileName = true)
         {
@@ -503,6 +510,9 @@ namespace EvernoteCloneGUI.ViewModels
 
         #region Events
 
+        /// <summary>
+        /// Prepare the interface colors on activation of the login view.
+        /// </summary>
         protected override void OnActivate()
         {
             ButtonBackgroundColor = SettingsConstant.BUTTON_BACKGROUND_COLOR;

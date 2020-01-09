@@ -14,12 +14,13 @@ using System.Windows.Documents;
 using System.Windows.Markup;
 using System.Xml;
 using System.Linq;
-using EvernoteCloneLibrary.Notebooks.Notes.Labels;
 using Microsoft.VisualBasic;
 using EvernoteCloneLibrary.Labels.NoteLabel;
 using System.Windows.Input;
 using EvernoteCloneGUI.ViewModels.Commands.KeyGestures;
 using EvernoteCloneLibrary.Constants;
+using EvernoteCloneLibrary.Labels;
+using Label = EvernoteCloneLibrary.Labels.Label;
 
 namespace EvernoteCloneGUI.ViewModels
 {
@@ -30,17 +31,20 @@ namespace EvernoteCloneGUI.ViewModels
     {
         #region Instance variables
         
+        /// <value>
+        /// This boolean indicates whether the screen is for a note that already exists.
+        /// </value>
         private readonly bool _loadNote;
-        private string _userInput = "";
 
         public StackPanel LabelsStackPanel { get; set; }
+        
         public void LabelsAdd()
         {    
-            _userInput = Interaction.InputBox(Properties.Settings.Default.NewNoteViewModelAddLabel, Properties.Settings.Default.NewNoteViewModelAddLabelTitle, _userInput);
+            string userInput = Interaction.InputBox(Properties.Settings.Default.NewNoteViewModelAddLabel, Properties.Settings.Default.NewNoteViewModelAddLabelTitle, "");
 
-            LabelModel labelModel = new LabelModel { Id = -1, Title = _userInput };
+            LabelModel labelModel = new LabelModel { Id = -1, Title = userInput };
 
-            if (string.IsNullOrWhiteSpace(_userInput))
+            if (string.IsNullOrWhiteSpace(userInput))
             {
                 MessageBox.Show(Properties.Settings.Default.FieldsCantBeEmpty, Properties.Settings.Default.MessageBoxTitleError,MessageBoxButton.OK, MessageBoxImage.Exclamation);
             } 
@@ -50,7 +54,7 @@ namespace EvernoteCloneGUI.ViewModels
             }
             else
             {
-                if (Note.Tags.Contains(_userInput))
+                if (Note.Labels.Contains(userInput))
                 {
                     MessageBox.Show(Properties.Settings.Default.NewNoteViewModelLabelAlreadyExists, Properties.Settings.Default.MessageBoxTitleWarning,MessageBoxButton.OK, MessageBoxImage.Exclamation);
                     return;
@@ -58,7 +62,7 @@ namespace EvernoteCloneGUI.ViewModels
 
                 if (Note.Id != -1)
                 {
-                    bool addLabel = new EvernoteCloneLibrary.Notebooks.Notes.Labels.Label().InsertLabel(labelModel, Note);
+                    bool addLabel = Label.InsertLabel(labelModel, Note);
 
                     if (addLabel)
                     {
@@ -198,12 +202,12 @@ namespace EvernoteCloneGUI.ViewModels
 
         public void LoadLabels()
         {
-            if (Note.Tags == null)
+            if (Note.Labels == null)
             {
-                Note.Tags = new List<string>();
+                Note.Labels = new List<string>();
             }
 
-            Note.Tags.Clear();
+            Note.Labels.Clear();
 
             List<Button> toRemove = new List<Button>();
             foreach (Button button in LabelsStackPanel.Children.Cast<Button>())
@@ -222,7 +226,7 @@ namespace EvernoteCloneGUI.ViewModels
             List<NoteLabelModel> noteLabels = NoteLabel.GetAllNoteLabelsFromNote(Note);
             foreach (NoteLabelModel noteLabel in noteLabels)
             {
-                LabelModel labelModel = new EvernoteCloneLibrary.Notebooks.Notes.Labels.Label().GetLabel(noteLabel.LabelId);
+                LabelModel labelModel = Label.GetLabel(noteLabel.LabelId);
 
                 Button label = new Button
                 {
@@ -237,7 +241,7 @@ namespace EvernoteCloneGUI.ViewModels
                 label.Click += LabelDelete;
                 LabelsStackPanel.Children.Add(label);
 
-                Note.Tags.Add(labelModel.Title);
+                Note.Labels.Add(labelModel.Title);
             }
         }
         
@@ -270,11 +274,12 @@ namespace EvernoteCloneGUI.ViewModels
         /// <summary>
         /// Method for storing the note into the database.
         /// </summary>
-        /// <returns></returns>
+        /// <param name="showDeletedNotes">boolean indicating whether the deleted notes should be shown afterward calling the save method.</param>
+        /// <returns>boolean indicating the saving was successful</returns>
         public bool SaveNote(bool showDeletedNotes = false)
         {
             // Set some standard values for now and save
-            Note.Author = Properties.Settings.Default.NewNoteViewModelNamelessAuthor; // If user is logged in, this should obv. be different!
+            Note.Author = Properties.Settings.Default.NewNoteViewModelNamelessAuthor;
             Note.Title = Title; // We don't have to check if it is empty or null, the property in note does that already
             Note.Save();
 
@@ -451,6 +456,11 @@ namespace EvernoteCloneGUI.ViewModels
 
         }
 
+        /// <summary>
+        /// Event for changing the size of the text editor when the application is resized.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public void OnSizeChanged(object sender, SizeChangedEventArgs e)
         {
             if (GetView() is UserControl userControl)
@@ -465,31 +475,33 @@ namespace EvernoteCloneGUI.ViewModels
 
         #region Toolbar events
 
-        public void OnInsertCodeBlocks()
-        {
-            RichTextEditorCommands.InsertCodeBlocks(_textEditor);
-        }
-
+        /// <summary>
+        /// Called when 'Insert table' is clicked in the text editor
+        /// </summary>
         public void OnInsertTable()
         {
             RichTextEditorCommands.InsertTable(_textEditor);
         }
 
-        public void OnInsertHorizontalLine()
-        {
-            RichTextEditorCommands.InsertHorizontalLine(_textEditor);
-        }
-
+        /// <summary>
+        /// Called when the 'strikethrough' button is clicked in the text editor
+        /// </summary>
         public void OnToggleStrikethrough()
         {
             RichTextEditorCommands.ToggleStrikethrough(_textEditor);
         }
 
+        /// <summary>
+        /// Called when the 'textcolor' button is clicked in the text editor
+        /// </summary>
         public void OnSetTextColor()
         {
             RichTextEditorCommands.SetTextColor(_textEditor);
         }
 
+        /// <summary>
+        /// Called when the 'marking' button is clicked in the text editor
+        /// </summary>
         public void OnToggleTextMarking()
         {
             RichTextEditorCommands.ToggleTextMarking(_textEditor);

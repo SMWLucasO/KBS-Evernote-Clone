@@ -10,10 +10,11 @@ namespace EvernoteCloneGUI.ViewModels.Commands.KeyGestures
     {
         public NewNoteViewModel NewNoteViewModel { get; set; }
         
+        public event EventHandler CanExecuteChanged;
+        
         public bool CanExecute(object parameter)
-        {
-            return true;
-        }
+            => true;
+        
 
         /// <summary>
         /// Method which is called when the key gesture is executed, inserts a table (if gone through with)
@@ -24,6 +25,5 @@ namespace EvernoteCloneGUI.ViewModels.Commands.KeyGestures
             NewNoteViewModel.OnInsertTable();
         }
 
-        public event EventHandler CanExecuteChanged;
     }
 }

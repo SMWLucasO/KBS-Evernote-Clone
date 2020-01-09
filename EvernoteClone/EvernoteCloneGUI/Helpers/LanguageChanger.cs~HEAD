@@ -2,8 +2,9 @@
 using System.Globalization;
 using EvernoteCloneGUI.Helpers;
 using EvernoteCloneLibrary;
+ using EvernoteCloneLibrary.Utils;
 
-namespace EvernoteCloneGUI
+ namespace EvernoteCloneGUI
 {
     public static class LanguageChanger
     {

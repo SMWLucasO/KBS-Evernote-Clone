@@ -18,77 +18,11 @@ namespace EvernoteCloneGUI.ViewModels.Commands
     {
 
         #region Graphical (tables, separators, codeblocks)
-
-
-        public static void InsertCodeBlocks(RichTextBox textEditor)
-        {
-            TextBox codeBlock = new TextBox()
-            {
-                Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#dddddd")),
-                BorderBrush = Brushes.Black,
-                BorderThickness = new Thickness(1, 1, 1, 1),
-                MinWidth = 500,
-                MinHeight = 200,
-                Padding = new Thickness(5, 5, 5, 5),
-
-            };
-
-            Block nearest = GetNearestPosition(textEditor);
-
-            Paragraph paragraph = new Paragraph();
-            InlineUIContainer container = new InlineUIContainer(codeBlock);
-
-            paragraph.Inlines.Add(container);
-            if (nearest != null)
-            {
-                textEditor.Document.Blocks.InsertAfter(nearest, paragraph);
-                textEditor.Document.Blocks.InsertAfter(paragraph, new Paragraph(new Run("")));
-            }
-            else
-            {
-                textEditor.Document.Blocks.Add(paragraph);
-                textEditor.Document.Blocks.Add(new Paragraph(new Run("")));
-            }
-
-        }
-
-        public static void InsertHorizontalLine(RichTextBox textEditor)
-        {
-            // create the horizontal line and find the nearest position to the cursor
-            Separator separator = new Separator()
-            {
-                Background = Brushes.Black,
-                Padding = new Thickness(0, 5, 0, 5),
-                Height = 2,
-                MinWidth = 500
-            };
-
-            Block nearest = GetNearestPosition(textEditor);
-
-            // create a paragraph and insert the separator in it
-            Paragraph paragraph = new Paragraph()
-            {
-                TextAlignment = TextAlignment.Center,
-            };
-
-            paragraph.Inlines.Add(separator);
-
-            // When there is a block nearby, we insert the line afterwards in a new paragraph
-            // else we just add the paragraph to the end of the document.
-            // We add a newline paragraph for ease-of-use.
-            if (nearest != null)
-            {
-                textEditor.Document.Blocks.InsertAfter(nearest, paragraph);
-                textEditor.Document.Blocks.InsertAfter(paragraph, new Paragraph(new Run("")));
-            }
-            else
-            {
-                textEditor.Document.Blocks.Add(paragraph);
-                textEditor.Document.Blocks.Add(new Paragraph(new Run("")));
-            }
-
-        }
-
+        
+        /// <summary>
+        /// Generate a table programmatically, including formatting, and insert it in the specified textEditor. 
+        /// </summary>
+        /// <param name="textEditor"></param>
         public static void InsertTable(RichTextBox textEditor)
         {
 
@@ -129,6 +63,7 @@ namespace EvernoteCloneGUI.ViewModels.Commands
                     }
 
                     table.RowGroups[0].Rows.Add(tableRow);
+                    
                     for (int j = 0; j < columns; j++)
                     {
                         table.RowGroups[0].Rows[i].Cells.Add(new TableCell(new Paragraph(new Run("")))
@@ -218,10 +153,15 @@ namespace EvernoteCloneGUI.ViewModels.Commands
 
         #region Text decoration
 
+        /// <summary>
+        /// Handles the toggling of the strikethrough of a selection or the 'from now on' text
+        /// </summary>
+        /// <param name="textEditor"></param>
         public static void ToggleStrikethrough(RichTextBox textEditor)
         {
             ApplyChange(textEditor, (selection) =>
             {
+                
                 if (!Equals(selection.GetPropertyValue(Inline.TextDecorationsProperty), TextDecorations.Strikethrough))
                 {
                     selection.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Strikethrough);
@@ -239,6 +179,12 @@ namespace EvernoteCloneGUI.ViewModels.Commands
         #endregion
 
         #region Fonts
+       
+        /// <summary>
+        /// Change the font for the current selection or the 'from now on' text.
+        /// </summary>
+        /// <param name="textEditor"></param>
+        /// <param name="selectedFont"></param>
         public static void ChangeFont(RichTextBox textEditor, string selectedFont)
         {
             FontFamily fontFamily = new FontFamily(selectedFont);
@@ -251,6 +197,11 @@ namespace EvernoteCloneGUI.ViewModels.Commands
             textEditor.Focus();
         }
 
+        /// <summary>
+        /// Change the font size for the current selection or the 'from now on' text.
+        /// </summary>
+        /// <param name="textEditor"></param>
+        /// <param name="fontSize"></param>
         public static void ChangeFontSize(RichTextBox textEditor, int fontSize)
         {
             ApplyChange(textEditor, (selection) =>
@@ -265,7 +216,7 @@ namespace EvernoteCloneGUI.ViewModels.Commands
         #region Helper methods for applying text from now on(the point in the text where it was typed) or selectively
 
         /// <summary>
-        /// Use this method when no text is selected. It means that from now on the 'change' will take effect.
+        /// Prepares and applies the change given by the 'change' Action.
         /// </summary>
         /// <param name="textEditor"></param>
         /// <param name="change"></param>

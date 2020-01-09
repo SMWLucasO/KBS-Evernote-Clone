@@ -103,14 +103,14 @@ namespace EvernoteCloneLibrary.Database
         /// This function makes a connection to the ssh server and forwards a port so we can use the SqlServer
         /// <see href="https://mysqlconnector.net/tutorials/connect-ssh/">This function is copied from here</see>
         /// </summary>
-        /// <param name="sshHostName"></param>
-        /// <param name="sshUserName"></param>
-        /// <param name="sshPassword"></param>
-        /// <param name="sshKeyFile"></param>
-        /// <param name="sshPassPhrase"></param>
-        /// <param name="sshPort"></param>
-        /// <param name="databaseServer"></param>
-        /// <param name="databasePort"></param>
+        /// <param name="sshHostName">The hostname of the Ssh server</param>
+        /// <param name="sshUserName">The username needed for authentication</param>
+        /// <param name="sshPassword">The password needed for authentication</param>
+        /// <param name="sshKeyFile">The sshKeyFile needed for authentication</param>
+        /// <param name="sshPassPhrase">The passPhrase needed for authentication (when using a key file)</param>
+        /// <param name="sshPort">The port the Ssh server listens to</param>
+        /// <param name="databaseServer">The database we need to connect to (host name)</param>
+        /// <param name="databasePort">The database port we need to connect to</param>
         /// <returns></returns>
         private static (SshClient SshClient, uint Port) ConnectSsh(string sshHostName, string sshUserName, string sshPassword = null,
             string sshKeyFile = null, string sshPassPhrase = null, int sshPort = 22, string databaseServer = "localhost", int databasePort = 3306)
