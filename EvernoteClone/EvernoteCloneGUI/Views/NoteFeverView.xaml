@@ -1,0 +1,63 @@
+<Window x:Class="EvernoteCloneGUI.Views.NoteFeverView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:cal="http://www.caliburnproject.org"
+        xmlns:vm="clr-namespace:EvernoteCloneGUI.ViewModels"
+        xmlns:vmc="clr-namespace:EvernoteCloneGUI.ViewModels.Controls"
+        xmlns:local="clr-namespace:EvernoteCloneGUI.Helpers"
+        xmlns:s="https://github.com/canton7/Stylet"
+        xmlns:lang="clr-namespace:EvernoteCloneGUI"
+        mc:Ignorable="d"
+        Title="{local:Loc NoteFeverWindowTitle}" Height="795" Width="1280"
+        Icon="Images/logotransparentv2.png">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="20*"/>
+            <ColumnDefinition Width="80*"/>
+        </Grid.ColumnDefinitions>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="100"/>
+                <RowDefinition Height="10*"/>
+                <RowDefinition Height="10*"/>
+                <RowDefinition Height="10*"/>
+                <RowDefinition Height="20*"/>
+                <RowDefinition Height="10*"/>
+                <RowDefinition Height="10*"/>
+                <RowDefinition Height="10*"/>
+                <RowDefinition Height="10*"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" Background="#ffffff" Margin="0,0,0.5,0">
+                <TextBlock Margin="25,0,0,0" Text="Note Fever" Foreground="{Binding Path=ButtonAccentColor}" FontSize="28" VerticalAlignment="Center" FontFamily="Lato" FontWeight="Light"></TextBlock>
+                <Image Margin="0,0,25,0" Source="Images/logotransparentv2.png" Width="64" Height="95" HorizontalAlignment="Right" Stretch="Fill"></Image>
+            </Grid>
+            <Button FontFamily="Lato" FontWeight="Light" Content="{local:Loc NoteFeverViewChangeUser}" Background="{Binding Path=ButtonBackgroundColor}" Foreground="White" FontSize="16" Grid.Row="1" Grid.ColumnSpan="1" x:Name="OpenLoginPopupView"></Button>
+            <Button FontFamily="Lato" FontWeight="Light" Content="{local:Loc NoteFeverViewNewNote}" Background="{Binding Path=ButtonAccentColor}" Foreground="White" FontSize="16" x:Name="OpenNewNotePopupView"  Grid.Row="2" Grid.ColumnSpan="1"  Grid.RowSpan="1"/>
+            <Button Height="25" Width="25" VerticalAlignment="Bottom" HorizontalAlignment="Right"  Background="{Binding Path=ButtonAccentColor}" Foreground="White" Grid.Row="3" Panel.ZIndex="1" x:Name="Synchronize">&#x27F3;</Button>
+            <Button FontFamily="Lato" FontWeight="Light" Content="{local:Loc NoteFeverViewAllNotes}" Background="{Binding Path=ButtonBackgroundColor}" Foreground="White" FontSize="16" x:Name="OpenAllNotesView" Grid.Row="3" Grid.ColumnSpan="1" Grid.RowSpan="1"></Button>
+            <TreeView
+                Grid.Row="4"
+                Grid.ColumnSpan="1"
+                FontFamily="Lato"
+                FontWeight="ExtraLight"
+                Background="{Binding Path=ButtonBackgroundColor}"
+                Foreground="White"
+                ItemsSource="{Binding Path=NotebooksTreeView}"
+                cal:Message.Attach="[Event SelectedItemChanged] = [TreeViewSelectedItemChanged($eventArgs)]"
+                x:Name="NotebooksTreeView">
+            </TreeView>
+            <Button FontFamily="Lato" FontWeight="Light" Content="{local:Loc NoteFeverViewSharedWithMe}" Background="{Binding Path=ButtonBackgroundColor}" Foreground="White" FontSize="16" x:Name="OpenSharedNotesView" Grid.Row="5" Grid.ColumnSpan="1" ></Button>
+            <Button FontFamily="Lato" FontWeight="Light" Content="{local:Loc NoteFeverViewBin}" Background="{Binding Path=ButtonBackgroundColor}" Foreground="White" FontSize="16" x:Name="OpenDeletedNotesView" Grid.Row="6" Grid.ColumnSpan="1" ></Button>
+            <Button FontFamily="Lato" FontWeight="Light" Content="{local:Loc NoteFeverViewTags}" Background="{Binding Path=ButtonBackgroundColor}" Foreground="White" FontSize="16" Grid.Row="7" Grid.ColumnSpan="1"></Button>
+            <Button FontFamily="Lato" FontWeight="Light" Content="{local:Loc NoteFeverViewSettings}" Background="{Binding Path=ButtonBackgroundColor}" Foreground="White" FontSize="16" x:Name="OpenSettingsView" Grid.Row="8" Grid.ColumnSpan="1"></Button>
+            <Grid.Effect>
+                <DropShadowEffect BlurRadius="20"/>
+            </Grid.Effect>
+        </Grid>
+        <ContentControl x:Name="ActiveItem" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="4"
+                        Grid.RowSpan="9"  Margin="0.4,0,-0.4,0.4"></ContentControl>
+    </Grid>
+
+</Window>

@@ -1,0 +1,69 @@
+﻿<Window x:Class="EvernoteCloneGUI.Views.Popups.TableRowColumnSpecifierView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EvernoteCloneGUI.Helpers"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+        xmlns:cal="http://www.caliburnproject.org"
+        xmlns:lang="clr-namespace:EvernoteCloneGUI"
+        mc:Ignorable="d" ResizeMode="NoResize"
+        Title="{local:Loc TableRowColumnSpecifierViewWindowTitle}" Height="220" Width="450">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="20" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid Grid.Column="1" Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="10*" />
+                <RowDefinition Height="10*" />
+                <RowDefinition Height="5*" />
+                <RowDefinition Height="20" />
+            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="4*" />
+                    <RowDefinition Height="10*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="20" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="0" VerticalAlignment="Bottom">
+                    <Run Text="{local:Loc TableRowColumnSpecifierViewRows}"/>
+                </TextBlock>
+                <TextBox Grid.Row="1" x:Name="RowCount" cal:Message.Attach="[Event TextChanged] = [ValidateNumericTextInput($eventArgs)]" MaxHeight="20" VerticalAlignment="Top"></TextBox>
+            </Grid>
+            <Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="4*" />
+                    <RowDefinition Height="10*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="20" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="0" VerticalAlignment="Bottom">
+                    <Run Text="{local:Loc TableRowColumnSpecifierViewColumns}"/>
+                </TextBlock>
+                <TextBox Grid.Row="1" x:Name="ColumnCount" cal:Message.Attach="[Event TextChanged] = [ValidateNumericTextInput($eventArgs)]" MaxHeight="20" VerticalAlignment="Top"></TextBox>
+            </Grid>
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="65*" />
+                    <ColumnDefinition Width="35*" />
+                    <ColumnDefinition Width="15" />
+                    <ColumnDefinition Width="35*" />
+                    <ColumnDefinition Width="20" />
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="1" cal:Message.Attach="[Event Click] = [OnCancel]" Content="{local:Loc TableRowColumnSpecifierViewCancel}" />
+                <Button Grid.Column="3" cal:Message.Attach="[Event Click] = [OnSubmit]" Content="{local:Loc TableRowColumnSpecifierViewSubmit}" />
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>

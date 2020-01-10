@@ -1,0 +1,13 @@
+@startuml
+class NoteRepository {
+    + Insert(toInsert:NoteModel) : bool
+    - {static} CheckIfDataIsCorrect(noteModel:NoteModel) : bool
+    + GetBy(conditions:string[], parameters:Dictionary<string, object>) : IEnumerable<NoteModel>
+    + Update(toUpdate:NoteModel) : bool
+    + Delete(toDelete:NoteModel) : bool
+    + GenerateQueryParameters(toExtractFrom:NoteModel) : Dictionary<string, object>
+}
+class "IRepository`1"<T> {
+}
+"IRepository`1" "<NoteModel>" <|-- NoteRepository
+@enduml

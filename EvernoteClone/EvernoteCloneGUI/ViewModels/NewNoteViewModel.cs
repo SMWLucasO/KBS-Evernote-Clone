@@ -1,0 +1,598 @@
+﻿using Caliburn.Micro;
+using EvernoteCloneGUI.ViewModels.Commands;
+using EvernoteCloneGUI.Views;
+using EvernoteCloneLibrary.Notebooks;
+using EvernoteCloneLibrary.Notebooks.Notes;
+using EvernoteCloneLibrary.Utils;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Markup;
+using System.Xml;
+using System.Linq;
+using Microsoft.VisualBasic;
+using EvernoteCloneLibrary.Labels.NoteLabel;
+using System.Windows.Input;
+using EvernoteCloneGUI.ViewModels.Commands.KeyGestures;
+using EvernoteCloneLibrary.Constants;
+using EvernoteCloneLibrary.Labels;
+using Label = EvernoteCloneLibrary.Labels.Label;
+
+namespace EvernoteCloneGUI.ViewModels
+{
+    /// <summary>
+    /// ViewModel which handles all interaction related to the NewNoteView
+    /// </summary>
+    public sealed class NewNoteViewModel : Screen
+    {
+        #region Instance variables
+        
+        /// <value>
+        /// This boolean indicates whether the screen is for a note that already exists.
+        /// </value>
+        private readonly bool _loadNote;
+
+        public StackPanel LabelsStackPanel { get; set; }
+        
+        public void LabelsAdd()
+        {    
+            string userInput = Interaction.InputBox(Properties.Settings.Default.NewNoteViewModelAddLabel, Properties.Settings.Default.NewNoteViewModelAddLabelTitle, "");
+
+            LabelModel labelModel = new LabelModel { Id = -1, Title = userInput };
+
+            if (string.IsNullOrWhiteSpace(userInput))
+            {
+                MessageBox.Show(Properties.Settings.Default.FieldsCantBeEmpty, Properties.Settings.Default.MessageBoxTitleError,MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            } 
+            else if (userInput.Length < 2 || userInput.Length > 64)
+            {
+                MessageBox.Show("Please enter a title between 2 and 64 characters.");
+            }
+            else
+            {
+                if (Note.Labels.Contains(userInput))
+                {
+                    MessageBox.Show(Properties.Settings.Default.NewNoteViewModelLabelAlreadyExists, Properties.Settings.Default.MessageBoxTitleWarning,MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    return;
+                }
+
+                if (Note.Id != -1)
+                {
+                    bool addLabel = Label.InsertLabel(labelModel, Note);
+
+                    if (addLabel)
+                    {
+                        LoadLabels();
+                    }
+                }
+                else
+                {
+                    MessageBox.Show(Properties.Settings.Default.NewNoteViewModelCantAddLabel, Properties.Settings.Default.MessageBoxTitleWarning, MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+                
+            }
+        }
+
+        private string _font = SettingsConstant.DEFAULT_FONT;
+        private int _fontSize = SettingsConstant.DEFAULT_FONT_SIZE;
+
+        private RichTextBox _textEditor = null;
+        
+        #endregion
+
+        #region Databound properties
+
+        private string _title = "";
+
+        public string Title
+        {
+            get => _title;
+            set
+            {
+                _title = value;
+                NotifyOfPropertyChange(() => Title);
+
+                if (!_loadNote)
+                {
+                    // Dynamically set the title of the window.
+                    if (!(string.IsNullOrWhiteSpace(_title)))
+                    {
+                        DisplayName = $"Note Fever | {_title}";
+                    }
+                    else
+                    {
+                        DisplayName = $"Note Fever | {SettingsConstant.DEFAULT_NOTE_TITLE}";
+                    }
+                }
+                else
+                {
+                    if (Parent is NoteFeverViewModel container && container.NotebookViewModelProp?.SelectedNoteElement != null)
+                    {
+                        container.NotebookViewModelProp.SelectedNoteElement.Title = _title;
+                    }
+                }
+            }
+        }
+
+        public string NewContent
+        {
+            get => Note.NewContent;
+            set
+            {
+                Note.NewContent = value;
+                NotifyOfPropertyChange(() => NewContent);
+            }
+        }
+
+        public List<string> Fonts { get; set; } = new List<string>();
+        public string SelectedFont
+        {
+            get
+            {
+                return _font;
+            }
+            set
+            {
+                // make sure that the value is not null & the given value is an existing font.
+                if (value != null && FontFamily.Families.Where((family) => family.Name == value).ToList().Count > 0)
+                {
+                    _font = value;
+                    RichTextEditorCommands.ChangeFont(_textEditor, _font);
+                }
+
+            }
+        }
+
+        public List<int> FontSizes { get; set; } = new List<int>();
+
+        public int SelectedFontSize
+        {
+            get
+            {
+                return _fontSize;
+            }
+            set
+            {
+                if (value > 0 && value < 250)
+                {
+                    _fontSize = value;
+                    RichTextEditorCommands.ChangeFontSize(_textEditor, _fontSize);
+                }
+            }
+        }
+
+        #endregion
+
+        //  cal:Message.Attach="[Event Click] = [SimulateRightClick($eventArgs)]" <--- add this to button
+        public void SimulateRightClick(RoutedEventArgs routedEventArgs)
+        {
+            if (routedEventArgs.Source is Button button)
+            {
+                if (button.ContextMenu != null)
+                {
+                    button.ContextMenu.IsOpen = true;
+                }
+            }
+        }
+        
+        #region Properties
+
+        /// <summary>
+        /// If this object is null, or has id '-1' it means we are generating a new note,
+        /// otherwise we are updating one.
+        /// </summary>
+        public Note Note { get; set; } = new Note();
+
+        /// <summary>
+        /// Every note is part of a notebook, therefore we need the object when saving.
+        /// </summary>
+        public Notebook NoteOwner { get; set; } 
+
+        #endregion
+        
+        public NewNoteViewModel(bool loadNote = false)
+        {
+            DisplayName = $"Note Fever | {SettingsConstant.DEFAULT_NOTE_TITLE}";
+            _loadNote = loadNote;
+        }
+
+        public void LoadLabels()
+        {
+            if (Note.Labels == null)
+            {
+                Note.Labels = new List<string>();
+            }
+
+            Note.Labels.Clear();
+
+            List<Button> toRemove = new List<Button>();
+            foreach (Button button in LabelsStackPanel.Children.Cast<Button>())
+            {
+                    if (button.Content.ToString() != "+")
+                    {
+                        toRemove.Add(button);
+                    }
+            }
+
+            foreach (Button button in toRemove)
+            {
+                LabelsStackPanel.Children.Remove(button);
+            }
+
+            List<NoteLabelModel> noteLabels = NoteLabel.GetAllNoteLabelsFromNote(Note);
+            foreach (NoteLabelModel noteLabel in noteLabels)
+            {
+                LabelModel labelModel = Label.GetLabel(noteLabel.LabelId);
+
+                Button label = new Button
+                {
+                    Content = labelModel.Title,
+                    FontSize = 10,
+                    Height = 20,
+                    Margin = new Thickness(5, 0, 0, 0),
+                    Padding = new Thickness(5, 0, 5, 0),
+                    Tag = labelModel
+                };
+
+                label.Click += LabelDelete;
+                LabelsStackPanel.Children.Add(label);
+
+                Note.Labels.Add(labelModel.Title);
+            }
+        }
+        
+        private void LabelDelete(object sender, RoutedEventArgs e)
+        {
+            Button label = (Button)sender;
+
+            bool deleted = NoteLabel.RemoveNoteLabel(NoteLabel.GetNoteLabelFromLabelAndNote(Note, (LabelModel)label.Tag));
+
+             if (deleted)
+            {
+                LoadLabels();
+            }
+        }
+
+        #region Saving and loading
+
+        /// <summary>
+        /// Method for loading the contents of the note object into the data bound properties.
+        /// </summary>
+        public void LoadNote()
+        {
+            if (Note != null)
+            {
+                Title = Note.Title;
+                NewContent = Note.Content;
+            }
+        }
+
+        /// <summary>
+        /// Method for storing the note into the database.
+        /// </summary>
+        /// <param name="showDeletedNotes">boolean indicating whether the deleted notes should be shown afterward calling the save method.</param>
+        /// <returns>boolean indicating the saving was successful</returns>
+        public bool SaveNote(bool showDeletedNotes = false)
+        {
+            // Set some standard values for now and save
+            Note.Author = Properties.Settings.Default.NewNoteViewModelNamelessAuthor;
+            Note.Title = Title; // We don't have to check if it is empty or null, the property in note does that already
+            Note.Save();
+
+            if (Note.NoteOwner == null && NoteOwner != null && !(NoteOwner.IsNotNoteOwner))
+            {
+                Note.NoteOwner = NoteOwner;
+            }
+
+            // Add the note to the notes list
+            if (NoteOwner != null && !NoteOwner.Notes.Contains(Note))
+            {
+                NoteOwner.Notes.Add(Note);
+            }
+
+            if (Parent != null && Parent is NoteFeverViewModel noteFeverViewModel)
+            {
+
+                noteFeverViewModel.NotebookViewModelProp?.NotebookNotesMenu?.LoadNotesIntoNotebookMenu(showDeletedNotes);
+            }
+
+            // If the NoteOwner isn't null, we fetch the Id of the user it contains
+            // though NoteOwner should never be null
+            if (NoteOwner != null)
+            {
+                return NoteOwner.Save();
+            }
+                
+            return false;
+        }
+
+        /// <summary>
+        /// Method which saves the note and notifies the user if it happened or not
+        /// </summary>
+        public void NotifyUserOfSave()
+        {
+           
+            bool shouldShowDeleted = false;
+            NoteFeverViewModel parent = null;
+            
+            // Validate whether deleted notes should be shown or not
+            if (Parent != null && Parent is NoteFeverViewModel)
+            {
+                parent = (NoteFeverViewModel)Parent;
+                if (ValidationUtil.AreNotNull(parent.NotebookViewModelProp, parent.NotebookViewModelProp.NotebookNotesMenu))
+                {
+                    shouldShowDeleted = parent.NotebookViewModelProp.NotebookNotesMenu.ShowDeletedNotes;
+                }
+            }
+
+            if (SaveNote(shouldShowDeleted))
+            {
+                MessageBox.Show(Properties.Settings.Default.NewNoteViewModelSavedNote, Properties.Settings.Default.MessageBoxTitleSuccessful, MessageBoxButton.OK, MessageBoxImage.Information);
+                if (Parent != null)
+                {
+                    // If _loadNote is true, we are not creating a new note. Thus, we will only load the note and close the window
+                    // when it is false.
+                    if (Parent is NoteFeverViewModel)
+                    {
+                        if (GetView() != null && !(_loadNote))
+                        {
+                            if (parent != null)
+                            {
+                                parent.SelectedNote = Note;
+                                parent.LoadNoteViewIfNoteExists();
+                            }
+
+                            (GetView() as Window)?.Close();
+                        }
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show(Properties.Settings.Default.NewNoteViewModelCouldntSaveNote, Properties.Settings.Default.MessageBoxTitleFailed, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        #endregion
+
+        #region Events
+        /// <summary>
+        /// Method which retrieves the new contents from the richtextbox.
+        /// </summary>
+        /// <param name="textChangedEventArgs"></param>
+        public void StoreRichTextBoxContent(TextChangedEventArgs textChangedEventArgs)
+        {
+            if (textChangedEventArgs.Source is RichTextBox richTextBox)
+            {
+                // Get the text from the richtextbox and create/read from a stream to get the data
+                
+                TextRange range = new TextRange(richTextBox.Document.ContentStart, richTextBox.Document.ContentEnd);
+
+                MemoryStream stream = new MemoryStream();
+                range.Save(stream, DataFormats.Xaml);
+
+                // Generate the XaML content
+                NewContent = Encoding.Default.GetString(stream.ToArray());
+                
+            }
+        }
+
+        /// <summary>
+        /// When the view is ready, and we are loading the note, this is the only way to
+        /// attach the content to the text editor.
+        /// </summary>
+        /// <param name="view"></param>
+        protected override void OnViewReady(object view)
+        {
+            if (Note.Content == null)
+            {
+                Note.Content = "";
+            }
+                
+            // when we are loading a note and not creating a new one, we load in the contents of said note
+            if (_loadNote)
+            {
+                NewNoteView newNoteView = (NewNoteView)view;
+                newNoteView.TextEditor.Document = SetRtf(NewContent);
+            }
+            
+            _textEditor.FontFamily = new System.Windows.Media.FontFamily(SettingsConstant.DEFAULT_FONT);
+            _textEditor.FontSize = SettingsConstant.DEFAULT_FONT_SIZE;
+
+            base.OnViewReady(view);
+        }
+
+        /// <summary>
+        /// When the view is attached, prepare the text editor for usage
+        /// </summary>
+        /// <param name="view"></param>
+        /// <param name="context"></param>
+        protected override void OnViewAttached(object view, object context)
+        {
+            if (view is NewNoteView newNoteView)
+            {
+                
+                // Register shortcuts for saving, inserting tables and changing text-color
+                newNoteView.InputBindings.Add(
+                    new KeyBinding(
+                        new TextColorCommand { NewNoteViewModel = this}, Key.C, ModifierKeys.Alt
+                    )
+                );
+                
+                newNoteView.InputBindings.Add(
+                    new KeyBinding(
+                        new InsertTableCommand {NewNoteViewModel = this}, Key.T, ModifierKeys.Alt
+                    )
+                );
+                
+                newNoteView.InputBindings.Add(
+                    new KeyBinding(
+                        new SaveCommand {NewNoteViewModel = this}, Key.S, ModifierKeys.Control
+                    )
+                );
+                
+                _textEditor = newNoteView.TextEditor;
+                _textEditor.MinHeight = SystemParameters.FullPrimaryScreenHeight-207;
+                SetupTextEditor(newNoteView);
+                
+                SelectedFont = SettingsConstant.DEFAULT_FONT;
+                SelectedFontSize = SettingsConstant.DEFAULT_FONT_SIZE;
+
+                if (GetView() is UserControl userControl)
+                {
+                    userControl.SizeChanged += OnSizeChanged;
+                }
+                else if (GetView() is Window window)
+                {
+                    window.SizeChanged += OnSizeChanged;
+                }
+                LabelsStackPanel = newNoteView.LabelsStackPanel;
+                LoadLabels();
+            }
+
+        }
+
+        /// <summary>
+        /// Event for changing the size of the text editor when the application is resized.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void OnSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (GetView() is UserControl userControl)
+            {
+                _textEditor.MinHeight = userControl.ActualHeight - 122;
+            }
+            else if (GetView() is Window window)
+            {
+                _textEditor.MinHeight = window.Height - 161;
+            }
+        }
+
+        #region Toolbar events
+
+        /// <summary>
+        /// Called when 'Insert table' is clicked in the text editor
+        /// </summary>
+        public void OnInsertTable()
+        {
+            RichTextEditorCommands.InsertTable(_textEditor);
+        }
+
+        /// <summary>
+        /// Called when the 'strikethrough' button is clicked in the text editor
+        /// </summary>
+        public void OnToggleStrikethrough()
+        {
+            RichTextEditorCommands.ToggleStrikethrough(_textEditor);
+        }
+
+        /// <summary>
+        /// Called when the 'textcolor' button is clicked in the text editor
+        /// </summary>
+        public void OnSetTextColor()
+        {
+            RichTextEditorCommands.SetTextColor(_textEditor);
+        }
+
+        /// <summary>
+        /// Called when the 'marking' button is clicked in the text editor
+        /// </summary>
+        public void OnToggleTextMarking()
+        {
+            RichTextEditorCommands.ToggleTextMarking(_textEditor);
+        }
+
+        #endregion
+
+
+        #endregion
+
+        #region Helper methods
+
+        /// <summary>
+        /// Method which loads all the contents of the XaML string into the text editor.
+        /// <see>Impl. from here
+        ///     <cref>https://stackoverflow.com/questions/1449121/how-to-insert-xaml-into-richtextbox</cref>
+        /// </see>
+        /// </summary>
+        /// <param name="xamlString"></param>
+        /// <returns></returns>
+        private FlowDocument SetRtf(string xamlString)
+        {
+            // validate whether the xaml string is empty or not, since if it is, it would throw an error if we were to continue.
+            if (!(string.IsNullOrWhiteSpace(xamlString.Trim())))
+            {
+
+                StringReader stringReader = new StringReader(xamlString);
+                XmlReaderSettings xmlReaderSettings = new XmlReaderSettings
+                {
+                    DtdProcessing = DtdProcessing.Parse,
+                    MaxCharactersFromEntities = 1024
+                };
+
+                XmlReader xmlReader = XmlReader.Create(stringReader, xmlReaderSettings);
+                FlowDocument doc = new FlowDocument();
+
+                // insert all the sections into the document blocks.
+                if (XamlReader.Load(xmlReader) is Section sec)
+                {
+                    while (sec.Blocks.Count > 0)
+                    {
+                        doc.Blocks.Add(sec.Blocks.FirstBlock);
+                    }
+                }
+                
+                return doc;
+            }
+
+            return new FlowDocument();
+        }
+
+        #endregion
+
+        #region Setup methods
+
+        /// <summary>
+        /// Method which loads the text into the text editor.
+        /// Beforehand it set the content to an empty string if it is currently null, since this might
+        /// cause unexpected behaviour otherwise.
+        /// </summary>
+        /// <param name="newNoteView"></param>
+        private void SetupTextEditor(NewNoteView newNoteView)
+        {
+            if (Note.Content == null)
+            {
+                Note.Content = "";
+            }
+                
+            // Load all the fonts into the databound font list.
+            foreach (FontFamily font in FontFamily.Families)
+            {
+                Fonts.Add(font.Name);
+            }
+
+            for (int i = 0; i < 200; ++i)
+            {
+                FontSizes.Add(i);
+            }
+
+            // defaults
+            _fontSize = 11;
+            SelectedFont = "Arial";
+
+            NotifyOfPropertyChange(() => Fonts);
+
+            if (_loadNote)
+            {
+                newNoteView.TextEditor.Document = SetRtf(NewContent);
+            }
+        }
+
+        #endregion
+    }
+}

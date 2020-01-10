@@ -1,0 +1,29 @@
+@startuml
+class NotebookLocation {
+    - _path : string
+    + <<override>> Path : string <<get>> <<set>>
+    + {static} GetNotebookLocationById(id:int) : NotebookLocation
+    + {static} GetNotebookLocationById(id:int, notebookLocationRepository:NotebookLocationRepository) : NotebookLocation
+    + {static} GetNotebookLocationPathById(id:int) : string
+    + {static} GetNotebookLocationPathById(id:int, notebookLocationRepository:NotebookLocationRepository) : string
+    + {static} GetNotebookLocationByPath(path:string, userId:int) : NotebookLocation
+    + {static} AddNewNotebookLocation(notebookLocation:NotebookLocation, userId:int) : bool
+    + {static} AddNewNotebookLocationAndGetId(notebookLocation:NotebookLocation, userId:int) : int
+    + {static} AddNewNotebookLocationToDatabaseAndGetId(notebookLocation:NotebookLocation, userId:int) : int
+    + {static} GetAllNotebookLocationsFromDatabase(userId:int) : List<NotebookLocation>
+    + {static} AddNotebookLocationToLocalStorage(notebookLocation:NotebookLocation) : bool
+    - {static} GetNewXmlRepresentation(notebookLocation:NotebookLocation) : string[]
+    - {static} GetXmlRepresentation(notebookLocations:List<NotebookLocation>, newNotebookLocation:NotebookLocation) : string[]
+    + {static} Load(userId:int) : List<NotebookLocation>
+    - AddLocally() : NotebookLocation
+    - {static} LoadNotebookLocation(fsNotebookLocation:NotebookLocation, dbNotebookLocation:NotebookLocation, listToAddTo:List<NotebookLocation>) : void
+    - Update(oldId:int, newId:int) : NotebookLocation
+    + ToXmlRepresentation() : string[]
+    + <<override>> Equals(obj:object) : bool
+    + Equals(other:NotebookLocation) : bool
+    + <<override>> GetHashCode() : int
+    - {static} GetUserDataStoragePath() : string
+}
+NotebookLocationModel <|-- NotebookLocation
+IParseable <|-- NotebookLocation
+@enduml

@@ -1,0 +1,63 @@
+﻿<UserControl x:Class="EvernoteCloneGUI.Views.Settings.EditorView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:behaviors="clr-namespace:EvernoteCloneGUI.Helpers"
+        xmlns:helpers="clr-namespace:EvernoteCloneGUI.ViewModels.Controls.Settings"
+        xmlns:local="clr-namespace:EvernoteCloneGUI.Helpers"
+        xmlns:cal="http://www.caliburnproject.org"
+        mc:Ignorable="d"
+        d:DesignHeight="400" d:DesignWidth="640">
+    <Grid Background="{Binding Path=BackgroundColorSettings}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="30*"/>
+            <ColumnDefinition Width="70*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <!-- Row 1 -->
+        <Label Grid.Column="0" Grid.Row="0" Content="{local:Loc EditorViewFont}" HorizontalAlignment="Right"/>
+
+        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="0">
+            <ComboBox 
+                x:Name="DefaultFont"
+                HorizontalAlignment="Left" 
+                Margin="5,5,5,5"
+                cal:Message.Attach="[Event SelectionChanged] = [ComboBoxSelectedIndexChanged($this)]"
+                behaviors:ComboBoxWidthFromItemsBehavior.ComboBoxWidthFromItems="True">
+            </ComboBox>
+
+            <Label Content="{local:Loc EditorViewDefaultFont}" HorizontalAlignment="Right"/>
+        </StackPanel>
+
+        <!-- Row 2 -->
+        <Label Grid.Column="0" Grid.Row="1" Content="{local:Loc EditorViewFontSize}" HorizontalAlignment="Right"/>
+
+        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="1">
+            <ComboBox 
+                x:Name="DefaultFontSize"
+                HorizontalAlignment="Left" 
+                Margin="5,5,5,5"
+                cal:Message.Attach="[Event SelectionChanged] = [ComboBoxSelectedIndexChanged($this)]"
+                behaviors:ComboBoxWidthFromItemsBehavior.ComboBoxWidthFromItems="True">
+            </ComboBox>
+
+            <Label Content="{local:Loc EditorViewDefaultFontSize}" HorizontalAlignment="Right"/>
+        </StackPanel>
+
+        <Button 
+            Grid.Row="2" 
+            Grid.Column="0" 
+            HorizontalAlignment="Right" 
+            VerticalAlignment="Bottom" 
+            Margin="0,0,0,10"
+            Padding="5"
+            x:Name="ApplyChanges" 
+            Content="{local:Loc EditorViewApplyChanges}"/>
+    </Grid>
+</UserControl>

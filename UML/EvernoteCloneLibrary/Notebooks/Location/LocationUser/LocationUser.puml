@@ -1,0 +1,7 @@
+@startuml
+class LocationUser {
+    + {static} GetAllLocationsFromUser(userId:int) : List<LocationUser>
+    + {static} AddNewLocationUser(locationUser:LocationUser) : bool
+}
+LocationUserModel <|-- LocationUser
+@enduml
