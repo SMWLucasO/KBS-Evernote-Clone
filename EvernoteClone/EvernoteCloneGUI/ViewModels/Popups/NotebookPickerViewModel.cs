@@ -108,10 +108,12 @@ namespace EvernoteCloneGUI.ViewModels.Popups
 
             if (!PotentialMoveCandidate.NoteOwner.IsSharedNotebook)
             {
-                SelectedNotebook.Notes.Add(PotentialMoveCandidate);
-
                 Notebook notePreviousNotebook = PotentialMoveCandidate.NoteOwner;
+
+                PotentialMoveCandidate.NoteOwner.Notes.Remove(PotentialMoveCandidate);
                 PotentialMoveCandidate.NoteOwner = SelectedNotebook;
+                
+                SelectedNotebook.Notes.Add(PotentialMoveCandidate);
 
                 return SelectedNotebook.Save() && notePreviousNotebook.Save();
             }
