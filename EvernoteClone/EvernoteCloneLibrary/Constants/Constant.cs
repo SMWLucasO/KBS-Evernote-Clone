@@ -10,7 +10,7 @@ namespace EvernoteCloneLibrary.Constants
         /// <value>
         /// This is used as an indication if the application is in test mode
         /// </value>
-        public const bool   TEST_MODE = true;
+        public const bool   TEST_MODE = false;
 
         /// <value>
         /// This contains the path to the test cases storage
