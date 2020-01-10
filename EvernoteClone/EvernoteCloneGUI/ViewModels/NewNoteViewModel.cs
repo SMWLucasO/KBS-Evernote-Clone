@@ -47,6 +47,10 @@ namespace EvernoteCloneGUI.ViewModels
             if (string.IsNullOrWhiteSpace(userInput))
             {
                 MessageBox.Show(Properties.Settings.Default.FieldsCantBeEmpty, Properties.Settings.Default.MessageBoxTitleError,MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            } 
+            else if (userInput.Length < 2 || userInput.Length > 64)
+            {
+                MessageBox.Show("Please enter a title between 2 and 64 characters.");
             }
             else
             {
