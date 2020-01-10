@@ -570,7 +570,7 @@ namespace EvernoteCloneGUI.ViewModels.Controls
                         }
                         else
                         {
-                            LoadNotebooksTreeView(null, true);
+                            LoadNotebooksTreeView(null, false);
                         }
                     }
                 }
